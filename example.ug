@@ -1,0 +1,54 @@
+# example
+
+################################
+
+# mixtar dunyaghaSalam qimmiti [SalamDunya!] bolsun
+# ikrangha dunyaghaSalam yezilsun
+
+# mixtar miningIsmim qimmiti quruq bolsun
+# ikrangha [ismingizni kurguzung:] yezilsun
+# ikrandin miningIsmim oqulsun
+
+# mixtar salamMezmuni qimmiti [Xush Kepsiz ] bolsun
+# salamMezmuni qimmiti salamMezmuni ulanghan miningIsmim bolsun
+# ikrangha salamMezmuni yezilsun
+
+# mixtar sanliqQimmet qimmiti 2 bolsun
+# sanliqQimmet qimmiti sanliqQimmet qushulghan 3 bolsun
+# ikrangha sanliqQimmet yezilsun
+
+# mixtar qimmetBir qimmiti 2 bolsun
+# mixtar qimmetIkki qimmiti 3 bolsun
+# mixtar logikiliqQimmet qimmiti quruq bolsun
+# logikiliqQimmet qimmiti 3 kichik 2 bolsun
+# logikiliqQimmet qimmiti qimmetUch ekische bolsun
+# ikrangha logikiliqQimmet yezilsun
+
+# mixtar sinaqBir qimmiti rast bolsun
+# eger sinaqBir qimmiti rast bolsa
+#     ikrangha [eger: sinaqBir qimmiti rast ...] yezilsun
+# tamamlansun
+
+# mixtar yezildighanQimmet qimmiti [] bolsun
+# mixtar sinaqQimmet qimmiti 1 bolsun
+# mixtar tekshurulmeQimmet qimmiti rast bolsun
+# nawada tekshurulmeQimmet qimmiti rast bolsa
+#     yezildighanQimmet qimmiti [nawada: sanaq ] ulanghan sinaqQimmet bolsun
+#     ikrangha yezildighanQimmet yezilsun
+#     sinaqQimmet qimmiti sinaqQimmet qushulghan 1 bolsun
+#     tekshurulmeQimmet qimmiti sinaqQimmet kichik 5 bolsun
+# tamamlansun
+
+# mixtar yinginda qimmiti 0 bolsun
+# fonkisiye sanYezish bolsa
+#     ikrangha yinginda yezilsun
+# tamamlansun
+# fonkisiye sanQushush mixtar x y bolsa
+#     mixtar waqitliqMixtar qimmiti 0 bolsun
+#     waqitliqMixtar qimmiti x qushulghan y bolsun
+#     netije waqitliqMixtar qayturulsun
+# tamamlansun
+# fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yinginda bolsun
+# fonkisiye sanYezish ishlitilsun
+
+ikrangha [UyghurScript!] yezilsun
