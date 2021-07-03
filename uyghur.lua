@@ -210,6 +210,13 @@ local AST_TYPE = {
     AST_OPERATE = "AST_OPERATE",
 }
 
+local REPL_AST = {
+    [AST_TYPE.AST_VARIABLE] = true,
+    [AST_TYPE.AST_EXPRESSION] = true,
+    [AST_TYPE.AST_EXPRESSION_LOGIC] = true,
+    [AST_TYPE.AST_OPERATE] = true,
+}
+
 local PARSER_STATE_MAP = {
     [TOKEN_TYPE.CODE_END] = AST_TYPE.AST_END,
     [TOKEN_TYPE.VARIABLE] = {
@@ -524,8 +531,8 @@ function parser:parse(tokens, line, path)
     if not self.tree then
         self:init()
     end
-    self:consume()
-    return self.tree
+    local node = self:consume()
+    return self.tree, node
 end
 
 function parser:next(tp)
@@ -597,12 +604,13 @@ function parser:consume()
     local astType = nextState
     local astFunc = self["consume_" .. astType]
     assert(astFunc ~= nil, string.format("consume func for [%s] is unimplemented", astType))
-    local astNode = astFunc(self)
-    self:insert(astType, astNode)
+    local astTokens = astFunc(self)
+    local astNode = self:insert(astType, astTokens)
     -- surplus
     if self.index ~= self.length then
         self:assert(false, string.format("artuxche sozluk", self:next()))
     end
+    return astNode
 end
 
 function parser:consume_AST_VARIABLE()
@@ -747,36 +755,76 @@ function parser:assert(v, msg, token)
     assert(v == true, string.format("%s: xojjet:[%s], qur:[%d], soz:[%s]", msg, self.path, self.line, token.value))
 end
 
-local function runLine(line, lineNo, fileName)
-    local tokens = tokenizer:tokenize(line, lineNo, fileName)
-    local tree = parser:parse(tokens, lineNo, fileName)
-    if not tree then return end -- empty lines
 
-    -- TODO:
-    -- print("=====================================================================START")
-    -- print("tokens:", tokens)
-    -- print("tree:", tree)
-    -- if tree then
-    --     table.print(tree)
-    -- end
-    -- print("=======================================================================END")
+-- executer
+local executer = {}
 
-    -- local newAst = transform(oldAst)
-    -- local output = generate(newAst)
+function executer:execute(tree, node)
+    -- empty lines
+    print("=====================================================================EXECUTE")
+    print("tree:", tree, node)
+    if node then
+        if not REPL_AST[node.name] then
+            print("ug > ikran xalitide bu mashghulat qollanmidi, hojjet xalitide ishliting!")
+            return
+        end
+        table.print(node)
+    elseif tree then
+        table.print(tree)
+    end
+    print("=======================================================================END")
 end
 
-local function runFile(path)
+
+-- compiler
+local compiler = {}
+
+function compiler:compile(tree)
+    -- empty lines
+    if not tree then return "empty ..." end
+    -- 
+    return "-- todo compiler ..."
+end
+
+
+local function runLine(line, lineNo, fileName, isExecute)
+    local tokens = tokenizer:tokenize(line, lineNo, fileName)
+    local tree, node = parser:parse(tokens, lineNo, fileName)
+    return tree, node
+end
+
+local function runFile(fromPath, isCompile)
+    -- read file
     local lines = {}
-    local file = io.open(path, "r")
-    assert(file ~= nil, string.format("bu hojjet tepilmidi:[%s]", path))
-    io.input(file)
+    local fromFile = io.open(fromPath, "r")
+    assert(fromFile ~= nil, string.format("bu hojjet tepilmidi:[%s]", fromPath))
+    io.input(fromFile)
     for line in io.lines() do
         table.insert(lines, line)
     end
-    io.close(file)
+    io.close(fromFile)
+    -- check target
+    local isCompile = isCompile == "TRUE" or isCompile == "true"
+    -- get ast
+    local tree = nil
     for lineNo,line in ipairs(lines) do
-        runLine(line, lineNo, path)
+        tree, _ = runLine(line, lineNo, fromPath, not isCompile) or tree
     end
+    -- execute
+    if not isCompile then
+        executer:execute(tree, nil)
+    end
+    -- compile
+    if not isCompile then return end
+    local toPath = fromPath .. ".lua"
+    local compileTime = os.date("%Y-%m-%d %H:%M", os.time())
+    local toFile = io.open(toPath, "w")
+    io.output(toFile)
+    io.write(string.format("-- compiled from [%s] at %s", fromPath, compileTime))
+    io.write("\n\n")
+    io.write(compiler:compile(tree))
+    io.write("\n")
+    io.close(toFile)
 end
 
 local function runInput()
@@ -791,7 +839,8 @@ local function runInput()
             elseif line == "tamam" then
                 status = -2
             elseif line then
-                runLine(line, nil, nil)
+                local _, line = runLine(line, nil, nil, true)
+                 executer:execute(nil, line)
             end
         end, function(err)
             status = -3
@@ -807,7 +856,7 @@ end
 
 local function entry()
     if arg[1] then
-        runFile(arg[1])
+        runFile(arg[1], arg[2])
     else
         runInput()
     end

@@ -2,6 +2,8 @@
     test
 ]]
 
-os.execute("lua uyghur.lua example.ug")
+-- execute script
+os.execute("lua uyghur.lua example.ug false")
 
--- print(string.match("#fdsf", "#", 1))
+-- compile script
+-- os.execute("lua uyghur.lua example.ug true")
