@@ -2,7 +2,7 @@
 
 ## 0. description
 
-> a toy script interpreter writen in lua, u can learn how to write and interpreter by reading this repo ...
+> a toy script interpreter writen in lua, u can learn how to write an interpreter by reading this repo ...
 
 ## 1. data types and variable declaration
 
@@ -88,11 +88,11 @@ tamamlansun
 ```python
 
 # variable
-mixtar yinginda qimmiti 0 bolsun
+mixtar yighinda qimmiti 0 bolsun
 
 # function without args and return
 fonkisiye sanYezish bolsa
-    ikrangha yinginda yezilsun
+    ikrangha yighinda yezilsun
 tamamlansun
 
 # function with variables and return
@@ -103,7 +103,7 @@ fonkisiye sanQushush mixtar x y bolsa
 tamamlansun
 
 # call with variables and receive result
-fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yinginda bolsun
+fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
 
 # call without variable, and not result 
 fonkisiye sanYezish ishlitilsun

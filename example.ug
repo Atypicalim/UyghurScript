@@ -39,16 +39,16 @@
 #     tekshurulmeQimmet qimmiti sinaqQimmet kichik 5 bolsun
 # tamamlansun
 
-# mixtar yinginda qimmiti 0 bolsun
+# mixtar yighinda qimmiti 0 bolsun
 # fonkisiye sanYezish bolsa
-#     ikrangha yinginda yezilsun
+#     ikrangha yighinda yezilsun
 # tamamlansun
 # fonkisiye sanQushush mixtar x y bolsa
 #     mixtar waqitliqMixtar qimmiti 0 bolsun
 #     waqitliqMixtar qimmiti x qushulghan y bolsun
 #     netije waqitliqMixtar qayturulsun
 # tamamlansun
-# fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yinginda bolsun
+# fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
 # fonkisiye sanYezish ishlitilsun
 
 ikrangha [UyghurScript!] yezilsun
