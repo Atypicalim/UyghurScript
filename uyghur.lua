@@ -531,7 +531,7 @@ function tokenizer:token(tp, value)
         value = value,
         path = self.path,
         line = self.line,
-        column = self.column,
+        column = self.column - #value,
     }
 end
 
@@ -974,7 +974,7 @@ local function runInput()
             end
         end, function(err)
             status = -3
-            print("\nHataliq:", debug.traceback(err), "\n")
+            print("\nXataliq:", debug.traceback(err), "\n")
         end)
         if status == -1 then
             print("\n\n Tamam!\n")
