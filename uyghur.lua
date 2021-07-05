@@ -54,6 +54,7 @@ local TOKEN_VALUES = {
     AND = "xemde",
     OR = "yaki",
     NOT = "ekische",
+    EMPTY = "quruq",
 }
 
 local TOKEN_TYPE_MAP = {
@@ -82,7 +83,7 @@ local TOKEN_TYPE_MAP = {
     [TOKEN_VALUES.OUTPUT] = TOKEN_TYPE.OUTPUT,
     [TOKEN_VALUES.INPUT] = TOKEN_TYPE.INPUT,
     -- types
-    quruq = TOKEN_TYPE.EMPTY,
+    [TOKEN_VALUES.EMPTY] = TOKEN_TYPE.EMPTY,
     -- bool
     [TOKEN_VALUES.TRUE] = TOKEN_TYPE.BOOL,
     [TOKEN_VALUES.FALSE] = TOKEN_TYPE.BOOL,
@@ -813,7 +814,10 @@ end
 
 function executer:getValue(token)
     if token.type == TOKEN_TYPE.NAME then
-        return self.heap[token.value]
+        local name = token.value
+        local value = self.heap[name]
+        self:assert(value ~= nil, token, string.format("mixtar texi iniqlanmighan"))
+        return value
     elseif token.type == TOKEN_TYPE.STRING then
         return token.value
     elseif token.type == TOKEN_TYPE.NUMBER then
@@ -830,7 +834,7 @@ end
 function executer:setValue(nameToken, value, isDefine)
     local name = nameToken.value
     if not isDefine then
-        self:assert(self.heap[name] ~= nil, nameToken, string.format("mixtar [%s] texi iniqlanmighan", name))
+        self:assert(self.heap[name] ~= nil, nameToken, string.format("mixtar texi iniqlanmighan"))
     end
     self.heap[name] = value
 end
@@ -853,8 +857,8 @@ function executer:execute_AST_PROGRAM(node)
 end
 
 function executer:execute_AST_OPERATE(node)
-    local operation = node.tokens[3]
     local token = node.tokens[2]
+    local operation = node.tokens[3]
     if operation.type == TOKEN_TYPE.OUTPUT then
         print(self:getValue(token)) -- io.write
     elseif operation.type == TOKEN_TYPE.INPUT then
