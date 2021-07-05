@@ -116,6 +116,10 @@ fonkisiye sanYezish ishlitilsun
 * write your scripts in `example.ug` and run command `lua uyghur.lua example.ug`
 * run the command `lua uyghur.lua` and type your code in the REPL
 
+## 8. example
+
+![](./others/demo.png)
+
 ## 8. end
 
 > tokenizer and parserhave been implemented in this repo, and i am still working on executer ...
