@@ -31,9 +31,11 @@ local TOKEN_TYPE = {
     WHILE = "WHILE",
     --
     TARGET = "TARGET",
-    HANDLE = "HANDLE",
-    LOGIC = "LOGIC", -- logic
-    NOT = "NOT", -- not
+    OUTPUT = "OUTPUT",
+    INPUT = "INPUT",
+    AND = "AND",
+    OR = "OR",
+    NOT = "NOT",
     -- 
     OPERATION_NUM = "OPERATION_NUM", -- operation
     OPERATION_STR = "OPERATION_STR", -- operation
@@ -43,6 +45,16 @@ local TOKEN_TYPES_VALUES = {TOKEN_TYPE.NAME, TOKEN_TYPE.STRING, TOKEN_TYPE.NUMBE
 local TOKEN_TYPES_STRING = {TOKEN_TYPE.NAME, TOKEN_TYPE.STRING}
 local TOKEN_TYPES_NUMBER = {TOKEN_TYPE.NAME, TOKEN_TYPE.NUMBER}
 local TOKEN_TYPES_LOGICS = {TOKEN_TYPE.NAME, TOKEN_TYPE.BOOL, TOKEN_TYPE.EMPTY}
+
+local TOKEN_VALUES = {
+    TRUE = "rast",
+    FALSE = "yalghan",
+    OUTPUT = "yezilsun",
+    INPUT = "oqulsun",
+    AND = "xemde",
+    OR = "yaki",
+    NOT = "ekische",
+}
 
 local TOKEN_TYPE_MAP = {
     -- block
@@ -67,17 +79,17 @@ local TOKEN_TYPE_MAP = {
     -- io
     ikrangha = TOKEN_TYPE.TARGET,
     ikrandin = TOKEN_TYPE.TARGET,
-    yezilsun = TOKEN_TYPE.HANDLE,
-    oqulsun = TOKEN_TYPE.HANDLE,
+    [TOKEN_VALUES.OUTPUT] = TOKEN_TYPE.OUTPUT,
+    [TOKEN_VALUES.INPUT] = TOKEN_TYPE.INPUT,
     -- types
     quruq = TOKEN_TYPE.EMPTY,
     -- bool
-    rast = TOKEN_TYPE.BOOL,
-    yalghan = TOKEN_TYPE.BOOL,
+    [TOKEN_VALUES.TRUE] = TOKEN_TYPE.BOOL,
+    [TOKEN_VALUES.FALSE] = TOKEN_TYPE.BOOL,
     -- logic
-    xemde = TOKEN_TYPE.LOGIC,
-    yaki = TOKEN_TYPE.LOGIC,
-    ekische = TOKEN_TYPE.NOT,
+    [TOKEN_VALUES.AND] = TOKEN_TYPE.AND,
+    [TOKEN_VALUES.OR] = TOKEN_TYPE.OR,
+    [TOKEN_VALUES.NOT] = TOKEN_TYPE.NOT,
     -- operation
     qushulghan = TOKEN_TYPE.OPERATION_NUM,
     elinghan = TOKEN_TYPE.OPERATION_NUM,
@@ -305,7 +317,15 @@ local PARSER_STATE_MAP = {
                         [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION,
                     },
                 },
-                [TOKEN_TYPE.LOGIC] = {
+                [TOKEN_TYPE.AND] = {
+                    [ TOKEN_TYPE.NAME] = {
+                        [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_LOGIC,
+                    },
+                    [ TOKEN_TYPE.BOOL] = {
+                        [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_LOGIC,
+                    },
+                },
+                [TOKEN_TYPE.OR] = {
                     [ TOKEN_TYPE.NAME] = {
                         [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_LOGIC,
                     },
@@ -349,7 +369,15 @@ local PARSER_STATE_MAP = {
                 },
             },
             [TOKEN_TYPE.BOOL] = {
-                [ TOKEN_TYPE.LOGIC] = {
+                [ TOKEN_TYPE.AND] = {
+                    [ TOKEN_TYPE.NAME] = {
+                        [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_LOGIC,
+                    },
+                    [ TOKEN_TYPE.BOOL] = {
+                        [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_LOGIC,
+                    },
+                },
+                [ TOKEN_TYPE.OR] = {
                     [ TOKEN_TYPE.NAME] = {
                         [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_LOGIC,
                     },
@@ -365,19 +393,20 @@ local PARSER_STATE_MAP = {
     },
     [TOKEN_TYPE.TARGET] = {
         [TOKEN_TYPE.NAME] = {
-            [TOKEN_TYPE.HANDLE] = AST_TYPE.AST_OPERATE,
+            [TOKEN_TYPE.OUTPUT] = AST_TYPE.AST_OPERATE,
+            [TOKEN_TYPE.INPUT] = AST_TYPE.AST_OPERATE,
         },
         [TOKEN_TYPE.STRING] = {
-            [TOKEN_TYPE.HANDLE] = AST_TYPE.AST_OPERATE,
+            [TOKEN_TYPE.OUTPUT] = AST_TYPE.AST_OPERATE,
         },
         [TOKEN_TYPE.NUMBER] = {
-            [TOKEN_TYPE.HANDLE] = AST_TYPE.AST_OPERATE,
+            [TOKEN_TYPE.OUTPUT] = AST_TYPE.AST_OPERATE,
         },
         [TOKEN_TYPE.BOOL] = {
-            [TOKEN_TYPE.HANDLE] = AST_TYPE.AST_OPERATE,
+            [TOKEN_TYPE.OUTPUT] = AST_TYPE.AST_OPERATE,
         },
         [TOKEN_TYPE.EMPTY] = {
-            [TOKEN_TYPE.HANDLE] = AST_TYPE.AST_OPERATE,
+            [TOKEN_TYPE.OUTPUT] = AST_TYPE.AST_OPERATE,
         },
     },
 }
@@ -636,16 +665,22 @@ function parser:consume_AST_EXPRESSION_LOGIC()
     local name = self:expect(TOKEN_TYPE.NAME)
     self:next(TOKEN_TYPE.VALUE)
     local arg1 = self:next(TOKEN_TYPES_LOGICS)
-    local exp = self:next({TOKEN_TYPE.LOGIC, TOKEN_TYPE.NOT})
-    local arg2 = exp.type == TOKEN_TYPE.LOGIC and self:next(TOKEN_TYPES_LOGICS) or nil
+    local exp = self:next({TOKEN_TYPE.AND, TOKEN_TYPE.OR, TOKEN_TYPE.NOT})
+    local arg2 = (exp.type == TOKEN_TYPE.AND or exp.type == TOKEN_TYPE.OR) and self:next(TOKEN_TYPES_LOGICS) or nil
     self:next(TOKEN_TYPE.MADE)
     return {name, arg1, exp, arg2}
 end
 
 function parser:consume_AST_OPERATE()
     local target = self:expect(TOKEN_TYPE.TARGET)
-    local arg = self:next(TOKEN_TYPES_VALUES)
-    local handle = self:next({TOKEN_TYPE.HANDLE})
+    local arg = self:next()
+    local handle = nil
+    if arg.type == TOKEN_TYPE.NAME then
+        handle = self:next({TOKEN_TYPE.OUTPUT, TOKEN_TYPE.INPUT})
+    else
+        self:check(TOKEN_TYPES_VALUES)
+        handle = self:next(TOKEN_TYPE.OUTPUT)
+    end
     return {target, arg, handle}
 end
 
@@ -724,16 +759,16 @@ function parser:consume_AST_END()
     self:expect(TOKEN_TYPE.CODE_END)
 end
 
-function parser:node(name, ...)
+function parser:node(name, astTokens)
     return {
         name = name,
         children = {},
-        tokens = {...},
+        tokens = astTokens,
     }
 end
 
-function parser:insert(name, ...)
-    local node = self:node(name, ...)
+function parser:insert(name, astTokens)
+    local node = self:node(name, astTokens)
     local current = self.current[#self.current]
     table.insert(current.children, node)
     --
@@ -759,20 +794,110 @@ end
 -- executer
 local executer = {}
 
+function executer:init()
+    self.heap = {}
+    self.scopeStack = {}
+    self.callStack = {}
+end
+
 function executer:execute(tree, node)
-    -- empty lines
-    print("=====================================================================EXECUTE")
-    print("tree:", tree, node)
-    if node then
-        if not REPL_AST[node.name] then
-            print("ug > ikran xalitide bu mashghulat qollanmidi, hojjet xalitide ishliting!")
-            return
-        end
-        table.print(node)
-    elseif tree then
-        table.print(tree)
+    if not self.heap then
+        self:init()
     end
-    print("=======================================================================END")
+    if node and not REPL_AST[node.name] then
+        print("ug > ikran xalitide bu mashghulat qollanmidi, hojjet xalitide ishliting!")
+        return
+    end
+    self:executeAst(tree or node)
+end
+
+function executer:getValue(token)
+    if token.type == TOKEN_TYPE.NAME then
+        return self.heap[token.value]
+    elseif token.type == TOKEN_TYPE.STRING then
+        return token.value
+    elseif token.type == TOKEN_TYPE.NUMBER then
+        return tonumber(token.value)
+    elseif token.type == TOKEN_TYPE.BOOL then
+        return token.value
+    elseif token.type == TOKEN_TYPE.EMPTY then
+        return token.value
+    else
+        self:assert(false, token, string.format("invalid token type [%s] for executer", token.type))
+    end
+end
+
+function executer:setValue(nameToken, value, isDefine)
+    local name = nameToken.value
+    if not isDefine then
+        self:assert(self.heap[name] ~= nil, nameToken, string.format("mixtar [%s] texi iniqlanmighan", name))
+    end
+    self.heap[name] = value
+end
+
+function executer:executeAst(ast)
+    -- print("=====================================================================EXECUTE")
+    -- print("tree:", ast)
+    -- table.print(ast)
+    -- print("=======================================================================END")
+    local name = ast.name
+    local func = self["execute_" .. name]
+    assert(func ~= nil, string.format("execute func for [%s] is unimplemented", name))
+    func(self, ast)
+end
+
+function executer:execute_AST_PROGRAM(node)
+    for i,v in ipairs(node.children) do
+        self:executeAst(v)
+    end
+end
+
+function executer:execute_AST_OPERATE(node)
+    local operation = node.tokens[3]
+    local token = node.tokens[2]
+    if operation.type == TOKEN_TYPE.OUTPUT then
+        print(self:getValue(token)) -- io.write
+    elseif operation.type == TOKEN_TYPE.INPUT then
+        local value = io.read()
+        self.heap[token.value] = tonumber(value) or value
+    end
+end
+
+function executer:execute_AST_VARIABLE(node)
+    local value = self:getValue(node.tokens[2])
+    self:setValue(node.tokens[1], value, true)
+end
+
+function executer:execute_AST_EXPRESSION(node)
+    -- TODO
+end
+
+function executer:execute_AST_EXPRESSION_LOGIC(node)
+    local resultToken = node.tokens[1]
+    local leftToken = node.tokens[2]
+    local operationToken = node.tokens[3]
+    local rightToken = node.tokens[4]
+    --
+    local result = nil
+    local leftVlaue = self:getValue(leftToken)
+    local rightVlaue = rightToken and self:getValue(rightToken) or nil
+    --
+    local operationType = node.tokens[3].type
+    -- logic
+    if operationType == TOKEN_TYPE.NOT then
+        result = not (leftVlaue == TOKEN_VALUES.TRUE)
+    elseif operationType == TOKEN_TYPE.AND then
+        result = leftVlaue == TOKEN_VALUES.TRUE and rightVlaue == TOKEN_VALUES.TRUE
+    elseif operationType == TOKEN_TYPE.OR then
+        result = leftVlaue == TOKEN_VALUES.TRUE or rightVlaue == TOKEN_VALUES.TRUE
+    end
+    result = result and  TOKEN_VALUES.TRUE or TOKEN_VALUES.FALSE
+    --
+    self:setValue(resultToken, result)
+end
+
+function executer:assert(v, token, msg)
+    assert(v == true, string.format("%s: xojjet:[%s], qur:[%d], qatar:[%d], soz:[%s]", msg, token.path, token.line, token.column, token.value))
 end
 
 
@@ -803,6 +928,7 @@ local function runFile(fromPath, isCompile)
         table.insert(lines, line)
     end
     io.close(fromFile)
+    io.input(io.stdin)
     -- check target
     local isCompile = isCompile == "TRUE" or isCompile == "true"
     -- get ast
