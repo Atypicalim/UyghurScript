@@ -124,7 +124,15 @@ fonkisiye sanYezish ishlitilsun
 
 ![file](./others/demo2.png)
 
+## 9. todo
 
-## 8. end
+* release object
+* type conversion
+* change variable value (without declaration and expression)
+* list
+* map
+* lua bridge (call each other)
+
+## 10. end
 
 > tokenizer and parserhave been implemented in this repo, and i am still working on executer ...
