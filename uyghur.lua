@@ -845,9 +845,10 @@ end
 local executer = {}
 
 function executer:init()
-    self.heap = {}
-    self.scopeStack = {}
     self.callStack = {}
+    self.scopeStack = {}
+    self.heap = nil
+    self:newScope()
 end
 
 function executer:execute(tree, node)
@@ -861,11 +862,35 @@ function executer:execute(tree, node)
     self:executeAst(tree or node)
 end
 
+function executer:newScope()
+    table.insert(self.scopeStack, {})
+    self.heap = self.scopeStack[#self.scopeStack]
+end
+
+function executer:exitScope()
+    table.remove(self.scopeStack, #self.scopeStack)
+    self.heap = self.scopeStack[#self.scopeStack]
+    assert(self.heap ~= nil, "exiting from global scope")
+end
+
+function executer:findValueAndScope(token)
+    assert(token.type == TOKEN_TYPE.NAME, "invalid token for find scope")
+    local name = token.value
+    local scope = nil
+    local value = nil
+    local scopeIndex = #self.scopeStack
+    while not value and scopeIndex > 0 do
+        scope = self.scopeStack[scopeIndex]
+        value = scope[name]
+        scopeIndex = scopeIndex - 1
+    end
+    self:assert(value ~= nil, token, string.format("mixtar texi iniqlanmighan"))
+    return value, scope
+end
+
 function executer:getValue(token)
     if token.type == TOKEN_TYPE.NAME then
-        local name = token.value
-        local value = self.heap[name]
-        self:assert(value ~= nil, token, string.format("mixtar texi iniqlanmighan"))
+        local value = self:findValueAndScope(token)
         return value
     elseif token.type == TOKEN_TYPE.STRING then
         return token.value
@@ -882,10 +907,12 @@ end
 
 function executer:setValue(nameToken, value, isDefine)
     local name = nameToken.value
-    if not isDefine then
-        self:assert(self.heap[name] ~= nil, nameToken, string.format("mixtar texi iniqlanmighan"))
+    if isDefine then
+        self.heap[name] = value
+    else
+        local _, scope = self:findValueAndScope(nameToken)
+        scope[name] = value
     end
-    self.heap[name] = value
 end
 
 function executer:executeAst(ast)
@@ -893,6 +920,7 @@ function executer:executeAst(ast)
     -- print("tree:", ast)
     -- table.print(ast)
     -- print("=======================================================================END")
+    if not ast then return end
     local name = ast.name
     local func = self["execute_" .. name]
     assert(func ~= nil, string.format("execute func for [%s] is unimplemented", name))

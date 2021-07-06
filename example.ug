@@ -4,6 +4,7 @@
 # 1.release object from heap
 # 2.type conversion
 # 3.change variable value without declaration and expression
+# 4.list & map
 
 ################################
 
