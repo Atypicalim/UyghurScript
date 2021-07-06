@@ -37,8 +37,8 @@ local TOKEN_TYPE = {
     OR = "OR",
     NOT = "NOT",
     -- 
-    OPERATION_NUM = "OPERATION_NUM", -- operation
-    OPERATION_STR = "OPERATION_STR", -- operation
+    OPERATION_NUMBER = "OPERATION_NUMBER", -- operation
+    OPERATION = "OPERATION", -- operation
 }
 
 local TOKEN_TYPES_VALUES = {TOKEN_TYPE.NAME, TOKEN_TYPE.STRING, TOKEN_TYPE.NUMBER, TOKEN_TYPE.BOOL, TOKEN_TYPE.EMPTY}
@@ -47,14 +47,28 @@ local TOKEN_TYPES_NUMBER = {TOKEN_TYPE.NAME, TOKEN_TYPE.NUMBER}
 local TOKEN_TYPES_LOGICS = {TOKEN_TYPE.NAME, TOKEN_TYPE.BOOL, TOKEN_TYPE.EMPTY}
 
 local TOKEN_VALUES = {
-    TRUE = "rast",
-    FALSE = "yalghan",
+    -- 
     OUTPUT = "yezilsun",
     INPUT = "oqulsun",
+    -- 
+    EMPTY = "quruq",
+    --
+    TRUE = "rast",
+    FALSE = "yalghan",
+    --
     AND = "xemde",
     OR = "yaki",
     NOT = "ekische",
-    EMPTY = "quruq",
+    --
+    ADD = "qushulghan",
+    SUB = "elinghan",
+    MUL = "kupeytilgen",
+    DIV = "bulungen",
+    LESS = "kichik",
+    MORE = "chong",
+    -- 
+    CONCAT = "ulanghan",
+    EQUAL = "teng",
 }
 
 local TOKEN_TYPE_MAP = {
@@ -87,21 +101,20 @@ local TOKEN_TYPE_MAP = {
     -- bool
     [TOKEN_VALUES.TRUE] = TOKEN_TYPE.BOOL,
     [TOKEN_VALUES.FALSE] = TOKEN_TYPE.BOOL,
-    -- logic
+    -- operation logic
     [TOKEN_VALUES.AND] = TOKEN_TYPE.AND,
     [TOKEN_VALUES.OR] = TOKEN_TYPE.OR,
     [TOKEN_VALUES.NOT] = TOKEN_TYPE.NOT,
+    -- operation number
+    [TOKEN_VALUES.ADD] = TOKEN_TYPE.OPERATION_NUMBER,
+    [TOKEN_VALUES.SUB] = TOKEN_TYPE.OPERATION_NUMBER,
+    [TOKEN_VALUES.MUL] = TOKEN_TYPE.OPERATION_NUMBER,
+    [TOKEN_VALUES.DIV] = TOKEN_TYPE.OPERATION_NUMBER,
+    [TOKEN_VALUES.LESS] = TOKEN_TYPE.OPERATION_NUMBER,
+    [TOKEN_VALUES.MORE] = TOKEN_TYPE.OPERATION_NUMBER,
     -- operation
-    qushulghan = TOKEN_TYPE.OPERATION_NUM,
-    elinghan = TOKEN_TYPE.OPERATION_NUM,
-    kupeytilgen = TOKEN_TYPE.OPERATION_NUM,
-    bulungen = TOKEN_TYPE.OPERATION_NUM,
-    --
-    kichik = TOKEN_TYPE.OPERATION_NUM,
-    chong = TOKEN_TYPE.OPERATION_NUM,
-    -- operation
-    ulanghan = TOKEN_TYPE.OPERATION_STR,
-    teng = TOKEN_TYPE.OPERATION_STR,
+    [TOKEN_VALUES.CONCAT] = TOKEN_TYPE.OPERATION,
+    [TOKEN_VALUES.EQUAL] = TOKEN_TYPE.OPERATION,
 }
 
 local SIGNS = {
@@ -219,6 +232,7 @@ local AST_TYPE = {
     AST_IF = "AST_IF",
     AST_WHILE = "AST_WHILE",
     AST_EXPRESSION = "AST_EXPRESSION",
+    AST_EXPRESSION_NUMBER = "AST_EXPRESSION_NUMBER",
     AST_EXPRESSION_LOGIC = "AST_EXPRESSION_LOGIC",
     AST_OPERATE = "AST_OPERATE",
 }
@@ -226,6 +240,7 @@ local AST_TYPE = {
 local REPL_AST = {
     [AST_TYPE.AST_VARIABLE] = true,
     [AST_TYPE.AST_EXPRESSION] = true,
+    [AST_TYPE.AST_EXPRESSION_NUMBER] = true,
     [AST_TYPE.AST_EXPRESSION_LOGIC] = true,
     [AST_TYPE.AST_OPERATE] = true,
 }
@@ -299,15 +314,15 @@ local PARSER_STATE_MAP = {
     [TOKEN_TYPE.NAME] = {
         [TOKEN_TYPE.VALUE] = {
             [TOKEN_TYPE.NAME] = {
-                [TOKEN_TYPE.OPERATION_NUM] = {
+                [TOKEN_TYPE.OPERATION_NUMBER] = {
                     [ TOKEN_TYPE.NAME] = {
-                        [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION,
+                        [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_NUMBER,
                     },
                     [ TOKEN_TYPE.NUMBER] = {
-                        [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION,
+                        [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_NUMBER,
                     },
                 },
-                [TOKEN_TYPE.OPERATION_STR] = {
+                [TOKEN_TYPE.OPERATION] = {
                     [ TOKEN_TYPE.NAME] = {
                         [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION,
                     },
@@ -339,7 +354,7 @@ local PARSER_STATE_MAP = {
                 },
             },
             [TOKEN_TYPE.STRING] = {
-                [TOKEN_TYPE.OPERATION_STR] = {
+                [TOKEN_TYPE.OPERATION] = {
                     [ TOKEN_TYPE.NAME] = {
                         [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION,
                     },
@@ -349,15 +364,15 @@ local PARSER_STATE_MAP = {
                 },
             },
             [TOKEN_TYPE.NUMBER] = {
-                [TOKEN_TYPE.OPERATION_NUM] = {
+                [TOKEN_TYPE.OPERATION_NUMBER] = {
                     [ TOKEN_TYPE.NAME] = {
-                        [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION,
+                        [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_NUMBER,
                     },
                     [ TOKEN_TYPE.NUMBER] = {
-                        [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION,
+                        [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_NUMBER,
                     },
                 },
-                [TOKEN_TYPE.OPERATION_STR] = {
+                [TOKEN_TYPE.OPERATION] = {
                     [ TOKEN_TYPE.NAME] = {
                         [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION,
                     },
@@ -656,7 +671,17 @@ function parser:consume_AST_EXPRESSION()
     local name = self:expect(TOKEN_TYPE.NAME)
     self:next(TOKEN_TYPE.VALUE)
     local arg1 = self:next(TOKEN_TYPES_VALUES)
-    local exp = self:next({TOKEN_TYPE.OPERATION_NUM, TOKEN_TYPE.OPERATION_STR})
+    local exp = self:next(TOKEN_TYPE.OPERATION)
+    local arg2 = self:next(TOKEN_TYPES_VALUES)
+    self:next(TOKEN_TYPE.MADE)
+    return {name, arg1, exp, arg2}
+end
+
+function parser:consume_AST_EXPRESSION_NUMBER()
+    local name = self:expect(TOKEN_TYPE.NAME)
+    self:next(TOKEN_TYPE.VALUE)
+    local arg1 = self:next(TOKEN_TYPES_VALUES)
+    local exp = self:next(TOKEN_TYPE.OPERATION_NUMBER)
     local arg2 = self:next(TOKEN_TYPES_VALUES)
     self:next(TOKEN_TYPE.MADE)
     return {name, arg1, exp, arg2}
@@ -873,7 +898,61 @@ function executer:execute_AST_VARIABLE(node)
 end
 
 function executer:execute_AST_EXPRESSION(node)
-    -- TODO
+    local resultToken = node.tokens[1]
+    local leftToken = node.tokens[2]
+    local operationToken = node.tokens[3]
+    local rightToken = node.tokens[4]
+    --
+    local result = nil
+    local leftVlaue = self:getValue(leftToken)
+    local rightVlaue = self:getValue(rightToken)
+    local operationType = node.tokens[3].type
+    local operationValue = node.tokens[3].value
+    --
+    assert(operationType == TOKEN_TYPE.OPERATION)
+    if operationValue == TOKEN_VALUES.EQUAL then
+        result = leftVlaue == rightVlaue and TOKEN_VALUES.TRUE or TOKEN_VALUES.FALSE
+    elseif operationValue == TOKEN_VALUES.CONCAT then
+        result = tostring(leftVlaue) .. tostring(rightVlaue)
+    end
+    assert(result ~= nil, string.format("operation [%s] not implemented!", operationValue))
+    --
+    self:setValue(resultToken, result)
+end
+
+function executer:execute_AST_EXPRESSION_NUMBER(node)
+    local resultToken = node.tokens[1]
+    local leftToken = node.tokens[2]
+    local operationToken = node.tokens[3]
+    local rightToken = node.tokens[4]
+    --
+    local result = nil
+    local leftVlaue = self:getValue(leftToken)
+    local rightVlaue = self:getValue(rightToken)
+    local operationType = node.tokens[3].type
+    local operationValue = node.tokens[3].value
+    --
+    assert(operationType == TOKEN_TYPE.OPERATION_NUMBER)
+    local valueError = "qimmiti [%s] bolghan mixtar ustide xisablash elip barghili bolmaydu"
+    self:assert(type(leftVlaue) == "number", leftToken, string.format(valueError, tostring(leftVlaue)))
+    self:assert(type(rightVlaue) == "number", rightToken, string.format(valueError, tostring(rightVlaue)))
+    --
+    if operationValue == TOKEN_VALUES.ADD then
+        result = leftVlaue + rightVlaue
+    elseif operationValue == TOKEN_VALUES.SUB then
+        result = leftVlaue - rightVlaue
+    elseif operationValue == TOKEN_VALUES.MUL then
+        result = leftVlaue * rightVlaue
+    elseif operationValue == TOKEN_VALUES.DIV then
+        result = leftVlaue / rightVlaue
+    elseif operationValue == TOKEN_VALUES.LESS then
+        result = leftVlaue < rightVlaue and TOKEN_VALUES.TRUE or TOKEN_VALUES.FALSE
+    elseif operationValue == TOKEN_VALUES.MORE then
+        result = leftVlaue > rightVlaue and TOKEN_VALUES.TRUE or TOKEN_VALUES.FALSE
+    end
+    assert(result ~= nil, string.format("operation [%s] not implemented!", operationValue))
+    --
+    self:setValue(resultToken, result)
 end
 
 function executer:execute_AST_EXPRESSION_LOGIC(node)
@@ -885,9 +964,8 @@ function executer:execute_AST_EXPRESSION_LOGIC(node)
     local result = nil
     local leftVlaue = self:getValue(leftToken)
     local rightVlaue = rightToken and self:getValue(rightToken) or nil
-    --
     local operationType = node.tokens[3].type
-    -- logic
+    --
     if operationType == TOKEN_TYPE.NOT then
         result = not (leftVlaue == TOKEN_VALUES.TRUE)
     elseif operationType == TOKEN_TYPE.AND then
