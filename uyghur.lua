@@ -797,10 +797,11 @@ function parser:consume_AST_CALL()
         self:last()
     else
         self:check(TOKEN_TYPE.FURTHER)
-        self:next(TOKEN_TYPE.RESULT)
+        local result = self:next(TOKEN_TYPE.RESULT)
+        table.insert(tokens, result)
         local name = self:next(TOKEN_TYPE.NAME)
-        self:next(TOKEN_TYPE.MADE)
         table.insert(tokens, name)
+        self:next(TOKEN_TYPE.MADE)
     end
     return tokens
 end
@@ -847,12 +848,12 @@ local executer = {}
 function executer:init()
     self.callStack = {}
     self.scopeStack = {}
-    self.heap = nil
+    self.currentScope = nil
     self:newScope()
 end
 
 function executer:execute(tree, node)
-    if not self.heap then
+    if not self.currentScope then
         self:init()
     end
     if node and not REPL_AST[node.name] then
@@ -864,16 +865,16 @@ end
 
 function executer:newScope()
     table.insert(self.scopeStack, {})
-    self.heap = self.scopeStack[#self.scopeStack]
+    self.currentScope = self.scopeStack[#self.scopeStack]
 end
 
 function executer:exitScope()
     table.remove(self.scopeStack, #self.scopeStack)
-    self.heap = self.scopeStack[#self.scopeStack]
-    assert(self.heap ~= nil, "exiting from global scope")
+    self.currentScope = self.scopeStack[#self.scopeStack]
+    assert(self.currentScope ~= nil, "exiting from global scope")
 end
 
-function executer:findValueAndScope(token)
+function executer:findScope(token)
     assert(token.type == TOKEN_TYPE.NAME, "invalid token for find scope")
     local name = token.value
     local scope = nil
@@ -884,13 +885,13 @@ function executer:findValueAndScope(token)
         value = scope[name]
         scopeIndex = scopeIndex - 1
     end
-    self:assert(value ~= nil, token, string.format("mixtar texi iniqlanmighan"))
-    return value, scope
+    return scope, value
 end
 
 function executer:getValue(token)
     if token.type == TOKEN_TYPE.NAME then
-        local value = self:findValueAndScope(token)
+        local _, value = self:findScope(token)
+        self:assert(value ~= nil, token, string.format("mixtar texi iniqlanmighan"))
         return value
     elseif token.type == TOKEN_TYPE.STRING then
         return token.value
@@ -908,18 +909,15 @@ end
 function executer:setValue(nameToken, value, isDefine)
     local name = nameToken.value
     if isDefine then
-        self.heap[name] = value
+        self.currentScope[name] = value
     else
-        local _, scope = self:findValueAndScope(nameToken)
+        local scope, oldValue = self:findScope(nameToken)
+        self:assert(oldValue ~= nil, nameToken, string.format("mixtar texi iniqlanmighan"))
         scope[name] = value
     end
 end
 
 function executer:executeAst(ast)
-    -- print("=====================================================================EXECUTE")
-    -- print("tree:", ast)
-    -- table.print(ast)
-    -- print("=======================================================================END")
     if not ast then return end
     local name = ast.name
     local func = self["execute_" .. name]
@@ -940,7 +938,7 @@ function executer:execute_AST_OPERATE(node)
         print(self:getValue(token)) -- io.write
     elseif operation.type == TOKEN_TYPE.INPUT then
         local value = io.read()
-        self.heap[token.value] = tonumber(value) or value
+        self.currentScope[token.value] = tonumber(value) or value
     end
 end
 
@@ -1059,6 +1057,83 @@ function executer:execute_AST_WHILE(node)
                 self:executeAst(v)
             end
         end
+    end
+end
+
+function executer:execute_AST_FUNC(node)
+    local nameToken = node.tokens[1]
+    local funcName = nameToken.value
+    assert(nameToken.type == TOKEN_TYPE.NAME)
+    local _, oldValue = self:findScope(nameToken)
+    self:assert(oldValue == nil, nameToken, "fonkisiye ismi ishlitilip bulunghan")
+    self.currentScope[funcName] = node
+end
+
+function executer:execute_AST_CALL(node)
+    local nameToken = node.tokens[1]
+    local funcName = nameToken.value
+    -- push args
+    local resultToken = nil
+    self.callStack = {}
+    for i,v in ipairs(node.tokens) do
+        if v.type == TOKEN_TYPE.RESULT then
+            resultToken = node.tokens[i + 1]
+            assert(resultToken ~= nil)
+            break
+        elseif i == 1 then
+            table.insert(self.callStack, v)
+        else
+            local value = self:getValue(v)
+            table.insert(self.callStack, value)
+        end
+    end
+    -- run func
+    self:runFunc()
+    -- get result
+    if resultToken then
+        local resultValue = table.remove(self.callStack, 1)
+        self:assert(resultValue ~= nil and resultValue ~= nameToken, resultToken, "fonkisiye qimmat qayturmidi")
+        self:setValue(resultToken, resultValue)
+    end
+    self.callStack = {}
+end
+
+function executer:runFunc()
+    -- create local scope
+    self:newScope()
+    -- read func
+    local nameToken = table.remove(self.callStack, 1)
+    assert(nameToken.type == TOKEN_TYPE.NAME)
+    local _, func = self:findScope(nameToken)
+    self:assert(func ~= nil, nameToken, string.format("fonkisiye texi iniqlanmighan"))
+    self:assert(type(func) == "table" and func.name == AST_TYPE.AST_FUNC, nameToken, "bu mixtar fonkisiye emes")
+    -- read args
+    for i,v in ipairs(func.tokens) do
+        if i == 1 then
+            assert(v.type == nameToken.type and v.value == nameToken.value)
+        else
+            assert(v.type == TOKEN_TYPE.NAME)
+            local value = table.remove(self.callStack, 1) or TOKEN_VALUES.EMPTY
+            self:setValue(v, value, true)
+        end
+    end
+    self.callStack = {}
+    -- run body
+    for i,v in ipairs(func.children) do
+        if v.name ~= AST_TYPE.AST_END then
+            self:executeAst(v)
+        end
+    end
+    -- exit local scope
+    self:exitScope()
+end
+
+function executer:execute_AST_RESULT(node)
+    assert(node.name == AST_TYPE.AST_RESULT)
+    local resultToken = node.tokens[1]
+    if resultToken then
+        local resultValue = self:getValue(resultToken)
+        table.insert(self.callStack, resultValue)
     end
 end
 
