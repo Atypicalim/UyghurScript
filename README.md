@@ -120,7 +120,10 @@ fonkisiye sanYezish ishlitilsun
 
 ## 8. example
 
-![](./others/demo.png)
+![REPL](./others/demo1.png)
+
+![file](./others/demo2.png)
+
 
 ## 8. end
 
