@@ -29,12 +29,12 @@
 # logikiliqQimmet qimmiti logikiliqQimmet ekische bolsun
 # ikrangha logikiliqQimmet yezilsun
 
-mixtar sinaqBir qimmiti rast bolsun
-eger sinaqBir qimmiti rast bolsa
-    ikrangha [eger: sinaqBir qimmiti rast ...] yezilsun
-    sinaqBir qimmiti yalghan xemde yalghan bolsun
-tamamlansun
-ikrangha sinaqBir yezilsun
+# mixtar sinaqBir qimmiti rast bolsun
+# eger sinaqBir qimmiti rast bolsa
+#     ikrangha [eger: sinaqBir qimmiti rast ...] yezilsun
+#     sinaqBir qimmiti yalghan xemde yalghan bolsun
+# tamamlansun
+# ikrangha sinaqBir yezilsun
 
 # mixtar yezildighanQimmet qimmiti [] bolsun
 # mixtar sinaqQimmet qimmiti 1 bolsun

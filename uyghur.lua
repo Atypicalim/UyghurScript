@@ -1008,13 +1008,11 @@ function executer:execute_AST_IF(node)
     --
     local leftVlaue = self:getValue(leftToken)
     local rightVlaue = self:getValue(rightToken)
-    local isOk = leftVlaue == rightVlaue
-    if not isOk then return end
+    if  leftVlaue ~= rightVlaue then return end
     for i,v in ipairs(node.children) do
-        if v.name == AST_TYPE.AST_END then
-            return
+        if v.name ~= AST_TYPE.AST_END then
+            self:executeAst(v)
         end
-        self:executeAst(v)
     end
 end
 
