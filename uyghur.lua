@@ -296,18 +296,42 @@ local PARSER_STATE_MAP = {
     [TOKEN_TYPE.IF] = {
         [TOKEN_TYPE.NAME] = {
             [TOKEN_TYPE.VALUE] = {
+                [TOKEN_TYPE.NAME] = {
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF,
+                },
+                [TOKEN_TYPE.STRING] = {
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF,
+                },
+                [TOKEN_TYPE.NUMBER] = {
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF,
+                },
                 [TOKEN_TYPE.BOOL] = {
                     [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF,
-                }
+                },
+                [TOKEN_TYPE.EMPTY] = {
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF,
+                },
             }
         }
     },
     [TOKEN_TYPE.WHILE] = {
         [TOKEN_TYPE.NAME] = {
             [TOKEN_TYPE.VALUE] = {
+                [TOKEN_TYPE.NAME] = {
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_WHILE,
+                },
+                [TOKEN_TYPE.STRING] = {
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_WHILE,
+                },
+                [TOKEN_TYPE.NUMBER] = {
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_WHILE,
+                },
                 [TOKEN_TYPE.BOOL] = {
                     [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_WHILE,
-                }
+                },
+                [TOKEN_TYPE.EMPTY] = {
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_WHILE,
+                },
             }
         }
     },
@@ -712,18 +736,18 @@ end
 
 function parser:consume_AST_IF()
     self:expect(TOKEN_TYPE.IF)
-    local arg1 = self:next(TOKEN_TYPES_LOGICS)
+    local arg1 = self:next(TOKEN_TYPE.NAME)
     self:next(TOKEN_TYPE.VALUE)
-    local arg2 = self:next(TOKEN_TYPES_LOGICS)
+    local arg2 = self:next(TOKEN_TYPES_VALUES)
     self:next({TOKEN_TYPE.CODE_START})
     return {arg1, arg2}
 end
 
 function parser:consume_AST_WHILE()
     self:expect(TOKEN_TYPE.WHILE)
-    local arg1 = self:next(TOKEN_TYPES_LOGICS)
+    local arg1 = self:next(TOKEN_TYPE.NAME)
     self:next(TOKEN_TYPE.VALUE)
-    local arg2 = self:next(TOKEN_TYPES_LOGICS)
+    local arg2 = self:next(TOKEN_TYPES_VALUES)
     self:next({TOKEN_TYPE.CODE_START})
     return {arg1, arg2}
 end
@@ -976,6 +1000,40 @@ function executer:execute_AST_EXPRESSION_LOGIC(node)
     result = result and  TOKEN_VALUES.TRUE or TOKEN_VALUES.FALSE
     --
     self:setValue(resultToken, result)
+end
+
+function executer:execute_AST_IF(node)
+    local leftToken = node.tokens[1]
+    local rightToken = node.tokens[2]
+    --
+    local leftVlaue = self:getValue(leftToken)
+    local rightVlaue = self:getValue(rightToken)
+    local isOk = leftVlaue == rightVlaue
+    if not isOk then return end
+    for i,v in ipairs(node.children) do
+        if v.name == AST_TYPE.AST_END then
+            return
+        end
+        self:executeAst(v)
+    end
+end
+
+function executer:execute_AST_WHILE(node)
+    local leftToken = node.tokens[1]
+    local rightToken = node.tokens[2]
+    --
+    local function checkCondition()
+        local leftVlaue = self:getValue(leftToken)
+        local rightVlaue = self:getValue(rightToken)
+        return leftVlaue == rightVlaue
+    end
+    while checkCondition() do
+        for i,v in ipairs(node.children) do
+            if v.name ~= AST_TYPE.AST_END then
+                self:executeAst(v)
+            end
+        end
+    end
 end
 
 function executer:assert(v, token, msg)

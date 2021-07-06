@@ -63,6 +63,7 @@ ikrangha a yezilsun
 
 # only if supported (i read the code by line and line , so it is not frendly enough to support elseif and else)
 c qimmiti a teng 10 bolsun
+# eger (variable) qimmiti (variable|string|number|bool|nil) bolsa
 eger c qimmiti rast bolsa
     ikrangha [a ongha teng boldi] yezilsun
 tamamlansun
@@ -75,6 +76,7 @@ tamamlansun
 
 # u can write an if statement in it
 mixtar d qimmiti 0 bolsun
+# nawada (variable) qimmiti (variable|string|number|bool|nil) bolsa
 nawada c qimmiti rast bolsa
     d qimmiti d qushulghan 1 bolsun
     ikrangha d yezilsun

@@ -3,6 +3,7 @@
 # TODO
 # 1.release object from heap
 # 2.type conversion
+# 3.change variable value without declaration and expression
 
 ################################
 
@@ -25,13 +26,15 @@
 # mixtar qimmetIkki qimmiti 3 bolsun
 # mixtar logikiliqQimmet qimmiti quruq bolsun
 # logikiliqQimmet qimmiti 3 kichik 2 bolsun
-# logikiliqQimmet qimmiti qimmetUch ekische bolsun
+# logikiliqQimmet qimmiti logikiliqQimmet ekische bolsun
 # ikrangha logikiliqQimmet yezilsun
 
-# mixtar sinaqBir qimmiti rast bolsun
-# eger sinaqBir qimmiti rast bolsa
-#     ikrangha [eger: sinaqBir qimmiti rast ...] yezilsun
-# tamamlansun
+mixtar sinaqBir qimmiti rast bolsun
+eger sinaqBir qimmiti rast bolsa
+    ikrangha [eger: sinaqBir qimmiti rast ...] yezilsun
+    sinaqBir qimmiti yalghan xemde yalghan bolsun
+tamamlansun
+ikrangha sinaqBir yezilsun
 
 # mixtar yezildighanQimmet qimmiti [] bolsun
 # mixtar sinaqQimmet qimmiti 1 bolsun
