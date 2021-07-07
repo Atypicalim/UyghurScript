@@ -28,6 +28,8 @@ local TOKEN_TYPE = {
     FURTHER = "FURTHER",
     -- 
     IF = "IF",
+    ELSE_IF = "ELSE_IF",
+    ELSE = "ELSE",
     WHILE = "WHILE",
     --
     TARGET = "TARGET",
@@ -47,6 +49,10 @@ local TOKEN_TYPES_NUMBER = {TOKEN_TYPE.NAME, TOKEN_TYPE.NUMBER}
 local TOKEN_TYPES_LOGICS = {TOKEN_TYPE.NAME, TOKEN_TYPE.BOOL, TOKEN_TYPE.EMPTY}
 
 local TOKEN_VALUES = {
+    -- 
+    IF = "eger",
+    ELSE_IF = "egerde",
+    ELSE = "bolmisa",
     -- 
     OUTPUT = "yezilsun",
     INPUT = "oqulsun",
@@ -88,7 +94,9 @@ local TOKEN_TYPE_MAP = {
     ishlitilsun = TOKEN_TYPE.CALL,
     we = TOKEN_TYPE.FURTHER,
     -- if
-    eger = TOKEN_TYPE.IF,
+    [TOKEN_VALUES.IF] = TOKEN_TYPE.IF,
+    [TOKEN_VALUES.ELSE_IF] = TOKEN_TYPE.ELSE_IF,
+    [TOKEN_VALUES.ELSE] = TOKEN_TYPE.ELSE,
     -- while
     nawada = TOKEN_TYPE.WHILE,
     -- io
@@ -229,7 +237,10 @@ local AST_TYPE = {
     AST_RESULT = "AST_RESULT",
     AST_FUNC = "AST_FUNC",
     AST_CALL = "AST_CALL",
+    AST_IF_ELSE_IF = "AST_IF_ELSE_IF",
     AST_IF = "AST_IF",
+    AST_IF_ELSE = "AST_IF_ELSE",
+    AST_ELSE = "AST_ELSE",
     AST_WHILE = "AST_WHILE",
     AST_EXPRESSION = "AST_EXPRESSION",
     AST_EXPRESSION_NUMBER = "AST_EXPRESSION_NUMBER",
@@ -297,23 +308,45 @@ local PARSER_STATE_MAP = {
         [TOKEN_TYPE.NAME] = {
             [TOKEN_TYPE.VALUE] = {
                 [TOKEN_TYPE.NAME] = {
-                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF,
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF_ELSE_IF,
                 },
                 [TOKEN_TYPE.STRING] = {
-                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF,
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF_ELSE_IF,
                 },
                 [TOKEN_TYPE.NUMBER] = {
-                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF,
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF_ELSE_IF,
                 },
                 [TOKEN_TYPE.BOOL] = {
-                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF,
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF_ELSE_IF,
                 },
                 [TOKEN_TYPE.EMPTY] = {
-                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF,
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF_ELSE_IF,
                 },
             }
         }
     },
+    [TOKEN_TYPE.ELSE_IF] = {
+        [TOKEN_TYPE.NAME] = {
+            [TOKEN_TYPE.VALUE] = {
+                [TOKEN_TYPE.NAME] = {
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF_ELSE,
+                },
+                [TOKEN_TYPE.STRING] = {
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF_ELSE,
+                },
+                [TOKEN_TYPE.NUMBER] = {
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF_ELSE,
+                },
+                [TOKEN_TYPE.BOOL] = {
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF_ELSE,
+                },
+                [TOKEN_TYPE.EMPTY] = {
+                    [TOKEN_TYPE.CODE_START] = AST_TYPE.AST_IF_ELSE,
+                },
+            }
+        }
+    },
+    [TOKEN_TYPE.ELSE] = AST_TYPE.AST_ELSE,
     [TOKEN_TYPE.WHILE] = {
         [TOKEN_TYPE.NAME] = {
             [TOKEN_TYPE.VALUE] = {
@@ -673,8 +706,9 @@ function parser:consume()
     local astType = nextState
     local astFunc = self["consume_" .. astType]
     assert(astFunc ~= nil, string.format("consume func for [%s] is unimplemented", astType))
-    local astTokens = astFunc(self)
-    local astNode = self:insert(astType, astTokens)
+    local tokens, node = astFunc(self)
+    -- print("\n\n---------------------->", astType, astTokens)
+    local astNode = self:insert(astType, tokens, node)
     -- surplus
     if self.index ~= self.length then
         self:assert(false, string.format("artuxche sozluk", self:next()))
@@ -734,13 +768,28 @@ function parser:consume_AST_OPERATE()
     return {target, arg, handle}
 end
 
-function parser:consume_AST_IF()
-    self:expect(TOKEN_TYPE.IF)
+function parser:consume_AST_IF_ELSE_IF()
+    local starting = self:expect(TOKEN_TYPE.IF)
     local arg1 = self:next(TOKEN_TYPE.NAME)
     self:next(TOKEN_TYPE.VALUE)
     local arg2 = self:next(TOKEN_TYPES_VALUES)
-    self:next({TOKEN_TYPE.CODE_START})
-    return {arg1, arg2}
+    self:next(TOKEN_TYPE.CODE_START)
+    local node = self:node(AST_TYPE.AST_IF, {TOKEN_TYPE.IF, arg1, arg2})
+    return {}, node
+end
+
+function parser:consume_AST_IF_ELSE()
+    self:expect( TOKEN_TYPE.ELSE_IF)
+    local arg1 = self:next(TOKEN_TYPE.NAME)
+    self:next(TOKEN_TYPE.VALUE)
+    local arg2 = self:next(TOKEN_TYPES_VALUES)
+    self:next(TOKEN_TYPE.CODE_START)
+    return {TOKEN_TYPE.ELSE_IF, arg1, arg2}
+end
+
+function parser:consume_AST_ELSE()
+    self:expect( TOKEN_TYPE.ELSE)
+    return {TOKEN_TYPE.ELSE}
 end
 
 function parser:consume_AST_WHILE()
@@ -808,25 +857,33 @@ end
 
 function parser:consume_AST_END()
     self:expect(TOKEN_TYPE.CODE_END)
+    return {}
 end
 
-function parser:node(name, astTokens)
+function parser:node(name, astTokens, child)
     return {
         name = name,
-        children = {},
-        tokens = astTokens,
+        children = {child},
+        tokens = astTokens or {},
     }
 end
 
-function parser:insert(name, astTokens)
-    local node = self:node(name, astTokens)
-    local current = self.current[#self.current]
-    table.insert(current.children, node)
+function parser:insert(name, astTokens, child)
+    local node = self:node(name, astTokens, child)
+    --
+    if astTokens[1] == TOKEN_TYPE.ELSE then
+        table.remove(self.current, #self.current)
+    end
+    -- 
+    if name ~= AST_TYPE.AST_END then
+        local current = self.current[#self.current]
+        table.insert(current.children, node)
+    end
     --
     local lastToken = self:expect()
     assert(lastToken ~= nil)
     local lastType = lastToken.type
-    if lastType == TOKEN_TYPE.CODE_START then
+    if lastType == TOKEN_TYPE.CODE_START or lastType == TOKEN_TYPE.ELSE then
         table.insert(self.current, node)
     elseif lastType == TOKEN_TYPE.CODE_END then
         table.remove(self.current, #self.current)
@@ -1036,9 +1093,7 @@ function executer:execute_AST_IF(node)
     local rightVlaue = self:getValue(rightToken)
     if  leftVlaue ~= rightVlaue then return end
     for i,v in ipairs(node.children) do
-        if v.name ~= AST_TYPE.AST_END then
-            self:executeAst(v)
-        end
+        self:executeAst(v)
     end
 end
 
@@ -1053,9 +1108,7 @@ function executer:execute_AST_WHILE(node)
     end
     while checkCondition() do
         for i,v in ipairs(node.children) do
-            if v.name ~= AST_TYPE.AST_END then
-                self:executeAst(v)
-            end
+            self:executeAst(v)
         end
     end
 end
@@ -1120,9 +1173,7 @@ function executer:runFunc()
     self.callStack = {}
     -- run body
     for i,v in ipairs(func.children) do
-        if v.name ~= AST_TYPE.AST_END then
-            self:executeAst(v)
-        end
+        self:executeAst(v)
     end
     -- exit local scope
     self:exitScope()
