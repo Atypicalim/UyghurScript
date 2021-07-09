@@ -10,7 +10,8 @@
 
 -- run module
 -- local uyghur = require("uyghur")
--- uyghur.register("chongniTepish", "math.max")
+-- uyghur.import("chongniTepish", "math.max")
+-- uyghur.export("sanQushush", "addNumber")
 -- uyghur.execute("example.ug")
 
 -- test

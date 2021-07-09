@@ -529,20 +529,40 @@ local function is_valid_str(v)
 end
 
 local function get_lua_value(valueName)
-    assert(is_valid_str(valueName), "invalid lua func name")
+    assert(is_valid_str(valueName), string.format("invalid lua func name [%s]", valueName))
     local names = split(valueName, "%.")
     local length = #names
     local index = 1
     local func = nil
     while index <= length do
         local name = names[index]
-        assert(is_valid_str(name), "invalid lua func name")
+        assert(is_valid_str(name), string.format("invalid lua func name [%s]", name))
         func = func and func[name] or _G[name]
-        assert(func ~= nil, "invalid lua func name")
+        assert(func ~= nil, string.format("invalid lua func name [%s]", name))
         index = index + 1
     end
     assert(func ~= nil, string.format("function [%s] is not found in lua!", valueName))
     return func
+end
+
+local function set_lua_value(valueName, value)
+    assert(is_valid_str(valueName), string.format("invalid lua func name [%s]", valueName))
+    local names = split(valueName, "%.")
+    local length = #names
+    local index = 1
+    local parent = _G
+    while index <= length do
+        local name = names[index]
+        assert(is_valid_str(name), string.format("invalid lua func name [%s]", name))
+        if index ~= length then
+            parent[name] = parent[name] or {}
+            parent = parent[name]
+            assert(type(parent) == "table", "invalid lua table name")
+        else
+            parent[name] = value
+        end
+        index = index + 1
+    end
 end
 
 -- tokenizer
@@ -1264,6 +1284,22 @@ function executer:runUyghurFunc()
     self:exitScope()
 end
 
+function executer:callUyghurFunc(funcName, ...)
+    -- create call stack
+    local nameToken = tokenizer:token(TOKEN_TYPE.NAME, funcName)
+    self.callStack = {}
+    table.insert(self.callStack, nameToken)
+    for i,v in ipairs({...}) do
+        table.insert(self.callStack, v)
+    end
+    -- run func
+    self:runUyghurFunc()
+    -- get result
+    local result = self.callStack
+    self.callStack = {}
+    return unpack(result)
+end
+
 function executer:execute_AST_RESULT(node)
     assert(node.name == AST_TYPE.AST_RESULT)
     local resultToken = node.tokens[1]
@@ -1291,12 +1327,20 @@ end
 
 -- program
 
-local function registerLua(uyghurValue, luaValue)
-    assert(is_valid_str(uyghurValue), "invalid uyghur func name")
-    assert(is_valid_str(luaValue), "invalid lua func name")
+local function importLua(uyghurValue, luaValue)
+    assert(is_valid_str(uyghurValue), string.format("invalid uyghur func name [%s]", uyghurValue))
+    assert(is_valid_str(luaValue), string.format("invalid lua func name [%s]", luaValue))
     local func = get_lua_value(luaValue)
     assert(lua[uyghurValue] == nil, string.format("function [%s] is already registered in uyghur!", uyghurValue))
     lua[uyghurValue] = luaValue
+end
+
+local function exportLua(uyghurValue, luaValue)
+    assert(is_valid_str(uyghurValue), string.format("invalid uyghur func name [%s]", uyghurValue))
+    assert(is_valid_str(luaValue), string.format("invalid lua func name [%s]", luaValue))
+    set_lua_value(luaValue, function(...)
+        return executer:callUyghurFunc(uyghurValue, ...)
+    end)
 end
 
 local function runLine(line, lineNo, fileName, isExecute)
@@ -1369,8 +1413,11 @@ end
 
 local uyghur = {
     version = "0.0.1",
-    register = function(uyghurValue, luaValue)
-        registerLua(uyghurValue, luaValue)
+    import = function(uyghurValue, luaValue)
+        importLua(uyghurValue, luaValue)
+    end,
+    export = function(uyghurValue, luaValue)
+        exportLua(uyghurValue, luaValue)
     end,
     execute = function(filePath)
         runFile(filePath, false)

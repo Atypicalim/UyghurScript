@@ -129,9 +129,9 @@ fonkisiye sanYezish ishlitilsun
 ## 8. call lua func in uyghur
 
 ```lua
--- import uyghur script as a mudle and register the lua function before execute your script
+-- require uyghur script as a mudle and import the lua function before execute your script
 local uyghur = require("uyghur")
-uyghur.register("chongniTepish", "math.max")
+uyghur.import("chongniTepish", "math.max")
 uyghur.execute("example.ug")
 ```
 
@@ -142,14 +142,33 @@ fonkisiye chongniTepish bilen 10 20 ishlitilsun we netije chongSan bolsun
 ikrangha chongSan yezilsun
 ```
 
+## 9. call uyghur func in lua
 
-## 8. example
+```python
+# declare a uyghur func in script file
+fonkisiye sanQushush mixtar x y bolsa
+    mixtar waqitliqMixtar qimmiti 0 bolsun
+    waqitliqMixtar qimmiti x qushulghan y bolsun
+    netije waqitliqMixtar qayturulsun
+tamamlansun
+```
+
+```lua
+-- require uyghur script as a mudle and export the uyghur function before execute your script
+local uyghur = require("uyghur")
+uyghur.export("sanQushush", "myMath.addNumber")
+uyghur.execute("example.ug")
+local result = myMath.addNumber(11, 22)
+print("result of uyghur func sanQushush is:", result)
+```
+
+## 10. example
 
 ![REPL](./others/demo1.png)
 
 ![file](./others/demo2.png)
 
-## 9. todo
+## 11. todo
 
 * release object
 * type conversion
@@ -158,6 +177,6 @@ ikrangha chongSan yezilsun
 * map
 * lua bridge (call each other)
 
-## 10. end
+## 12. end
 
 > tokenizer and parserhave been implemented in this repo, and i am still working on executer ...
