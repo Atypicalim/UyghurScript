@@ -61,11 +61,19 @@ ikrangha a yezilsun
 
 ```python
 
-# only if supported (i read the code by line and line , so it is not frendly enough to support elseif and else)
-c qimmiti a teng 10 bolsun
+mixtar a qimmiti quruq bolsun
+mixtar b qimmiti quruq bolsun
+mixtar c qimmiti quruq bolsun
+
 # eger (variable) qimmiti (variable|string|number|bool|nil) bolsa
-eger c qimmiti rast bolsa
-    ikrangha [a ongha teng boldi] yezilsun
+eger a qimmiti rast bolsa
+    ikrangha [eger] yezilsun
+egerde b qimmiti rast bolsa
+    ikrangha [egerde1] yezilsun
+egerde c qimmiti rast bolsa
+    ikrangha [egerde2] yezilsun
+bolmisa
+    ikrangha [bolmisa] yezilsun
 tamamlansun
 
 ```
