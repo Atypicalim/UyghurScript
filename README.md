@@ -126,6 +126,23 @@ fonkisiye sanYezish ishlitilsun
 * write your scripts in `example.ug` and run command `lua uyghur.lua example.ug`
 * run the command `lua uyghur.lua` and type your code in the REPL
 
+## 8. call lua func in uyghur
+
+```lua
+-- import uyghur script as a mudle and register the lua function before execute your script
+local uyghur = require("uyghur")
+uyghur.register("chongniTepish", "math.max")
+uyghur.execute("example.ug")
+```
+
+```python
+# then u can call the lua func by nickname in uyghur script as a ordinary uyghur func
+mixtar chongSan qimmiti quruq bolsun
+fonkisiye chongniTepish bilen 10 20 ishlitilsun we netije chongSan bolsun
+ikrangha chongSan yezilsun
+```
+
+
 ## 8. example
 
 ![REPL](./others/demo1.png)

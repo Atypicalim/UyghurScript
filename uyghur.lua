@@ -484,6 +484,8 @@ local PARSER_STATE_MAP = {
     },
 }
 
+-- tools
+
 local function str(value)
     local res = ""
     if type(value) ~= "table" then
@@ -503,6 +505,44 @@ local function str(value)
         res = res .. "}"
     end
     return res
+end
+
+local function split(this, separator, maxCount)
+    local startIndex = 1
+    local splitIndex = 1
+    local splitArray = {}
+    while true do
+        local foundIndex, endIndex = string.find(this, separator, startIndex)
+        if not foundIndex or (maxCount and #splitArray >= maxCount) then
+            splitArray[splitIndex] = string.sub(this, startIndex, string.len(this))
+            break
+        end
+        splitArray[splitIndex] = string.sub(this, startIndex, foundIndex - 1)
+        startIndex = foundIndex + (endIndex - foundIndex + 1)
+        splitIndex = splitIndex + 1
+    end
+    return splitArray
+end
+
+local function is_valid_str(v)
+    return type(v) == "string" and #v > 0
+end
+
+local function get_lua_value(valueName)
+    assert(is_valid_str(valueName), "invalid lua func name")
+    local names = split(valueName, "%.")
+    local length = #names
+    local index = 1
+    local func = nil
+    while index <= length do
+        local name = names[index]
+        assert(is_valid_str(name), "invalid lua func name")
+        func = func and func[name] or _G[name]
+        assert(func ~= nil, "invalid lua func name")
+        index = index + 1
+    end
+    assert(func ~= nil, string.format("function [%s] is not found in lua!", valueName))
+    return func
 end
 
 -- tokenizer
@@ -912,6 +952,7 @@ end
 
 -- executer
 local executer = {}
+local lua = {}
 
 function executer:init()
     self.callStack = {}
@@ -1154,6 +1195,7 @@ function executer:execute_AST_CALL(node)
     local nameToken = node.tokens[1]
     local funcName = nameToken.value
     -- push args
+    local nameToken = nil
     local resultToken = nil
     self.callStack = {}
     for i,v in ipairs(node.tokens) do
@@ -1163,13 +1205,18 @@ function executer:execute_AST_CALL(node)
             break
         elseif i == 1 then
             table.insert(self.callStack, v)
+            nameToken = v
         else
             local value = self:getValue(v)
             table.insert(self.callStack, value)
         end
     end
     -- run func
-    self:runFunc()
+    if lua[nameToken.value] then
+        self:runLuaFunc()
+    else
+        self:runUyghurFunc()
+    end
     -- get result
     if resultToken then
         local resultValue = table.remove(self.callStack, 1)
@@ -1179,7 +1226,17 @@ function executer:execute_AST_CALL(node)
     self.callStack = {}
 end
 
-function executer:runFunc()
+function executer:runLuaFunc()
+    local nameToken = table.remove(self.callStack, 1)
+    assert(nameToken.type == TOKEN_TYPE.NAME)
+    local func = get_lua_value(lua[nameToken.value])
+    self:assert(func ~= nil, nameToken, string.format("fonkisiye texi iniqlanmighan"))
+    self:assert(type(func) == "function", nameToken, "bu mixtar fonkisiye emes")
+    local result = {func(unpack(self.callStack))}
+    self.callStack = result
+end
+
+function executer:runUyghurFunc()
     -- create local scope
     self:newScope()
     -- read func
@@ -1232,6 +1289,16 @@ function compiler:compile(tree)
 end
 
 
+-- program
+
+local function registerLua(uyghurValue, luaValue)
+    assert(is_valid_str(uyghurValue), "invalid uyghur func name")
+    assert(is_valid_str(luaValue), "invalid lua func name")
+    local func = get_lua_value(luaValue)
+    assert(lua[uyghurValue] == nil, string.format("function [%s] is already registered in uyghur!", uyghurValue))
+    lua[uyghurValue] = luaValue
+end
+
 local function runLine(line, lineNo, fileName, isExecute)
     local tokens = tokenizer:tokenize(line, lineNo, fileName)
     local tree, node = parser:parse(tokens, lineNo, fileName)
@@ -1250,7 +1317,7 @@ local function runFile(fromPath, isCompile)
     io.close(fromFile)
     io.input(io.stdin)
     -- check target
-    local isCompile = isCompile == "TRUE" or isCompile == "true"
+    local isCompile = isCompile == true or isCompile == "TRUE" or isCompile == "true"
     -- get ast
     local tree = nil
     for lineNo,line in ipairs(lines) do
@@ -1300,12 +1367,26 @@ local function runInput()
     end
 end
 
-local function entry()
-    if arg[1] then
-        runFile(arg[1], arg[2])
-    else
-        runInput()
-    end
-end
+local uyghur = {
+    version = "0.0.1",
+    register = function(uyghurValue, luaValue)
+        registerLua(uyghurValue, luaValue)
+    end,
+    execute = function(filePath)
+        runFile(filePath, false)
+    end,
+    compile = function(filePath)
+        runFile(filePath, true)
+    end,
+    run = runInput,
+}
 
-entry()
+local args = {...}
+
+if args[1] == "uyghur" then
+    return uyghur
+elseif args[1] then
+    runFile(args[1], args[2])
+else
+    runInput()
+end
