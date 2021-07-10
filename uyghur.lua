@@ -3,7 +3,7 @@
 ]]
 
 -- https://github.com/kompasim/pure-lua-tools.git
-require "pure-lua-tools.initialize"
+-- require "pure-lua-tools.initialize"
 
 local TOKEN_TYPE = {
     NAME = "NAME", -- variable
@@ -501,6 +501,8 @@ local lua = {}
 
 -- tools
 
+local unpack = unpack or table.unpack
+
 local function str(value)
     local res = ""
     if type(value) ~= "table" then
@@ -616,7 +618,11 @@ function tokenizer:process(i)
     end
     -- invalid sign
     if not signType
-    or (signType == SIGNS.OTHER and self.state ~= STATE.COMMENT) and (signType == SIGNS.OTHER and self.state ~= STATE.STRING) then
+    or (
+        (signType == SIGNS.OTHER and self.state ~= STATE.COMMENT)
+        and (signType == SIGNS.OTHER and self.state ~= STATE.STRING)
+        and (signType == SIGNS.OTHER and self.state ~= STATE.OPEN)
+    ) then
         self:assert(false, "nime bu yazghining, taza bilelmidimghu")
     end
     -- get new state
@@ -1693,11 +1699,10 @@ local uyghur = {
 }
 
 local args = {...}
-
-if args[1] == "uyghur" then
-    return uyghur
-elseif args[1] then
-    runFile(args[1], args[2])
-else
+if not args[1] then
     runInput()
+elseif string.match(args[1], "%a+$") == "uyghur" then
+    return uyghur
+else
+    runFile(args[1], args[2])
 end
