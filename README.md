@@ -18,16 +18,16 @@ mixtar a qimmiti [Salam Uyghur Script!] bolsun
 mixtar b qimmiti 1 bolsun
 
 # bool (rast, yalghan)
-mixtar c qimimti rast bolsun
+mixtar c qimmiti rast bolsun
 
 # nil
 mixtar d qimmiti quruq bolsun
 
 # assign a value
-c qimimti yalghan bolsun
+c qimmiti yalghan bolsun
 
 # release an object (will get an error when u use an object that has been released)
-c qimimti azad bolsun
+c qimmiti azad bolsun
 
 ```
 
