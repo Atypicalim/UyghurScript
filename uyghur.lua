@@ -1182,6 +1182,7 @@ function executer:execute_AST_TRANSFORM(node)
     else
         assert(string.format("type transform is not implemented for type [%s]", typeToken.type))
     end
+    self:setValue(nameToken, value, false)
 end
 
 function executer:execute_AST_EXPRESSION(node)
