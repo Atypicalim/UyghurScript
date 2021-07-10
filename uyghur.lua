@@ -3,7 +3,7 @@
 ]]
 
 -- https://github.com/kompasim/pure-lua-tools.git
--- require "pure-lua-tools.initialize"
+-- require "./pure-lua-tools/initialize"
 
 local TOKEN_TYPE = {
     NAME = "NAME", -- variable
@@ -12,6 +12,10 @@ local TOKEN_TYPE = {
     BOOL = "BOOL", -- value
     EMPTY = "EMPTY", -- value
     FREE = "FREE", -- value
+    -- 
+    TYPE = "TYPE",
+    STR = "STR",
+    NUM = "NUM",
     --
     CODE_START = "CODE_START",
     CODE_END = "CODE_END",
@@ -61,6 +65,10 @@ local TOKEN_VALUES = {
     -- 
     EMPTY = "quruq",
     FREE = "azad",
+    -- 
+    TYPE = "tipi",
+    STR = "xet",
+    NUM = "san",
     --
     TRUE = "rast",
     FALSE = "yalghan",
@@ -110,6 +118,10 @@ local TOKEN_TYPE_MAP = {
     -- types
     [TOKEN_VALUES.EMPTY] = TOKEN_TYPE.EMPTY,
     [TOKEN_VALUES.FREE] = TOKEN_TYPE.FREE,
+    -- type
+    [TOKEN_VALUES.TYPE] = TOKEN_TYPE.TYPE,
+    [TOKEN_VALUES.STR] = TOKEN_TYPE.STR,
+    [TOKEN_VALUES.NUM] = TOKEN_TYPE.NUM,
     -- bool
     [TOKEN_VALUES.TRUE] = TOKEN_TYPE.BOOL,
     [TOKEN_VALUES.FALSE] = TOKEN_TYPE.BOOL,
@@ -239,6 +251,7 @@ local AST_TYPE = {
     AST_END = "AST_END",
     AST_VARIABLE = "AST_VARIABLE",
     AST_ASSIGN = "AST_ASSIGN",
+    AST_TRANSFORM = "AST_TRANSFORM",
     AST_RESULT = "AST_RESULT",
     AST_FUNC = "AST_FUNC",
     AST_CALL = "AST_CALL",
@@ -374,6 +387,14 @@ local PARSER_STATE_MAP = {
         }
     },
     [TOKEN_TYPE.NAME] = {
+        [TOKEN_TYPE.TYPE] = {
+            [TOKEN_TYPE.STR] = {
+                [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
+            },
+            [TOKEN_TYPE.NUM] = {
+                [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
+            },
+        },
         [TOKEN_TYPE.VALUE] = {
             [TOKEN_TYPE.NAME] = {
                 [TOKEN_TYPE.MADE] = AST_TYPE.AST_ASSIGN,
@@ -502,6 +523,24 @@ local lua = {}
 -- tools
 
 local unpack = unpack or table.unpack
+
+function table.count(this, countKeyType, countValueType)
+    local totalCount = 0
+    local keyCount = 0
+    local valueCount = 0
+    local k,v = next(this)
+    while k do
+        totalCount = totalCount + 1
+        if countKeyType and type(k) == countKeyType then
+            keyCount = keyCount + 1
+        end
+        if countValueType and type(v) == countValueType then
+            valueCount = valueCount + 1
+        end
+        k, v = next(this, k)
+    end
+    return totalCount, keyCount, valueCount
+end
 
 local function str(value)
     local res = ""
@@ -827,6 +866,14 @@ function parser:consume_AST_ASSIGN()
     return {name, arg}
 end
 
+function parser:consume_AST_TRANSFORM()
+    local name = self:expect(TOKEN_TYPE.NAME)
+    self:next(TOKEN_TYPE.TYPE)
+    local arg = self:next({TOKEN_TYPE.STR, TOKEN_TYPE.NUM})
+    self:next(TOKEN_TYPE.MADE)
+    return {name, arg}
+end
+
 function parser:consume_AST_EXPRESSION()
     local name = self:expect(TOKEN_TYPE.NAME)
     self:next(TOKEN_TYPE.VALUE)
@@ -1045,7 +1092,7 @@ function executer:findScope(token)
     return scope, value
 end
 
-function executer:getValue(token)
+function executer:getValue(token, isGetLuaValue)
     if token.type == TOKEN_TYPE.NAME then
         local _, value = self:findScope(token)
         self:assert(value ~= nil, token, string.format("mixtar texi iniqlanmighan"))
@@ -1055,9 +1102,17 @@ function executer:getValue(token)
     elseif token.type == TOKEN_TYPE.NUMBER then
         return tonumber(token.value)
     elseif token.type == TOKEN_TYPE.BOOL then
-        return token.value
+        if isGetLuaValue then
+            return token.value == TOKEN_VALUES.TRUE
+        else
+            return token.value
+        end
     elseif token.type == TOKEN_TYPE.EMPTY then
-        return token.value
+        if isGetLuaValue then
+            return nil
+        else
+            return token.value
+        end
     elseif token.type == TOKEN_TYPE.FREE then
         return nil
     else
@@ -1110,6 +1165,23 @@ end
 function executer:execute_AST_ASSIGN(node)
     local value = self:getValue(node.tokens[2])
     self:setValue(node.tokens[1], value, false)
+end
+
+function executer:execute_AST_TRANSFORM(node)
+    local nameToken = node.tokens[1]
+    local typeToken = node.tokens[2]
+    local value = self:getValue(nameToken)
+    if typeToken.type == TOKEN_TYPE.STR then
+        value = tostring(value)
+    elseif typeToken.type == TOKEN_TYPE.NUM then
+        if type(value) == "string" then
+            value = tonumber(value)
+        else
+            value = TOKEN_VALUES.EMPTY
+        end
+    else
+        assert(string.format("type transform is not implemented for type [%s]", typeToken.type))
+    end
 end
 
 function executer:execute_AST_EXPRESSION(node)
@@ -1250,8 +1322,9 @@ end
 function executer:execute_AST_CALL(node)
     local nameToken = node.tokens[1]
     local funcName = nameToken.value
+    -- 
+    local isLuaFunc = lua[nameToken.value] ~= nil
     -- push args
-    local nameToken = nil
     local resultToken = nil
     self.callStack = {}
     for i,v in ipairs(node.tokens) do
@@ -1261,14 +1334,13 @@ function executer:execute_AST_CALL(node)
             break
         elseif i == 1 then
             table.insert(self.callStack, v)
-            nameToken = v
         else
-            local value = self:getValue(v)
+            local value = self:getValue(v, isLuaFunc)
             table.insert(self.callStack, value)
         end
     end
     -- run func
-    if lua[nameToken.value] then
+    if isLuaFunc then
         self:runLuaFunc()
     else
         self:runUyghurFunc()
@@ -1695,7 +1767,9 @@ local uyghur = {
     compile = function(filePath)
         runFile(filePath, true)
     end,
-    run = runInput,
+    run = function()
+        runInput()
+    end,
 }
 
 local args = {...}

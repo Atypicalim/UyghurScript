@@ -29,6 +29,10 @@ c qimmiti yalghan bolsun
 # release an object (will get an error when u use an object that has been released)
 c qimmiti azad bolsun
 
+# transform data type (number & string)
+b tipi san bolsun
+b tipi xet bolsun
+
 ```
 
 ## 2. operations
