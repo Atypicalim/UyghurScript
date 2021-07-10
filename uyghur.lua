@@ -496,6 +496,9 @@ local PARSER_STATE_MAP = {
     },
 }
 
+-- bridge
+local lua = {}
+
 -- tools
 
 local function str(value)
@@ -992,7 +995,6 @@ end
 
 -- executer
 local executer = {}
-local lua = {}
 
 function executer:init()
     self.callStack = {}
@@ -1331,10 +1333,8 @@ end
 function executer:execute_AST_RESULT(node)
     assert(node.name == AST_TYPE.AST_RESULT)
     local resultToken = node.tokens[1]
-    if resultToken then
-        local resultValue = self:getValue(resultToken)
-        table.insert(self.callStack, resultValue)
-    end
+    local resultValue = self:getValue(resultToken)
+    table.insert(self.callStack, resultValue)
 end
 
 function executer:assert(v, token, msg)
@@ -1346,10 +1346,246 @@ end
 local compiler = {}
 
 function compiler:compile(tree)
-    -- empty lines
-    if not tree then return "empty ..." end
-    -- 
-    return "-- todo compiler ..."
+    if not tree then return "-- empty ..." end
+    self.tree = tree
+    self.code = ""
+    self:compileAst(tree)
+    return self.code
+end
+
+function compiler:write(code)
+    code = code or ""
+    self.code = self.code and self.code .. "\n" .. code or code
+end
+
+function compiler:convertValue(token)
+    local value = token.value
+    if token.type == TOKEN_TYPE.NAME then
+        return tostring(value)
+    elseif token.type == TOKEN_TYPE.STRING then
+        return "[[" .. value .. "]]"
+    elseif token.type == TOKEN_TYPE.NUMBER then
+        return tostring(value)
+    elseif token.type == TOKEN_TYPE.BOOL then
+        return tostring(value == TOKEN_VALUES.TRUE)
+    elseif token.type == TOKEN_TYPE.EMPTY then
+        return "nil"
+    elseif token.type == TOKEN_TYPE.FREE then
+        return "nil"
+    else
+        self:assert(false, token, string.format("invalid token type [%s] for compiler", token.type))
+    end
+end
+
+function compiler:compileAst(ast)
+    if not ast then return end
+    local name = ast.name
+    local func = self["compile_" .. name]
+    assert(func ~= nil, string.format("compile func for [%s] is unimplemented", name))
+    func(self, ast)
+end
+
+function compiler:compile_AST_PROGRAM(node)
+    for i,v in ipairs(node.children) do
+       self:compileAst(v)
+    end
+end
+
+function compiler:compile_AST_OPERATE(node)
+    local token = node.tokens[2]
+    local operation = node.tokens[3]
+    if operation.type == TOKEN_TYPE.OUTPUT then
+        self:write("print(" .. self:convertValue(token) .. ")")
+    elseif operation.type == TOKEN_TYPE.INPUT then
+        self:write(token.value .. " = io.read()")
+    end
+end
+
+function compiler:compile_AST_VARIABLE(node)
+    self:write("local " .. node.tokens[1].value .. " = " .. self:convertValue(node.tokens[2]))
+end
+
+function compiler:compile_AST_ASSIGN(node)
+    self:write(node.tokens[1].value .. " = " .. self:convertValue(node.tokens[2]))
+end
+
+function compiler:compile_AST_EXPRESSION(node)
+    local resultToken = node.tokens[1]
+    local leftToken = node.tokens[2]
+    local operationToken = node.tokens[3]
+    local rightToken = node.tokens[4]
+    --
+    local resultValue = resultToken.value
+    local leftVlaue = self:convertValue(leftToken)
+    local rightVlaue = self:convertValue(rightToken)
+    local operationType = node.tokens[3].type
+    local operationValue = node.tokens[3].value
+    --
+    assert(operationType == TOKEN_TYPE.OPERATION)
+    if operationValue == TOKEN_VALUES.EQUAL then
+        self:write(resultValue .. " = " .. leftVlaue .. " == " .. rightVlaue)
+    elseif operationValue == TOKEN_VALUES.CONCAT then
+        self:write(resultValue .. " = tostring(" .. leftVlaue .. ") .. " .. "tostring(" .. rightVlaue .. ")")
+    end
+end
+
+function compiler:compile_AST_EXPRESSION_NUMBER(node)
+    local resultToken = node.tokens[1]
+    local leftToken = node.tokens[2]
+    local operationToken = node.tokens[3]
+    local rightToken = node.tokens[4]
+    --
+    local resultValue = resultToken.value
+    local leftVlaue = self:convertValue(leftToken)
+    local rightVlaue = self:convertValue(rightToken)
+    local operationType = node.tokens[3].type
+    local operationValue = node.tokens[3].value
+    --
+    assert(operationType == TOKEN_TYPE.OPERATION_NUMBER)
+    if operationValue == TOKEN_VALUES.ADD then
+        self:write(resultValue .. " = " .. leftVlaue .. " + " .. rightVlaue)
+    elseif operationValue == TOKEN_VALUES.SUB then
+        self:write(resultValue .. " = " .. leftVlaue .. " - " .. rightVlaue)
+    elseif operationValue == TOKEN_VALUES.MUL then
+        self:write(resultValue .. " = " .. leftVlaue .. " * " .. rightVlaue)
+    elseif operationValue == TOKEN_VALUES.DIV then
+        self:write(resultValue .. " = " .. leftVlaue .. " / " .. rightVlaue)
+    elseif operationValue == TOKEN_VALUES.LESS then
+        self:write(resultValue .. " = " .. leftVlaue .. " < " .. rightVlaue)
+    elseif operationValue == TOKEN_VALUES.MORE then
+        self:write(resultValue .. " = " .. leftVlaue .. " > " .. rightVlaue)
+    end
+end
+
+function compiler:compile_AST_EXPRESSION_LOGIC(node)
+    local resultToken = node.tokens[1]
+    local leftToken = node.tokens[2]
+    local operationToken = node.tokens[3]
+    local rightToken = node.tokens[4]
+    --
+    local resultValue = resultToken.value
+    local leftVlaue = self:convertValue(leftToken)
+    local rightVlaue = rightToken and self:convertValue(rightToken) or "nil"
+    local operationType = node.tokens[3].type
+    --
+    if operationType == TOKEN_TYPE.NOT then
+        self:write(resultValue .. " = not " .. leftVlaue)
+    elseif operationType == TOKEN_TYPE.AND then
+        self:write(resultValue .. " = " .. leftVlaue .. " == true and " .. rightVlaue .. " == true")
+    elseif operationType == TOKEN_TYPE.OR then
+        self:write(resultValue .. " = " .. leftVlaue .. " == true or " .. rightVlaue .. " == true")
+    end
+end
+
+function compiler:compile_AST_IF(node)
+    self:write()
+    local index = 1
+    local length = #node.children
+    local active = false
+    while index <= length do
+        local leaf = node.children[index]
+        if leaf.name == AST_TYPE.AST_IF_FIRST then
+            local leftToken = leaf.tokens[1]
+            local rightToken = leaf.tokens[2]
+            local leftVlaue = self:convertValue(leftToken)
+            local rightVlaue = self:convertValue(rightToken)
+            self:write("if " .. leftVlaue .. " == " .. rightVlaue .. " then")
+        elseif leaf.name == AST_TYPE.AST_IF_MIDDLE then
+            local leftToken = leaf.tokens[1]
+            local rightToken = leaf.tokens[2]
+            local leftVlaue = self:convertValue(leftToken)
+            local rightVlaue = self:convertValue(rightToken)
+            self:write("elseif " .. leftVlaue .. " == " .. rightVlaue .. " then")
+        elseif leaf.name == AST_TYPE.AST_IF_LAST then
+            self:write("else")
+        else
+            self:compileAst(leaf)
+        end
+        index = index + 1
+    end
+    self:write("end")
+    self:write()
+end
+
+function compiler:compile_AST_WHILE(node)
+    local leftToken = node.tokens[1]
+    local rightToken = node.tokens[2]
+    local leftVlaue = self:convertValue(leftToken)
+    local rightVlaue = self:convertValue(rightToken)
+    self:write()
+    self:write("while " .. leftVlaue .. " == " .. rightVlaue .. " do")
+    for i,v in ipairs(node.children) do
+       self:compileAst(v)
+    end
+    self:write("end")
+    self:write()
+end
+
+function compiler:compile_AST_FUNC(node)
+    local funcName = nil
+    local variables = ""
+    local length = #node.tokens
+    for i=1,length do
+        local v = node.tokens[i]
+        if i == 1 then
+            funcName = v.value
+        else
+            variables = variables .. v.value
+            if i ~= length then
+                variables = variables .. ", "
+            end
+        end
+    end
+    self:write()
+    self:write("local function " .. funcName .. "(" .. variables .. ")")
+    for i,v in ipairs(node.children) do
+        self:compileAst(v)
+    end
+    self:write("end")
+    self:write()
+end
+
+function compiler:compile_AST_CALL(node)
+    local funcName = nil
+    local resultName = nil
+    local variables = ""
+    local length = #node.tokens
+    for i = 1, length do
+        local v = node.tokens[i]
+        if v.type == TOKEN_TYPE.RESULT then
+            local resultToken = node.tokens[i + 1]
+            assert(resultToken ~= nil)
+            resultName = resultToken.value
+            break
+        elseif i == 1 then
+            local nameToken = v
+            funcName = nameToken.value
+        else
+            local variable = self:convertValue(v)
+            variables = variables .. variable
+            local nextToken = node.tokens[i + 1]
+            if nextToken.type ~= TOKEN_TYPE.RESULT then
+                variables = variables .. ", "
+            end
+        end
+    end
+    funcName = lua[funcName] or funcName
+    if resultName then
+        self:write(resultName .. " = " .. funcName .. "(" .. variables .. ")")
+    else
+        self:write(funcName .. "(" .. variables .. ")")
+    end
+end
+
+function compiler:compile_AST_RESULT(node)
+    assert(node.name == AST_TYPE.AST_RESULT)
+    local resultToken = node.tokens[1]
+    local resultValue = self:convertValue(resultToken)
+    self:write("return " .. resultValue)
+end
+
+function compiler:assert(v, token, msg)
+    assert(v == true, string.format("%s: xojjet:[%s], qur:[%d], qatar:[%d], soz:[%s]", msg, token.path, token.line, token.column, token.value))
 end
 
 
@@ -1406,7 +1642,7 @@ local function runFile(fromPath, isCompile)
     local toFile = io.open(toPath, "w")
     io.output(toFile)
     io.write(string.format("-- compiled from [%s] at %s", fromPath, compileTime))
-    io.write("\n\n")
+    io.write("\n")
     io.write(compiler:compile(tree))
     io.write("\n")
     io.close(toFile)

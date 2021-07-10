@@ -7,6 +7,7 @@
 
 -- compile script
 -- os.execute("lua uyghur.lua example.ug true")
+-- os.execute("lua example.ug.lua")
 
 -- run module
 -- local uyghur = require("uyghur")

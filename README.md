@@ -128,9 +128,35 @@ fonkisiye sanYezish ishlitilsun
 
 ## 7. usage
 
-* fist of all, u need to download [lua binary](http://luabinaries.sourceforge.net/) to execute this script interpreter
-* write your scripts in `example.ug` and run command `lua uyghur.lua example.ug`
-* run the command `lua uyghur.lua` and type your code in the REPL
+* fist of all, u need to download [lua binary](http://luabinaries.sourceforge.net/) to run this program
+* run the command `lua uyghur.lua` for a REPL
+* run the command `lua uyghur.lua example.ug false` to execute your script
+* run the command `lua uyghur.lua example.ug true` to compile your script to lua
+* or import as a module and call the module functions in a lua script like this:
+
+```lua
+-- import module
+local uyghur = require("uyghur")
+
+-- version code
+print(uyghur.version)
+
+-- register a lua func to uyghur script
+uyghur.import("chongniTepish", "math.max")
+
+-- register a uyghur func to lua script
+uyghur.export("sanQushush", "addNumber")
+
+-- execute a uyghur script
+uyghur.execute("example.ug")
+
+-- compile a uyghur script (there will be an output file named example.ug.lua in the same directory)
+uyghur.compile("example.ug")
+
+-- run a REPL in console
+uyghur.run()
+
+```
 
 ## 8. call lua func in uyghur
 
@@ -176,7 +202,6 @@ print("result of uyghur func sanQushush is:", result)
 
 ## 11. todo
 
-* type conversion
 * list
 * map
 
