@@ -11,6 +11,7 @@ local TOKEN_TYPE = {
     NUMBER = "NUMBER", -- number
     BOOL = "BOOL", -- value
     EMPTY = "EMPTY", -- value
+    FREE = "FREE", -- value
     --
     CODE_START = "CODE_START",
     CODE_END = "CODE_END",
@@ -43,6 +44,7 @@ local TOKEN_TYPE = {
     OPERATION = "OPERATION", -- operation
 }
 
+local TOKEN_TYPES_ASSIGNS = {TOKEN_TYPE.NAME, TOKEN_TYPE.STRING, TOKEN_TYPE.NUMBER, TOKEN_TYPE.BOOL, TOKEN_TYPE.EMPTY, TOKEN_TYPE.FREE}
 local TOKEN_TYPES_VALUES = {TOKEN_TYPE.NAME, TOKEN_TYPE.STRING, TOKEN_TYPE.NUMBER, TOKEN_TYPE.BOOL, TOKEN_TYPE.EMPTY}
 local TOKEN_TYPES_STRING = {TOKEN_TYPE.NAME, TOKEN_TYPE.STRING}
 local TOKEN_TYPES_NUMBER = {TOKEN_TYPE.NAME, TOKEN_TYPE.NUMBER}
@@ -58,6 +60,7 @@ local TOKEN_VALUES = {
     INPUT = "oqulsun",
     -- 
     EMPTY = "quruq",
+    FREE = "azad",
     --
     TRUE = "rast",
     FALSE = "yalghan",
@@ -106,6 +109,7 @@ local TOKEN_TYPE_MAP = {
     [TOKEN_VALUES.INPUT] = TOKEN_TYPE.INPUT,
     -- types
     [TOKEN_VALUES.EMPTY] = TOKEN_TYPE.EMPTY,
+    [TOKEN_VALUES.FREE] = TOKEN_TYPE.FREE,
     -- bool
     [TOKEN_VALUES.TRUE] = TOKEN_TYPE.BOOL,
     [TOKEN_VALUES.FALSE] = TOKEN_TYPE.BOOL,
@@ -234,6 +238,7 @@ local AST_TYPE = {
     AST_PROGRAM = "AST_PROGRAM",
     AST_END = "AST_END",
     AST_VARIABLE = "AST_VARIABLE",
+    AST_ASSIGN = "AST_ASSIGN",
     AST_RESULT = "AST_RESULT",
     AST_FUNC = "AST_FUNC",
     AST_CALL = "AST_CALL",
@@ -371,6 +376,7 @@ local PARSER_STATE_MAP = {
     [TOKEN_TYPE.NAME] = {
         [TOKEN_TYPE.VALUE] = {
             [TOKEN_TYPE.NAME] = {
+                [TOKEN_TYPE.MADE] = AST_TYPE.AST_ASSIGN,
                 [TOKEN_TYPE.OPERATION_NUMBER] = {
                     [ TOKEN_TYPE.NAME] = {
                         [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_NUMBER,
@@ -411,6 +417,7 @@ local PARSER_STATE_MAP = {
                 },
             },
             [TOKEN_TYPE.STRING] = {
+                [TOKEN_TYPE.MADE] = AST_TYPE.AST_ASSIGN,
                 [TOKEN_TYPE.OPERATION] = {
                     [ TOKEN_TYPE.NAME] = {
                         [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION,
@@ -421,6 +428,7 @@ local PARSER_STATE_MAP = {
                 },
             },
             [TOKEN_TYPE.NUMBER] = {
+                [TOKEN_TYPE.MADE] = AST_TYPE.AST_ASSIGN,
                 [TOKEN_TYPE.OPERATION_NUMBER] = {
                     [ TOKEN_TYPE.NAME] = {
                         [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_NUMBER,
@@ -442,6 +450,7 @@ local PARSER_STATE_MAP = {
                 },
             },
             [TOKEN_TYPE.BOOL] = {
+                [TOKEN_TYPE.MADE] = AST_TYPE.AST_ASSIGN,
                 [ TOKEN_TYPE.AND] = {
                     [ TOKEN_TYPE.NAME] = {
                         [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_LOGIC,
@@ -461,6 +470,9 @@ local PARSER_STATE_MAP = {
                 [ TOKEN_TYPE.NOT] = {
                     [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_LOGIC,
                 },
+            },
+            [ TOKEN_TYPE.FREE] = {
+                [TOKEN_TYPE.MADE] = AST_TYPE.AST_ASSIGN,
             },
         },
     },
@@ -798,6 +810,14 @@ function parser:consume_AST_VARIABLE()
     return {name, arg}
 end
 
+function parser:consume_AST_ASSIGN()
+    local name = self:expect(TOKEN_TYPE.NAME)
+    self:next(TOKEN_TYPE.VALUE)
+    local arg = self:next(TOKEN_TYPES_ASSIGNS)
+    self:next(TOKEN_TYPE.MADE)
+    return {name, arg}
+end
+
 function parser:consume_AST_EXPRESSION()
     local name = self:expect(TOKEN_TYPE.NAME)
     self:next(TOKEN_TYPE.VALUE)
@@ -1030,6 +1050,8 @@ function executer:getValue(token)
         return token.value
     elseif token.type == TOKEN_TYPE.EMPTY then
         return token.value
+    elseif token.type == TOKEN_TYPE.FREE then
+        return nil
     else
         self:assert(false, token, string.format("invalid token type [%s] for executer", token.type))
     end
@@ -1037,10 +1059,11 @@ end
 
 function executer:setValue(nameToken, value, isDefine)
     local name = nameToken.value
+    local scope, oldValue = self:findScope(nameToken)
     if isDefine then
+        self:assert(oldValue == nil, nameToken, string.format("mixtar alliburun iniqlanghan"))
         self.currentScope[name] = value
     else
-        local scope, oldValue = self:findScope(nameToken)
         self:assert(oldValue ~= nil, nameToken, string.format("mixtar texi iniqlanmighan"))
         scope[name] = value
     end
@@ -1074,6 +1097,11 @@ end
 function executer:execute_AST_VARIABLE(node)
     local value = self:getValue(node.tokens[2])
     self:setValue(node.tokens[1], value, true)
+end
+
+function executer:execute_AST_ASSIGN(node)
+    local value = self:getValue(node.tokens[2])
+    self:setValue(node.tokens[1], value, false)
 end
 
 function executer:execute_AST_EXPRESSION(node)

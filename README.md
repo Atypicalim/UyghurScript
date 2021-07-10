@@ -23,6 +23,12 @@ mixtar c qimimti rast bolsun
 # nil
 mixtar d qimmiti quruq bolsun
 
+# assign a value
+c qimimti yalghan bolsun
+
+# release an object (will get an error when u use an object that has been released)
+c qimimti azad bolsun
+
 ```
 
 ## 2. operations
@@ -170,12 +176,9 @@ print("result of uyghur func sanQushush is:", result)
 
 ## 11. todo
 
-* release object
 * type conversion
-* change variable value (without declaration and expression)
 * list
 * map
-* lua bridge (call each other)
 
 ## 12. end
 
