@@ -13,6 +13,8 @@ local TOKEN_TYPE = {
     EMPTY = "EMPTY", -- value
     FREE = "FREE", -- value
     -- 
+    DOT = "DOT",
+    -- 
     TYPE = "TYPE",
     STR = "STR",
     NUM = "NUM",
@@ -66,6 +68,8 @@ local TOKEN_VALUES = {
     EMPTY = "quruq",
     FREE = "azad",
     -- 
+    DOT = ".",
+    -- 
     TYPE = "tipi",
     STR = "xet",
     NUM = "san",
@@ -118,6 +122,8 @@ local TOKEN_TYPE_MAP = {
     -- types
     [TOKEN_VALUES.EMPTY] = TOKEN_TYPE.EMPTY,
     [TOKEN_VALUES.FREE] = TOKEN_TYPE.FREE,
+    -- 
+    [TOKEN_VALUES.DOT] = TOKEN_TYPE.DOT,
     -- type
     [TOKEN_VALUES.TYPE] = TOKEN_TYPE.TYPE,
     [TOKEN_VALUES.STR] = TOKEN_TYPE.STR,
@@ -144,6 +150,7 @@ local TOKEN_TYPE_MAP = {
 local SIGNS = {
     LINE = "LINE",
     EMPTY = "EMPTY",
+    DOT = "DOT",
     COMMENT = "COMMENT",
     NUMBER = "NUMBER",
     LETTER = "LETTER",
@@ -157,6 +164,7 @@ local ORDER = {
     SIGNS.EMPTY,
     SIGNS.COMMENT,
     SIGNS.NUMBER,
+    SIGNS.DOT,
     SIGNS.LETTER,
     SIGNS.OPEN,
     SIGNS.CLOSE,
@@ -166,6 +174,7 @@ local ORDER = {
 local EXPRESSIONS = {
     [SIGNS.LINE] = "\n",
     [SIGNS.EMPTY] = "%s",
+    [SIGNS.DOT] = "%.",
     [SIGNS.COMMENT] = "%#",
     [SIGNS.NUMBER] = "%d",
     [SIGNS.LETTER] = "%a",
@@ -190,6 +199,7 @@ local TOKENIZER_STATE_MAP = {
     [STATE.NEW] = {
         [SIGNS.LINE] = STATE.NEW,
         [SIGNS.EMPTY] = STATE.NEW,
+        [SIGNS.DOT] = STATE.ERROR,
         [SIGNS.COMMENT] = STATE.COMMENT,
         [SIGNS.NUMBER] = STATE.NUMBER,
         [SIGNS.LETTER] = STATE.LETTER,
@@ -201,6 +211,7 @@ local TOKENIZER_STATE_MAP = {
     [STATE.COMMENT] = {
         [SIGNS.LINE] = STATE.NEW,
         [SIGNS.EMPTY] = STATE.COMMENT,
+        [SIGNS.DOT] = STATE.COMMENT,
         [SIGNS.COMMENT] = STATE.COMMENT,
         [SIGNS.NUMBER] = STATE.COMMENT,
         [SIGNS.LETTER] = STATE.COMMENT,
@@ -212,6 +223,7 @@ local TOKENIZER_STATE_MAP = {
     [STATE.NUMBER] = {
         [SIGNS.LINE] = STATE.END,
         [SIGNS.EMPTY] = STATE.END,
+        [SIGNS.DOT] = STATE.NUMBER,
         [SIGNS.NUMBER] = STATE.NUMBER,
     },
     [STATE.LETTER] = {
@@ -222,6 +234,7 @@ local TOKENIZER_STATE_MAP = {
     [STATE.OPEN] = {
         [SIGNS.LINE] = STATE.ERROR,
         [SIGNS.EMPTY] = STATE.STRING,
+        [SIGNS.DOT] = STATE.STRING,
         [SIGNS.COMMENT] = STATE.STRING,
         [SIGNS.NUMBER] = STATE.STRING,
         [SIGNS.LETTER] = STATE.STRING,
@@ -232,6 +245,7 @@ local TOKENIZER_STATE_MAP = {
     [STATE.STRING] = {
         [SIGNS.LINE] = STATE.ERROR,
         [SIGNS.EMPTY] = STATE.STRING,
+        [SIGNS.DOT] = STATE.STRING,
         [SIGNS.COMMENT] = STATE.STRING,
         [SIGNS.NUMBER] = STATE.STRING,
         [SIGNS.LETTER] = STATE.STRING,
@@ -678,6 +692,9 @@ function tokenizer:process(i)
     elseif self.state == STATE.COMMENT then
         --ignore
     elseif self.state == STATE.NUMBER then
+        if signType == SIGNS.DOT then
+            self:assert(string.find(self.value, "%.") == nil, "sanliq qimmette peqat birla kesir chikiti bulishi kerek")
+        end
         self.value = self.value .. char
     elseif self.state == STATE.LETTER then
         self.value = self.value .. char

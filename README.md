@@ -14,7 +14,7 @@ mixtar mixtarName qimmiti 0 bolsun
 # string
 mixtar a qimmiti [Salam Uyghur Script!] bolsun
 
-# number (only interger)
+# number
 mixtar b qimmiti 1 bolsun
 
 # bool (rast, yalghan)
