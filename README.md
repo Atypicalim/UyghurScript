@@ -27,11 +27,11 @@ mixtar d qimmiti quruq bolsun
 c qimmiti yalghan bolsun
 
 # release an object (will get an error when u use an object that has been released)
-c qimmiti azad bolsun
+qimmet c azad bolsun
 
 # transform data type (number & string)
-b tipi san bolsun
-b tipi xet bolsun
+qimmet b san bolsun
+qimmet b xet bolsun
 
 ```
 
@@ -127,6 +127,11 @@ fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
 
 # call without variable, and not result 
 fonkisiye sanYezish ishlitilsun
+
+# parse from a string
+mixtar isim qimmiti [Yezish] bolsun
+qimmet isim fonkisiye bolsun
+fonkisiye isim ishlitilsun
 
 ```
 

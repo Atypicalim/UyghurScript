@@ -3,7 +3,7 @@
 ]]
 
 -- https://github.com/kompasim/pure-lua-tools.git
--- require "./pure-lua-tools/initialize"
+require "./pure-lua-tools/initialize"
 
 local TOKEN_TYPE = {
     NAME = "NAME", -- variable
@@ -11,13 +11,13 @@ local TOKEN_TYPE = {
     NUMBER = "NUMBER", -- number
     BOOL = "BOOL", -- value
     EMPTY = "EMPTY", -- value
-    FREE = "FREE", -- value
     -- 
     DOT = "DOT",
     -- 
-    TYPE = "TYPE",
+    SOMEVALUE = "SOMEVALUE",
     STR = "STR",
     NUM = "NUM",
+    FREE = "FREE", -- value
     --
     CODE_START = "CODE_START",
     CODE_END = "CODE_END",
@@ -50,7 +50,6 @@ local TOKEN_TYPE = {
     OPERATION = "OPERATION", -- operation
 }
 
-local TOKEN_TYPES_ASSIGNS = {TOKEN_TYPE.NAME, TOKEN_TYPE.STRING, TOKEN_TYPE.NUMBER, TOKEN_TYPE.BOOL, TOKEN_TYPE.EMPTY, TOKEN_TYPE.FREE}
 local TOKEN_TYPES_VALUES = {TOKEN_TYPE.NAME, TOKEN_TYPE.STRING, TOKEN_TYPE.NUMBER, TOKEN_TYPE.BOOL, TOKEN_TYPE.EMPTY}
 local TOKEN_TYPES_STRING = {TOKEN_TYPE.NAME, TOKEN_TYPE.STRING}
 local TOKEN_TYPES_NUMBER = {TOKEN_TYPE.NAME, TOKEN_TYPE.NUMBER}
@@ -66,13 +65,14 @@ local TOKEN_VALUES = {
     INPUT = "oqulsun",
     -- 
     EMPTY = "quruq",
-    FREE = "azad",
     -- 
     DOT = ".",
     -- 
-    TYPE = "tipi",
+    SOMEVALUE = "qimmet",
+    FUNC = "fonkisiye",
     STR = "xet",
     NUM = "san",
+    FREE = "azad",
     --
     TRUE = "rast",
     FALSE = "yalghan",
@@ -104,7 +104,7 @@ local TOKEN_TYPE_MAP = {
     netije = TOKEN_TYPE.RESULT,
     qayturulsun = TOKEN_TYPE.RETURN,
     -- function
-    fonkisiye = TOKEN_TYPE.FUNC,
+    [TOKEN_VALUES.FUNC] = TOKEN_TYPE.FUNC,
     bilen = TOKEN_TYPE.WITH,
     ishlitilsun = TOKEN_TYPE.CALL,
     we = TOKEN_TYPE.FURTHER,
@@ -121,13 +121,13 @@ local TOKEN_TYPE_MAP = {
     [TOKEN_VALUES.INPUT] = TOKEN_TYPE.INPUT,
     -- types
     [TOKEN_VALUES.EMPTY] = TOKEN_TYPE.EMPTY,
-    [TOKEN_VALUES.FREE] = TOKEN_TYPE.FREE,
     -- 
     [TOKEN_VALUES.DOT] = TOKEN_TYPE.DOT,
     -- type
-    [TOKEN_VALUES.TYPE] = TOKEN_TYPE.TYPE,
+    [TOKEN_VALUES.SOMEVALUE] = TOKEN_TYPE.SOMEVALUE,
     [TOKEN_VALUES.STR] = TOKEN_TYPE.STR,
     [TOKEN_VALUES.NUM] = TOKEN_TYPE.NUM,
+    [TOKEN_VALUES.FREE] = TOKEN_TYPE.FREE,
     -- bool
     [TOKEN_VALUES.TRUE] = TOKEN_TYPE.BOOL,
     [TOKEN_VALUES.FALSE] = TOKEN_TYPE.BOOL,
@@ -401,14 +401,6 @@ local PARSER_STATE_MAP = {
         }
     },
     [TOKEN_TYPE.NAME] = {
-        [TOKEN_TYPE.TYPE] = {
-            [TOKEN_TYPE.STR] = {
-                [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
-            },
-            [TOKEN_TYPE.NUM] = {
-                [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
-            },
-        },
         [TOKEN_TYPE.VALUE] = {
             [TOKEN_TYPE.NAME] = {
                 [TOKEN_TYPE.MADE] = AST_TYPE.AST_ASSIGN,
@@ -506,7 +498,7 @@ local PARSER_STATE_MAP = {
                     [TOKEN_TYPE.MADE] = AST_TYPE.AST_EXPRESSION_LOGIC,
                 },
             },
-            [ TOKEN_TYPE.FREE] = {
+            [ TOKEN_TYPE.EMPTY] = {
                 [TOKEN_TYPE.MADE] = AST_TYPE.AST_ASSIGN,
             },
         },
@@ -529,6 +521,22 @@ local PARSER_STATE_MAP = {
             [TOKEN_TYPE.OUTPUT] = AST_TYPE.AST_OPERATE,
         },
     },
+    [TOKEN_TYPE.SOMEVALUE] = {
+        [TOKEN_TYPE.NAME] = {
+            [TOKEN_TYPE.FUNC] = {
+                [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
+            },
+            [TOKEN_TYPE.STR] = {
+                [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
+            },
+            [TOKEN_TYPE.NUM] = {
+                [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
+            },
+            [ TOKEN_TYPE.FREE] = {
+                [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
+            },
+        },
+    }
 }
 
 -- bridge
@@ -878,15 +886,15 @@ end
 function parser:consume_AST_ASSIGN()
     local name = self:expect(TOKEN_TYPE.NAME)
     self:next(TOKEN_TYPE.VALUE)
-    local arg = self:next(TOKEN_TYPES_ASSIGNS)
+    local arg = self:next(TOKEN_TYPES_VALUES)
     self:next(TOKEN_TYPE.MADE)
     return {name, arg}
 end
 
 function parser:consume_AST_TRANSFORM()
-    local name = self:expect(TOKEN_TYPE.NAME)
-    self:next(TOKEN_TYPE.TYPE)
-    local arg = self:next({TOKEN_TYPE.STR, TOKEN_TYPE.NUM})
+    self:expect(TOKEN_TYPE.SOMEVALUE)
+    local name = self:next(TOKEN_TYPE.NAME)
+    local arg = self:next({TOKEN_TYPE.FUNC, TOKEN_TYPE.STR, TOKEN_TYPE.NUM, TOKEN_TYPE.FREE})
     self:next(TOKEN_TYPE.MADE)
     return {name, arg}
 end
@@ -1109,11 +1117,16 @@ function executer:findScope(token)
     return scope, value
 end
 
-function executer:getValue(token, isGetLuaValue)
+function executer:getValue(token, isGetLuaValue, defaultValue)
     if token.type == TOKEN_TYPE.NAME then
         local _, value = self:findScope(token)
-        self:assert(value ~= nil, token, string.format("mixtar texi iniqlanmighan"))
-        return value
+        if value then
+            return value
+        elseif defaultValue then
+            return defaultValue
+        else
+            self:assert(false, token, string.format("mixtar texi iniqlanmighan"))
+        end
     elseif token.type == TOKEN_TYPE.STRING then
         return token.value
     elseif token.type == TOKEN_TYPE.NUMBER then
@@ -1130,10 +1143,12 @@ function executer:getValue(token, isGetLuaValue)
         else
             return token.value
         end
-    elseif token.type == TOKEN_TYPE.FREE then
-        return nil
     else
-        self:assert(false, token, string.format("invalid token type [%s] for executer", token.type))
+        if defaultValue then
+            return defaultValue
+        else
+            self:assert(false, token, string.format("invalid token type [%s] for executer", token.type))
+        end
     end
 end
 
@@ -1147,6 +1162,19 @@ function executer:setValue(nameToken, value, isDefine)
         self:assert(oldValue ~= nil, nameToken, string.format("mixtar texi iniqlanmighan"))
         scope[name] = value
     end
+end
+
+function executer:isStr(value)
+    return type(value) == "string"
+end
+
+function executer:isNum(value)
+    return type(value) == "number"
+end
+
+function executer:isFunc(ast)
+    if type(ast) ~= "table" then return false end
+    return ast.name == AST_TYPE.AST_FUNC
 end
 
 function executer:executeAst(ast)
@@ -1167,7 +1195,11 @@ function executer:execute_AST_OPERATE(node)
     local token = node.tokens[2]
     local operation = node.tokens[3]
     if operation.type == TOKEN_TYPE.OUTPUT then
-        print(self:getValue(token)) -- io.write
+        local value = self:getValue(token)
+        if self:isFunc(value) then
+            value = string.format("[%s %s]", TOKEN_VALUES.FUNC, split(tostring(value), ":")[2])
+        end
+        print(value) -- io.write
     elseif operation.type == TOKEN_TYPE.INPUT then
         local value = io.read()
         self.currentScope[token.value] = tonumber(value) or value
@@ -1191,13 +1223,26 @@ function executer:execute_AST_TRANSFORM(node)
     if typeToken.type == TOKEN_TYPE.STR then
         value = tostring(value)
     elseif typeToken.type == TOKEN_TYPE.NUM then
-        if type(value) == "string" then
+        if self:isStr(value) then
             value = tonumber(value)
-        else
+        end
+        if not self:isNum(value) then
             value = TOKEN_VALUES.EMPTY
         end
+    elseif typeToken.type == TOKEN_TYPE.FUNC then
+        if self:isStr(value) then
+            local oldValue = nameToken.value
+            nameToken.value = value
+            value = self:getValue(nameToken, false, TOKEN_VALUES.EMPTY)
+            nameToken.value = oldValue
+        end
+        if not self:isFunc(value) then
+            value = TOKEN_VALUES.EMPTY
+        end
+    elseif typeToken.type == TOKEN_TYPE.FREE then
+        value = nil
     else
-        assert(string.format("type transform is not implemented for type [%s]", typeToken.type))
+        assert(false, string.format("type transform is not implemented for type [%s]", typeToken.type))
     end
     self:setValue(nameToken, value, false)
 end
@@ -1394,7 +1439,7 @@ function executer:runUyghurFunc()
     -- read args
     for i,v in ipairs(func.tokens) do
         if i == 1 then
-            assert(v.type == nameToken.type and v.value == nameToken.value)
+            assert(v.type == nameToken.type)
         else
             assert(v.type == TOKEN_TYPE.NAME)
             local value = table.remove(self.callStack, 1) or TOKEN_VALUES.EMPTY
