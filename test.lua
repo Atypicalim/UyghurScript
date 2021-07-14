@@ -17,4 +17,7 @@
 
 -- test
 local uyghur = require("uyghur")
+
+uyghur.import("max", "math.max")
+
 uyghur.execute("example.ug")

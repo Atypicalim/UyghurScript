@@ -15,9 +15,9 @@ local TOKEN_TYPE = {
     DOT = "DOT",
     -- 
     SOMEVALUE = "SOMEVALUE",
+    SOMETYPE = "SOMETYPE",
     STR = "STR",
     NUM = "NUM",
-    FREE = "FREE", -- value
     --
     CODE_START = "CODE_START",
     CODE_END = "CODE_END",
@@ -69,10 +69,10 @@ local TOKEN_VALUES = {
     DOT = ".",
     -- 
     SOMEVALUE = "qimmet",
+    SOMETYPE = "tipi",
     FUNC = "fonkisiye",
     STR = "xet",
     NUM = "san",
-    FREE = "azad",
     --
     TRUE = "rast",
     FALSE = "yalghan",
@@ -125,9 +125,9 @@ local TOKEN_TYPE_MAP = {
     [TOKEN_VALUES.DOT] = TOKEN_TYPE.DOT,
     -- type
     [TOKEN_VALUES.SOMEVALUE] = TOKEN_TYPE.SOMEVALUE,
+    [TOKEN_VALUES.SOMETYPE] = TOKEN_TYPE.SOMETYPE,
     [TOKEN_VALUES.STR] = TOKEN_TYPE.STR,
     [TOKEN_VALUES.NUM] = TOKEN_TYPE.NUM,
-    [TOKEN_VALUES.FREE] = TOKEN_TYPE.FREE,
     -- bool
     [TOKEN_VALUES.TRUE] = TOKEN_TYPE.BOOL,
     [TOKEN_VALUES.FALSE] = TOKEN_TYPE.BOOL,
@@ -523,17 +523,16 @@ local PARSER_STATE_MAP = {
     },
     [TOKEN_TYPE.SOMEVALUE] = {
         [TOKEN_TYPE.NAME] = {
-            [TOKEN_TYPE.FUNC] = {
-                [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
-            },
-            [TOKEN_TYPE.STR] = {
-                [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
-            },
-            [TOKEN_TYPE.NUM] = {
-                [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
-            },
-            [ TOKEN_TYPE.FREE] = {
-                [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
+            [TOKEN_TYPE.SOMETYPE] = {
+                [TOKEN_TYPE.FUNC] = {
+                    [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
+                },
+                [TOKEN_TYPE.STR] = {
+                    [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
+                },
+                [TOKEN_TYPE.NUM] = {
+                    [TOKEN_TYPE.MADE] = AST_TYPE.AST_TRANSFORM,
+                },
             },
         },
     }
@@ -894,7 +893,8 @@ end
 function parser:consume_AST_TRANSFORM()
     self:expect(TOKEN_TYPE.SOMEVALUE)
     local name = self:next(TOKEN_TYPE.NAME)
-    local arg = self:next({TOKEN_TYPE.FUNC, TOKEN_TYPE.STR, TOKEN_TYPE.NUM, TOKEN_TYPE.FREE})
+    self:next(TOKEN_TYPE.SOMETYPE)
+    local arg = self:next({TOKEN_TYPE.FUNC, TOKEN_TYPE.STR, TOKEN_TYPE.NUM})
     self:next(TOKEN_TYPE.MADE)
     return {name, arg}
 end
@@ -1103,7 +1103,7 @@ function executer:exitScope()
     assert(self.currentScope ~= nil, "exiting from global scope")
 end
 
-function executer:findScope(token)
+function executer:findScope(token, isInCurrentScope)
     assert(token.type == TOKEN_TYPE.NAME, "invalid token for find scope")
     local name = token.value
     local scope = nil
@@ -1112,18 +1112,21 @@ function executer:findScope(token)
     while not value and scopeIndex > 0 do
         scope = self.scopeStack[scopeIndex]
         value = scope[name]
+        if isInCurrentScope then
+            break
+        end
         scopeIndex = scopeIndex - 1
     end
     return scope, value
 end
 
-function executer:getValue(token, isGetLuaValue, defaultValue)
+function executer:getValue(token, isGetLuaValue, ignoreError)
     if token.type == TOKEN_TYPE.NAME then
         local _, value = self:findScope(token)
         if value then
             return value
-        elseif defaultValue then
-            return defaultValue
+        elseif ignoreError then
+            return TOKEN_VALUES.EMPTY
         else
             self:assert(false, token, string.format("mixtar texi iniqlanmighan"))
         end
@@ -1144,17 +1147,13 @@ function executer:getValue(token, isGetLuaValue, defaultValue)
             return token.value
         end
     else
-        if defaultValue then
-            return defaultValue
-        else
-            self:assert(false, token, string.format("invalid token type [%s] for executer", token.type))
-        end
+        self:assert(false, token, string.format("invalid token type [%s] for executer", token.type))
     end
 end
 
 function executer:setValue(nameToken, value, isDefine)
     local name = nameToken.value
-    local scope, oldValue = self:findScope(nameToken)
+    local scope, oldValue = self:findScope(nameToken, isDefine)
     if isDefine then
         self:assert(oldValue == nil, nameToken, string.format("mixtar alliburun iniqlanghan"))
         self.currentScope[name] = value
@@ -1233,14 +1232,12 @@ function executer:execute_AST_TRANSFORM(node)
         if self:isStr(value) then
             local oldValue = nameToken.value
             nameToken.value = value
-            value = self:getValue(nameToken, false, TOKEN_VALUES.EMPTY)
+            value = self:getValue(nameToken, false, true)
             nameToken.value = oldValue
         end
         if not self:isFunc(value) then
             value = TOKEN_VALUES.EMPTY
         end
-    elseif typeToken.type == TOKEN_TYPE.FREE then
-        value = nil
     else
         assert(false, string.format("type transform is not implemented for type [%s]", typeToken.type))
     end
@@ -1510,8 +1507,6 @@ function compiler:convertValue(token)
     elseif token.type == TOKEN_TYPE.BOOL then
         return tostring(value == TOKEN_VALUES.TRUE)
     elseif token.type == TOKEN_TYPE.EMPTY then
-        return "nil"
-    elseif token.type == TOKEN_TYPE.FREE then
         return "nil"
     else
         self:assert(false, token, string.format("invalid token type [%s] for compiler", token.type))

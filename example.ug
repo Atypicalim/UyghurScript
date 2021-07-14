@@ -2,8 +2,6 @@
 
 ################################
 
-# mixtar dunyaghaSalam qimmiti [salam...] bolsun
-# qimmet dunyaghaSalam azad bolsun
 # mixtar dunyaghaSalam qimmiti [SalamDunya!] bolsun
 # ikrangha dunyaghaSalam yezilsun
 
@@ -77,6 +75,21 @@
 # ikrangha [UyghurScript!] yezilsun
 
 # mixtar a qimmiti [1] bolsun
-# qimmet a san bolsun
-# qimmet a xet bolsun
-# ikrangha a yezilsun
+# qimmet a tipi san bolsun
+# qimmet a tipi xet bolsun
+# mixtar c qimmiti quruq bolsun
+# c qimmiti a teng 1 bolsun
+# ikrangha c yezilsun
+
+mixtar a qimmiti 3 bolsun
+mixtar b qimmiti 5 bolsun
+mixtar c qimmiti quruq bolsun
+
+mixtar funName qimmiti [max] bolsun
+qimmet funName tipi fonkisiye bolsun
+
+# fonkisiye max bilen a b ishlitilsun we netije c bolsun
+fonkisiye funName bilen a b ishlitilsun we netije c bolsun
+
+ikrangha c yezilsun
+

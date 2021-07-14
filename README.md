@@ -26,12 +26,9 @@ mixtar d qimmiti quruq bolsun
 # assign a value
 c qimmiti yalghan bolsun
 
-# release an object (will get an error when u use an object that has been released)
-qimmet c azad bolsun
-
 # transform data type (number & string)
-qimmet b san bolsun
-qimmet b xet bolsun
+qimmet b tipi san bolsun
+qimmet b tipi xet bolsun
 
 ```
 
@@ -130,7 +127,7 @@ fonkisiye sanYezish ishlitilsun
 
 # parse from a string
 mixtar isim qimmiti [Yezish] bolsun
-qimmet isim fonkisiye bolsun
+qimmet isim tipi fonkisiye bolsun
 fonkisiye isim ishlitilsun
 
 ```
