@@ -538,9 +538,6 @@ local PARSER_STATE_MAP = {
     }
 }
 
--- bridge
-local lua = {}
-
 -- tools
 
 local unpack = unpack or table.unpack
@@ -605,9 +602,12 @@ local function is_valid_str(v)
     return type(v) == "string" and #v > 0
 end
 
-local function get_lua_value(valueName)
-    assert(is_valid_str(valueName), string.format("invalid lua func name [%s]", valueName))
-    local names = split(valueName, "%.")
+-- bridge
+local lua = {}
+
+local function parse_lua_func(funcName)
+    assert(is_valid_str(funcName), string.format("invalid lua func name [%s]", funcName))
+    local names = split(funcName, "%.")
     local length = #names
     local index = 1
     local func = nil
@@ -618,8 +618,27 @@ local function get_lua_value(valueName)
         assert(func ~= nil, string.format("invalid lua func name [%s]", name))
         index = index + 1
     end
-    assert(func ~= nil, string.format("function [%s] is not found in lua!", valueName))
+    assert(func ~= nil, string.format("function [%s] is not found in lua!", funcName))
     return func
+end
+
+local function get_lua_func(value)
+    local func = nil
+    if type(value) == "string" then
+        func = parse_lua_func(value)
+    elseif type(value) == "function" then
+        func = value
+    end
+    if not func then
+        return
+    end
+    local luaFunc = {}
+    luaFunc.isLuaFunction = true
+    luaFunc.name = tostring(value)
+    luaFunc.action = function(...)
+        return func(...)
+    end
+    return luaFunc
 end
 
 local function set_lua_value(valueName, value)
@@ -1122,7 +1141,13 @@ end
 
 function executer:getValue(token, isGetLuaValue, ignoreError)
     if token.type == TOKEN_TYPE.NAME then
-        local _, value = self:findScope(token)
+        local value = nil
+        if isGetLuaValue and lua[token.value] then
+            value = lua[token.value]
+        end
+        if not value then 
+            _, value = self:findScope(token)
+        end
         if value then
             return value
         elseif ignoreError then
@@ -1171,9 +1196,14 @@ function executer:isNum(value)
     return type(value) == "number"
 end
 
-function executer:isFunc(ast)
-    if type(ast) ~= "table" then return false end
-    return ast.name == AST_TYPE.AST_FUNC
+function executer:isFunc(value)
+    if type(value) ~= "table" then return false end
+    if value.isUyghurFunction then
+        return true
+    end
+    if value.isLuaFunction then
+        return true
+    end
 end
 
 function executer:executeAst(ast)
@@ -1232,7 +1262,7 @@ function executer:execute_AST_TRANSFORM(node)
         if self:isStr(value) then
             local oldValue = nameToken.value
             nameToken.value = value
-            value = self:getValue(nameToken, false, true)
+            value = self:getValue(nameToken, true, true)
             nameToken.value = oldValue
         end
         if not self:isFunc(value) then
@@ -1376,14 +1406,22 @@ function executer:execute_AST_FUNC(node)
     assert(nameToken.type == TOKEN_TYPE.NAME)
     local _, oldValue = self:findScope(nameToken)
     self:assert(oldValue == nil, nameToken, "fonkisiye ismi ishlitilip bulunghan")
-    self.currentScope[funcName] = node
+    local uyghurFunc = {}
+    uyghurFunc.isUyghurFunction = true
+    uyghurFunc.name = nameToken.value
+    uyghurFunc.action = function()
+        return node
+    end
+    self.currentScope[funcName] = uyghurFunc
 end
 
 function executer:execute_AST_CALL(node)
     local nameToken = node.tokens[1]
     local funcName = nameToken.value
     -- 
-    local isLuaFunc = lua[nameToken.value] ~= nil
+    local func = self:getValue(nameToken, true)
+    self:assert(self:isFunc(func), nameToken, "bu mixtar fonkisiye emes")
+    local isLuaFunc = is_table(func) and func.isLuaFunction == true
     -- push args
     local resultToken = nil
     self.callStack = {}
@@ -1393,7 +1431,7 @@ function executer:execute_AST_CALL(node)
             assert(resultToken ~= nil)
             break
         elseif i == 1 then
-            table.insert(self.callStack, v)
+            table.insert(self.callStack, func)
         else
             local value = self:getValue(v, isLuaFunc)
             table.insert(self.callStack, value)
@@ -1415,12 +1453,8 @@ function executer:execute_AST_CALL(node)
 end
 
 function executer:runLuaFunc()
-    local nameToken = table.remove(self.callStack, 1)
-    assert(nameToken.type == TOKEN_TYPE.NAME)
-    local func = get_lua_value(lua[nameToken.value])
-    self:assert(func ~= nil, nameToken, string.format("fonkisiye texi iniqlanmighan"))
-    self:assert(type(func) == "function", nameToken, "bu mixtar fonkisiye emes")
-    local result = {func(unpack(self.callStack))}
+    local funcTable = table.remove(self.callStack, 1)
+    local result = {funcTable.action(unpack(self.callStack))}
     self.callStack = result
 end
 
@@ -1428,15 +1462,12 @@ function executer:runUyghurFunc()
     -- create local scope
     self:newScope()
     -- read func
-    local nameToken = table.remove(self.callStack, 1)
-    assert(nameToken.type == TOKEN_TYPE.NAME)
-    local _, func = self:findScope(nameToken)
-    self:assert(func ~= nil, nameToken, string.format("fonkisiye texi iniqlanmighan"))
-    self:assert(type(func) == "table" and func.name == AST_TYPE.AST_FUNC, nameToken, "bu mixtar fonkisiye emes")
+    local funcTable = table.remove(self.callStack, 1)
+    local funcAst = funcTable.action()
     -- read args
-    for i,v in ipairs(func.tokens) do
+    for i,v in ipairs(funcAst.tokens) do
         if i == 1 then
-            assert(v.type == nameToken.type)
+            assert(v.type == TOKEN_TYPE.NAME)
         else
             assert(v.type == TOKEN_TYPE.NAME)
             local value = table.remove(self.callStack, 1) or TOKEN_VALUES.EMPTY
@@ -1445,7 +1476,7 @@ function executer:runUyghurFunc()
     end
     self.callStack = {}
     -- run body
-    for i,v in ipairs(func.children) do
+    for i,v in ipairs(funcAst.children) do
         self:executeAst(v)
     end
     -- exit local scope
@@ -1730,9 +1761,10 @@ end
 local function importLua(uyghurValue, luaValue)
     assert(is_valid_str(uyghurValue), string.format("invalid uyghur func name [%s]", uyghurValue))
     assert(is_valid_str(luaValue), string.format("invalid lua func name [%s]", luaValue))
-    local func = get_lua_value(luaValue)
+    local func = get_lua_func(luaValue)
+    assert(func ~= nil, string.format("function [%s] is not found in lua!", luaValue))
     assert(lua[uyghurValue] == nil, string.format("function [%s] is already registered in uyghur!", uyghurValue))
-    lua[uyghurValue] = luaValue
+    lua[uyghurValue] = func
 end
 
 local function exportLua(uyghurValue, luaValue)

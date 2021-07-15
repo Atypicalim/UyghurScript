@@ -81,15 +81,15 @@
 # c qimmiti a teng 1 bolsun
 # ikrangha c yezilsun
 
-mixtar a qimmiti 3 bolsun
-mixtar b qimmiti 5 bolsun
-mixtar c qimmiti quruq bolsun
+# mixtar a qimmiti 3 bolsun
+# mixtar b qimmiti 5 bolsun
+# mixtar c qimmiti quruq bolsun
 
-mixtar funName qimmiti [max] bolsun
-qimmet funName tipi fonkisiye bolsun
+# mixtar funName qimmiti [max] bolsun
+# qimmet funName tipi fonkisiye bolsun
 
-# fonkisiye max bilen a b ishlitilsun we netije c bolsun
-fonkisiye funName bilen a b ishlitilsun we netije c bolsun
+# # fonkisiye max bilen a b ishlitilsun we netije c bolsun
+# fonkisiye funName bilen a b ishlitilsun we netije c bolsun
 
-ikrangha c yezilsun
+# ikrangha c yezilsun
 
