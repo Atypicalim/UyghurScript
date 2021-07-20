@@ -11,6 +11,7 @@ local TOKEN_TYPE = {
     NUMBER = "NUMBER", -- number
     BOOL = "BOOL", -- value
     EMPTY = "EMPTY", -- value
+    BOX = "BOX",
     -- 
     DOT = "DOT",
     -- 
@@ -50,6 +51,7 @@ local TOKEN_TYPE = {
     OPERATION = "OPERATION", -- operation
 }
 
+local TOKEN_TYPES_VALUES_ALL = {TOKEN_TYPE.NAME, TOKEN_TYPE.STRING, TOKEN_TYPE.NUMBER, TOKEN_TYPE.BOOL, TOKEN_TYPE.EMPTY, TOKEN_TYPE.BOX}
 local TOKEN_TYPES_VALUES = {TOKEN_TYPE.NAME, TOKEN_TYPE.STRING, TOKEN_TYPE.NUMBER, TOKEN_TYPE.BOOL, TOKEN_TYPE.EMPTY}
 local TOKEN_TYPES_STRING = {TOKEN_TYPE.NAME, TOKEN_TYPE.STRING}
 local TOKEN_TYPES_NUMBER = {TOKEN_TYPE.NAME, TOKEN_TYPE.NUMBER}
@@ -65,6 +67,7 @@ local TOKEN_VALUES = {
     INPUT = "oqulsun",
     -- 
     EMPTY = "quruq",
+    BOX = "sanduq",
     -- 
     DOT = ".",
     -- 
@@ -121,6 +124,7 @@ local TOKEN_TYPE_MAP = {
     [TOKEN_VALUES.INPUT] = TOKEN_TYPE.INPUT,
     -- types
     [TOKEN_VALUES.EMPTY] = TOKEN_TYPE.EMPTY,
+    [TOKEN_VALUES.BOX] = TOKEN_TYPE.BOX,
     -- 
     [TOKEN_VALUES.DOT] = TOKEN_TYPE.DOT,
     -- type
@@ -306,6 +310,9 @@ local PARSER_STATE_MAP = {
                     [TOKEN_TYPE.MADE] = AST_TYPE.AST_VARIABLE,
                 },
                 [TOKEN_TYPE.EMPTY] = {
+                    [TOKEN_TYPE.MADE] = AST_TYPE.AST_VARIABLE,
+                },
+                [TOKEN_TYPE.BOX] = {
                     [TOKEN_TYPE.MADE] = AST_TYPE.AST_VARIABLE,
                 },
             }
@@ -896,7 +903,7 @@ function parser:consume_AST_VARIABLE()
     self:expect(TOKEN_TYPE.VARIABLE)
     local name = self:next(TOKEN_TYPE.NAME)
     self:next(TOKEN_TYPE.VALUE)
-    local arg = self:next(TOKEN_TYPES_VALUES)
+    local arg = self:next(TOKEN_TYPES_VALUES_ALL)
     self:next(TOKEN_TYPE.MADE)
     return {name, arg}
 end
@@ -904,7 +911,7 @@ end
 function parser:consume_AST_ASSIGN()
     local name = self:expect(TOKEN_TYPE.NAME)
     self:next(TOKEN_TYPE.VALUE)
-    local arg = self:next(TOKEN_TYPES_VALUES)
+    local arg = self:next(TOKEN_TYPES_VALUES_ALL)
     self:next(TOKEN_TYPE.MADE)
     return {name, arg}
 end
@@ -931,9 +938,9 @@ end
 function parser:consume_AST_EXPRESSION_NUMBER()
     local name = self:expect(TOKEN_TYPE.NAME)
     self:next(TOKEN_TYPE.VALUE)
-    local arg1 = self:next(TOKEN_TYPES_VALUES)
+    local arg1 = self:next(TOKEN_TYPES_NUMBER)
     local exp = self:next(TOKEN_TYPE.OPERATION_NUMBER)
-    local arg2 = self:next(TOKEN_TYPES_VALUES)
+    local arg2 = self:next(TOKEN_TYPES_NUMBER)
     self:next(TOKEN_TYPE.MADE)
     return {name, arg1, exp, arg2}
 end
@@ -955,7 +962,7 @@ function parser:consume_AST_OPERATE()
     if arg.type == TOKEN_TYPE.NAME then
         handle = self:next({TOKEN_TYPE.OUTPUT, TOKEN_TYPE.INPUT})
     else
-        self:check(TOKEN_TYPES_VALUES)
+        self:check(TOKEN_TYPES_VALUES_ALL)
         handle = self:next(TOKEN_TYPE.OUTPUT)
     end
     return {target, arg, handle}
@@ -998,7 +1005,7 @@ end
 
 function parser:consume_AST_RESULT()
     self:expect(TOKEN_TYPE.RESULT)
-    local arg1 = self:next(TOKEN_TYPES_VALUES)
+    local arg1 = self:next(TOKEN_TYPES_VALUES_ALL)
     self:next(TOKEN_TYPE.RETURN)
     return {arg1}
 end
@@ -1031,7 +1038,7 @@ function parser:consume_AST_CALL()
     if next.type == TOKEN_TYPE.WITH then
         next = self:next()
     end
-    while self:is(TOKEN_TYPES_VALUES) do
+    while self:is(TOKEN_TYPES_VALUES_ALL) do
         table.insert(tokens, next)
         next = self:next()
     end
@@ -1116,6 +1123,19 @@ function executer:newScope()
     self.currentScope = self.scopeStack[#self.scopeStack]
 end
 
+function executer:newBox()
+    local box = {}
+    box.isUyghurBox = true
+    box.values = {}
+    box.get = function(k)
+        return box.values[k] or TOKEN_TYPE.EMPTY
+    end
+    box.set = function(k, v)
+        box.values[k] = v
+    end
+    return box
+end
+
 function executer:exitScope()
     table.remove(self.scopeStack, #self.scopeStack)
     self.currentScope = self.scopeStack[#self.scopeStack]
@@ -1171,6 +1191,8 @@ function executer:getValue(token, isGetLuaValue, ignoreError)
         else
             return token.value
         end
+    elseif token.type == TOKEN_TYPE.BOX then
+        return self:newBox()
     else
         self:assert(false, token, string.format("invalid token type [%s] for executer", token.type))
     end
@@ -1206,6 +1228,13 @@ function executer:isFunc(value)
     end
 end
 
+function executer:isBox(value)
+    if type(value) ~= "table" then return false end
+    if value.isUyghurBox then
+        return true
+    end
+end
+
 function executer:executeAst(ast)
     if not ast then return end
     local name = ast.name
@@ -1227,6 +1256,8 @@ function executer:execute_AST_OPERATE(node)
         local value = self:getValue(token)
         if self:isFunc(value) then
             value = string.format("[%s %s]", TOKEN_VALUES.FUNC, split(tostring(value), ":")[2])
+        elseif self:isBox(value) then
+            value = string.format("[%s %s]", TOKEN_VALUES.BOX, split(tostring(value), ":")[2])
         end
         print(value) -- io.write
     elseif operation.type == TOKEN_TYPE.INPUT then
