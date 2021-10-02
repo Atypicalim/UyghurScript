@@ -2,9 +2,9 @@
 # names
 DST_DIR = ./release/
 DST_NAME = uyghur.exe
-SRC = ./uyghur/uyghur.c
+SRC = ./uyghur/main.c
 DST = $(DST_DIR)$(DST_NAME)
-SCRIPT = ./example/test.ug
+SCRIPT = ../examples/test.ug
 
 # flags
 LFLAGS = # -I some/include/dir -L some/lib/dir
