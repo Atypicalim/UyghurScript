@@ -17,25 +17,25 @@ Uyghur *Uyghur_new()
     return uyghur;
 }
 
-void Uyghur_execute(Uyghur *uyghur, const char *path)
+void Uyghur_execute(Uyghur *uyghur, const char *path, const char *code)
 {
-    FILE *file;
     Tokenizer *tokenizer = Tokenizer_new();
     //
-    file = fopen(path, "r");
-    if (file == NULL) {
-        tools_error(tools_format(LANG_ERR_NO_INPUT_FILE, path));
-        return;
-    }
+    Token *haedToken = Tokenizer_parseCode(tokenizer, path, code);
     //
-    Token *haedToken = Tokenizer_parseFile(tokenizer, file);
-    //
-    fclose(file);
+    Tokenizer_free(tokenizer);
 }
 
 void Uyghur_compile(Uyghur *uyghur, const char *path)
 {
     //
+}
+
+void Uyghur_run(Uyghur *this, const char *path)
+{
+    char *content = tools_read_file(path);
+    tools_check(content != NULL, tools_format(LANG_ERR_NO_INPUT_FILE, path));
+    Uyghur_execute(this, path, content);
 }
 
 void Uyghur_inport()
