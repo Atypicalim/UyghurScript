@@ -21,17 +21,23 @@ typedef struct
     Hashmap *keywordsMap;
 } Tokenizer;
 
+void Tokenizer_reset(Tokenizer *this)
+{
+    this->line = 1;
+    this->column = 1;
+    this->position = 0;
+    this->length = 0;
+    this->head = NULL;
+    this->tail = NULL;
+    this->path = NULL;
+    this->code = NULL;
+    this->keywordsMap = NULL;
+}
+
 Tokenizer *Tokenizer_new()
 {
     Tokenizer *tokenizer = malloc(sizeof(Tokenizer));
-    tokenizer->line = 1;
-    tokenizer->column = 1;
-    tokenizer->position = 0;
-    tokenizer->length = 0;
-    tokenizer->head = NULL;
-    tokenizer->tail = NULL;
-    tokenizer->path = NULL;
-    tokenizer->code = NULL;
+    Tokenizer_reset(tokenizer);
     //
     Hashmap *map = Hashmap_new();
     Hashmap_fill(map, TVALUE_IF);
@@ -209,4 +215,17 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
 void Tokenizer_free(Tokenizer *this)
 {
     //
+    Token *current = this->head;
+    Token *temp;
+    while (current != NULL)
+    {
+        temp = current->next;
+        Token_free(current);
+        current = temp;
+    }
+    if (this->keywordsMap != NULL)
+    {
+        Hashmap_free(this->keywordsMap);
+    }
+    Tokenizer_reset(this);
 }
