@@ -17,6 +17,8 @@ typedef struct
     const char *path;
     const char *code;
     Token *head;
+    Token *tail;
+    Hashmap *keywordsMap;
 } Tokenizer;
 
 Tokenizer *Tokenizer_new()
@@ -27,8 +29,52 @@ Tokenizer *Tokenizer_new()
     tokenizer->position = 0;
     tokenizer->length = 0;
     tokenizer->head = NULL;
+    tokenizer->tail = NULL;
     tokenizer->path = NULL;
     tokenizer->code = NULL;
+    //
+    Hashmap *map = Hashmap_new();
+    Hashmap_fill(map, TVALUE_IF);
+    Hashmap_fill(map, TVALUE_ELSE_IF);
+    Hashmap_fill(map, TVALUE_ELSE);
+    Hashmap_fill(map, TVALUE_OUTPUT);
+    Hashmap_fill(map, TVALUE_INPUT);
+    Hashmap_fill(map, TVALUE_EMPTY);
+    Hashmap_fill(map, TVALUE_BOX);
+    Hashmap_fill(map, TVALUE_DOT);
+    Hashmap_fill(map, TVALUE_SOMEVALUE);
+    Hashmap_fill(map, TVALUE_SOMETYPE);
+    Hashmap_fill(map, TVALUE_STR);
+    Hashmap_fill(map, TVALUE_NUM);
+    Hashmap_fill(map, TVALUE_TRUE);
+    Hashmap_fill(map, TVALUE_FALSE);
+    Hashmap_fill(map, TVALUE_AND);
+    Hashmap_fill(map, TVALUE_OR);
+    Hashmap_fill(map, TVALUE_NOT);
+    Hashmap_fill(map, TVALUE_ADD);
+    Hashmap_fill(map, TVALUE_SUB);
+    Hashmap_fill(map, TVALUE_MUL);
+    Hashmap_fill(map, TVALUE_DIV);
+    Hashmap_fill(map, TVALUE_LESS);
+    Hashmap_fill(map, TVALUE_MORE);
+    Hashmap_fill(map, TVALUE_CONCAT);
+    Hashmap_fill(map, TVALUE_EQUAL);
+    Hashmap_fill(map, TVALUE_SCREEN_FROM);
+    Hashmap_fill(map, TVALUE_SCREEN_TO);
+    Hashmap_fill(map, TVALUE_WHILE);
+    Hashmap_fill(map, TVALUE_CODE_START);
+    Hashmap_fill(map, TVALUE_CODE_END);
+    Hashmap_fill(map, TVALUE_VARIABLE);
+    Hashmap_fill(map, TVALUE_VALUE);
+    Hashmap_fill(map, TVALUE_MADE);
+    Hashmap_fill(map, TVALUE_FUNC);
+    Hashmap_fill(map, TVALUE_WITH);
+    Hashmap_fill(map, TVALUE_CALL);
+    Hashmap_fill(map, TVALUE_RETURN);
+    Hashmap_fill(map, TVALUE_FURTHER);
+    Hashmap_fill(map, TVALUE_RESULT);
+    tokenizer->keywordsMap = map;
+    //
     return tokenizer;
 }
 
@@ -48,6 +94,26 @@ char Tokenizer_skipN(Tokenizer *this, int n)
     this->position = this->position + n;
 }
 
+void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
+{
+    if (type == TTYPE_NAME)
+    {
+        char *v = Hashmap_get(this->keywordsMap, value);
+        if (v != NULL) type = TTYPE_WORD;
+    }
+    Token *token = Token_new(this->path, this->line, this->column, type, value);
+    if (this->head == NULL)
+    {
+        this->head = token;
+        this->tail = token;
+    }
+    else
+    {
+        Token_append(this->tail, token);
+        this->tail = token;
+    }
+}
+
 Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
 {
     this->path = path;
@@ -58,7 +124,6 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
     while (this->position < this->length)
     {
         currentChar = Tokenizer_getchar(this, 0);
-        // printf("--------------%d %d %c %s\n", this->line, this->column, currentChar, isdigit(currentChar) ? "YES" : "NO");
         // line
         if (currentChar == '\n')
         {
@@ -92,7 +157,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                 str = tools_str_apent(str, c, false);
                 i++;
             }
-            printf("\nSTRING: %s\n", str);
+            Tokenizer_addToken(this, TTYPE_STRING, str);
             Tokenizer_skipN(this, i + 1);
             continue;
         }
@@ -111,7 +176,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                 str = tools_str_apent(str, c, false);
                 i++;
             }
-            printf("\nNUMBER: %s %f\n", str, strtod(str, NULL));
+            Tokenizer_addToken(this, TTYPE_NUMBER, str); // strtod(str, NULL)
             Tokenizer_skipN(this, i + 1);
             continue; 
         }
@@ -128,7 +193,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                 str = tools_str_apent(str, c, false);
                 i++;
             }
-            printf("\nLETTER: %s\n", str);
+            Tokenizer_addToken(this, TTYPE_NAME, str);
             Tokenizer_skipN(this, i + 1);
             continue; 
         }

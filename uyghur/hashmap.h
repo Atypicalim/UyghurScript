@@ -84,6 +84,10 @@ void Hashmap_set(Hashmap *map, char *key, void *value) {
     }
 }
 
+void Hashmap_fill(Hashmap *map, char *content) {
+    Hashmap_set(map, content, content);
+}
+
 void *Hashmap_get(Hashmap *map, char *key) {
     assert(map != NULL);
     int pos = hash(key);

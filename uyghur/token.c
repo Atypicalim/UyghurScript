@@ -10,13 +10,13 @@ typedef struct TokenNode {
     const char *file;
     int line;
     int column;
-    int type;
+    char *type;
     void *value;
     struct TokenNode *next;
     struct TokenNode *last;
 } Token;
 
-Token *Token_new(const char *file, int line, int column, int type, void *value)
+Token *Token_new(const char *file, int line, int column, char *type, void *value)
 {
     Token *token = malloc(sizeof(Token));
     token->file = file;
@@ -31,7 +31,7 @@ Token *Token_new(const char *file, int line, int column, int type, void *value)
 
 void Token_print(Token *this)
 {
-    printf("[(TOKEN) => type:%d, value:%s in (%d, %d %s)]\n", this->type, this->value,  this->line,  this->column,  this->file);
+    printf("[(TOKEN) => type:%s, value:(%s) in (%d, %d %s)]\n", this->type, this->value,  this->line,  this->column,  this->file);
 }
 
 void Token_append(Token *this, Token *other)

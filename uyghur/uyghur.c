@@ -21,7 +21,13 @@ void Uyghur_execute(Uyghur *uyghur, const char *path, const char *code)
 {
     Tokenizer *tokenizer = Tokenizer_new();
     //
-    Token *haedToken = Tokenizer_parseCode(tokenizer, path, code);
+    Token *headToken = Tokenizer_parseCode(tokenizer, path, code);
+    // TODO:
+    while (headToken != NULL)
+    {
+        Token_print(headToken);
+        headToken = headToken->next;
+    }
     //
     Tokenizer_free(tokenizer);
 }
