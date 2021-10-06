@@ -12,5 +12,6 @@
 #include <math.h>
 #include <ctype.h>
 
+#include "language.h"
 #include "constant.h"
 #include "tools.c"

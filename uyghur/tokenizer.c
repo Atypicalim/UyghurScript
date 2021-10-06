@@ -58,6 +58,8 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
     while (this->position < this->length)
     {
         currentChar = Tokenizer_getchar(this, 0);
+        // printf("--------------%d %d %c %s\n", this->line, this->column, currentChar, isdigit(currentChar) ? "YES" : "NO");
+        // line
         if (currentChar == '\n')
         {
             this->line++;
@@ -65,28 +67,76 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             this->position++;
             continue;
         }
-        else
+        // empty
+        if (isspace(currentChar))
         {
-            this->column++;
-            this->position++;
-        }
-        printf("--------------%d %d %c\n", this->line, this->line, currentChar);
-        // letter
-        if (isalpha(currentChar))
-        {
-            int i = 0;
-            char c;
-            while(true)
-            {
-                c = Tokenizer_getchar(this, i);
-                if(!isalnum(c)) break;
-                printf("->%c:%s\n", c, isalnum(c) ? "YES" : "NO");
-                i++;
-            }
-            Tokenizer_skipN(this, i);
+            Tokenizer_skipN(this, 1);
             continue;
         }
-        // Tokenizer_parseCharacter(this, currentChar);
+        // comment
+        if (currentChar == '#')
+        {
+            int i = 1;
+            while(Tokenizer_getchar(this, i) != '\n') i++;
+            Tokenizer_skipN(this, 1 + i - 1);
+            continue;
+        }
+        // string
+        if (currentChar == '[')
+        {
+            char* str = tools_str_new("", 0);
+            int i = 1;
+            char c;
+            while ((c = Tokenizer_getchar(this, i)) != ']')
+            {
+                str = tools_str_apent(str, c, false);
+                i++;
+            }
+            printf("\nSTRING: %s\n", str);
+            Tokenizer_skipN(this, i + 1);
+            continue;
+        }
+        // number
+        if (isdigit(currentChar) || currentChar == '-' || currentChar == '+')
+        {
+            char* str = tools_str_apent(tools_str_new("", 0), currentChar, false);
+            int i = 1;
+            char c;
+            bool b = false;
+            while (true)
+            {
+                c = Tokenizer_getchar(this, i);
+                if (!isdigit(c) && !(c == '.' && !b)) break;
+                if (c == '.') b = true;
+                str = tools_str_apent(str, c, false);
+                i++;
+            }
+            printf("\nNUMBER: %s %f\n", str, strtod(str, NULL));
+            Tokenizer_skipN(this, i + 1);
+            continue; 
+        }
+        // letter
+        if (isalpha(currentChar) || currentChar == '_')
+        {
+            char* str = tools_str_apent(tools_str_new("", 0), currentChar, false);
+            int i = 1;
+            char c;
+            while (true)
+            {
+                c = Tokenizer_getchar(this, i);
+                if (!isalnum(c)) break;
+                str = tools_str_apent(str, c, false);
+                i++;
+            }
+            printf("\nLETTER: %s\n", str);
+            Tokenizer_skipN(this, i + 1);
+            continue; 
+        }
+        // unsupported
+        char s[1024];
+        sprintf(s, LANG_ERR_NO_VALID_CHAR, this->path, this->line, this->column, currentChar);
+        tools_error(s);
+        break;
     }
     return this->head;
 }
