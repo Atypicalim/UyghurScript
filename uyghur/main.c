@@ -23,5 +23,12 @@ int main(int argc, char const *argv[])
     // Token_print(Token_last(Token_last(token3)));
     // Token_print(token3->last->last);
     //
+    // hash map test
+    // Hashmap *map = Hashmap_new();
+    // Hashmap_set(map, "aaa", "aaa-aaa");
+    // Hashmap_set(map, "bbb", "bbb-bbb");
+    // Hashmap_print(map);
+    // Hashmap_free(map);
+    //
     return 0;
 }

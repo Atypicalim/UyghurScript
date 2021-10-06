@@ -15,3 +15,4 @@
 #include "language.h"
 #include "constant.h"
 #include "tools.c"
+#include "hashmap.h"
