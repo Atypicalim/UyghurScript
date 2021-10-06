@@ -228,4 +228,5 @@ void Tokenizer_free(Tokenizer *this)
         Hashmap_free(this->keywordsMap);
     }
     Tokenizer_reset(this);
+    free(this);
 }

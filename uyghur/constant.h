@@ -41,21 +41,40 @@
 #define TVALUE_CONCAT "ulanghan"
 #define TVALUE_EQUAL "teng"
 //
-    #define TVALUE_SCREEN_FROM "ikrandin"
-    #define TVALUE_SCREEN_TO "ikrangha"
-    //
-    #define TVALUE_WHILE "nawada"
-    #define TVALUE_CODE_START "bolsa"
-    #define TVALUE_CODE_END "tamamlansun"
-    //
-    #define TVALUE_VARIABLE "mixtar"
-    #define TVALUE_VALUE "qimmiti"
-    #define TVALUE_MADE "bolsun"
-    
-    #define TVALUE_FUNC "fonkisiye"
-    #define TVALUE_WITH "bilen"
-    #define TVALUE_CALL "ishlitilsun"
-    #define TVALUE_RETURN "qayturulsun"
-    #define TVALUE_FURTHER "we"
-    #define TVALUE_RESULT "netije"
-    
+#define TVALUE_SCREEN_FROM "ikrandin"
+#define TVALUE_SCREEN_TO "ikrangha"
+//
+#define TVALUE_WHILE "nawada"
+#define TVALUE_CODE_START "bolsa"
+#define TVALUE_CODE_END "tamamlansun"
+//
+#define TVALUE_VARIABLE "mixtar"
+#define TVALUE_VALUE "qimmiti"
+#define TVALUE_MADE "bolsun"
+
+#define TVALUE_FUNC "fonkisiye"
+#define TVALUE_WITH "bilen"
+#define TVALUE_CALL "ishlitilsun"
+#define TVALUE_RETURN "qayturulsun"
+#define TVALUE_FURTHER "we"
+#define TVALUE_RESULT "netije"
+
+// ast type
+#define ASTTYPE_TOKEN "ASTTYPE_TOKEN"
+#define ASTTYPE_PROGRAM "ASTTYPE_PROGRAM"
+#define ASTTYPE_END "ASTTYPE_END"
+#define ASTTYPE_VARIABLE "ASTTYPE_VARIABLE"
+#define ASTTYPE_ASSIGN "ASTTYPE_ASSIGN"
+#define ASTTYPE_TRANSFORM "ASTTYPE_TRANSFORM"
+#define ASTTYPE_RESULT "ASTTYPE_RESULT"
+#define ASTTYPE_FUNC "ASTTYPE_FUNC"
+#define ASTTYPE_CALL "ASTTYPE_CALL"
+#define ASTTYPE_IF "ASTTYPE_IF"
+#define ASTTYPE_IF_FIRST "ASTTYPE_IF_FIRST"
+#define ASTTYPE_IF_MIDDLE "ASTTYPE_IF_MIDDLE"
+#define ASTTYPE_IF_LAST "ASTTYPE_IF_LAST"
+#define ASTTYPE_WHILE "ASTTYPE_WHILE"
+#define ASTTYPE_EXPRESSION "ASTTYPE_EXPRESSION"
+#define ASTTYPE_EXPRESSION_NUMBER "ASTTYPE_EXPRESSION_NUMBER"
+#define ASTTYPE_EXPRESSION_LOGIC "ASTTYPE_EXPRESSION_LOGIC"
+#define ASTTYPE_OPERATE "ASTTYPE_OPERATE"

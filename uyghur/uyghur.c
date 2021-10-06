@@ -6,33 +6,30 @@
 
 #include "token.c"
 #include "tokenizer.c"
+#include "leaf.c"
+#include "parser.c"
 
 typedef struct {
     bool running;
+    Tokenizer *tokenizer;
+    Parser *parser;
 } Uyghur;
 
 Uyghur *Uyghur_new()
 {
     Uyghur *uyghur = malloc(sizeof(Uyghur));
+    uyghur->tokenizer = Tokenizer_new();
+    uyghur->parser = Parser_new();
     return uyghur;
 }
 
-void Uyghur_execute(Uyghur *uyghur, const char *path, const char *code)
+void Uyghur_execute(Uyghur *this, const char *path, const char *code)
 {
-    Tokenizer *tokenizer = Tokenizer_new();
-    //
-    Token *headToken = Tokenizer_parseCode(tokenizer, path, code);
-    // TODO:
-    while (headToken != NULL)
-    {
-        Token_print(headToken);
-        headToken = headToken->next;
-    }
-    //
-    Tokenizer_free(tokenizer);
+    Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
+    void *astNode = Parser_parseTokens(this->parser, headToken);
 }
 
-void Uyghur_compile(Uyghur *uyghur, const char *path)
+void Uyghur_compile(Uyghur *this, const char *path)
 {
     //
 }
@@ -54,7 +51,9 @@ void Uyghur_export()
     //
 }
 
-void Uyghur_free(Uyghur *uyghur)
+void Uyghur_free(Uyghur *this)
 {
-    //
+    Parser_free(this->parser);
+    Tokenizer_free(this->tokenizer);
+    free(this);
 }
