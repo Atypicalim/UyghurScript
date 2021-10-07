@@ -39,5 +39,20 @@ int main(int argc, char const *argv[])
     // Block_print(block2);
     // Block_print(block1->last);
     //
+    // leaf test
+    // Leaf *leaf = Leaf_new("test");
+    // Leaf_pushToken(leaf, token1);
+    // Leaf_pushToken(leaf, token2);
+    // Token *newToken = Leaf_popToken(leaf);
+    // Leaf_pushToken(leaf, token3);
+    // Leaf_print(leaf);
+    // Leaf_free(leaf);
+    // Token_print(newToken);
+    // Leaf *child = Leaf_new("child");
+    // Leaf_pushToken(child, token3);
+    // Leaf_pushLeaf(leaf, child);
+    // Leaf_print(leaf);
+    // Leaf_free(leaf);
+    //
     return 0;
 }
