@@ -1,12 +1,7 @@
 // tokenizer
 
-#ifndef HEAD_HEADER
 #include "header.h"
-#endif
-
-#ifndef HEAD_TOKEN
 #include "token.c"
-#endif
 
 typedef struct
 {
@@ -115,7 +110,7 @@ void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
     }
     else
     {
-        Token_append(this->tail, token);
+        Block_append(this->tail, token);
         this->tail = token;
     }
 }

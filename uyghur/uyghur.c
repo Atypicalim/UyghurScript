@@ -1,8 +1,6 @@
 // main program
 
-#ifndef HEAD_HEADER
 #include "header.h"
-#endif
 
 #include "token.c"
 #include "tokenizer.c"

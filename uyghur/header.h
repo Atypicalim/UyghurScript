@@ -1,6 +1,7 @@
 // header
 
-#define HEAD_HEADER
+#ifndef H_HEADER
+#define H_HEADER
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,3 +17,6 @@
 #include "constant.h"
 #include "tools.c"
 #include "hashmap.h"
+#include "block.h"
+
+#endif

@@ -1,19 +1,16 @@
 // leaf
 
-#ifndef HEAD_HEADER
+#ifndef H_LEAF
+#define H_LEAF
+
 #include "header.h"
-#endif
-
-#ifndef HEAD_TOKEN
 #include "token.c"
-#endif
-
-#define HEAD_LEAF
 
 typedef struct LeafNode {
-    char *type;
-    void *tokens[10];
-    void *LeafNode[10];
+    struct _Block;
+    char *type; // ast type
+    void *tokens; // tokens of this ast leaf (params of expression, statement or func)
+    void *leafs; // programs of this ast leaf (sub code block of statement or func)
 } Leaf;
 
 Leaf *Leaf_new(char *type)
@@ -52,3 +49,5 @@ void Leaf_free(Leaf *this)
 {
     free(this);
 }
+
+#endif

@@ -1,16 +1,8 @@
 // parser
 
-#ifndef HEAD_HEADER
 #include "header.h"
-#endif
-
-#ifndef HEAD_TOKEN
 #include "token.c"
-#endif
-
-#ifndef HEAD_LEAF
 #include "leaf.c"
-#endif
 
 typedef struct
 {

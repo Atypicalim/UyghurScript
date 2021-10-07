@@ -12,16 +12,17 @@ int main(int argc, char const *argv[])
     Uyghur_run(uyghur, argv[1]);
     Uyghur_free(uyghur);
     //
+    // token test
     // Token *token1 = Token_new("test.txt", 1, 1, "", "111");
     // Token_print(token1);
     // Token *token2 = Token_new("test.txt", 1, 1, "", "222");
     // Token_print(token2);
     // Token *token3 = Token_new("test.txt", 1, 1, "", "333");
     // Token_print(token3);
-    // Token_append(token2, token3);
-    // Token_prepend(token2, token1);
-    // Token_print(Token_last(Token_last(token3)));
-    // Token_print(token3->last->last);
+    // Block_append(token2, token3);
+    // Block_prepend(token2, token1);
+    // Token_free(token2);
+    // Token_print(Block_last(Block_last(token3)));
     //
     // hash map test
     // Hashmap *map = Hashmap_new();
@@ -29,6 +30,14 @@ int main(int argc, char const *argv[])
     // Hashmap_set(map, "bbb", "bbb-bbb");
     // Hashmap_print(map);
     // Hashmap_free(map);
+    //
+    // block test
+    // Block *block1 = Block_new("11");
+    // Block *block2 = Block_new("22");
+    // Block_prepend(block1, block2);
+    // Block_print(block1);
+    // Block_print(block2);
+    // Block_print(block1->last);
     //
     return 0;
 }

@@ -1,10 +1,7 @@
 // tools
 
-#ifndef HEAD_HEADER
-#include "header.h"
-#endif
-
-#define HEAD_TOOLS
+#ifndef H_TOOLS
+#define H_TOOLS
 
 void tools_assert(bool value, const char *msg)
 {
@@ -66,3 +63,5 @@ char *tools_str_apent(char *str, char c, bool notFree)
     }
     return dest;
 }
+
+#endif

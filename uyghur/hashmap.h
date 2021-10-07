@@ -1,8 +1,7 @@
 // hashmap
 
-#ifndef _HASHMAP_H
-#define _HASHMAP_H
-#endif
+#ifndef H_HASHMAP
+#define H_HASHMAP
 
 #include <stdlib.h>
 #include <assert.h>
@@ -136,3 +135,5 @@ void Hashmap_print(Hashmap *map) {
     }
     printf("[Hashmap_end] address:%p", (void*)&map);
 }
+
+#endif
