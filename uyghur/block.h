@@ -14,19 +14,25 @@ typedef struct _Block {
     void *last;
 } Block;
 
-Block *Block_new(void *data)
+void Block_init(void *_block, void *data)
 {
-    Block *block = (Block *)malloc(sizeof(Block));
+    Block *block = _block;
     block->data = data;
     block->next = NULL;
     block->last = NULL;
+}
+
+Block *Block_new(void *data)
+{
+    Block *block = (Block *)malloc(sizeof(Block));
+    Block_init(block, data);
     return block;
 }
 
 void Block_print(void *_this)
 {
     Block *this = _this;
-    printf("[(Block) => address:%d, data:%s]\n", this, (char *)this->data);
+    printf("[(Block) => address:%d, data:%d]\n", this, (char *)this->data);
 }
 
 void Block_link(void *_first, void *_second)
