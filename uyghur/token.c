@@ -16,8 +16,8 @@ typedef struct _Token {
 
 Token *Token_new(const char *file, int line, int column, char *type, void *value)
 {
-    Token *token = malloc(sizeof(Token));
-    Block_new(token);
+    // Token *token = malloc(sizeof(Token));
+    // Block_new(token);
     token->file = file;
     token->line = line;
     token->column = column;

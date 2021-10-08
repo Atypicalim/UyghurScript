@@ -9,13 +9,15 @@
 #include <stdio.h>
 
 typedef struct _Block {
+    void *data;
     void *next;
     void *last;
 } Block;
 
-Block *Block_new(void *obj)
+Block *Block_new(void *data)
 {
-    Block *block = obj != NULL ? (Block *)obj : (Block *)malloc(sizeof(Block));
+    Block *block = (Block *)malloc(sizeof(Block));
+    block->data = data;
     block->next = NULL;
     block->last = NULL;
     return block;
@@ -24,23 +26,7 @@ Block *Block_new(void *obj)
 void Block_print(void *_this)
 {
     Block *this = _this;
-    printf("[(Block) => address:%d]\n", this);
-}
-
-void Block_append(void *_this, void *_other)
-{
-    Block *this = _this;
-    Block *other = _other;
-    this->next = other;
-    other->last = this;
-}
-
-void Block_prepend(void *_this, void *_other)
-{
-    Block *this = _this;
-    Block *other = _other;
-    this->last = other;
-    other->next = this;
+    printf("[(Block) => address:%d, data:%s]\n", this, (char *)this->data);
 }
 
 void Block_link(void *_first, void *_second)
@@ -51,15 +37,33 @@ void Block_link(void *_first, void *_second)
     second->last = first;
 }
 
+void Block_append(void *_this, void *_other)
+{
+    Block_link(_this, _other);
+}
+
+void Block_prepend(void *_this, void *_other)
+{
+    Block_link(_other, _this);
+}
+
 void Block_remove(void *_this)
 {
     Block *this = _this;
-    if ((this->next == this->last && this->next != this) || this->next != this->last)
-    {
         Block *next = this->next;
         Block *last = this->last;
-        last->next = this->next;
-        next->last = this->last;
+    if (next != NULL && last != NULL)
+    {
+        last->next = next;
+        next->last = last;
+    }
+    else if (next != NULL)
+    {
+        next->last = NULL;
+    }
+    else if (last != NULL)
+    {
+        last->next = NULL;
     }
     this->next = NULL;
     this->last = NULL;
@@ -88,6 +92,11 @@ void Block_free(void *_this)
     this->last = NULL;
     tmpNext = NULL;
     tmpLast = NULL;
+    if (this->data != NULL)
+    {
+        free(this->data);
+        this->data = NULL;
+    }
     free(this);
 }
 

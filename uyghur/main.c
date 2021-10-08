@@ -1,6 +1,8 @@
 // implementation
 
 #include "uyghur.c"
+#include "stack.h"
+#include "queue.h"
 
 int main(int argc, char const *argv[])
 {
@@ -34,10 +36,28 @@ int main(int argc, char const *argv[])
     // block test
     // Block *block1 = Block_new("11");
     // Block *block2 = Block_new("22");
-    // Block_prepend(block1, block2);
+    // // Block_prepend(block1, block2);
     // Block_print(block1);
     // Block_print(block2);
     // Block_print(block1->last);
+    //
+    // stack test
+    // Stack *stack = Stack_new();
+    // Stack_push(stack, block1);
+    // Stack_push(stack, block2);
+    // Block *n = Stack_pop(stack);
+    // Block *n2 = Stack_pop(stack);
+    // Block_print(n);
+    // Block_print(n2);
+    //
+    // queue test
+    // Queue *queue = Queue_new();
+    // Queue_push(queue, block1);
+    // Queue_push(queue, block2);
+    // Block *n = Queue_pop(queue);
+    // Block *n2 = Queue_pop(queue);
+    // Block_print(n);
+    // Block_print(n2);
     //
     // leaf test
     // Leaf *leaf = Leaf_new("test");
