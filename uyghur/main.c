@@ -1,8 +1,6 @@
 // implementation
 
 #include "uyghur.c"
-#include "stack.h"
-#include "queue.h"
 
 int main(int argc, char const *argv[])
 {

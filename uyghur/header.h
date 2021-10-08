@@ -18,5 +18,7 @@
 #include "tools.c"
 #include "hashmap.h"
 #include "block.h"
+#include "stack.h"
+#include "queue.h"
 
 #endif

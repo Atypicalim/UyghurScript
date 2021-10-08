@@ -17,117 +17,43 @@ Leaf *Leaf_new(char *type)
 {
     Leaf *leaf = malloc(sizeof(Leaf));
     leaf->type = type;
-    leaf->tokens = NULL;
-    leaf->leafs = NULL;
+    leaf->tokens = Stack_new();
+    leaf->leafs = Queue_new();
     return leaf;
 }
 
 void Leaf_print(Leaf *this)
 {
     printf("[(LEAF_START) => address:%d type:%s]\n", this, this->type);
-    Token *token = this->tokens;
-    while (token != NULL)
-    {
-        Token_print(token);
-        token = token->next == this->tokens ? NULL : token->next;
-    }
-    Leaf *leaf = this->leafs;
-    while (leaf != NULL)
-    {
-        Leaf_print(leaf);
-        leaf = leaf->next == this->leafs ? NULL : leaf->next;
-    }
+    Stack_print(this->tokens); // TODO: while stack->next
+    Queue_print(this->leafs); // while queue->next
     printf("[(LEAF_END) => address:%d]\n", this);
 }
 
 void Leaf_pushToken(Leaf *this, Token *token)
 {
-    if (this->tokens == NULL)
-    {
-        this->tokens = token;
-        Block_link(token, token);
-    }
-    else
-    {
-        Block_append(Block_last(this->tokens), token);
-        Block_link(token, this->tokens);
-    }
+    Stack_push(this->tokens, token);
 }
 
 Token *Leaf_popToken(Leaf *this)
 {
-    if (this->tokens == NULL)
-    {
-        return NULL;
-    }
-    else
-    {
-        void *last = Block_last(this->tokens);
-        if (last == this->tokens)
-        {
-            this->tokens = NULL;
-        }
-        else
-        {
-            Block_remove(last);
-        }
-        return last;
-    }
+    return Stack_pop(this->tokens);
 }
 
 void Leaf_pushLeaf(Leaf *this, Leaf *leaf)
 {
-    if (this->leafs == NULL)
-    {
-        this->leafs = leaf;
-        Block_link(leaf, leaf);
-    }
-    else
-    {
-        Block_append(Block_last(this->leafs), leaf);
-        Block_link(leaf, this->leafs);
-    }
+    Queue_push(this->leafs,leaf);
 }
 
 Leaf *Leaf_popLeaf(Leaf *this)
 {
-    if (this->leafs == NULL)
-    {
-        return NULL;
-    }
-    else
-    {
-        void *first = this->leafs;
-        if (first == Block_next(this->leafs))
-        {
-            this->tokens = NULL;
-        }
-        else
-        {
-            Block_remove(first);
-        }
-        return first;
-    }
+    return Queue_pop(this->leafs);
 }
 
 void Leaf_free(Leaf *this)
 {
-    Token *token = this->tokens;
-    Token *tempToken;
-    while (token != NULL)
-    {
-        tempToken = token;
-        token = token->next == this->tokens ? NULL : token->next;
-        Token_free(tempToken);
-    }
-    Leaf *leaf = this->leafs;
-    Leaf *tempLeaf;
-    while (leaf != NULL)
-    {
-        tempLeaf = leaf;
-        leaf = leaf->next == this->leafs ? NULL : leaf->next;
-        Leaf_free(tempLeaf);
-    }
+    Stack_free(this->tokens);
+    Queue_free(this->leafs);
     free(this);
 }
 
