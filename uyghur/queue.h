@@ -20,14 +20,14 @@ Queue *Queue_new()
 
 void Queue_print(Queue *this)
 {
-    printf("[(STACK_START) => address:%d]\n", this);
+    printf("[(QUEUE_START) => address:%d]\n", this);
     Block *current = this->head;
     while (current != NULL)
     {
         Block_print(current);
-        current = current->next;
+        current = current != this->tail ? current->next : NULL;
     }
-    printf("[(STACK_END) => address:%d]\n", this);
+    printf("[(QUEUE_END) => address:%d]\n", this);
 }
 
 void Queue_push(Queue *this, void *data)

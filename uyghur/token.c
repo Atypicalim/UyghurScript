@@ -11,7 +11,7 @@ typedef struct _Token {
     int line;
     int column;
     char *type;
-    void *value;
+    char *value;
 } Token;
 
 Token *Token_new(const char *file, int line, int column, char *type, void *value)

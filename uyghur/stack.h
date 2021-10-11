@@ -25,7 +25,7 @@ void Stack_print(Stack *this)
     while (current != NULL)
     {
         Block_print(current);
-        current = current->next;
+        current = current != this->tail ? current->next : NULL;
     }
     printf("[(STACK_END) => address:%d]\n", this);
 }

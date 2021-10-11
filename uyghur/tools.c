@@ -15,8 +15,7 @@ void tools_error(const char *msg)
 
 void tools_check(bool value, const char *msg)
 {
-    if (value)
-        return;
+    if (value) return;
     tools_error(msg);
     exit(1);
 }
