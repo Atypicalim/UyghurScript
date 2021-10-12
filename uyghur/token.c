@@ -28,7 +28,7 @@ Token *Token_new(const char *file, int line, int column, char *type, void *value
 
 void Token_print(Token *this)
 {
-    printf("[(TOKEN) => type:%s, value:(%s) in (%d, %d %s)]\n", this->type, this->value,  this->line,  this->column,  this->file);
+    printf("[(TOKEN) => type:%s, value:(%s) in (%d, %d %s)]\n", this->type, this->value, this->line, this->column, this->file);
 }
 
 void Token_free(Token *this)

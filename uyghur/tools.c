@@ -63,4 +63,12 @@ char *tools_str_apent(char *str, char c, bool notFree)
     return dest;
 }
 
+char *str_concat(char *one, char *two)
+{
+    int bufsz = snprintf(NULL, 0, "%s%s", one, two);
+    char* buf = malloc(bufsz + 1);
+    snprintf(buf, bufsz + 1, "%s%s", one, two);
+    return buf;
+}
+
 #endif

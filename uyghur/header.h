@@ -23,9 +23,4 @@
 
 #include "helpers.c"
 
-void helper_stack_print_tokens(Stack *this)
-{
-    // TODO
-}
-
 #endif

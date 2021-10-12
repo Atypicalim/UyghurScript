@@ -25,9 +25,9 @@ void Uyghur_execute(Uyghur *this, const char *path, const char *code)
 {
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
     Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
-    printf("\n\n--->\n");
-    Leaf_print(headLeaf);
-    printf("-->\n\n");
+    printf("--->\n");
+    helper_print_leaf(headLeaf, " ");
+    printf("--->\n");
 }
 
 void Uyghur_compile(Uyghur *this, const char *path)
