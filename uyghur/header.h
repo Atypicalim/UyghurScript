@@ -12,15 +12,16 @@
 #include <stdlib.h>
 #include <math.h>
 #include <ctype.h>
+#include <stdarg.h>
 
-#include "language.h"
-#include "constant.h"
-#include "tools.c"
 #include "hashmap.h"
 #include "block.h"
 #include "stack.h"
 #include "queue.h"
 
+#include "language.h"
+#include "constant.h"
+#include "tools.c"
 #include "helpers.c"
 
 #endif

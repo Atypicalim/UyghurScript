@@ -40,15 +40,12 @@ Tokenizer *Tokenizer_new()
     Hashmap_fill(map, TVALUE_ELSE);
     Hashmap_fill(map, TVALUE_OUTPUT);
     Hashmap_fill(map, TVALUE_INPUT);
-    Hashmap_fill(map, TVALUE_EMPTY);
     Hashmap_fill(map, TVALUE_BOX);
     Hashmap_fill(map, TVALUE_DOT);
     Hashmap_fill(map, TVALUE_SOMEVALUE);
     Hashmap_fill(map, TVALUE_SOMETYPE);
     Hashmap_fill(map, TVALUE_STR);
     Hashmap_fill(map, TVALUE_NUM);
-    Hashmap_fill(map, TVALUE_TRUE);
-    Hashmap_fill(map, TVALUE_FALSE);
     Hashmap_fill(map, TVALUE_AND);
     Hashmap_fill(map, TVALUE_OR);
     Hashmap_fill(map, TVALUE_NOT);
@@ -74,6 +71,9 @@ Tokenizer *Tokenizer_new()
     Hashmap_fill(map, TVALUE_RETURN);
     Hashmap_fill(map, TVALUE_FURTHER);
     Hashmap_fill(map, TVALUE_RESULT);
+    Hashmap_set(map, TVALUE_TRUE, TTYPE_BOOL);
+    Hashmap_set(map, TVALUE_FALSE, TTYPE_BOOL);
+    Hashmap_set(map, TVALUE_EMPTY, TTYPE_EMPTY);
     tokenizer->keywordsMap = map;
     //
     return tokenizer;
@@ -100,7 +100,10 @@ void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
     if (type == TTYPE_NAME)
     {
         char *v = Hashmap_get(this->keywordsMap, value);
-        if (v != NULL) type = TTYPE_WORD;
+        if (v != NULL)
+        {
+            type = strcmp(v, value) == 0 ? TTYPE_WORD : v;
+        }
     }
     Token *token = Token_new(this->path, this->line, this->column, type, value);
     if (this->head == NULL)

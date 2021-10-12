@@ -53,6 +53,13 @@ Token *Parser_nextToken(Parser *this, char *tp)
     return Parser_checkToken(this, tp);
 }
 
+Token *Parser_nextTokens(Parser *this, char *tp[])
+{
+    this->token = this->token->next;
+    // return Parser_checkToken(this, tp);
+    return this->token;
+}
+
 Token *Parser_lastToken(Parser *this, char *tp)
 {
     this->token = this->token->last;
@@ -85,7 +92,7 @@ void Parser_consumeAstVariable(Parser *this)
     Parser_checkWord(this, TVALUE_VARIABLE);
     Token *name = Parser_nextToken(this, TTYPE_NAME);
     Parser_nextWord(this, TVALUE_VALUE);
-    Token *value = Parser_nextToken(this, TTYPE_NUMBER); // TODO: suppor multi data type check
+    Token *value = Parser_nextTokens(this, ARR(TTYPE_BOOL)); // TODO: suppor multi data type check
     Parser_nextWord(this, TVALUE_MADE);
     Leaf *leaf = Leaf_new(ASTTYPE_VARIABLE);
     Stack_push(leaf->tokens, name);
