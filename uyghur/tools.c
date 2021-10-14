@@ -71,13 +71,15 @@ char *str_concat(char *one, char *two)
     return buf;
 }
 
-Queue *S2Q(char *s, ...) {
+Queue *S2Q(int num, char *s, ...) {
     Queue *queue = Queue_new();
     va_list args;
     va_start(args, s);
-    while (s) {
+    int i;
+    for (i = 0; i < num; i++)
+    {
         Queue_push(queue, s);
-        s = va_arg(args, char *);
+       s = va_arg(args, char *);
     }
     va_end(args);
     return queue;
