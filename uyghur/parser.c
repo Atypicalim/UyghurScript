@@ -40,27 +40,23 @@ void Parser_asert(bool value, Token *token)
     tools_error("parser exception...");
 }
 
-Token *Parser_checkToken(Parser *this, char *tp)
+Token *Parser_checkToken(Parser *this, char *tp[])
 {
-    tools_check(this->token != NULL, "keynidin sanliq melumat tipi [type] umut qilindi emma tepilmidi");
-    tools_check(strcmp(this->token->type, tp) == 0, "keynidin sanliq melumat tipi [type] umut qilindi emma [type] tepildi");
+    // int num = sizeof(tp) / sizeof(tp[0]);
+    // printf("\nsize-->%d\n", num);
+    // tools_check(this->token != NULL, "keynidin sanliq melumat tipi [type] umut qilindi emma tepilmidi");
+    // tools_check(strcmp(this->token->type, tp) == 0, "keynidin sanliq melumat tipi [type] umut qilindi emma [type] tepildi");
     return this->token;
 }
 
-Token *Parser_nextToken(Parser *this, char *tp)
+Token *Parser_nextToken(Parser *this, char *tp[])
 {
     this->token = this->token->next;
     return Parser_checkToken(this, tp);
-}
-
-Token *Parser_nextTokens(Parser *this, char *tp[])
-{
-    this->token = this->token->next;
-    // return Parser_checkToken(this, tp);
     return this->token;
 }
 
-Token *Parser_lastToken(Parser *this, char *tp)
+Token *Parser_lastToken(Parser *this, char *tp[])
 {
     this->token = this->token->last;
     return Parser_checkToken(this, tp);
@@ -90,9 +86,9 @@ Token *Parser_lastWord(Parser *this, char *value)
 void Parser_consumeAstVariable(Parser *this)
 {
     Parser_checkWord(this, TVALUE_VARIABLE);
-    Token *name = Parser_nextToken(this, TTYPE_NAME);
+    Token *name = Parser_nextToken(this, S2A(1, TTYPE_NAME, TTYPE_WORD));
     Parser_nextWord(this, TVALUE_VALUE);
-    Token *value = Parser_nextTokens(this, ARR(TTYPE_BOOL)); // TODO: suppor multi data type check
+    Token *value = Parser_nextToken(this, TTYPES_GROUP_DEFINE);
     Parser_nextWord(this, TVALUE_MADE);
     Leaf *leaf = Leaf_new(ASTTYPE_VARIABLE);
     Stack_push(leaf->tokens, name);

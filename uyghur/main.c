@@ -1,6 +1,12 @@
 // implementation
 
 #include "uyghur.c"
+#include "tools.c"
+
+struct Arr {
+    int size;
+    char **value;
+};
 
 int main(int argc, char const *argv[])
 {

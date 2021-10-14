@@ -71,23 +71,23 @@ char *str_concat(char *one, char *two)
     return buf;
 }
 
-Queue *QUEUE(char *s, ...) {
-    Queue *queue = Queue_new();
-    va_list args;
-    va_start(args, s);
-    while (s) {
-        Queue_push(queue, s);
-        s = va_arg(args, char *);
-    }
-    va_end(args);
-    return queue;
-}
-
-char **ARR(char *str)
+char **S2A(int num, char *s, ...)
 {
-    char *arr[] = {str, NULL};
-     char **_arr = arr;
-    return _arr;
+    va_list valist;
+    char **arr = malloc((num + 1) * sizeof(char *));
+    int i;
+    va_start(valist, s);
+    char *n = malloc(sizeof(char));
+    n[0] = (char)num;;
+    arr[0] = n;
+    for (i = 0; i < num; i++)
+    {
+        arr[i + 1] = (char *)malloc((strlen(s) + 1) * sizeof(char));
+        strcpy(arr[i + 1], s);
+       s = va_arg(valist, char *);
+    }
+    va_end(valist);
+    return arr;
 }
 
 #endif
