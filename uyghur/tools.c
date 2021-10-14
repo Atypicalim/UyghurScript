@@ -71,6 +71,18 @@ char *str_concat(char *one, char *two)
     return buf;
 }
 
+Queue *S2Q(char *s, ...) {
+    Queue *queue = Queue_new();
+    va_list args;
+    va_start(args, s);
+    while (s) {
+        Queue_push(queue, s);
+        s = va_arg(args, char *);
+    }
+    va_end(args);
+    return queue;
+}
+
 char **S2A(int num, char *s, ...)
 {
     va_list valist;

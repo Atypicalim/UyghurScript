@@ -3,8 +3,8 @@
 #include "header.h"
 #include "token.c"
 
-typedef struct
-{
+struct Tokenizer{
+    Uyghur *uyghur;
     int line;
     int column;
     int position;
@@ -14,10 +14,11 @@ typedef struct
     Token *head;
     Token *tail;
     Hashmap *keywordsMap;
-} Tokenizer;
+};
 
 void Tokenizer_reset(Tokenizer *this)
 {
+    this->uyghur = NULL;
     this->line = 1;
     this->column = 1;
     this->position = 0;
@@ -29,11 +30,12 @@ void Tokenizer_reset(Tokenizer *this)
     this->keywordsMap = NULL;
 }
 
-Tokenizer *Tokenizer_new()
+Tokenizer *Tokenizer_new(Uyghur *uyghur)
 {
     Tokenizer *tokenizer = malloc(sizeof(Tokenizer));
     Tokenizer_reset(tokenizer);
     //
+    tokenizer->uyghur = uyghur;
     Hashmap *map = Hashmap_new();
     Hashmap_fill(map, TVALUE_IF);
     Hashmap_fill(map, TVALUE_ELSE_IF);

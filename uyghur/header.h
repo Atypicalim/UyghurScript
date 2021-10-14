@@ -24,4 +24,17 @@
 #include "tools.c"
 #include "helpers.c"
 
+typedef struct Tokenizer Tokenizer;
+typedef struct Parser Parser;
+
+typedef struct Uyghur {
+    bool running;
+    Queue *TTYPES_GROUP_DEFINE;
+    Queue *TTYPES_GROUP_STRING;
+    Queue *TTYPES_GROUP_NUMBER;
+    Queue *TTYPES_GROUP_LOGICS;
+    Tokenizer *tokenizer;
+    Parser *parser;
+} Uyghur;
+
 #endif

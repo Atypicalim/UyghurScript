@@ -4,17 +4,18 @@
 #include "token.c"
 #include "leaf.c"
 
-typedef struct
-{
+struct Parser {
+    Uyghur *uyghur;
     int position;
     Token *tokens;
     Token *token;
     Leaf *tree;
     Leaf *leaf;
-} Parser;
+};
 
 void Parser_reset(Parser *this)
 {
+    this->uyghur = NULL;
     this->position = 1;
     this->tokens = NULL;
     this->token = NULL;
@@ -22,10 +23,11 @@ void Parser_reset(Parser *this)
     this->leaf = NULL;
 }
 
-Parser *Parser_new()
+Parser *Parser_new(Uyghur *uyghur)
 {
     Parser *parser = malloc(sizeof(Parser));
     Parser_reset(parser);
+    parser->uyghur = uyghur;
     return parser;
 }
 
@@ -40,23 +42,32 @@ void Parser_asert(bool value, Token *token)
     tools_error("parser exception...");
 }
 
-Token *Parser_checkToken(Parser *this, char *tp[])
+Token *Parser_checkToken(Parser *this, Queue *tp)
 {
     // int num = sizeof(tp) / sizeof(tp[0]);
     // printf("\nsize-->%d\n", num);
     // tools_check(this->token != NULL, "keynidin sanliq melumat tipi [type] umut qilindi emma tepilmidi");
     // tools_check(strcmp(this->token->type, tp) == 0, "keynidin sanliq melumat tipi [type] umut qilindi emma [type] tepildi");
+    // Block *b = tp->head;
+    // printf("\n\n%s\n\n", b == NULL ? "null" : "obj");
+    // while (b != NULL)
+    // {
+    //     char *t = b->data;
+    //     printf("\n%s\n", t);
+    //     b = b->next;
+    // }
+
     return this->token;
 }
 
-Token *Parser_nextToken(Parser *this, char *tp[])
+Token *Parser_nextToken(Parser *this, Queue *tp)
 {
     this->token = this->token->next;
     return Parser_checkToken(this, tp);
     return this->token;
 }
 
-Token *Parser_lastToken(Parser *this, char *tp[])
+Token *Parser_lastToken(Parser *this, Queue *tp)
 {
     this->token = this->token->last;
     return Parser_checkToken(this, tp);
@@ -64,10 +75,10 @@ Token *Parser_lastToken(Parser *this, char *tp[])
 
 Token *Parser_checkWord(Parser *this, char *value)
 {
-    tools_check(this->token != NULL, "keynidin xalqiliq soz [value] umut qilindi emma tepilmidi");
+    // tools_check(this->token != NULL, "keynidin xalqiliq soz [value] umut qilindi emma tepilmidi");
     
-    tools_check(strcmp(this->token->type, TTYPE_WORD) == 0, "keynidin xalqiliq soz [value] umut qilindi emma [value] tepildi");
-    tools_check(strcmp(this->token->value, value) == 0, "keynidin xalqiliq soz [value] umut qilindi emma [value] tepildi");
+    // tools_check(strcmp(this->token->type, TTYPE_WORD) == 0, "keynidin xalqiliq soz [value] umut qilindi emma [value] tepildi");
+    // tools_check(strcmp(this->token->value, value) == 0, "keynidin xalqiliq soz [value] umut qilindi emma [value] tepildi");
     return this->token;
 }
 
@@ -86,9 +97,9 @@ Token *Parser_lastWord(Parser *this, char *value)
 void Parser_consumeAstVariable(Parser *this)
 {
     Parser_checkWord(this, TVALUE_VARIABLE);
-    Token *name = Parser_nextToken(this, S2A(1, TTYPE_NAME, TTYPE_WORD));
+    Token *name = Parser_nextToken(this, S2Q(TTYPE_NAME));
     Parser_nextWord(this, TVALUE_VALUE);
-    Token *value = Parser_nextToken(this, TTYPES_GROUP_DEFINE);
+    Token *value = Parser_nextToken(this, this->uyghur->TTYPES_GROUP_LOGICS);
     Parser_nextWord(this, TVALUE_MADE);
     Leaf *leaf = Leaf_new(ASTTYPE_VARIABLE);
     Stack_push(leaf->tokens, name);

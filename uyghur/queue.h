@@ -25,7 +25,7 @@ void Queue_print(Queue *this)
     while (current != NULL)
     {
         Block_print(current);
-        current = current != this->tail ? current->next : NULL;
+        current = current->next;
     }
     printf("[(QUEUE_END) => address:%d]\n", this);
 }
@@ -36,7 +36,6 @@ void Queue_push(Queue *this, void *data)
     if (this->head == NULL)
     {
         this->head = block;
-        Block_link(block, block);
     }
     else
     {

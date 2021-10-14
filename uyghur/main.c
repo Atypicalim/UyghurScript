@@ -78,5 +78,18 @@ int main(int argc, char const *argv[])
     // Leaf_print(leaf);
     // Leaf_free(leaf);
     //
+    // queue bug test
+    // Queue *tp = uyghur->TTYPES_GROUP_DEFINE;
+    // Block *b = tp->head;
+    // printf("\n\n%s\n\n", b == NULL ? "null" : "obj");
+    // while (b != NULL)
+    // {
+    //     char *t = b->data;
+    //     printf("\n --- %s %d %d %d\n", t, b, tp->tail, tp->head);
+    //     b = b == tp->tail ? NULL : b->next;
+    //     printf("\n === %s %d\n", t, b);
+    // }
+
+    //
     return 0;
 }

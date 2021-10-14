@@ -7,17 +7,20 @@
 #include "leaf.c"
 #include "parser.c"
 
-typedef struct {
-    bool running;
-    Tokenizer *tokenizer;
-    Parser *parser;
-} Uyghur;
+void Uyghur_init(Uyghur *this)
+{
+    this->TTYPES_GROUP_DEFINE = S2Q(TTYPE_NAME, TTYPE_STRING, TTYPE_NUMBER, TTYPE_BOOL, TTYPE_EMPTY);
+    this->TTYPES_GROUP_STRING = S2Q(TTYPE_NAME, TTYPE_STRING);
+    this->TTYPES_GROUP_NUMBER = S2Q(TTYPE_NAME, TTYPE_NUMBER);
+    this->TTYPES_GROUP_LOGICS = S2Q(TTYPE_NAME, TTYPE_BOOL, TTYPE_EMPTY);
+}
 
 Uyghur *Uyghur_new()
 {
     Uyghur *uyghur = malloc(sizeof(Uyghur));
-    uyghur->tokenizer = Tokenizer_new();
-    uyghur->parser = Parser_new();
+    Uyghur_init(uyghur);
+    uyghur->tokenizer = Tokenizer_new(uyghur);
+    uyghur->parser = Parser_new(uyghur);
     return uyghur;
 }
 
