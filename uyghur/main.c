@@ -3,10 +3,31 @@
 #include "uyghur.c"
 #include "tools.c"
 
-struct Arr {
-    int size;
-    char **value;
-};
+
+// #define ARG "222","333", "444", "777"
+// #define ARGS 4, ARG
+
+// void test(int num, char *s, ...)
+// {
+//     va_list valist;
+//     char **arr = malloc(num * sizeof(char *));
+//     int i;
+//     //
+//     va_start(valist, s);
+//     for (i = 0; i < num; i++)
+//     {
+//         arr[i] = (char *)malloc((strlen(s) + 1) * sizeof(char));
+//         strcpy(arr[i], s);
+//        s = va_arg(valist, char *);
+//     }
+//     va_end(valist);
+//     //
+//     printf("\n\n============\n\n");
+//     for (int i = 0; i < num; ++i)
+//     {
+//         printf("\n===>>[%s] %d\n", arr[i], i);
+//     }
+// }
 
 int main(int argc, char const *argv[])
 {
@@ -17,6 +38,8 @@ int main(int argc, char const *argv[])
     Uyghur *uyghur = Uyghur_new();
     Uyghur_run(uyghur, argv[1]);
     Uyghur_free(uyghur);
+    //
+    // test(TTYPES_GROUP_DEFINE);
     //
     // token test
     // Token *token1 = Token_new("test.txt", 1, 1, "", "111");
