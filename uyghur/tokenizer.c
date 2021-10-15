@@ -59,8 +59,8 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     Hashmap_fill(map, TVALUE_MORE);
     Hashmap_fill(map, TVALUE_CONCAT);
     Hashmap_fill(map, TVALUE_EQUAL);
-    Hashmap_fill(map, TVALUE_SCREEN_FROM);
-    Hashmap_fill(map, TVALUE_SCREEN_TO);
+    Hashmap_fill(map, TVALUE_TARGET_FROM);
+    Hashmap_fill(map, TVALUE_TARGET_TO);
     Hashmap_fill(map, TVALUE_WHILE);
     Hashmap_fill(map, TVALUE_CODE_START);
     Hashmap_fill(map, TVALUE_CODE_END);
@@ -104,7 +104,7 @@ void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
         char *v = Hashmap_get(this->keywordsMap, value);
         if (v != NULL)
         {
-            type = strcmp(v, value) == 0 ? TTYPE_WORD : v;
+            type = is_equal(v, value) ? TTYPE_WORD : v;
         }
     }
     Token *token = Token_new(this->path, this->line, this->column, type, value);

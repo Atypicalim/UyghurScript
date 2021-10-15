@@ -71,6 +71,11 @@ char *str_concat(char *one, char *two)
     return buf;
 }
 
+bool is_equal(char *this, char*other)
+{
+    return strcmp(this, other) == 0;
+}
+
 Queue *S2Q(int num, char *s, ...) {
     Queue *queue = Queue_new();
     va_list args;

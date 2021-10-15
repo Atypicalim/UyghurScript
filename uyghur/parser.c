@@ -62,6 +62,21 @@ void Parser_moveToken(Parser *this, int indent)
     }
 }
 
+void Parser_pushLeaf(Parser *this, char *tp, int num, Token *token, ...)
+{
+    Leaf *leaf = Leaf_new(tp);
+    va_list valist;
+    int i;
+    va_start(valist, token);
+    for (i = 0; i < num; i++)
+    {
+        Stack_push(leaf->tokens, token);
+       token = va_arg(valist, Token *);
+    }
+    va_end(valist);
+    Queue_push(this->leaf->leafs, leaf);
+}
+
 Token *Parser_checkToken(Parser *this, int indent, int num, char *s, ...)
 {
     Parser_moveToken(this, indent);
@@ -72,7 +87,7 @@ Token *Parser_checkToken(Parser *this, int indent, int num, char *s, ...)
     va_start(valist, s);
     for (i = 0; i < num; i++)
     {
-        if (strcmp(this->token->type, s) == 0)
+        if (is_equal(this->token->type, s))
         {
             isMatch = true;
             break;
@@ -88,14 +103,14 @@ Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
 {
     Parser_moveToken(this, indent);
     tools_check(this->token != NULL, "keynidin xalqiliq soz [value] umut qilindi emma tepilmidi");
-    tools_check(strcmp(this->token->type, TTYPE_WORD) == 0, "keynidin xalqiliq soz [value] umut qilindi emma [value] tepildi");
+    tools_check(is_equal(this->token->type, TTYPE_WORD), "keynidin xalqiliq soz [value] umut qilindi emma [value] tepildi");
     bool isMatch = false;
     va_list valist;
     int i;
     va_start(valist, s);
     for (i = 0; i < num; i++)
     {
-        if (strcmp(this->token->value, s) == 0)
+        if (is_equal(this->token->value, s))
         {
             isMatch = true;
             break;
@@ -114,17 +129,34 @@ void Parser_consumeAstVariable(Parser *this)
     Parser_checkWord(this, 1, 1, TVALUE_VALUE);
     Token *value = Parser_checkToken(this, 1, TTYPES_GROUP_DEFINE);
     Parser_checkWord(this, 1, 1, TVALUE_MADE);
-    Leaf *leaf = Leaf_new(ASTTYPE_VARIABLE);
-    Stack_push(leaf->tokens, name);
-    Stack_push(leaf->tokens, value);
-    Queue_push(this->leaf->leafs, leaf);
+    Parser_pushLeaf(this, ASTTYPE_VARIABLE, 2, name, value);
+}
+
+void Parser_consumeAstOperate(Parser *this)
+{
+    Token *target = Parser_checkWord(this, 0, TTYPES_GROUP_TARGETS);
+    Token *name = NULL;
+    Token *action = NULL;
+    if (is_equal(this->token->value, TVALUE_TARGET_FROM))
+    {
+        name = Parser_checkToken(this, 1, 1, TTYPE_NAME);
+        action = Parser_checkWord(this, 1, 1, TVALUE_INPUT);
+    }
+    else if (is_equal(this->token->value, TVALUE_TARGET_TO))
+    {
+        name = Parser_checkToken(this, 1, TTYPES_GROUP_DEFINE);
+        action = Parser_checkWord(this, 1, 1, TVALUE_OUTPUT);
+    }
+    Parser_pushLeaf(this, ASTTYPE_OPERATE, 3, target, name, action);
 }
 
 void Parser_consumeToken(Parser *this, Token *token)
 {
-    
+    //
+    char *t = token->type;
+    char *v = token->value;
     // VARIABLE
-    if (token->type == TTYPE_WORD && strcmp(token->value, TVALUE_VARIABLE) == 0)
+    if (t == TTYPE_WORD && is_equal(v, TVALUE_VARIABLE))
     {
         Parser_consumeAstVariable(this);
         return;
@@ -144,6 +176,12 @@ void Parser_consumeToken(Parser *this, Token *token)
     // EXPRESSION_NUMBER
     // EXPRESSION_LOGIC
     // OPERATE
+    if (t == TTYPE_WORD && (is_equal(v, TVALUE_TARGET_FROM) || is_equal(v, TVALUE_TARGET_TO)))
+    {
+        Parser_consumeAstOperate(this);
+        return;
+    }
+    //
     Token_print(token);
 }
 
