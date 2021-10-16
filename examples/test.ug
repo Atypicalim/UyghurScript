@@ -47,7 +47,7 @@
 #     ikrangha [bolmisa] yezilsun
 # tamamlansun
 
-mixtar yezildighanQimmet qimmiti [] bolsun
+# mixtar yezildighanQimmet qimmiti [] bolsun
 # mixtar sinaqQimmet qimmiti 1 bolsun
 # mixtar tekshurulmeQimmet qimmiti rast bolsun
 # nawada tekshurulmeQimmet qimmiti rast bolsa
@@ -78,6 +78,7 @@ mixtar yezildighanQimmet qimmiti [] bolsun
 # mixtar a qimmiti [1] bolsun
 # qimmet a tipi san bolsun
 # qimmet a tipi xet bolsun
+# qimmet a tipi logika bolsun
 # mixtar c qimmiti quruq bolsun
 # c qimmiti a teng 1 bolsun
 # ikrangha c yezilsun
@@ -89,19 +90,21 @@ mixtar yezildighanQimmet qimmiti [] bolsun
 # mixtar funName qimmiti [max] bolsun
 # qimmet funName tipi fonkisiye bolsun
 
-# # fonkisiye max bilen a b ishlitilsun we netije c bolsun
+# fonkisiye max bilen a b ishlitilsun we netije c bolsun
 # fonkisiye funName bilen a b ishlitilsun we netije c bolsun
 
 # ikrangha c yezilsun
 
+# TOOD ################################################################################
+
 # mixtar s qimmiti sanduq bolsun
 # mixtar r qimmiti quruq bolsun
-
-# TOOD mixtar z iniqlansun we qimmiti quruq bolsun
 
 # sanduq s mixtar k ni saqlisun we qimmiti [v] bolsun
 # sanduq s mixtar k ni qaytursun we netije r bolsun
 # sanduq s kiyinki mixtar ni qaytursun we netije r bolsun
+
+# @box{[key]}, @box{variable}, @box{1}
 
 # ikrandin r yezilsun
 # ikrandin s yezilsun

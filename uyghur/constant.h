@@ -6,9 +6,15 @@
 #define TTYPE_STRING "TTYPE_STRING"
 #define TTYPE_NUMBER "TTYPE_NUMBER"
 #define TTYPE_BOOL "TTYPE_BOOL"
-#define TTYPE_EMPTY "TTYPE_EMPTY" // TODO box
+#define TTYPE_EMPTY "TTYPE_EMPTY"
 
 // token value of keywords
+//
+#define TVALUE_STR "xet"
+#define TVALUE_NUM "san"
+#define TVALUE_LOGIKA "logika"
+#define TVALUE_EMPTY "quruq"
+//
 #define TVALUE_WHILE "nawada"
 #define TVALUE_IF "eger"
 #define TVALUE_IF_ELSE "egerde"
@@ -19,15 +25,10 @@
 #define TVALUE_OUTPUT "yezilsun"
 #define TVALUE_INPUT "oqulsun"
 // 
-#define TVALUE_EMPTY "quruq"
-#define TVALUE_BOX "sanduq"
-// 
 #define TVALUE_DOT "."
 // 
 #define TVALUE_SOMEVALUE "qimmet"
 #define TVALUE_SOMETYPE "tipi"
-#define TVALUE_STR "xet"
-#define TVALUE_NUM "san"
 //
 #define TVALUE_TRUE "rast"
 #define TVALUE_FALSE "yalghan"
@@ -90,3 +91,6 @@
 #define TVALUE_GROUP_EXP_NUMBER 7, TVALUE_EQUAL, TVALUE_ADD, TVALUE_SUB, TVALUE_MUL, TVALUE_DIV, TVALUE_LESS, TVALUE_MORE
 #define TVALUE_GROUP_EXP_BOOL 4, TVALUE_EQUAL, TVALUE_AND, TVALUE_OR, TVALUE_NOT
 #define TVALUE_GROUP_EXP_ALL 11, TVALUE_EQUAL, TVALUE_CONCAT, TVALUE_ADD, TVALUE_SUB, TVALUE_MUL, TVALUE_DIV, TVALUE_LESS, TVALUE_MORE, TVALUE_AND, TVALUE_OR, TVALUE_NOT
+
+#define TVAUE_GROUP_DO_TRANSFROM 4, TVALUE_STR, TVALUE_NUM, TVALUE_LOGIKA, TVALUE_FUNC
+

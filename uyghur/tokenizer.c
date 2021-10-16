@@ -45,12 +45,12 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     Hashmap_fill(map, TVALUE_CODE_END);
     Hashmap_fill(map, TVALUE_OUTPUT);
     Hashmap_fill(map, TVALUE_INPUT);
-    Hashmap_fill(map, TVALUE_BOX);
     Hashmap_fill(map, TVALUE_DOT);
     Hashmap_fill(map, TVALUE_SOMEVALUE);
     Hashmap_fill(map, TVALUE_SOMETYPE);
     Hashmap_fill(map, TVALUE_STR);
     Hashmap_fill(map, TVALUE_NUM);
+    Hashmap_fill(map, TVALUE_LOGIKA);
     Hashmap_fill(map, TVALUE_AND);
     Hashmap_fill(map, TVALUE_OR);
     Hashmap_fill(map, TVALUE_NOT);
