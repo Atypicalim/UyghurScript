@@ -26,11 +26,13 @@
 
 typedef struct Tokenizer Tokenizer;
 typedef struct Parser Parser;
+typedef struct Executer Executer;
 
 typedef struct Uyghur {
     bool running;
     Tokenizer *tokenizer;
     Parser *parser;
+    Executer *executer;
 } Uyghur;
 
 #endif

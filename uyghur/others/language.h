@@ -11,3 +11,5 @@
 #define LANG_ERR_NO_VALID_WORD "inawetsiz soz uchritildi: "
 #define LANG_ERR_NO_VALID_NAME "inawetsiz isim uchritildi: "
 #define LANG_ERR_NO_IF_FIRST "eger jumlisi inawetsiz: "
+
+#define LANG_ERR_EXECUTER_EXCEPTION "ija xataliqi kuruldi: "
