@@ -5,4 +5,6 @@
 #define LANG_ERR_NO_INPUT_FILE "uyghur script programma xojjiti:[%s] tepilmide"
 #define LANG_ERR_NO_VALID_CHAR "inawetsiz belge uchritildi: xojjet:[%s], qur:[%d], qatar:[%d], belge:[%c]"
 
-#define LANG_ERR_NO_VALID_TOKEN "inawetsiz xet uchritildi: xet:[%s], qur:[%d], qatar:[%d], xojjet:[%s]"
+#define LANG_ERR_TOKEN_PLACE "xet:[%s], qur:[%d], qatar:[%d], xojjet:[%s]"
+#define LANG_ERR_NO_VALID_TOKEN "inawetsiz xet uchritildi:"
+#define LANG_ERR_NO_IF_FIRST "eger jumlisi inawetsiz:"
