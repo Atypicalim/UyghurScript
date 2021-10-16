@@ -1,8 +1,6 @@
 // parser
 
-#include "header.h"
-#include "token.c"
-#include "leaf.c"
+#include "others/header.h"
 
 struct Parser {
     Uyghur *uyghur;

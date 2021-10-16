@@ -1,10 +1,8 @@
 // main program
 
-#include "header.h"
+#include "others/header.h"
 
-#include "token.c"
 #include "tokenizer.c"
-#include "leaf.c"
 #include "parser.c"
 
 void Uyghur_init(Uyghur *this)

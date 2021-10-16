@@ -1,7 +1,6 @@
 // tokenizer
 
-#include "header.h"
-#include "token.c"
+#include "others/header.h"
 
 struct Tokenizer{
     Uyghur *uyghur;

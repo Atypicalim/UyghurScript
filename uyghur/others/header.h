@@ -14,10 +14,10 @@
 #include <ctype.h>
 #include <stdarg.h>
 
-#include "hashmap.h"
-#include "block.h"
-#include "stack.h"
-#include "queue.h"
+#include "../tools/hashmap.h"
+#include "../tools/block.h"
+#include "../tools/stack.h"
+#include "../tools/queue.h"
 
 #include "language.h"
 #include "constant.h"
