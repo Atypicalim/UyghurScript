@@ -75,7 +75,18 @@ void Parser_pushLeaf(Parser *this, char *tp, int num, Token *token, ...)
        token = va_arg(valist, Token *);
     }
     va_end(valist);
-    Queue_push(this->leaf->leafs, leaf);
+    Leaf_pushLeaf(this->leaf, leaf);
+}
+
+void Parser_openBranch(Parser *this)
+{
+    Leaf *tail = (Leaf *)this->leaf->leafs->head->data;
+    this->leaf = tail;
+}
+
+void Parser_closeBranch(Parser *this)
+{
+    this->leaf = this->leaf->parent;
 }
 
 Token *Parser_checkType(Parser *this, int indent, int num, char *s, ...)
@@ -295,18 +306,69 @@ void Parser_consumeAstExpression(Parser *this)
     Parser_error(this);
 }
 
+void Parser_consumeAstIfFirst(Parser *this)
+{
+    Parser_checkWord(this, 0, 1, TVALUE_IF);
+    Token *name = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
+    Parser_checkWord(this, 1, 1, TVALUE_VALUE);
+    Token *value = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
+    Token *action = Parser_checkWord(this, 1, 2, TVALUE_IF_OK, TVALUE_IF_NO);
+    Parser_pushLeaf(this, ASTTYPE_IF, 0, NULL);
+    Parser_openBranch(this);
+    Parser_pushLeaf(this, ASTTYPE_IF_FIRST, 3, name, value, action); 
+}
+
+void Parser_consumeAstIfMiddle(Parser *this)
+{
+    // check is in if
+    Parser_checkWord(this, 0, 1, TVALUE_IF_ELSE);
+    Token *name = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
+    Parser_checkWord(this, 1, 1, TVALUE_VALUE);
+    Token *value = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
+    Token *action = Parser_checkWord(this, 1, 2, TVALUE_IF_OK, TVALUE_IF_NO);
+    // pop context
+    // TODO: create context
+    // ASTTYPE_IF
+    Parser_pushLeaf(this, ASTTYPE_IF_MIDDLE, 3, name, value, action); 
+}
+
+void Parser_consumeAstIfLast(Parser *this)
+{
+    // check is in if
+    Token *token = Parser_checkWord(this, 0, 1, TVALUE_IF_NO);
+    // pop context
+    // TODO: create context
+    // ASTTYPE_IF
+    Parser_pushLeaf(this, ASTTYPE_IF_LAST, 1, token); 
+}
+
+
+void Parser_consumeAstEnd(Parser *this)
+{
+    // check is in if
+    Parser_checkWord(this, 0, 1, TVALUE_CODE_END);
+    Parser_pushLeaf(this, ASTTYPE_END, 0, NULL); 
+    Parser_closeBranch(this);
+    // pop conetext
+}
+
 void Parser_consumeToken(Parser *this, Token *token)
 {
     //
     char *t = token->type;
     char *v = token->value;
     // VARIABLE
-    if (t == TTYPE_WORD && is_equal(v, TVALUE_VARIABLE))
+    if (is_equal(t, TTYPE_WORD) && is_equal(v, TVALUE_VARIABLE))
     {
         Parser_consumeAstVariable(this);
         return;
     }
     // END
+        if (is_equal(v, TVALUE_CODE_END))
+    {
+        Parser_consumeAstEnd(this);
+        return;
+    }
     // ASSIGN
     // TRANSFORM
     // RESULT
@@ -314,17 +376,32 @@ void Parser_consumeToken(Parser *this, Token *token)
     // CALL
     // IF
     // IF_FIRST
+    if (is_equal(v, TVALUE_IF))
+    {
+        Parser_consumeAstIfFirst(this);
+        return;
+    }
     // IF_MIDDLE
+    if (is_equal(v, TVALUE_IF_ELSE))
+    {
+        Parser_consumeAstIfMiddle(this);
+        return;
+    }
     // IF_LAST
+    if (is_equal(v, TVALUE_IF_NO))
+    {
+        Parser_consumeAstIfLast(this);
+        return;
+    }
     // WHILE
     // EXPRESSION, EXPRESSION_NUMBER, EXPRESSION_LOGIC
-    if (t == TTYPE_NAME && Parser_isWord(this, 1, TVALUE_VALUE))
+    if (is_equal(t, TTYPE_NAME) && Parser_isWord(this, 1, TVALUE_VALUE))
     {
         Parser_consumeAstExpression(this);
         return;
     }
     // OPERATE
-    if (t == TTYPE_WORD && (is_equal(v, TVALUE_TARGET_FROM) || is_equal(v, TVALUE_TARGET_TO)))
+    if (is_equal(t, TTYPE_WORD) && (is_equal(v, TVALUE_TARGET_FROM) || is_equal(v, TVALUE_TARGET_TO)))
     {
         Parser_consumeAstOperate(this);
         return;

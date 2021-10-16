@@ -9,6 +9,7 @@
 typedef struct LeafNode {
     struct _Block;
     char *type; // ast type
+    struct LeafNode *parent; // parent leaf
     Stack *tokens; // tokens of this ast leaf (params of expression, statement or func)
     Queue *leafs; // programs of this ast leaf (sub code block of statement or func)
 } Leaf;
@@ -17,6 +18,7 @@ Leaf *Leaf_new(char *type)
 {
     Leaf *leaf = malloc(sizeof(Leaf));
     leaf->type = type;
+    leaf->parent = NULL;
     leaf->tokens = Stack_new();
     leaf->leafs = Queue_new();
     return leaf;
@@ -42,6 +44,7 @@ Token *Leaf_popToken(Leaf *this)
 
 void Leaf_pushLeaf(Leaf *this, Leaf *leaf)
 {
+    leaf->parent = this;
     Queue_push(this->leafs,leaf);
 }
 

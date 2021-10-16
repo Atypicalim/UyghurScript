@@ -37,9 +37,12 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     //
     tokenizer->uyghur = uyghur;
     Hashmap *map = Hashmap_new();
+    Hashmap_fill(map, TVALUE_WHILE);
     Hashmap_fill(map, TVALUE_IF);
-    Hashmap_fill(map, TVALUE_ELSE_IF);
-    Hashmap_fill(map, TVALUE_ELSE);
+    Hashmap_fill(map, TVALUE_IF_ELSE);
+    Hashmap_fill(map, TVALUE_IF_OK);
+    Hashmap_fill(map, TVALUE_IF_NO);
+    Hashmap_fill(map, TVALUE_CODE_END);
     Hashmap_fill(map, TVALUE_OUTPUT);
     Hashmap_fill(map, TVALUE_INPUT);
     Hashmap_fill(map, TVALUE_BOX);
@@ -61,13 +64,11 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     Hashmap_fill(map, TVALUE_EQUAL);
     Hashmap_fill(map, TVALUE_TARGET_FROM);
     Hashmap_fill(map, TVALUE_TARGET_TO);
-    Hashmap_fill(map, TVALUE_WHILE);
-    Hashmap_fill(map, TVALUE_CODE_START);
-    Hashmap_fill(map, TVALUE_CODE_END);
     Hashmap_fill(map, TVALUE_VARIABLE);
     Hashmap_fill(map, TVALUE_VALUE);
     Hashmap_fill(map, TVALUE_MADE);
     Hashmap_fill(map, TVALUE_FUNC);
+    Hashmap_fill(map, TVALUE_CONTENT);
     Hashmap_fill(map, TVALUE_WITH);
     Hashmap_fill(map, TVALUE_CALL);
     Hashmap_fill(map, TVALUE_RETURN);

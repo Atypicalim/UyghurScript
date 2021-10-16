@@ -9,9 +9,12 @@
 #define TTYPE_EMPTY "TTYPE_EMPTY" // TODO box
 
 // token value of keywords
+#define TVALUE_WHILE "nawada"
 #define TVALUE_IF "eger"
-#define TVALUE_ELSE_IF "egerde"
-#define TVALUE_ELSE "bolmisa"
+#define TVALUE_IF_ELSE "egerde"
+#define TVALUE_IF_OK "bolsa"
+#define TVALUE_IF_NO "bolmisa"
+#define TVALUE_CODE_END "tamamlansun"
 // 
 #define TVALUE_OUTPUT "yezilsun"
 #define TVALUE_INPUT "oqulsun"
@@ -46,15 +49,12 @@
 #define TVALUE_TARGET_FROM "ikrandin" // TODO target+action -> box+func
 #define TVALUE_TARGET_TO "ikrangha" // TODO screen, file, other tream
 //
-#define TVALUE_WHILE "nawada"
-#define TVALUE_CODE_START "bolsa"
-#define TVALUE_CODE_END "tamamlansun"
-//
 #define TVALUE_VARIABLE "mixtar"
 #define TVALUE_VALUE "qimmiti"
 #define TVALUE_MADE "bolsun"
 
 #define TVALUE_FUNC "fonkisiye"
+#define TVALUE_CONTENT "mezmuni"
 #define TVALUE_WITH "bilen"
 #define TVALUE_CALL "ishlitilsun"
 #define TVALUE_RETURN "qayturulsun"

@@ -26,10 +26,10 @@
 # ikrangha logikiliqQimmet yezilsun
 
 # mixtar sinaqBir qimmiti rast bolsun
-eger sinaqBir qimmiti rast bolsa
-    # ikrangha [eger: sinaqBir qimmiti rast ...] yezilsun
-    # sinaqBir qimmiti yalghan xemde yalghan bolsun
-tamamlansun
+# eger sinaqBir qimmiti rast bolsa
+#     # ikrangha [eger: sinaqBir qimmiti rast ...] yezilsun
+#     # sinaqBir qimmiti yalghan xemde yalghan bolsun
+# tamamlansun
 # ikrangha sinaqBir yezilsun
 
 
@@ -37,17 +37,17 @@ tamamlansun
 # mixtar b qimmiti quruq bolsun
 # mixtar c qimmiti quruq bolsun
 
-# eger a qimmiti rast bolsa
+eger a qimmiti rast bolsa
 #     ikrangha [eger] yezilsun
-# egerde b qimmiti rast bolsa
+egerde b qimmiti rast bolsa
 #     ikrangha [egerde1] yezilsun
-# egerde c qimmiti rast bolsa
+egerde c qimmiti rast bolmisa
 #     ikrangha [egerde2] yezilsun
-# bolmisa
+bolmisa
 #     ikrangha [bolmisa] yezilsun
-# tamamlansun
+tamamlansun
 
-# mixtar yezildighanQimmet qimmiti [] bolsun
+mixtar yezildighanQimmet qimmiti [] bolsun
 # mixtar sinaqQimmet qimmiti 1 bolsun
 # mixtar tekshurulmeQimmet qimmiti rast bolsun
 # nawada tekshurulmeQimmet qimmiti rast bolsa
@@ -58,10 +58,10 @@ tamamlansun
 # tamamlansun
 
 # mixtar yighinda qimmiti 0 bolsun
-# fonkisiye sanYezish bolsa
+# fonkisiye sanYezish mezmuni
 #     ikrangha yighinda yezilsun
 # tamamlansun
-# fonkisiye sanQushush mixtar x y bolsa
+# fonkisiye sanQushush mixtar x y mezmuni
 #     mixtar waqitliqMixtar qimmiti 0 bolsun
 #     waqitliqMixtar qimmiti x qushulghan y bolsun
 #     netije waqitliqMixtar qayturulsun
