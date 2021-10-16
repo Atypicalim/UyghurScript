@@ -22,6 +22,11 @@
 #include "language.h"
 #include "constant.h"
 #include "tools.c"
+
+#include "token.c"
+#include "leaf.c"
+#include "value.c"
+
 #include "helpers.c"
 
 typedef struct Tokenizer Tokenizer;

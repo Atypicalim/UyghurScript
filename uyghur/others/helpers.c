@@ -4,8 +4,6 @@
 #define H_HELPERS
 
 #include "header.h"
-#include "token.c"
-#include "leaf.c"
 
 Queue *S2Q(int num, char *s, ...) {
     Queue *queue = Queue_new();
