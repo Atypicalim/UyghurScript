@@ -45,26 +45,36 @@ void Executer_assert(Executer *this, bool value, char *msg)
     Executer_error(this, msg);
 }
 
+// get token runtime value
 Value *Executer_getTRValue(Executer *this, Token *token)
 {
     if (is_equal(token->type, TTYPE_STRING))
     {
-        return Value_new(RTYPE_STRING, token->value, token);
+        return Value_newString(token->value, token);
     }
     else if (is_equal(token->type, TTYPE_NUMBER))
     {
         double val = atof(token->value);
-        double *p = &val;
-        Value *v = Value_new(RTYPE_NUMBER, &val, token);
-        return v;
+        return Value_newNumber(val, token);
+    }
+    else if (is_equal(token->type, TTYPE_NAME))
+    {
+        // TODO: loop scope stack
+        Value *value = Hashmap_get(this->currentScope, token->value);
+        return value;
     }
     else
     {
-        return Value_new(RTYPE_UNKNOWN, token->value, token);
+        return Value_newObject(token->value, token);
     }
 }
 
-void Execer_consumeVariable(Executer *this, Leaf *leaf)
+void Executer_setTRValue(Executer *this, Token *key, Value *value)
+{
+    Hashmap_set(this->currentScope, key->value, value);
+}
+
+void Executer_consumeVariable(Executer *this, Leaf *leaf)
 {
     Token *value = Stack_pop(leaf->tokens);
     Token *key = Stack_pop(leaf->tokens);
@@ -72,22 +82,21 @@ void Execer_consumeVariable(Executer *this, Leaf *leaf)
     Hashmap_set(this->currentScope, key->value, v);
 }
 
-void Execer_consumeOperate(Executer *this, Leaf *leaf)
+void Executer_consumeOperate(Executer *this, Leaf *leaf)
 {
     Token *action = Stack_pop(leaf->tokens);
     Token *name = Stack_pop(leaf->tokens);
     Token *target = Stack_pop(leaf->tokens);
     if (is_equal(target->value, TVALUE_TARGET_TO) && is_equal(action->value, TVALUE_OUTPUT))
     {
-        Value *value = (Value *)Hashmap_get(this->currentScope, name->value);
-        value->data = (double *)value->data;
+        Value *value = Executer_getTRValue(this, name);
         printf("%s", Value_string(value));
     }
     else if (is_equal(target->value, TVALUE_TARGET_FROM) && is_equal(action->value, TVALUE_INPUT))
     {
         char line[1024];
         scanf("%[^\n]", line);
-        Hashmap_set(this->currentScope, name->value, line);
+        Executer_setTRValue(this, name, Value_newString(line, NULL));
     }
 }
 
@@ -98,13 +107,13 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     // variable
     if (is_equal(tp, ASTTYPE_VARIABLE))
     {
-        Execer_consumeVariable(this, leaf);
+        Executer_consumeVariable(this, leaf);
         return;
     }
     // operate
     if (is_equal(tp, ASTTYPE_OPERATE))
     {
-        Execer_consumeOperate(this, leaf);
+        Executer_consumeOperate(this, leaf);
         return;
     }
     //
