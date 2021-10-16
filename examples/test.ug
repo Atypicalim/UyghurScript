@@ -25,11 +25,11 @@
 # logikiliqQimmet qimmiti ekische bolsun
 # ikrangha logikiliqQimmet yezilsun
 
-mixtar sinaqBir qimmiti rast bolsun
-# eger sinaqBir qimmiti rast bolsa
-#     ikrangha [eger: sinaqBir qimmiti rast ...] yezilsun
-#     sinaqBir qimmiti yalghan xemde yalghan bolsun
-# tamamlansun
+# mixtar sinaqBir qimmiti rast bolsun
+eger sinaqBir qimmiti rast bolsa
+    # ikrangha [eger: sinaqBir qimmiti rast ...] yezilsun
+    # sinaqBir qimmiti yalghan xemde yalghan bolsun
+tamamlansun
 # ikrangha sinaqBir yezilsun
 
 

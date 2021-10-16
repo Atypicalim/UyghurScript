@@ -38,7 +38,7 @@ void Uyghur_compile(Uyghur *this, const char *path)
 void Uyghur_run(Uyghur *this, const char *path)
 {
     char *content = tools_read_file(path);
-    tools_check(content != NULL, tools_format(LANG_ERR_NO_INPUT_FILE, path));
+    tools_assert(content != NULL, tools_format(LANG_ERR_NO_INPUT_FILE, path));
     Uyghur_execute(this, path, content);
 }
 

@@ -3,28 +3,36 @@
 #ifndef H_TOOLS
 #define H_TOOLS
 
-void tools_assert(bool value, const char *msg)
-{
-    //
-}
-
-void tools_error(const char *msg)
-{
-    printf("[%s] => %s ...\n", LANG_ERR, msg);
-}
-
-void tools_check(bool value, const char *msg)
-{
-    if (value) return;
-    tools_error(msg);
+void tools_error(const char* msg, ...) {
+    va_list lst;
+    va_start(lst, msg);
+    printf("[%s] => ", LANG_ERR);
+    vfprintf(stdout, msg, lst);
+    printf("\n");
+    va_end(lst);
     exit(1);
 }
 
-const char *tools_format(const char *temp, const char *msg)
+void tools_assert(bool value, const char *msg, ...)
 {
+    if (value == true) return;
+    va_list lst;
+    va_start(lst, msg);
+    printf("[%s] => ", LANG_ERR);
+    vfprintf(stdout, msg, lst);
+    printf("\n");
+    va_end(lst);
+    exit(1);
+}
+
+char *tools_format(char *msg, ...)
+{
+    va_list lst;
+    va_start(lst, msg);
     char txt[1024];
-    sprintf(txt, temp, msg);
-    const char *t = txt;
+    vsprintf(txt, msg, lst);
+    char *t = txt;
+    va_end(lst);
     return t;
 }
 

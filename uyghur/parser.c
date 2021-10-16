@@ -34,7 +34,7 @@ Parser *Parser_new(Uyghur *uyghur)
 void Parser_error(Parser *this)
 {
     Token *token = this->token;
-    printf("parser exception at line:%d, column:%d in file %s", token->line, token->column, token->file);
+    tools_error(LANG_ERR_NO_VALID_TOKEN, token->value, token->line, token->column, token->file);
 }
 
 void Parser_assert(Parser *this, bool value)
@@ -81,7 +81,7 @@ void Parser_pushLeaf(Parser *this, char *tp, int num, Token *token, ...)
 Token *Parser_checkType(Parser *this, int indent, int num, char *s, ...)
 {
     Parser_moveToken(this, indent);
-    tools_check(this->token != NULL, "keynidin sanliq melumat tipi [type] umut qilindi emma tepilmidi");
+    tools_assert(this->token != NULL, "keynidin sanliq melumat tipi [type] umut qilindi emma tepilmidi");
     bool isMatch = false;
     va_list valist;
     int i;
@@ -96,14 +96,14 @@ Token *Parser_checkType(Parser *this, int indent, int num, char *s, ...)
        s = va_arg(valist, char *);
     }
     va_end(valist);
-    tools_check(isMatch, "keynidin sanliq melumat tipi [type] umut qilindi emma [type] tepildi");
+    tools_assert(isMatch, "keynidin sanliq melumat tipi [type] umut qilindi emma [type] tepildi");
     return this->token;
 }
 
 Token *Parser_checkValue(Parser *this, int indent, int num, char *s, ...)
 {
     Parser_moveToken(this, indent);
-    tools_check(this->token != NULL, "keynidin sanliq melumat qimmiti [value] umut qilindi emma tepilmidi");
+    tools_assert(this->token != NULL, "keynidin sanliq melumat qimmiti [value] umut qilindi emma tepilmidi");
     bool isMatch = false;
     va_list valist;
     int i;
@@ -118,7 +118,7 @@ Token *Parser_checkValue(Parser *this, int indent, int num, char *s, ...)
        s = va_arg(valist, char *);
     }
     va_end(valist);
-    tools_check(isMatch, "keynidin sanliq melumat qimmiti [value] umut qilindi emma [value] tepildi");
+    Parser_assert(this, isMatch);
     return this->token;
 }
 
@@ -159,8 +159,8 @@ bool Parser_isWord(Parser *this, int indent, char *value)
 Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
 {
     Parser_moveToken(this, indent);
-    tools_check(this->token != NULL, "keynidin xalqiliq soz [value] umut qilindi emma tepilmidi");
-    tools_check(is_equal(this->token->type, TTYPE_WORD), "keynidin xalqiliq soz [value] umut qilindi emma [value] tepildi");
+    tools_assert(this->token != NULL, "keynidin xalqiliq soz [value] umut qilindi emma tepilmidi");
+    tools_assert(is_equal(this->token->type, TTYPE_WORD), "keynidin xalqiliq soz [value] umut qilindi emma [value] tepildi");
     bool isMatch = false;
     va_list valist;
     int i;
@@ -175,7 +175,7 @@ Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
        s = va_arg(valist, char *);
     }
     va_end(valist);
-    tools_check(isMatch, "keynidin xalqiliq soz [value] umut qilindi emma [value] tepildi");
+    tools_assert(isMatch, "keynidin xalqiliq soz [value] umut qilindi emma [value] tepildi");
     return this->token;
 }
 
@@ -330,6 +330,7 @@ void Parser_consumeToken(Parser *this, Token *token)
         return;
     }
     //
+    Parser_error(this);
     Token_print(token);
 }
 

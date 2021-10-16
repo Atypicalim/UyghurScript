@@ -43,7 +43,7 @@
 #define TVALUE_CONCAT "ulanghan"
 #define TVALUE_EQUAL "teng"
 //
-#define TVALUE_TARGET_FROM "ikrandin"
+#define TVALUE_TARGET_FROM "ikrandin" // TODO target+action -> box+func
 #define TVALUE_TARGET_TO "ikrangha" // TODO screen, file, other tream
 //
 #define TVALUE_WHILE "nawada"
