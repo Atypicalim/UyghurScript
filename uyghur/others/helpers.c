@@ -69,4 +69,18 @@ void helper_print_leaf(Leaf *this, char *_space)
     printf("%s[LEAF]\n", space);
 }
 
+bool is_values(char *target, int num, char *s, ...)
+{
+    va_list valist;
+    int i;
+    va_start(valist, s);
+    for (i = 0; i < num; i++)
+    {
+        if (is_equal(target, s)) return true;
+        s = va_arg(valist, char *);
+    }
+    va_end(valist);
+    return false;
+}
+
 #endif

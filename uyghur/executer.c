@@ -48,19 +48,33 @@ void Executer_assert(Executer *this, bool value, char *msg)
 // get token runtime value
 Value *Executer_getTRValue(Executer *this, Token *token)
 {
-    if (is_equal(token->type, TTYPE_STRING))
+    // TODO: put const values like empty or number to globalScope
+    if (is_equal(token->type, TTYPE_EMPTY))
     {
-        return Value_newString(token->value, token);
+        return Value_newEmpty(token);
+    }
+    else if (is_equal(token->type, TTYPE_BOOL))
+    {
+        bool boolean = is_equal(token->value, TVALUE_TRUE) ? true : false;
+        return Value_newBoolean(boolean, token);
     }
     else if (is_equal(token->type, TTYPE_NUMBER))
     {
         double val = atof(token->value);
         return Value_newNumber(val, token);
     }
+    else if (is_equal(token->type, TTYPE_STRING))
+    {
+        return Value_newString(token->value, token);
+    }
     else if (is_equal(token->type, TTYPE_NAME))
     {
         // TODO: loop scope stack
         Value *value = Hashmap_get(this->currentScope, token->value);
+        if (value == NULL)
+        {
+            value = Value_newEmpty(NULL);
+        }
         return value;
     }
     else
@@ -100,6 +114,49 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     }
 }
 
+void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
+{
+    Token *second = Stack_pop(leaf->tokens);
+    Token *action = Stack_pop(leaf->tokens);
+    Token *first = Stack_pop(leaf->tokens);
+    Token *target = Stack_pop(leaf->tokens);
+    Value *secondV = Executer_getTRValue(this, second);
+    Value *firstV = Executer_getTRValue(this, first);
+    Value *r = NULL;
+    char *act = action->value;
+    //
+    Token_print(first);
+    Token_print(action);
+    Token_print(second);
+    //
+    if (is_values(act, TVALUE_GROUP_EXP_STRING))
+    {
+        char *firstS = Value_string(firstV);
+        char *secondS = Value_string(secondV);
+        if (is_equal(act, TVALUE_EQUAL))
+        {
+            bool boolean = is_equal(firstS, secondS);
+            r = Value_newBoolean(boolean, NULL);
+        }
+        else if (is_equal(act, TVALUE_CONCAT))
+        {
+            char *ch = str_concat(firstS, secondS);
+            r = Value_newString(ch, NULL);
+        }
+    }
+    else if (is_values(act, TVALUE_GROUP_EXP_NUMBER))
+    {
+        //
+    }
+    else if (is_values(act, TVALUE_GROUP_EXP_BOOL))
+    {
+        //
+    }
+    
+    tools_assert(r != NULL, "not supported action for expression");
+    Executer_setTRValue(this, target, r);
+}
+
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
     //
@@ -116,14 +173,26 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
         Executer_consumeOperate(this, leaf);
         return;
     }
+    // expression single
+    // if (is_equal(tp, ASTTYPE_EXPRESSION_DOUBLE))
+    // {
+    //     Executer_consumeExpSingle(this, leaf);
+    //     return;
+    // }
+    // expression double
+    if (is_equal(tp, ASTTYPE_EXPRESSION_DOUBLE))
+    {
+        Executer_consumeExpDouble(this, leaf);
+        return;
+    }
     //
     //
     printf("--->\n");
     helper_print_leaf(leaf, " ");
     printf("--->\n");
     //
-    Executer_error(this, NULL);
-    helper_print_leaf(leaf, " ");
+    tools_error("EXECUTER NOT IMPLEMENTED FOR %s", tp);
+    // helper_print_leaf(leaf, " ");
 }
 
 bool Executer_executeTree(Executer *this, Leaf *tree)

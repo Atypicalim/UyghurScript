@@ -2,18 +2,18 @@
 
 ################################
 
-mixtar dunyaghaSalam qimmiti [SalamDunya!] bolsun
+# mixtar dunyaghaSalam qimmiti [SalamDunya!] bolsun
 # ikrandin dunyaghaSalam oqulsun
-ikrangha dunyaghaSalam yezilsun
+# ikrangha dunyaghaSalam yezilsun
 
-# mixtar miningIsmim qimmiti quruq bolsun
-# ikrangha [ismingizni kurguzung:] yezilsun
-# ikrandin miningIsmim oqulsun
+mixtar miningIsmim qimmiti [] bolsun
+ikrangha [ismingizni kurguzung:] yezilsun
+ikrandin miningIsmim oqulsun
+# ikrangha miningIsmim yezilsun
 
-# mixtar salamMezmuni qimmiti [Xush Kepsiz ] bolsun
-# salamMezmuni qimmiti salamMezmuni ulanghan miningIsmim bolsun
-# ikrangha salamMezmuni yezilsun
-# salamMezmuni qimmiti salamMezmuni bolsun
+mixtar salamMezmuni qimmiti [Xush Kepsiz ] bolsun
+salamMezmuni qimmiti salamMezmuni ulanghan miningIsmim bolsun
+ikrangha salamMezmuni yezilsun
 
 # mixtar sanliqQimmet qimmiti 2 bolsun
 # sanliqQimmet qimmiti sanliqQimmet qushulghan 3 bolsun
