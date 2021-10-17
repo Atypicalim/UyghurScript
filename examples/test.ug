@@ -26,8 +26,14 @@
 
 # mixtar sanliqQimmet qimmiti 2 bolsun
 # sanliqQimmet qimmiti 4 bolsun
-# # sanliqQimmet qimmiti sanliqQimmet qushulghan 3 bolsun
+# sanliqQimmet qimmiti sanliqQimmet qushulghan 3 bolsun
 # ikrangha sanliqQimmet yezilsun
+
+# mixtar sinaqR qimmiti quruq bolsun
+# mixtar sinaqA qimmiti 1 bolsun
+# mixtar sinaqB qimmiti [rast] bolsun
+# sinaqR qimmiti sinaqA xemde sinaqB bolsun
+# ikrangha sinaqR yezilsun
 
 # mixtar qimmetBir qimmiti 2 bolsun
 # mixtar qimmetIkki qimmiti 3 bolsun
@@ -36,12 +42,19 @@
 # logikiliqQimmet qimmiti ekische bolsun
 # ikrangha logikiliqQimmet yezilsun
 
-# mixtar sinaqBir qimmiti rast bolsun
-# eger sinaqBir qimmiti rast bolsa
-#     # ikrangha [eger: sinaqBir qimmiti rast ...] yezilsun
-#     # sinaqBir qimmiti yalghan xemde yalghan bolsun
-# tamamlansun
-# ikrangha sinaqBir yezilsun
+# mixtar a qimmiti [1] bolsun
+# a qimmiti san bolsun
+# mixtar c qimmiti quruq bolsun
+# c qimmiti a qushulghan 1 bolsun
+# ikrangha c yezilsun
+
+
+mixtar sinaqBir qimmiti rast bolsun
+eger sinaqBir qimmiti rast bolsa
+    ikrangha [eger: sinaqBir qimmiti rast ...] yezilsun
+    sinaqBir qimmiti yalghan xemde yalghan bolsun
+tamamlansun
+ikrangha sinaqBir yezilsun
 
 
 # mixtar a qimmiti quruq bolsun
@@ -86,10 +99,6 @@
 
 # ikrangha [UyghurScript!] yezilsun
 
-# mixtar a qimmiti [1] bolsun
-# mixtar c qimmiti quruq bolsun
-# c qimmiti a teng 1 bolsun
-# ikrangha c yezilsun
 
 # mixtar a qimmiti 3 bolsun
 # mixtar b qimmiti 5 bolsun

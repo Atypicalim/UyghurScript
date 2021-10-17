@@ -31,18 +31,17 @@ Executer *Executer_new(Uyghur *uyghur)
     return executer;
 }
 
-void Executer_error(Executer *this, char *msg)
+void Executer_error(Executer *this, Token *token, char *msg)
 {
-    Token *token = NULL;
     char *m = msg != NULL ? msg : LANG_ERR_EXECUTER_EXCEPTION;
     char *s = tools_format(LANG_ERR_TOKEN_PLACE, token->value, token->line, token->column, token->file);
     tools_error("%s%s", m, s);
 }
 
-void Executer_assert(Executer *this, bool value, char *msg)
+void Executer_assert(Executer *this, bool value, Token *token, char *msg)
 {
     if (value == true) return;
-    Executer_error(this, msg);
+    Executer_error(this, token, msg);
 }
 
 // get token runtime value
@@ -104,7 +103,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     if (is_equal(target->value, TVALUE_TARGET_TO) && is_equal(action->value, TVALUE_OUTPUT))
     {
         Value *value = Executer_getTRValue(this, name);
-        printf("%s", Value_string(value));
+        printf("%s", Value_toString(value));
     }
     else if (is_equal(target->value, TVALUE_TARGET_FROM) && is_equal(action->value, TVALUE_INPUT))
     {
@@ -155,54 +154,16 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
         }
         else if (is_equal(act, TVALUE_NUM))
         {
-            if (is_equal(value->type, RTYPE_NUMBER))
-            {
-                r = value;
-            }
-            else if (is_equal(value->type, RTYPE_STRING))
-            {
-                r = Value_newNumber(atof(value->string), NULL);
-            }
-            else if (is_equal(value->type, RTYPE_EMPTY))
-            {
-                r = Value_newNumber(0, NULL);
-            }
-            else if (is_equal(value->type, RTYPE_BOOLEAN))
-            {
-                r = Value_newNumber(value->boolean ? 1 : 0, NULL);
-            }
-            else if (is_equal(value->type, RTYPE_FUNCTION))
-            {
-                r = Value_newNumber(0, NULL);
-            }
+            r = Value_toNumber(value);
         }
         else if (is_equal(act, TVALUE_STR))
         {
-            char *s = Value_string(value);
+            char *s = Value_toString(value);
             r = Value_newString(s, NULL);
         }
         else if (is_equal(act, TVALUE_BOOLEAN))
         {
-            if (is_equal(value->type, RTYPE_NUMBER))
-            {
-                r = Value_newBoolean(value->number > 0, NULL);
-            }
-            else if (is_equal(value->type, RTYPE_STRING))
-            {
-                r = Value_newBoolean(is_equal(value->string, TVALUE_TRUE), NULL);
-            }
-            else if (is_equal(value->type, RTYPE_EMPTY))
-            {
-                r = Value_newBoolean(false, NULL);
-            }
-            else if (is_equal(value->type, RTYPE_BOOLEAN))
-            {
-                r = value;
-            }
-            else if (is_equal(value->type, RTYPE_FUNCTION))
-            {
-                r = Value_newBoolean(false, NULL);
-            }
+            r = Value_toBoolean(value);
         }
         else if (is_equal(act, TVALUE_FUNCTION))
         {
@@ -226,18 +187,26 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
     Token *target = Stack_pop(leaf->tokens);
     Value *secondV = Executer_getTRValue(this, second);
     Value *firstV = Executer_getTRValue(this, first);
+        char *firstType = firstV->type;
+        char *secondType = secondV->type;
     Value *r = NULL;
     char *act = action->value;
     //
-    Token_print(first);
-    Token_print(action);
-    Token_print(second);
-    //
-    if (is_values(act, TVALUE_GROUP_EXP_STRING))
+    // TODO add type change to standard libray and forbid expression between different types
+    if (is_equal(act, TVALUE_EQUAL) && !is_equal(firstType, secondType))
     {
-        char *firstS = Value_string(firstV);
-        char *secondS = Value_string(secondV);
-        if (is_equal(act, TVALUE_EQUAL))
+        r = Value_newBoolean(false, NULL);
+    }
+    else if (!is_equal(firstType, secondType))
+    {
+        Executer_error(this, action, LANG_ERR_EXECUTER_EXP_INVALID_TYPE);
+    }
+    else if (is_values(act, TVALUE_GROUP_EXP_STRING) && is_equal(firstType, RTYPE_STRING))
+    {
+        printf("\n\n!! %s %s %s !!\n\n", firstType, act, secondType);
+        char *firstS = Value_toString(firstV);
+        char *secondS = Value_toString(secondV);
+        if (is_equal(act, RTYPE_STRING))
         {
             bool boolean = is_equal(firstS, secondS);
             r = Value_newBoolean(boolean, NULL);
@@ -248,16 +217,57 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
             r = Value_newString(ch, NULL);
         }
     }
-    else if (is_values(act, TVALUE_GROUP_EXP_NUMBER))
+    else if (is_values(act, TVALUE_GROUP_EXP_NUMBER) && is_equal(firstType, RTYPE_NUMBER))
     {
-        //
+        float firstN = Value_toNumber(firstV)->number;
+        float secondN = Value_toNumber(secondV)->number;
+        if (is_equal(act, TVALUE_EQUAL))
+        {
+            r = Value_newBoolean(firstN == secondN, NULL);
+        }
+        else if (is_equal(act, TVALUE_LESS))
+        {
+            r = Value_newBoolean(firstN < secondN, NULL);
+        }
+        else if (is_equal(act, TVALUE_MORE))
+        {
+            r = Value_newBoolean(firstN > secondN, NULL);
+        }
+        else if (is_equal(act, TVALUE_ADD))
+        {
+            r = Value_newNumber(firstN + secondN, NULL);
+        }
+        else if (is_equal(act, TVALUE_SUB))
+        {
+            r = Value_newNumber(firstN - secondN, NULL);
+        }
+        else if (is_equal(act, TVALUE_MUL))
+        {
+            r = Value_newNumber(firstN * secondN, NULL);
+        }
+        else if (is_equal(act, TVALUE_MUL))
+        {
+            r = Value_newNumber(firstN / secondN, NULL);
+        }
     }
-    else if (is_values(act, TVALUE_GROUP_EXP_BOOL))
+    else if (is_values(act, TVALUE_GROUP_EXP_BOOL) && is_equal(firstType, RTYPE_BOOLEAN))
     {
-        //
+        bool firstB = Value_toBoolean(firstV)->boolean;
+        bool secondB = Value_toBoolean(secondV)->boolean;
+        if (is_equal(act, TVALUE_EQUAL))
+        {
+            r = Value_newBoolean(firstB == secondB, NULL);
+        }
+        else if (is_equal(act, TVALUE_AND))
+        {
+            r = Value_newBoolean(firstB == true && secondB == true, NULL);
+        }
+        else if (is_equal(act, TVALUE_OR))
+        {
+            r = Value_newBoolean(firstB == true || secondB == true, NULL);
+        }
     }
-    
-    tools_assert(r != NULL, "not supported action for expression");
+    tools_assert(r != NULL, "not supported action for expression:%s", act);
     Executer_setTRValue(this, target, r);
 }
 

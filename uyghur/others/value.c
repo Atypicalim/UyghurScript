@@ -80,7 +80,8 @@ void Value_print(Value *this)
     }
 }
 
-char *Value_string(Value *this)
+// TODO return Value
+char *Value_toString(Value *this)
 {
     if (is_equal(this->type, RTYPE_EMPTY))
     {
@@ -106,6 +107,55 @@ char *Value_string(Value *this)
         char *value = this->object;
         return tools_format("[RV => t:%s]\n", this->type);
     } 
+}
+
+Value *Value_toBoolean(Value *this)
+{
+    if (is_equal(this->type, RTYPE_NUMBER))
+    {
+        return Value_newBoolean(this->number > 0, NULL);
+    }
+    else if (is_equal(this->type, RTYPE_STRING))
+    {
+        return Value_newBoolean(is_equal(this->string, TVALUE_TRUE), NULL);
+    }
+    else if (is_equal(this->type, RTYPE_EMPTY))
+    {
+        return Value_newBoolean(false, NULL);
+    }
+    else if (is_equal(this->type, RTYPE_BOOLEAN))
+    {
+        return this;
+    }
+    else
+    {
+        return Value_newBoolean(false, NULL);
+    }
+}
+
+Value *Value_toNumber(Value *this)
+{
+
+    if (is_equal(this->type, RTYPE_NUMBER))
+    {
+        return this;
+    }
+    else if (is_equal(this->type, RTYPE_STRING))
+    {
+        return Value_newNumber(atof(this->string), NULL);
+    }
+    else if (is_equal(this->type, RTYPE_EMPTY))
+    {
+        return Value_newNumber(0, NULL);
+    }
+    else if (is_equal(this->type, RTYPE_BOOLEAN))
+    {
+        return Value_newNumber(this->boolean ? 1 : 0, NULL);
+    }
+    else
+    {
+        return Value_newNumber(0, NULL);
+    }
 }
 
 void Value_free(Value *this)

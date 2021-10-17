@@ -12,4 +12,5 @@
 #define LANG_ERR_NO_VALID_NAME "inawetsiz isim uchritildi: "
 #define LANG_ERR_NO_IF_FIRST "eger jumlisi inawetsiz: "
 
-#define LANG_ERR_EXECUTER_EXCEPTION "ija xataliqi kuruldi: "
+#define LANG_ERR_EXECUTER_EXCEPTION "ijra xataliqi kuruldi: "
+#define LANG_ERR_EXECUTER_EXP_INVALID_TYPE "oxshashmighan mixtar tipi arisida xisablash elip barghili bolmaydu: "
