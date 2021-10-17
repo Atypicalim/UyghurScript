@@ -54,9 +54,8 @@ Value *Value_newObject(void *object, void *extra)
 
 void Value_print(Value *this)
 {
-    if (is_equal(this->type, RTYPE_BOOLEAN))
+    if (is_equal(this->type, RTYPE_EMPTY))
     {
-        bool value = this->boolean;
         printf("[RV => t:%s v:%s]\n", this->type, TVALUE_EMPTY);
     }
     else if (is_equal(this->type, RTYPE_BOOLEAN))
@@ -89,7 +88,7 @@ char *Value_string(Value *this)
     }
     if (is_equal(this->type, RTYPE_BOOLEAN))
     {
-        double value = this->number;
+        double value = this->boolean;
         return tools_format("%s", value ? TVALUE_TRUE : TVALUE_FALSE);
     }
     if (is_equal(this->type, RTYPE_NUMBER))

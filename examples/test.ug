@@ -6,17 +6,27 @@
 # ikrandin dunyaghaSalam oqulsun
 # ikrangha dunyaghaSalam yezilsun
 
-mixtar miningIsmim qimmiti [] bolsun
-ikrangha [ismingizni kurguzung:] yezilsun
-ikrandin miningIsmim oqulsun
+# mixtar miningIsmim qimmiti [] bolsun
+# ikrangha [ismingizni kurguzung:] yezilsun
+# ikrandin miningIsmim oqulsun
 # ikrangha miningIsmim yezilsun
 
-mixtar salamMezmuni qimmiti [Xush Kepsiz ] bolsun
-salamMezmuni qimmiti salamMezmuni ulanghan miningIsmim bolsun
-ikrangha salamMezmuni yezilsun
+# mixtar salamMezmuni qimmiti [Xush Kepsiz ] bolsun
+# salamMezmuni qimmiti salamMezmuni ulanghan miningIsmim bolsun
+# ikrangha salamMezmuni yezilsun
+
+# mixtar sQimmet qimmiti [yalghan] bolsun
+# sQimmet qimmiti san bolsun
+# sQimmet qimmiti xet bolsun
+# sQimmet qimmiti quruq bolsun
+# sQimmet qimmiti logika bolsun
+# sQimmet qimmiti ekische bolsun
+# sQimmet qimmiti fonkisiye bolsun
+# ikrangha sQimmet yezilsun
 
 # mixtar sanliqQimmet qimmiti 2 bolsun
-# sanliqQimmet qimmiti sanliqQimmet qushulghan 3 bolsun
+# sanliqQimmet qimmiti 4 bolsun
+# # sanliqQimmet qimmiti sanliqQimmet qushulghan 3 bolsun
 # ikrangha sanliqQimmet yezilsun
 
 # mixtar qimmetBir qimmiti 2 bolsun
@@ -77,9 +87,6 @@ ikrangha salamMezmuni yezilsun
 # ikrangha [UyghurScript!] yezilsun
 
 # mixtar a qimmiti [1] bolsun
-# qimmet a tipi san bolsun
-# qimmet a tipi xet bolsun
-# qimmet a tipi logika bolsun
 # mixtar c qimmiti quruq bolsun
 # c qimmiti a teng 1 bolsun
 # ikrangha c yezilsun

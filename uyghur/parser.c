@@ -226,15 +226,14 @@ void Parser_consumeAstExpression(Parser *this)
     if (Parser_isWord(this, 2, TVALUE_MADE))
     {
         Token *source = NULL;
-        if (Parser_isWord(this, 1, TVALUE_NOT))
+        if (Parser_isType(this, 1, TTYPE_WORD))
         {
-            source = Parser_checkWord(this, 1, 1, TVALUE_NOT);
+            source = Parser_checkWord(this, 1, TVAUE_GROUP_EXP_SINGLE);
         }
         else
         {
             source = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
         }
-        
         Parser_checkWord(this, 1, 1, TVALUE_MADE);
         Parser_pushLeaf(this, ASTTYPE_EXPRESSION_SINGLE, 2, target, source);
         return;
@@ -385,7 +384,7 @@ void Parser_consumeAstResult(Parser *this)
 
 void Parser_consumeAstFunc(Parser *this)
 {
-    Parser_checkWord(this, 0, 1, TVALUE_FUNC);
+    Parser_checkWord(this, 0, 1, TVALUE_FUNCTION);
     Token *name = Parser_checkType(this, 1, 1, TTYPE_NAME);
     Leaf *leaf = Leaf_new(ASTTYPE_FUNC);
     Stack_push(leaf->tokens, name);
@@ -408,7 +407,7 @@ void Parser_consumeAstFunc(Parser *this)
 
 void Parser_consumeAstCall(Parser *this)
 {
-    Parser_checkWord(this, 0, 1, TVALUE_FUNC);
+    Parser_checkWord(this, 0, 1, TVALUE_FUNCTION);
     Token *name = Parser_checkType(this, 1, 1, TTYPE_NAME);
     Leaf *leaf = Leaf_new(ASTTYPE_CALL);
     Stack_push(leaf->tokens, name);
@@ -440,16 +439,6 @@ void Parser_consumeAstCall(Parser *this)
     Leaf_pushLeaf(this->leaf, leaf);
 }
 
-void Parser_consumeAstTransform(Parser *this)
-{
-    Parser_checkWord(this, 0, 1, TVALUE_SOMEVALUE);
-    Token *name = Parser_checkType(this, 1, 1, TTYPE_NAME);
-    Parser_checkWord(this, 1, 1, TVALUE_SOMETYPE);
-    Token *tp = Parser_checkValue(this, 1, TVAUE_GROUP_DO_TRANSFROM);
-    Parser_checkWord(this, 1, 1, TVALUE_MADE);
-    Parser_pushLeaf(this, ASTTYPE_TRANSFORM, 2, name, tp);
-}
-
 void Parser_consumeToken(Parser *this, Token *token)
 {
     //
@@ -468,12 +457,6 @@ void Parser_consumeToken(Parser *this, Token *token)
         return;
     }
     // ASSIGN
-    // TRANSFORM
-    if (is_equal(v, TVALUE_SOMEVALUE))
-    {
-        Parser_consumeAstTransform(this);
-        return;
-    }
     // RESULT
     if (is_equal(v, TVALUE_RESULT))
     {
@@ -481,13 +464,13 @@ void Parser_consumeToken(Parser *this, Token *token)
         return;
     }
     // FUNC
-    if (is_equal(v, TVALUE_FUNC) && (Parser_isValue(this, 2, TVALUE_VARIABLE) || Parser_isValue(this, 2, TVALUE_CONTENT)))
+    if (is_equal(v, TVALUE_FUNCTION) && (Parser_isValue(this, 2, TVALUE_VARIABLE) || Parser_isValue(this, 2, TVALUE_CONTENT)))
     {
         Parser_consumeAstFunc(this);
         return;
     }
     // CALL
-    if (is_equal(v, TVALUE_FUNC) && (Parser_isValue(this, 2, TVALUE_WITH) || Parser_isValue(this, 2, TVALUE_CALL)))
+    if (is_equal(v, TVALUE_FUNCTION) && (Parser_isValue(this, 2, TVALUE_WITH) || Parser_isValue(this, 2, TVALUE_CALL)))
     {
         Parser_consumeAstCall(this);
         return;

@@ -45,11 +45,9 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     Hashmap_fill(map, TVALUE_OUTPUT);
     Hashmap_fill(map, TVALUE_INPUT);
     Hashmap_fill(map, TVALUE_DOT);
-    Hashmap_fill(map, TVALUE_SOMEVALUE);
-    Hashmap_fill(map, TVALUE_SOMETYPE);
     Hashmap_fill(map, TVALUE_STR);
     Hashmap_fill(map, TVALUE_NUM);
-    Hashmap_fill(map, TVALUE_LOGIKA);
+    Hashmap_fill(map, TVALUE_BOOLEAN);
     Hashmap_fill(map, TVALUE_AND);
     Hashmap_fill(map, TVALUE_OR);
     Hashmap_fill(map, TVALUE_NOT);
@@ -66,7 +64,7 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     Hashmap_fill(map, TVALUE_VARIABLE);
     Hashmap_fill(map, TVALUE_VALUE);
     Hashmap_fill(map, TVALUE_MADE);
-    Hashmap_fill(map, TVALUE_FUNC);
+    Hashmap_fill(map, TVALUE_FUNCTION);
     Hashmap_fill(map, TVALUE_CONTENT);
     Hashmap_fill(map, TVALUE_WITH);
     Hashmap_fill(map, TVALUE_CALL);

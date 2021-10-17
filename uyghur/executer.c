@@ -115,6 +115,109 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     }
 }
 
+void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
+{
+    Token *action = Stack_pop(leaf->tokens);
+    Token *target = Stack_pop(leaf->tokens);
+    Value *value = Executer_getTRValue(this, target);
+    Value *r = NULL;
+    char *act = action->value;
+    //
+    if (is_values(action->type, 1, TTYPE_WORD))
+    {
+        if (is_equal(act, TVALUE_EMPTY))
+        {
+            // TODO free object
+            r = Value_newEmpty(NULL);
+        }
+        else if (is_equal(act, TVALUE_NOT))
+        {
+            if (is_equal(value->type, RTYPE_NUMBER))
+            {
+                r = Value_newBoolean(value->number <= 0, NULL);
+            }
+            else if (is_equal(value->type, RTYPE_STRING))
+            {
+                r = Value_newBoolean(!is_equal(value->string, TVALUE_TRUE), NULL);
+            }
+            else if (is_equal(value->type, RTYPE_EMPTY))
+            {
+                r = Value_newBoolean(true, NULL);
+            }
+            else if (is_equal(value->type, RTYPE_BOOLEAN))
+            {
+                r = Value_newBoolean(!value->boolean, NULL);
+            }
+            else if (is_equal(value->type, RTYPE_FUNCTION))
+            {
+                r = Value_newNumber(true, NULL);
+            }
+        }
+        else if (is_equal(act, TVALUE_NUM))
+        {
+            if (is_equal(value->type, RTYPE_NUMBER))
+            {
+                r = value;
+            }
+            else if (is_equal(value->type, RTYPE_STRING))
+            {
+                r = Value_newNumber(atof(value->string), NULL);
+            }
+            else if (is_equal(value->type, RTYPE_EMPTY))
+            {
+                r = Value_newNumber(0, NULL);
+            }
+            else if (is_equal(value->type, RTYPE_BOOLEAN))
+            {
+                r = Value_newNumber(value->boolean ? 1 : 0, NULL);
+            }
+            else if (is_equal(value->type, RTYPE_FUNCTION))
+            {
+                r = Value_newNumber(0, NULL);
+            }
+        }
+        else if (is_equal(act, TVALUE_STR))
+        {
+            char *s = Value_string(value);
+            r = Value_newString(s, NULL);
+        }
+        else if (is_equal(act, TVALUE_BOOLEAN))
+        {
+            if (is_equal(value->type, RTYPE_NUMBER))
+            {
+                r = Value_newBoolean(value->number > 0, NULL);
+            }
+            else if (is_equal(value->type, RTYPE_STRING))
+            {
+                r = Value_newBoolean(is_equal(value->string, TVALUE_TRUE), NULL);
+            }
+            else if (is_equal(value->type, RTYPE_EMPTY))
+            {
+                r = Value_newBoolean(false, NULL);
+            }
+            else if (is_equal(value->type, RTYPE_BOOLEAN))
+            {
+                r = value;
+            }
+            else if (is_equal(value->type, RTYPE_FUNCTION))
+            {
+                r = Value_newBoolean(false, NULL);
+            }
+        }
+        else if (is_equal(act, TVALUE_FUNCTION))
+        {
+            // TODO return function
+            r = Value_newObject(NULL, NULL);
+        }
+    }
+    else
+    {
+        r = Executer_getTRValue(this, action);
+    }
+    tools_assert(r != NULL, "not supported action for expression:%s", act);
+    Executer_setTRValue(this, target, r);
+}
+
 void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
 {
     Token *second = Stack_pop(leaf->tokens);
@@ -175,11 +278,11 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
         return;
     }
     // expression single
-    // if (is_equal(tp, ASTTYPE_EXPRESSION_DOUBLE))
-    // {
-    //     Executer_consumeExpSingle(this, leaf);
-    //     return;
-    // }
+    if (is_equal(tp, ASTTYPE_EXPRESSION_SINGLE))
+    {
+        Executer_consumeExpSingle(this, leaf);
+        return;
+    }
     // expression double
     if (is_equal(tp, ASTTYPE_EXPRESSION_DOUBLE))
     {

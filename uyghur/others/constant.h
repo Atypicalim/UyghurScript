@@ -10,10 +10,10 @@
 
 // token value of keywords
 //
-#define TVALUE_STR "xet"
 #define TVALUE_NUM "san"
-#define TVALUE_LOGIKA "logika"
+#define TVALUE_STR "xet"
 #define TVALUE_EMPTY "quruq"
+#define TVALUE_BOOLEAN "logika"
 //
 #define TVALUE_WHILE "nawada"
 #define TVALUE_IF "eger"
@@ -26,9 +26,6 @@
 #define TVALUE_INPUT "oqulsun"
 // 
 #define TVALUE_DOT "."
-// 
-#define TVALUE_SOMEVALUE "qimmet"
-#define TVALUE_SOMETYPE "tipi"
 //
 #define TVALUE_TRUE "rast"
 #define TVALUE_FALSE "yalghan"
@@ -47,14 +44,14 @@
 #define TVALUE_CONCAT "ulanghan"
 #define TVALUE_EQUAL "teng"
 //
-#define TVALUE_TARGET_FROM "ikrandin" // TODO target+action -> box+func
-#define TVALUE_TARGET_TO "ikrangha" // TODO screen, file, other tream
+#define TVALUE_TARGET_FROM "ikrandin" // TODO implement with standart library -> box+func
+#define TVALUE_TARGET_TO "ikrangha" // TODO implement with standart library -> box+func (screen, file, etc)
 //
 #define TVALUE_VARIABLE "mixtar"
 #define TVALUE_VALUE "qimmiti"
 #define TVALUE_MADE "bolsun"
 
-#define TVALUE_FUNC "fonkisiye"
+#define TVALUE_FUNCTION "fonkisiye"
 #define TVALUE_CONTENT "mezmuni"
 #define TVALUE_WITH "bilen"
 #define TVALUE_CALL "ishlitilsun"
@@ -89,15 +86,15 @@
 
 #define TVALUE_GROUP_EXP_STRING 2, TVALUE_EQUAL, TVALUE_CONCAT
 #define TVALUE_GROUP_EXP_NUMBER 7, TVALUE_EQUAL, TVALUE_ADD, TVALUE_SUB, TVALUE_MUL, TVALUE_DIV, TVALUE_LESS, TVALUE_MORE
-#define TVALUE_GROUP_EXP_BOOL 4, TVALUE_EQUAL, TVALUE_AND, TVALUE_OR, TVALUE_NOT
-#define TVALUE_GROUP_EXP_ALL 11, TVALUE_EQUAL, TVALUE_CONCAT, TVALUE_ADD, TVALUE_SUB, TVALUE_MUL, TVALUE_DIV, TVALUE_LESS, TVALUE_MORE, TVALUE_AND, TVALUE_OR, TVALUE_NOT
+#define TVALUE_GROUP_EXP_BOOL 3, TVALUE_EQUAL, TVALUE_AND, TVALUE_OR
+#define TVALUE_GROUP_EXP_ALL 10, TVALUE_EQUAL, TVALUE_CONCAT, TVALUE_ADD, TVALUE_SUB, TVALUE_MUL, TVALUE_DIV, TVALUE_LESS, TVALUE_MORE, TVALUE_AND, TVALUE_OR
 
-#define TVAUE_GROUP_DO_TRANSFROM 4, TVALUE_STR, TVALUE_NUM, TVALUE_LOGIKA, TVALUE_FUNC
+#define TVAUE_GROUP_EXP_SINGLE 6, TVALUE_NUM, TVALUE_STR, TVALUE_EMPTY, TVALUE_BOOLEAN, TVALUE_FUNCTION, TVALUE_NOT
 
 // runtime types
 #define RTYPE_UNKNOWN "RTYPE_UNKNOWN"
 #define RTYPE_NUMBER "RTYPE_NUMBER"
 #define RTYPE_STRING "RTYPE_STRING"
-#define RTYPE_BOOLEAN "RTYPE_BOOLEAN"
 #define RTYPE_EMPTY "RTYPE_EMPTY"
+#define RTYPE_BOOLEAN "RTYPE_BOOLEAN"
 #define RTYPE_FUNCTION "RTYPE_FUNCTION"
