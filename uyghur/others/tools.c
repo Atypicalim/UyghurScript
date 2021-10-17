@@ -29,9 +29,9 @@ char *tools_format(char *msg, ...)
 {
     va_list lst;
     va_start(lst, msg);
-    char txt[1024];
-    vsprintf(txt, msg, lst);
-    char *t = txt;
+    int bufsz = vsnprintf(NULL, 0, msg, lst);
+    char* t = malloc(bufsz + 1);
+    vsnprintf(t, bufsz + 1, msg, lst);
     va_end(lst);
     return t;
 }

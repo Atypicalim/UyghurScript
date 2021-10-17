@@ -12,6 +12,10 @@ int main(int argc, char const *argv[])
     Uyghur_run(uyghur, argv[1]);
     Uyghur_free(uyghur);
     //
+    // char c = 'c';
+    // char *s = tools_format("%s", &c);
+    // printf("\n\n--%s--\n\n", s);
+    //
     // test(TTYPES_GROUP_DEFINE);
     //
     // token test

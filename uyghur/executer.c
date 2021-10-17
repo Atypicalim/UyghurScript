@@ -110,7 +110,8 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     {
         char line[1024];
         scanf("%[^\n]", line);
-        Executer_setTRValue(this, name, Value_newString(line, NULL));
+        char *l = tools_format("%s", line);
+        Executer_setTRValue(this, name, Value_newString(l, NULL));
     }
 }
 
