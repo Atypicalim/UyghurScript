@@ -12,6 +12,8 @@ struct Executer {
     Hashmap *currentScope;
 };
 
+bool Executer_executeTree(Executer *, Leaf *);
+
 void Executer_reset(Executer *this)
 {
     this->uyghur = NULL;
@@ -23,10 +25,25 @@ void Executer_reset(Executer *this)
     this->currentScope = NULL;
 }
 
+void Executer_pushScope(Executer *this)
+{
+    Hashmap *scope = Hashmap_new(NULL);
+    Stack_push(this->scopeStack, scope);
+    this->currentScope = (Hashmap *)this->scopeStack->tail->data; 
+}
+
+void Executer_popScope(Executer *this)
+{
+    tools_assert(this->scopeStack->head->data != this->currentScope, "executer trying to exit root scope");
+    Stack_pop(this->scopeStack);
+    this->currentScope = (Hashmap *)this->scopeStack->tail->data; 
+}
+
 Executer *Executer_new(Uyghur *uyghur)
 {
     Executer *executer = malloc(sizeof(Executer));
     Executer_reset(executer);
+    Executer_pushScope(executer);
     executer->uyghur = uyghur;
     return executer;
 }
@@ -187,8 +204,8 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
     Token *target = Stack_pop(leaf->tokens);
     Value *secondV = Executer_getTRValue(this, second);
     Value *firstV = Executer_getTRValue(this, first);
-        char *firstType = firstV->type;
-        char *secondType = secondV->type;
+    char *firstType = firstV->type;
+    char *secondType = secondV->type;
     Value *r = NULL;
     char *act = action->value;
     //
@@ -203,7 +220,6 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
     }
     else if (is_values(act, TVALUE_GROUP_EXP_STRING) && is_equal(firstType, RTYPE_STRING))
     {
-        printf("\n\n!! %s %s %s !!\n\n", firstType, act, secondType);
         char *firstS = Value_toString(firstV);
         char *secondS = Value_toString(secondV);
         if (is_equal(act, RTYPE_STRING))
@@ -271,6 +287,110 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
     Executer_setTRValue(this, target, r);
 }
 
+bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge)
+{
+    Value *leftV = Executer_getTRValue(this, left);
+    Value *rightV = Executer_getTRValue(this, right);
+    char *judgeValue = judge->value;
+    char *leftType = leftV->type;
+    char *rightType = rightV->type;
+    bool shouldYes = is_equal(judgeValue, TVALUE_IF_OK);
+    // different type
+    if (!is_equal(leftType, rightType))
+    {
+        return !shouldYes;
+    }
+    else if (is_equal(leftType, RTYPE_STRING) && is_equal(rightType, RTYPE_STRING))
+    {
+        char *leftS = Value_toString(leftV);
+        char *rightS = Value_toString(rightV);
+        return shouldYes == is_equal(leftS, rightS);
+    }
+    else if (is_equal(leftType, RTYPE_NUMBER) && is_equal(rightType, RTYPE_NUMBER))
+    {
+        float leftN = Value_toNumber(leftV)->number;
+        float rightN = Value_toNumber(rightV)->number;
+        return shouldYes == (leftN == rightN);
+    }
+    else if (is_equal(leftType, RTYPE_BOOLEAN) && is_equal(rightType, RTYPE_BOOLEAN))
+    {
+        bool leftB = Value_toBoolean(leftV)->boolean;
+        bool rightB = Value_toBoolean(rightV)->boolean;
+        return shouldYes == (leftB == rightB);
+    }
+    else if (is_equal(leftType, RTYPE_EMPTY) && is_equal(rightType, RTYPE_EMPTY))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void Executer_consumeIf(Executer *this, Leaf *leaf)
+{
+    //
+    bool isFinish = false;
+    // if
+    Leaf *ifNode = Queue_pop(leaf->leafs);
+    tools_assert(ifNode != NULL, "invalid if");
+    tools_assert(is_equal(ifNode->type, ASTTYPE_IF_FIRST), "invalid if");
+    Token *judge = Leaf_popToken(ifNode);
+    Token *right = Leaf_popToken(ifNode);
+    Token *left = Leaf_popToken(ifNode);
+    if (!isFinish && Executer_checkJudge(this, left, right, judge))
+    {
+        Executer_pushScope(this);
+        Executer_executeTree(this, ifNode);
+        Executer_popScope(this);
+        isFinish = true;
+    }
+    // elseif
+    ifNode = Queue_pop(leaf->leafs);
+    while (is_equal(ifNode->type, ASTTYPE_IF_MIDDLE))
+    {
+        Token *judge = Leaf_popToken(ifNode);
+        Token *right = Leaf_popToken(ifNode);
+        Token *left = Leaf_popToken(ifNode);
+        if (!isFinish && Executer_checkJudge(this, left, right, judge))
+        {
+            Executer_pushScope(this);
+            Executer_executeTree(this, ifNode);
+            Executer_popScope(this);
+            isFinish = true;
+        }
+        ifNode = Queue_pop(leaf->leafs);
+        tools_assert(ifNode != NULL, "invalid if");
+    }
+    // else
+    if (is_equal(ifNode->type, ASTTYPE_IF_LAST))
+    {
+        Token *judge = Leaf_popToken(ifNode);
+        tools_assert(is_equal(judge->value, TVALUE_IF_NO), "invalid if");
+        if (!isFinish)
+        {
+            printf("\n\n\n\n");
+            Executer_pushScope(this);
+            Executer_executeTree(this, ifNode);
+            Executer_popScope(this);
+            printf("\n\n\n\n");
+            isFinish = true;
+        }
+        ifNode = Queue_pop(leaf->leafs);
+        tools_assert(ifNode != NULL, "invalid if");
+    }
+    // end
+    tools_assert(is_equal(ifNode->type, ASTTYPE_END), "invalid if");
+    Leaf *nullValue = Queue_pop(leaf->leafs);
+    tools_assert(nullValue == NULL, "invalid if");
+    // pop scope
+    // Token *key = Stack_pop(leaf->tokens);
+    // Value *v = Executer_getTRValue(this, value);
+    // Hashmap_set(this->currentScope, key->value, v);
+}
+
+
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
     //
@@ -299,7 +419,12 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
         Executer_consumeExpDouble(this, leaf);
         return;
     }
-    //
+    // if
+    if (is_equal(tp, ASTTYPE_IF))
+    {
+        Executer_consumeIf(this, leaf);
+        return;
+    }
     //
     printf("--->\n");
     helper_print_leaf(leaf, " ");
@@ -311,9 +436,6 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 
 bool Executer_executeTree(Executer *this, Leaf *tree)
 {
-    Hashmap *scope = Hashmap_new(NULL);
-    Stack_push(this->scopeStack, scope);
-    this->currentScope = scope;
     Leaf *leaf = Queue_pop(tree->leafs);
     while (leaf != NULL)
     {
