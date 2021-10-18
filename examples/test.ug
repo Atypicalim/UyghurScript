@@ -60,7 +60,7 @@
 # mixtar a qimmiti quruq bolsun
 # mixtar b qimmiti quruq bolsun
 # mixtar c qimmiti rast bolsun
-# mixtar d qimmiti [quruq!!!] bolsun
+mixtar d qimmiti [quruq!!!] bolsun
 
 eger a qimmiti rast bolsa
     ikrangha [eger] yezilsun
@@ -72,13 +72,14 @@ egerde c qimmiti yalghan bolsa
     ikrangha [egerde2] yezilsun
     d qimmiti [egerde2] bolsun
 bolmisa
+    # mixtar d qimmiti [ichide] bolsun
     ikrangha [-----] yezilsun
     ikrangha d yezilsun
-    d qimmiti [******] bolsun
+    d qimmiti [++++++] bolsun
     ikrangha d yezilsun
 tamamlansun
 
-ikrangha [-------------] yezilsun
+ikrangha [*****] yezilsun
 ikrangha d yezilsun
 
 # mixtar yezildighanQimmet qimmiti [] bolsun

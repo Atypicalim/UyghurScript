@@ -85,8 +85,21 @@ Value *Executer_getTRValue(Executer *this, Token *token)
     }
     else if (is_equal(token->type, TTYPE_NAME))
     {
-        // TODO: loop scope stack
-        Value *value = Hashmap_get(this->currentScope, token->value);
+        Block *block = this->scopeStack->tail;
+        Value *value = NULL;
+        while (value == NULL && block != NULL)
+        {
+            Value *v = Hashmap_get(block->data, token->value);
+            if (v != NULL)
+            {
+                value = v;
+                break;
+            }
+            else
+            {
+                block = block->last;
+            }
+        }
         if (value == NULL)
         {
             value = Value_newEmpty(NULL);
@@ -101,6 +114,9 @@ Value *Executer_getTRValue(Executer *this, Token *token)
 
 void Executer_setTRValue(Executer *this, Token *key, Value *value)
 {
+    // TODO
+    // set to target scope of the original value
+    // set to global scope for a non-assigned value
     Hashmap_set(this->currentScope, key->value, value);
 }
 
@@ -120,6 +136,11 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     if (is_equal(target->value, TVALUE_TARGET_TO) && is_equal(action->value, TVALUE_OUTPUT))
     {
         Value *value = Executer_getTRValue(this, name);
+        // printf("\n\n--->\n");
+        // Token_print(action);
+        // Token_print(name);
+        // Value_print(value);
+        // printf("--->\n\n");
         printf("%s", Value_toString(value));
     }
     else if (is_equal(target->value, TVALUE_TARGET_FROM) && is_equal(action->value, TVALUE_INPUT))
