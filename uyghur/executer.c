@@ -114,10 +114,23 @@ Value *Executer_getTRValue(Executer *this, Token *token)
 
 void Executer_setTRValue(Executer *this, Token *key, Value *value)
 {
-    // TODO
-    // set to target scope of the original value
-    // set to global scope for a non-assigned value
-    Hashmap_set(this->currentScope, key->value, value);
+    Block *block = this->scopeStack->tail;
+    while (block != NULL)
+    {
+        if (Hashmap_get(block->data, key->value) != NULL)
+        {
+            break;
+        }
+        else
+        {
+            block = block->last;
+        }
+    }
+    if (block == NULL)
+    {
+        block = this->scopeStack->head;
+    }
+    Hashmap_set(block->data, key->value, value);
 }
 
 void Executer_consumeVariable(Executer *this, Leaf *leaf)
@@ -136,11 +149,6 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     if (is_equal(target->value, TVALUE_TARGET_TO) && is_equal(action->value, TVALUE_OUTPUT))
     {
         Value *value = Executer_getTRValue(this, name);
-        // printf("\n\n--->\n");
-        // Token_print(action);
-        // Token_print(name);
-        // Value_print(value);
-        // printf("--->\n\n");
         printf("%s", Value_toString(value));
     }
     else if (is_equal(target->value, TVALUE_TARGET_FROM) && is_equal(action->value, TVALUE_INPUT))
@@ -391,11 +399,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         tools_assert(is_equal(judge->value, TVALUE_IF_NO), "invalid if");
         if (!isFinish)
         {
-            printf("\n\n\n\n");
             Executer_pushScope(this);
             Executer_executeTree(this, ifNode);
             Executer_popScope(this);
-            printf("\n\n\n\n");
             isFinish = true;
         }
         ifNode = Queue_pop(leaf->leafs);
