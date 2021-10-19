@@ -93,17 +93,17 @@
 #     tekshurulmeQimmet qimmiti sinaqQimmet kichik 5 bolsun
 # tamamlansun
 
-# mixtar yighinda qimmiti 0 bolsun
-# fonkisiye sanYezish mezmuni
-#     ikrangha yighinda yezilsun
-# tamamlansun
+mixtar yighinda qimmiti 0 bolsun
+fonkisiye sanYezish mezmuni
+    ikrangha yighinda yezilsun
+tamamlansun
 # fonkisiye sanQushush mixtar x y mezmuni
-#     mixtar waqitliqMixtar qimmiti 0 bolsun
-#     waqitliqMixtar qimmiti x qushulghan y bolsun
-#     netije waqitliqMixtar qayturulsun
+# #     mixtar waqitliqMixtar qimmiti 0 bolsun
+# #     waqitliqMixtar qimmiti x qushulghan y bolsun
+# #     netije waqitliqMixtar qayturulsun
 # tamamlansun
 # fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
-# fonkisiye sanYezish ishlitilsun
+fonkisiye sanYezish ishlitilsun
 
 # mixtar chongSan qimmiti quruq bolsun
 # fonkisiye chongniTepish bilen 10 20 ishlitilsun we netije chongSan bolsun

@@ -72,6 +72,13 @@ void *Queue_pop(Queue *this)
     }
 }
 
+void Queue_clear(Queue *this)
+{
+    this->head = NULL;
+    this->tail = NULL;
+    this->cursor = NULL;
+}
+
 void Queue_free(Queue *this)
 {
     Block *head = this->head;

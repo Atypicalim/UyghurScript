@@ -72,6 +72,13 @@ void *Stack_pop(Stack *this)
     }
 }
 
+void Stack_clear(Stack *this)
+{
+    this->head = NULL;
+    this->tail = NULL;
+    this->cursor = NULL;
+}
+
 void Stack_free(Stack *this)
 {
     Block *tail = this->tail;

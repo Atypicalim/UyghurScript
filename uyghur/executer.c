@@ -12,6 +12,7 @@ struct Executer {
     Hashmap *currentScope;
 };
 
+void Executer_consumeLeaf(Executer *, Leaf *);
 bool Executer_executeTree(Executer *, Leaf *);
 
 void Executer_reset(Executer *this)
@@ -430,16 +431,53 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
     Executer_pushScope(this);
     while (Executer_checkJudge(this, left, right, judge))
     {
-        sleep(1);
-        printf("\n---\n");
         Executer_executeTree(this, leaf);
     }
     Executer_popScope(this);
 }
 
+void Executer_consumeFunction(Executer *this, Leaf *leaf)
+{
+    Stack_reset(leaf->tokens);
+    Token *function = Stack_next(leaf->tokens);
+    Executer_setTRValue(this, function, Value_newFunction(leaf, NULL));
+}
+
+void Executer_consumeCall(Executer *this, Leaf *leaf)
+{
+    Stack_clear(this->callStack);
+    Stack_reset(leaf->tokens);
+    Token *function = Stack_next(leaf->tokens);
+    Token *result = Stack_next(leaf->tokens);
+    Token *arg = Stack_next(leaf->tokens);
+    while(arg != NULL)
+    {
+        Stack_push(this->callStack, arg);
+        arg = Stack_next(leaf->tokens);
+    }
+    Value *func = Executer_getTRValue(this, function);
+    tools_assert(!is_equal(func->type, RTYPE_EMPTY), "function not found");
+    tools_assert(is_equal(func->type, RTYPE_FUNCTION), "function not valid");
+    printf("\n\n---\n");
+    // TODO: 
+    printf("\n\n---\n");
+    if (!is_equal(result->type, RTYPE_EMPTY))
+    {
+        Value *v = Value_newEmpty(NULL);
+        Token *r = Stack_pop(this->callStack);
+        if (r != NULL)
+        {
+            v = Executer_getTRValue(this, r);
+        }
+        Executer_setTRValue(this, result, v);
+    }
+    Stack_clear(this->callStack);
+}
+
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
     // 
+    helper_print_leaf(leaf, " ");
     // sleep(1);
     char *tp = leaf->type;
     // variable
@@ -476,6 +514,18 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     if(is_equal(tp, ASTTYPE_WHILE))
     {
         Executer_consumeWhile(this, leaf);
+        return;
+    }
+    // function
+    if(is_equal(tp, ASTTYPE_FUNC))
+    {
+        Executer_consumeFunction(this, leaf);
+        return;
+    }
+    // call
+    if(is_equal(tp, ASTTYPE_CALL))
+    {
+        Executer_consumeCall(this, leaf);
         return;
     }
     // end

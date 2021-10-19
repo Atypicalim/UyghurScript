@@ -387,7 +387,6 @@ void Parser_consumeAstFunc(Parser *this)
     Parser_checkWord(this, 0, 1, TVALUE_FUNCTION);
     Token *name = Parser_checkType(this, 1, 1, TTYPE_NAME);
     Leaf *leaf = Leaf_new(ASTTYPE_FUNC);
-    Stack_push(leaf->tokens, name);
     // args
     if (Parser_isValue(this, 1, TVALUE_VARIABLE))
     {
@@ -401,6 +400,7 @@ void Parser_consumeAstFunc(Parser *this)
     }
     // finish
     Parser_checkValue(this, 1, 1, TVALUE_CONTENT);
+    Stack_push(leaf->tokens, name);
     Leaf_pushLeaf(this->leaf, leaf);
     Parser_openBranch(this);
 }
@@ -410,9 +410,7 @@ void Parser_consumeAstCall(Parser *this)
     Parser_checkWord(this, 0, 1, TVALUE_FUNCTION);
     Token *name = Parser_checkType(this, 1, 1, TTYPE_NAME);
     Leaf *leaf = Leaf_new(ASTTYPE_CALL);
-    Stack_push(leaf->tokens, name);
     // args
-
     if (Parser_isValue(this, 1, TVALUE_WITH))
     {
         Parser_checkValue(this, 1, 1, TVALUE_WITH);
@@ -424,18 +422,19 @@ void Parser_consumeAstCall(Parser *this)
         }
     }
     //
-    Token *call = Parser_checkWord(this, 1, 1, TVALUE_CALL);
-    Stack_push(leaf->tokens, call);
+    Parser_checkWord(this, 1, 1, TVALUE_CALL);
     // result
+    Token *result = Token_empty();
     if (Parser_isValue(this, 1, TVALUE_FURTHER))
     {
         Parser_checkValue(this, 1, 1, TVALUE_FURTHER);
         Parser_checkWord(this, 1, 1, TVALUE_RESULT);
-        Token *variable = Parser_checkType(this, 1, 1, TTYPE_NAME);
+        result = Parser_checkType(this, 1, 1, TTYPE_NAME);
         Parser_checkWord(this, 1, 1, TVALUE_MADE);
-        Stack_push(leaf->tokens, variable);
     }
+    Stack_push(leaf->tokens, result);
     //
+    Stack_push(leaf->tokens, name);
     Leaf_pushLeaf(this->leaf, leaf);
 }
 

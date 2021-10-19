@@ -26,6 +26,11 @@ Token *Token_new(const char *file, int line, int column, char *type, void *value
     return token;
 }
 
+Token *Token_empty()
+{
+    return Token_new("", 0, 0, TTYPE_WORD, TVALUE_EMPTY);
+}
+
 void Token_print(Token *this)
 {
     printf("[(TOKEN) => type:%s, value:(%s) in (%d, %d %s)]\n", this->type, this->value, this->line, this->column, this->file);
