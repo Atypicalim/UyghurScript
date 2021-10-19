@@ -411,16 +411,25 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     tools_assert(is_equal(ifNode->type, ASTTYPE_END), "invalid if");
     Leaf *nullValue = Queue_pop(leaf->leafs);
     tools_assert(nullValue == NULL, "invalid if");
-    // pop scope
-    // Token *key = Stack_pop(leaf->tokens);
-    // Value *v = Executer_getTRValue(this, value);
-    // Hashmap_set(this->currentScope, key->value, v);
 }
 
+void Executer_consumeWhile(Executer *this, Leaf *leaf)
+{
+    Token *judge = Leaf_popToken(leaf);
+    Token *right = Leaf_popToken(leaf);
+    Token *left = Leaf_popToken(leaf);
+    Executer_pushScope(this);
+    while (Executer_checkJudge(this, left, right, judge))
+    {
+        Executer_executeTree(this, leaf);
+    }
+    Executer_popScope(this);
+}
 
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
-    //
+    // 
+    // sleep(1);
     char *tp = leaf->type;
     // variable
     if (is_equal(tp, ASTTYPE_VARIABLE))
@@ -450,6 +459,17 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     if (is_equal(tp, ASTTYPE_IF))
     {
         Executer_consumeIf(this, leaf);
+        return;
+    }
+    // while
+    if(is_equal(tp, ASTTYPE_WHILE))
+    {
+        Executer_consumeWhile(this, leaf);
+        return;
+    }
+    // end
+    if(is_equal(tp, ASTTYPE_END))
+    {
         return;
     }
     //
