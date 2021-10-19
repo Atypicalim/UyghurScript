@@ -135,17 +135,19 @@ void Executer_setTRValue(Executer *this, Token *key, Value *value)
 
 void Executer_consumeVariable(Executer *this, Leaf *leaf)
 {
-    Token *value = Stack_pop(leaf->tokens);
-    Token *key = Stack_pop(leaf->tokens);
+    Stack_reset(leaf->tokens);
+    Token *value = Stack_next(leaf->tokens);
+    Token *key = Stack_next(leaf->tokens);
     Value *v = Executer_getTRValue(this, value);
     Hashmap_set(this->currentScope, key->value, v);
 }
 
 void Executer_consumeOperate(Executer *this, Leaf *leaf)
 {
-    Token *action = Stack_pop(leaf->tokens);
-    Token *name = Stack_pop(leaf->tokens);
-    Token *target = Stack_pop(leaf->tokens);
+    Stack_reset(leaf->tokens);
+    Token *action = Stack_next(leaf->tokens);
+    Token *name = Stack_next(leaf->tokens);
+    Token *target = Stack_next(leaf->tokens);
     if (is_equal(target->value, TVALUE_TARGET_TO) && is_equal(action->value, TVALUE_OUTPUT))
     {
         Value *value = Executer_getTRValue(this, name);
@@ -162,8 +164,9 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
 
 void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
 {
-    Token *action = Stack_pop(leaf->tokens);
-    Token *target = Stack_pop(leaf->tokens);
+    Stack_reset(leaf->tokens);
+    Token *action = Stack_next(leaf->tokens);
+    Token *target = Stack_next(leaf->tokens);
     Value *value = Executer_getTRValue(this, target);
     Value *r = NULL;
     char *act = action->value;
@@ -227,10 +230,11 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
 
 void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
 {
-    Token *second = Stack_pop(leaf->tokens);
-    Token *action = Stack_pop(leaf->tokens);
-    Token *first = Stack_pop(leaf->tokens);
-    Token *target = Stack_pop(leaf->tokens);
+    Stack_reset(leaf->tokens);
+    Token *second = Stack_next(leaf->tokens);
+    Token *action = Stack_next(leaf->tokens);
+    Token *first = Stack_next(leaf->tokens);
+    Token *target = Stack_next(leaf->tokens);
     Value *secondV = Executer_getTRValue(this, second);
     Value *firstV = Executer_getTRValue(this, first);
     char *firstType = firstV->type;
@@ -361,13 +365,15 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
 {
     //
     bool isFinish = false;
+    Queue_reset(leaf->leafs);
     // if
-    Leaf *ifNode = Queue_pop(leaf->leafs);
+    Leaf *ifNode = Queue_next(leaf->leafs);
     tools_assert(ifNode != NULL, "invalid if");
     tools_assert(is_equal(ifNode->type, ASTTYPE_IF_FIRST), "invalid if");
-    Token *judge = Leaf_popToken(ifNode);
-    Token *right = Leaf_popToken(ifNode);
-    Token *left = Leaf_popToken(ifNode);
+    Stack_reset(ifNode->tokens);
+    Token *judge = Stack_next(ifNode->tokens);
+    Token *right = Stack_next(ifNode->tokens);
+    Token *left = Stack_next(ifNode->tokens);
     if (!isFinish && Executer_checkJudge(this, left, right, judge))
     {
         Executer_pushScope(this);
@@ -376,12 +382,13 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         isFinish = true;
     }
     // elseif
-    ifNode = Queue_pop(leaf->leafs);
+    ifNode = Queue_next(leaf->leafs);
     while (is_equal(ifNode->type, ASTTYPE_IF_MIDDLE))
     {
-        Token *judge = Leaf_popToken(ifNode);
-        Token *right = Leaf_popToken(ifNode);
-        Token *left = Leaf_popToken(ifNode);
+        Stack_reset(ifNode->tokens);
+        Token *judge = Stack_next(ifNode->tokens);
+        Token *right = Stack_next(ifNode->tokens);
+        Token *left = Stack_next(ifNode->tokens);
         if (!isFinish && Executer_checkJudge(this, left, right, judge))
         {
             Executer_pushScope(this);
@@ -389,13 +396,14 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
             Executer_popScope(this);
             isFinish = true;
         }
-        ifNode = Queue_pop(leaf->leafs);
+        ifNode = Queue_next(leaf->leafs);
         tools_assert(ifNode != NULL, "invalid if");
     }
     // else
     if (is_equal(ifNode->type, ASTTYPE_IF_LAST))
     {
-        Token *judge = Leaf_popToken(ifNode);
+        Stack_reset(ifNode->tokens);
+        Token *judge = Stack_next(ifNode->tokens);
         tools_assert(is_equal(judge->value, TVALUE_IF_NO), "invalid if");
         if (!isFinish)
         {
@@ -404,23 +412,26 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
             Executer_popScope(this);
             isFinish = true;
         }
-        ifNode = Queue_pop(leaf->leafs);
+        ifNode = Queue_next(leaf->leafs);
         tools_assert(ifNode != NULL, "invalid if");
     }
     // end
     tools_assert(is_equal(ifNode->type, ASTTYPE_END), "invalid if");
-    Leaf *nullValue = Queue_pop(leaf->leafs);
+    Leaf *nullValue = Queue_next(leaf->leafs);
     tools_assert(nullValue == NULL, "invalid if");
 }
 
 void Executer_consumeWhile(Executer *this, Leaf *leaf)
 {
-    Token *judge = Leaf_popToken(leaf);
-    Token *right = Leaf_popToken(leaf);
-    Token *left = Leaf_popToken(leaf);
+    Stack_reset(leaf->tokens);
+    Token *judge = Stack_next(leaf->tokens);
+    Token *right = Stack_next(leaf->tokens);
+    Token *left = Stack_next(leaf->tokens);
     Executer_pushScope(this);
     while (Executer_checkJudge(this, left, right, judge))
     {
+        sleep(1);
+        printf("\n---\n");
         Executer_executeTree(this, leaf);
     }
     Executer_popScope(this);
@@ -483,11 +494,12 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 
 bool Executer_executeTree(Executer *this, Leaf *tree)
 {
-    Leaf *leaf = Queue_pop(tree->leafs);
+    Queue_reset(tree->leafs);
+    Leaf *leaf = Queue_next(tree->leafs);
     while (leaf != NULL)
     {
         Executer_consumeLeaf(this, leaf);
-        leaf = Queue_pop(tree->leafs);
+        leaf = Queue_next(tree->leafs);
     }
     return true;
 }

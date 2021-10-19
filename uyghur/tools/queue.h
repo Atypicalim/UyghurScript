@@ -8,6 +8,7 @@
 typedef struct _Queue {
     Block *head;
     Block *tail;
+    Block *cursor;
 } Queue;
 
 Queue *Queue_new()
@@ -15,6 +16,7 @@ Queue *Queue_new()
     Queue *queue = (Queue *)malloc(sizeof(Queue));
     queue->head = NULL;
     queue->tail = NULL;
+    queue->cursor = NULL;
     return queue;
 }
 
@@ -80,6 +82,26 @@ void Queue_free(Queue *this)
         head = this->head;
     }
     free(this);
+}
+
+void *Queue_next(Queue *this)
+{
+    Block *temp = this->cursor;
+    if (temp == NULL)
+    {
+        return NULL;
+    }
+    else
+    {
+        this->cursor = temp->next;
+        return temp->data;
+    }
+
+}
+
+void Queue_reset(Queue *this)
+{
+    this->cursor = this->head;
 }
 
 #endif

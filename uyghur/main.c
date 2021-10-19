@@ -29,6 +29,25 @@ int main(int argc, char const *argv[])
     // Block_prepend(token2, token1);
     // Token_free(token2);
     // Token_print(Block_last(Block_last(token3)));
+    // 
+    // queue next text
+    // Stack *q = Stack_new();
+    // Stack_push(q, token1);
+    // Stack_push(q, token2);
+    // Stack_reset(q);
+    // Token *t = Stack_next(q);
+    // while(t != NULL)
+    // {
+    //     Token_print(t);
+    //     t = Stack_next(q);
+    // }
+    // Stack_reset(q);
+    // Token *t1 = Stack_next(q);
+    // while(t1 != NULL)
+    // {
+    //     Token_print(t1);
+    //     t1 = Stack_next(q);
+    // }
     //
     // hash map test
     // Hashmap *map = Hashmap_new();

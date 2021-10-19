@@ -81,17 +81,17 @@
 # ikrangha d yezilsun
 
 
-mixtar yezildighanQimmet qimmiti [] bolsun
-mixtar sinaqQimmet qimmiti 1 bolsun
-mixtar tekshurulmeQimmet qimmiti rast bolsun
-nawada tekshurulmeQimmet qimmiti rast bolsa
-    mixtar sinaqQimmetS qimmiti sinaqQimmet bolsun
-    sinaqQimmetS qimmiti xet bolsun
-    yezildighanQimmet qimmiti [nawada: sanaq ] ulanghan sinaqQimmetS bolsun
-    ikrangha yezildighanQimmet yezilsun
-    sinaqQimmet qimmiti sinaqQimmet qushulghan 1 bolsun
-    tekshurulmeQimmet qimmiti sinaqQimmet kichik 5 bolsun
-tamamlansun
+# mixtar yezildighanQimmet qimmiti [] bolsun
+# mixtar sinaqQimmet qimmiti 1 bolsun
+# mixtar tekshurulmeQimmet qimmiti rast bolsun
+# nawada tekshurulmeQimmet qimmiti rast bolsa
+#     mixtar sinaqQimmetS qimmiti sinaqQimmet bolsun
+#     sinaqQimmetS qimmiti xet bolsun
+#     yezildighanQimmet qimmiti [nawada: sanaq ] ulanghan sinaqQimmetS bolsun
+#     ikrangha yezildighanQimmet yezilsun
+#     sinaqQimmet qimmiti sinaqQimmet qushulghan 1 bolsun
+#     tekshurulmeQimmet qimmiti sinaqQimmet kichik 5 bolsun
+# tamamlansun
 
 # mixtar yighinda qimmiti 0 bolsun
 # fonkisiye sanYezish mezmuni

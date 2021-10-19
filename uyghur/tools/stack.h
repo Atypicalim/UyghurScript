@@ -8,6 +8,7 @@
 typedef struct _Stack {
     Block *head;
     Block *tail;
+    Block *cursor;
 } Stack;
 
 Stack *Stack_new()
@@ -15,6 +16,7 @@ Stack *Stack_new()
     Stack *stack = (Stack *)malloc(sizeof(Stack));
     stack->head = NULL;
     stack->tail = NULL;
+    stack->cursor = NULL;
     return stack;
 }
 
@@ -80,6 +82,26 @@ void Stack_free(Stack *this)
         tail = this->tail;
     }
     free(this);
+}
+
+void *Stack_next(Stack *this)
+{
+    Block *temp = this->cursor;
+    if (temp == NULL)
+    {
+        return NULL;
+    }
+    else
+    {
+        this->cursor = temp->last;
+        return temp->data;
+    }
+
+}
+
+void Stack_reset(Stack *this)
+{
+    this->cursor = this->tail;
 }
 
 #endif
