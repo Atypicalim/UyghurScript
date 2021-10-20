@@ -2,7 +2,7 @@
 
 ## 0. description
 
-> a toy script interpreter writen in lua, u can learn how to write an interpreter by reading this repo ...
+> a toy script interpreter writen in c, u can run your script in uyghur language grammar with it ...
 
 ## 1. data types and variable declaration
 
@@ -108,12 +108,12 @@ tamamlansun
 mixtar yighinda qimmiti 0 bolsun
 
 # function without args and return
-fonkisiye sanYezish bolsa
+fonkisiye sanYezish mezmuni
     ikrangha yighinda yezilsun
 tamamlansun
 
 # function with variables and return
-fonkisiye sanQushush mixtar x y bolsa
+fonkisiye sanQushush mixtar x y mezmuni
     mixtar waqitliqMixtar qimmiti 0 bolsun
     waqitliqMixtar qimmiti x qushulghan y bolsun
     netije waqitliqMixtar qayturulsun
@@ -134,83 +134,16 @@ fonkisiye isim ishlitilsun
 
 ## 7. usage
 
-* fist of all, u need to download [lua binary](http://luabinaries.sourceforge.net/) to run this program
-* run the command `lua uyghur.lua` for a REPL
-* run the command `lua uyghur.lua example.ug false` to execute your script
-* run the command `lua uyghur.lua example.ug true` to compile your script to lua
-* or import as a module and call the module functions in a lua script like this:
+* just run the command `uyghur.exe test.ug` to execute your script
 
-```lua
--- import module
-local uyghur = require("uyghur")
+## 8. todo
 
--- version code
-print(uyghur.version)
+* box
+* import
+* libraries
+* c & uyghur bridge
+* ...
 
--- register a lua func to uyghur script
-uyghur.import("chongniTepish", "math.max")
+## 9. end
 
--- register a uyghur func to lua script
-uyghur.export("sanQushush", "addNumber")
-
--- execute a uyghur script
-uyghur.execute("example.ug")
-
--- compile a uyghur script (there will be an output file named example.ug.lua in the same directory)
-uyghur.compile("example.ug")
-
--- run a REPL in console
-uyghur.run()
-
-```
-
-## 8. call lua func in uyghur
-
-```lua
--- require uyghur script as a mudle and import the lua function before execute your script
-local uyghur = require("uyghur")
-uyghur.import("chongniTepish", "math.max")
-uyghur.execute("example.ug")
-```
-
-```python
-# then u can call the lua func by nickname in uyghur script as a ordinary uyghur func
-mixtar chongSan qimmiti quruq bolsun
-fonkisiye chongniTepish bilen 10 20 ishlitilsun we netije chongSan bolsun
-ikrangha chongSan yezilsun
-```
-
-## 9. call uyghur func in lua
-
-```python
-# declare a uyghur func in script file
-fonkisiye sanQushush mixtar x y bolsa
-    mixtar waqitliqMixtar qimmiti 0 bolsun
-    waqitliqMixtar qimmiti x qushulghan y bolsun
-    netije waqitliqMixtar qayturulsun
-tamamlansun
-```
-
-```lua
--- require uyghur script as a mudle and export the uyghur function before execute your script
-local uyghur = require("uyghur")
-uyghur.export("sanQushush", "myMath.addNumber")
-uyghur.execute("example.ug")
-local result = myMath.addNumber(11, 22)
-print("result of uyghur func sanQushush is:", result)
-```
-
-## 10. example
-
-![REPL](./others/demo1.png)
-
-![file](./others/demo2.png)
-
-## 11. todo
-
-* list
-* map
-
-## 12. end
-
-> tokenizer and parserhave been implemented in this repo, and i am still working on executer ...
+> i am still working on it ...
