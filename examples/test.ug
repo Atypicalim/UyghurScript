@@ -93,17 +93,17 @@
 #     tekshurulmeQimmet qimmiti sinaqQimmet kichik 5 bolsun
 # tamamlansun
 
-mixtar yighinda qimmiti 0 bolsun
-fonkisiye sanYezish mezmuni
-    ikrangha yighinda yezilsun
-tamamlansun
-fonkisiye sanQushush mixtar x y mezmuni
-    mixtar waqitliqMixtar qimmiti 0 bolsun
-    waqitliqMixtar qimmiti x qushulghan y bolsun
-    netije waqitliqMixtar qayturulsun
-tamamlansun
-fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
-fonkisiye sanYezish ishlitilsun
+# mixtar yighinda qimmiti 0 bolsun
+# fonkisiye sanYezish mezmuni
+#     ikrangha yighinda yezilsun
+# tamamlansun
+# fonkisiye sanQushush mixtar x y mezmuni
+#     mixtar waqitliqMixtar qimmiti 0 bolsun
+#     waqitliqMixtar qimmiti x qushulghan y bolsun
+#     netije waqitliqMixtar qayturulsun
+# tamamlansun
+# fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
+# fonkisiye sanYezish ishlitilsun
 
 # mixtar chongSan qimmiti quruq bolsun
 # fonkisiye chongniTepish bilen 10 20 ishlitilsun we netije chongSan bolsun
@@ -126,25 +126,36 @@ fonkisiye sanYezish ishlitilsun
 
 # TOOD ################################################################################
 
+# box variable type
 # mixtar s qimmiti sanduq bolsun
-# mixtar r qimmiti quruq bolsun
+# @box{[key]}
+# @box{variable}
+# @box{1}
 
-# sanduq s mixtar k ni saqlisun we qimmiti [v] bolsun
-# sanduq s mixtar k ni qaytursun we netije r bolsun
-# sanduq s kiyinki mixtar ni qaytursun we netije r bolsun
+# import a file to execute and return root scope as a box
+# fonkisiye @ug{ekirish} bilen test.ug ishlitilsun we netije testBox bolsun
+# fonkisiye @testBox{testFunc} bilen testVariable ishlitilsun we netije testResult bolsun
 
-# @box{[key]}, @box{variable}, @box{1}
+# make standard library to necessary functions
+# fonkisiye @ikran{oqush} ishlitilsun we netije content bolsun
+# fonkisiye @ikran{yezish} bilen content ishlitilsun
+# fonkisiye @io{xojjetOqush} bilen test.txt [rb+] ishlitilsun we netije textContent bolsun
+# fonkisiye @io{xojjetYezish} bilen test.txt [rb+] textContent ishlitilsun
 
-# ikrandin r yezilsun
-# ikrandin s yezilsun
-
-# mixtar r qimmiti quruq bolsun
-# mixtar r tipi quruq bolsun
-# # can be any type when give a value
-
-# mixtar s qimmiti sanduq bolsun
-# mixtar s tipi sanduq bolsun
-# # should convert type if want to give a value with other types
-
+# locate a variable to current scope
 # mixtar r orni yerlik bolsun
-# mixtar r orni elqara bolsun
+# mixtar r orni erkin bolsun
+
+# declare a dynamic type and give any value for the first time
+# mixtar r qimmiti quruq bolsun
+
+# declate a static type and convert to another type when necessary
+# mixtar s qimmiti sanduq bolsun
+# mixtar s tipi quruq bolsun
+# s qimmiti [text] bolsun
+
+# should i change the Value object or create a new one
+# mixtar a qimmiti quruq bolsun
+# a qimmiti 1 bolsun
+# a qimmiti 2 bolsun
+
