@@ -2,7 +2,7 @@
 
 ## 0. description
 
-> a toy script interpreter writen in c, u can run your script in uyghur language grammar with it ...
+> a toy script interpreter written in c, u can run your script in uyghur language grammar with it ...
 
 ## 1. data types and variable declaration
 
