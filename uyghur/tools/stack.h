@@ -111,4 +111,17 @@ void Stack_reset(Stack *this)
     this->cursor = this->tail;
 }
 
+void *Stack_reverse(Stack *this)
+{
+    Stack *other = Stack_new();
+    Stack_reset(this);
+    void *data = Stack_next(this);
+    while (data != NULL)
+    {
+        Stack_push(other, data);
+        data = Stack_next(this);
+    }
+    return other;
+}
+
 #endif

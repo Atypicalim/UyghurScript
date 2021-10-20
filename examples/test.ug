@@ -97,12 +97,12 @@ mixtar yighinda qimmiti 0 bolsun
 fonkisiye sanYezish mezmuni
     ikrangha yighinda yezilsun
 tamamlansun
-# fonkisiye sanQushush mixtar x y mezmuni
-# #     mixtar waqitliqMixtar qimmiti 0 bolsun
-# #     waqitliqMixtar qimmiti x qushulghan y bolsun
-# #     netije waqitliqMixtar qayturulsun
-# tamamlansun
-# fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
+fonkisiye sanQushush mixtar x y mezmuni
+    mixtar waqitliqMixtar qimmiti 0 bolsun
+    waqitliqMixtar qimmiti x qushulghan y bolsun
+    netije waqitliqMixtar qayturulsun
+tamamlansun
+fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
 fonkisiye sanYezish ishlitilsun
 
 # mixtar chongSan qimmiti quruq bolsun
@@ -137,3 +137,14 @@ fonkisiye sanYezish ishlitilsun
 
 # ikrandin r yezilsun
 # ikrandin s yezilsun
+
+# mixtar r qimmiti quruq bolsun
+# mixtar r tipi quruq bolsun
+# # can be any type when give a value
+
+# mixtar s qimmiti sanduq bolsun
+# mixtar s tipi sanduq bolsun
+# # should convert type if want to give a value with other types
+
+# mixtar r orni yerlik bolsun
+# mixtar r orni elqara bolsun

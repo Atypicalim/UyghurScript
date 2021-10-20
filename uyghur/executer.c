@@ -440,44 +440,79 @@ void Executer_consumeFunction(Executer *this, Leaf *leaf)
 {
     Stack_reset(leaf->tokens);
     Token *function = Stack_next(leaf->tokens);
-    Executer_setTRValue(this, function, Value_newFunction(leaf, NULL));
+    Queue_reset(leaf->leafs);
+    Leaf *code = Queue_next(leaf->leafs);
+    Executer_setTRValue(this, function, Value_newFunction(code, NULL));
 }
 
 void Executer_consumeCall(Executer *this, Leaf *leaf)
 {
     Stack_clear(this->callStack);
     Stack_reset(leaf->tokens);
-    Token *function = Stack_next(leaf->tokens);
-    Token *result = Stack_next(leaf->tokens);
+    // get func name and result name
+    Token *funcName = Stack_next(leaf->tokens);
+    Token *resultName = Stack_next(leaf->tokens);
+    // push args to use
     Token *arg = Stack_next(leaf->tokens);
     while(arg != NULL)
     {
-        Stack_push(this->callStack, arg);
+        Value *value = Executer_getTRValue(this, arg);
+        Stack_push(this->callStack, value);
         arg = Stack_next(leaf->tokens);
     }
-    Value *func = Executer_getTRValue(this, function);
-    tools_assert(!is_equal(func->type, RTYPE_EMPTY), "function not found");
-    tools_assert(is_equal(func->type, RTYPE_FUNCTION), "function not valid");
-    printf("\n\n---\n");
-    // TODO: 
-    printf("\n\n---\n");
-    if (!is_equal(result->type, RTYPE_EMPTY))
+    // get func
+    Value *codeValue = Executer_getTRValue(this, funcName);
+    tools_assert(!is_equal(codeValue->type, RTYPE_EMPTY), "function not found");
+    tools_assert(is_equal(codeValue->type, RTYPE_FUNCTION), "function not valid");
+    // execute func
+    Leaf *codeNode = codeValue->object;
+    Executer_pushScope(this);
+    Executer_consumeLeaf(this, codeNode);
+    Executer_popScope(this);
+    //
+    if (!is_equal(resultName->type, RTYPE_EMPTY))
     {
-        Value *v = Value_newEmpty(NULL);
-        Token *r = Stack_pop(this->callStack);
-        if (r != NULL)
+        Value *r = Stack_pop(this->callStack);
+        if (r == NULL)
         {
-            v = Executer_getTRValue(this, r);
+            r = Value_newEmpty(NULL);
         }
-        Executer_setTRValue(this, result, v);
+        Executer_setTRValue(this, resultName, r);
     }
     Stack_clear(this->callStack);
 }
 
+void Executer_consumeCode(Executer *this, Leaf *leaf)
+{
+    Stack *callStack = Stack_reverse(this->callStack);
+    Stack_reset(callStack);
+    Stack_reset(leaf->tokens);
+    // 
+    Token *funcName = Stack_next(leaf->tokens);
+    Token *arg = Stack_next(leaf->tokens);
+    while(arg != NULL)
+    {
+        Value *value = Stack_next(callStack);
+        Hashmap_set(this->currentScope, arg->value, value);
+        arg = Stack_next(leaf->tokens);
+    }
+    //
+    Stack_clear(this->callStack);
+    Executer_executeTree(this, leaf);
+}
+
+
+void Executer_consumeResult(Executer *this, Leaf *leaf)
+{
+    Stack_reset(leaf->tokens);
+    Token *result = Stack_next(leaf->tokens);
+    Value *value = Executer_getTRValue(this, result);
+    Stack_clear(this->callStack);
+    Stack_push(this->callStack, value);
+}
+
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
-    // 
-    helper_print_leaf(leaf, " ");
     // sleep(1);
     char *tp = leaf->type;
     // variable
@@ -526,6 +561,18 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     if(is_equal(tp, ASTTYPE_CALL))
     {
         Executer_consumeCall(this, leaf);
+        return;
+    }
+    // code
+    if(is_equal(tp, ASTTYPE_CODE))
+    {
+        Executer_consumeCode(this, leaf);
+        return;
+    }
+    // result
+    if(is_equal(tp, ASTTYPE_RESULT))
+    {
+        Executer_consumeResult(this, leaf);
         return;
     }
     // end
