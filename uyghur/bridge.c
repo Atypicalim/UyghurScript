@@ -47,22 +47,15 @@ void Bridge_createBox(Bridge *this, char *key)
     // Hashmap_set(this->cache, key, Value_newBox(value, NULL));
 }
 
+
+void add_map_item(void *targetMap, char *key, void *data)
+{
+    Hashmap_set(targetMap, key, data);
+}
+
 void Bridge_commit(Bridge *this)
 {
     Hashmap *scope = this->uyghur->executer->rootScope;
-    Hashmap *map = this->cache;
-    int size = map->size;
-    int i;
-    for (i = 0; i < size; i++) {
-        if (map[i].position != NULL) {
-            Entry *ptr = map[i].position;
-            while (ptr != NULL) {
-                printf(" %s ----> %p\n", ptr->key, (void*)&ptr->value);
-                Hashmap_set(scope, ptr->key, ptr->value);
-                ptr = ptr->next;
-            }
-        }
-    }
-
+    Hashmap_foreach(this->cache, scope, add_map_item);
     Bridge_reset(this);
 }

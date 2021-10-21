@@ -22,11 +22,11 @@ typedef struct {
 } Hashmap;
 
 Hashmap *Hashmap_new();
-void Hashmap_set(Hashmap *map, char *key, void *value);
-void* Hashmap_get(Hashmap *map, char *key);
-void Hashmap_del(Hashmap *map, char *key);
-void Hashmap_print(Hashmap *map);
-void Hashmap_free(Hashmap *map);
+void Hashmap_set(Hashmap *, char *, void *);
+void* Hashmap_get(Hashmap *, char *);
+void Hashmap_del(Hashmap *, char *);
+void Hashmap_print(Hashmap *);
+void Hashmap_free(Hashmap *);
 
 static unsigned long hashcode(char *key) {
     register unsigned long hash = 0;
@@ -50,28 +50,28 @@ Hashmap* Hashmap_new() {
     return map;
 }
 
-void Hashmap_free(Hashmap *map) {
+void Hashmap_free(Hashmap *this) {
     for (int i = 0; i < CAPACITY; ++i) {
-        Entry *ptr = map[i].position;
+        Entry *ptr = this[i].position;
         while (ptr != NULL) {
             Entry *head = ptr;
             ptr = ptr->next;
             if (ptr) free(head);
         }
     }
-    free(map);
+    free(this);
 }
 
-void Hashmap_set(Hashmap *map, char *key, void *value) {
-    assert(map != NULL);
+void Hashmap_set(Hashmap *this, char *key, void *value) {
+    assert(this != NULL);
     int pos = hash(key);
-    Entry *ptr = map[pos].position;
+    Entry *ptr = this[pos].position;
     Entry *pnode = (Entry *)malloc(sizeof(Entry));
     pnode->key = key;
     pnode->value = value;
     pnode->next = NULL;
     if (ptr == NULL) {
-        map[pos].position = pnode;
+        this[pos].position = pnode;
     } else {
         while (ptr != NULL) {
             if (!strcmp(key, ptr->key)) {
@@ -80,19 +80,19 @@ void Hashmap_set(Hashmap *map, char *key, void *value) {
             }
             ptr = ptr->next;
         }
-        pnode->next = map[pos].position;
-        map[pos].position = pnode;
+        pnode->next = this[pos].position;
+        this[pos].position = pnode;
     }
 }
 
-void Hashmap_fill(Hashmap *map, char *content) {
-    Hashmap_set(map, content, content);
+void Hashmap_fill(Hashmap *this, char *content) {
+    Hashmap_set(this, content, content);
 }
 
-void *Hashmap_get(Hashmap *map, char *key) {
-    assert(map != NULL);
+void *Hashmap_get(Hashmap *this, char *key) {
+    assert(this != NULL);
     int pos = hash(key);
-    Entry *ptr = map[pos].position;
+    Entry *ptr = this[pos].position;
     while (ptr != NULL) {
         if (!strcmp(key, ptr->key)) {
             return ptr->value;
@@ -102,14 +102,14 @@ void *Hashmap_get(Hashmap *map, char *key) {
     return NULL;
 }
 
-void Hashmap_del(Hashmap *map, char *key) {
-    assert(map != NULL);
+void Hashmap_del(Hashmap *this, char *key) {
+    assert(this != NULL);
     int pos = hash(key);
-    Entry *ptr = map[pos].position;
+    Entry *ptr = this[pos].position;
     Entry *pre = ptr;
     if (ptr->next == NULL) {
         free(ptr);
-        map[pos].position = NULL;
+        this[pos].position = NULL;
         return;
     }
     while (ptr != NULL) {
@@ -123,19 +123,30 @@ void Hashmap_del(Hashmap *map, char *key) {
     }
 }
 
-void Hashmap_print(Hashmap *map) {
+void Hashmap_foreach(Hashmap *this, void *bindObj, void (*func)(void *, char *, void *))
+{
     int i;
-    printf("[Hashmap_start] address:%p capacity:%d\n", (void*)&map, CAPACITY);
     for (i = 0; i < CAPACITY; i++) {
-        if (map[i].position != NULL) {
-            Entry *ptr = map[i].position;
+        if (this[i].position != NULL) {
+            Entry *ptr = this[i].position;
             while (ptr != NULL) {
-                printf(" %s -> %p\n", ptr->key, (void*)&ptr->value);
+                func(bindObj, ptr->key, ptr->value);
                 ptr = ptr->next;
             }
         }
-    }
-    printf("[Hashmap_end] address:%p", (void*)&map);
+    }  
+}
+
+void print_map_item(void *obj, char *key, void *data)
+{
+    printf(" %s -> %p\n", key, (void*)&data); 
+}
+
+void Hashmap_print(Hashmap *this) {
+    int i;
+    printf("[Hashmap_start] address:%p capacity:%d\n", (void*)&this, CAPACITY);
+    Hashmap_foreach(this, NULL, print_map_item);
+    printf("[Hashmap_end] address:%p", (void*)&this);
 }
 
 #endif
