@@ -17,6 +17,7 @@ typedef struct EntryNode{
 } Entry;
 
 typedef struct {
+    int size;
     Entry *position;
 } Hashmap;
 
@@ -42,6 +43,7 @@ static int hash(char *key) {
 
 Hashmap* Hashmap_new() {
     Hashmap *map = (Hashmap *)malloc(sizeof(Hashmap) * CAPACITY);
+    map->size = CAPACITY;
     for (int i = 0; i < CAPACITY; ++i ) {
          map[i].position = NULL;
     }

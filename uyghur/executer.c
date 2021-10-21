@@ -6,10 +6,10 @@ struct Executer {
     Uyghur *uyghur;
     Leaf *tree;
     Leaf *leaf;
-    Hashmap *globalMap;
     Stack *callStack;
     Stack *scopeStack;
     Hashmap *currentScope;
+    Hashmap *rootScope;
 };
 
 void Executer_consumeLeaf(Executer *, Leaf *);
@@ -21,17 +21,18 @@ void Executer_reset(Executer *this)
     this->uyghur = NULL;
     this->tree = NULL;
     this->leaf = NULL;
-    this->globalMap = Hashmap_new(NULL);
     this->callStack = Stack_new();
     this->scopeStack = Stack_new();
     this->currentScope = NULL;
+    this->rootScope = NULL;
 }
 
 void Executer_pushScope(Executer *this)
 {
     Hashmap *scope = Hashmap_new(NULL);
     Stack_push(this->scopeStack, scope);
-    this->currentScope = (Hashmap *)this->scopeStack->tail->data; 
+    this->currentScope = (Hashmap *)this->scopeStack->tail->data;
+    this->rootScope = (Hashmap *)this->scopeStack->head->data;
 }
 
 Hashmap *Executer_popScope(Executer *this)
@@ -507,7 +508,6 @@ void Executer_consumeResult(Executer *this, Leaf *leaf)
 
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
-    // sleep(1);
     char *tp = leaf->type;
     // variable
     if (is_equal(tp, ASTTYPE_VARIABLE))

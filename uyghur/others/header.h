@@ -13,7 +13,6 @@
 #include <math.h>
 #include <ctype.h>
 #include <stdarg.h>
-#include <unistd.h>
 
 #include "../tools/hashmap.h"
 #include "../tools/block.h"
@@ -33,12 +32,14 @@
 typedef struct Tokenizer Tokenizer;
 typedef struct Parser Parser;
 typedef struct Executer Executer;
+typedef struct Bridge Bridge;
 
 typedef struct Uyghur {
     bool running;
     Tokenizer *tokenizer;
     Parser *parser;
     Executer *executer;
+    Bridge *bridge;
 } Uyghur;
 
 #endif

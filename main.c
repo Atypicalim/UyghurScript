@@ -1,6 +1,7 @@
 // implementation
 
-#include "uyghur.c"
+#include "uyghur/uyghur.c"
+#include "libraries/test.c"
 
 int main(int argc, char const *argv[])
 {
@@ -9,6 +10,7 @@ int main(int argc, char const *argv[])
     //
     tools_assert(argc > 1, LANG_ERR_NO_INPUT_NAME);
     Uyghur *uyghur = Uyghur_new();
+    Uyghur_register(uyghur, test_register);
     Uyghur_run(uyghur, argv[1]);
     Uyghur_free(uyghur);
     //

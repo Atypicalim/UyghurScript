@@ -121,18 +121,24 @@
 
 # fonkisiye max bilen a b ishlitilsun we netije c bolsun
 # fonkisiye funName bilen a b ishlitilsun we netije c bolsun
-
 # ikrangha c yezilsun
 
-fonkisiye a mezmuni
-    # mixtar b qimmiti [c] bolsun
-    ikrandin b oqulsun
-    ikrangha b yezilsun
-tamamlansun
+# fonkisiye a mezmuni
+#     mixtar b qimmiti [c] bolsun
+#     ikrandin b oqulsun
+#     ikrangha b yezilsun
+# tamamlansun
 
-fonkisiye a ishlitilsun
+# fonkisiye a ishlitilsun
+# ikrangha b yezilsun
 
-ikrangha b yezilsun
+
+# ikrangha [c kowruk sinaq!] yezilsun
+# ikrangha cString yezilsun
+# ikrangha cBoolean yezilsun
+# ikrangha cNumber yezilsun
+
+
 
 # TOOD ################################################################################
 

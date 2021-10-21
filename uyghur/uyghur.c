@@ -1,10 +1,14 @@
 // main program
 
+#ifndef H_UYGHUR
+#define H_UYGHUR
+
 #include "others/header.h"
 
 #include "tokenizer.c"
 #include "parser.c"
 #include "executer.c"
+#include "bridge.c"
 
 void Uyghur_init(Uyghur *this)
 {
@@ -18,6 +22,7 @@ Uyghur *Uyghur_new()
     uyghur->tokenizer = Tokenizer_new(uyghur);
     uyghur->parser = Parser_new(uyghur);
     uyghur->executer = Executer_new(uyghur);
+    uyghur->bridge = Bridge_new(uyghur);
     return uyghur;
 }
 
@@ -41,12 +46,12 @@ bool Uyghur_run(Uyghur *this, const char *path)
     return Uyghur_execute(this, path, content);
 }
 
-void Uyghur_inport()
+void Uyghur_register(Uyghur *this, void (* func)(Bridge *))
 {
-    //
+    func(this->bridge);
 }
 
-void Uyghur_export()
+void Uyghur_call(char *func, Stack *params)
 {
     //
 }
@@ -58,3 +63,5 @@ void Uyghur_free(Uyghur *this)
     Tokenizer_free(this->tokenizer);
     free(this);
 }
+
+#endif

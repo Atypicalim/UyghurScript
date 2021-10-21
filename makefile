@@ -2,7 +2,7 @@
 # names
 DST_DIR = ./release/
 DST_NAME = uyghur.exe
-SRC = ./uyghur/main.c
+SRC = ./main.c
 DST = $(DST_DIR)$(DST_NAME)
 SCRIPT = ../examples/test.ug
 
