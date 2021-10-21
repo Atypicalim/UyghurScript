@@ -13,7 +13,8 @@ struct Executer {
 };
 
 void Executer_consumeLeaf(Executer *, Leaf *);
-bool Executer_executeTree(Executer *, Leaf *);
+void Executer_consumeTree(Executer *, Leaf *);
+Hashmap *Executer_executeProgram(Executer *, Leaf *);
 
 void Executer_reset(Executer *this)
 {
@@ -33,11 +34,12 @@ void Executer_pushScope(Executer *this)
     this->currentScope = (Hashmap *)this->scopeStack->tail->data; 
 }
 
-void Executer_popScope(Executer *this)
+Hashmap *Executer_popScope(Executer *this)
 {
     tools_assert(this->scopeStack->head->data != this->currentScope, "executer trying to exit root scope");
-    Stack_pop(this->scopeStack);
-    this->currentScope = (Hashmap *)this->scopeStack->tail->data; 
+    Hashmap *scope = Stack_pop(this->scopeStack);
+    this->currentScope = (Hashmap *)this->scopeStack->tail->data;
+    return scope;
 }
 
 Executer *Executer_new(Uyghur *uyghur)
@@ -129,7 +131,7 @@ void Executer_setTRValue(Executer *this, Token *key, Value *value)
     }
     if (block == NULL)
     {
-        block = this->scopeStack->head;
+        block = this->scopeStack->tail;
     }
     Hashmap_set(block->data, key->value, value);
 }
@@ -157,7 +159,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     else if (is_equal(target->value, TVALUE_TARGET_FROM) && is_equal(action->value, TVALUE_INPUT))
     {
         char line[1024];
-        scanf("%[^\n]", line);
+        scanf(" %[^\n]", line);
         char *l = tools_format("%s", line);
         Executer_setTRValue(this, name, Value_newString(l, NULL));
     }
@@ -377,9 +379,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     Token *left = Stack_next(ifNode->tokens);
     if (!isFinish && Executer_checkJudge(this, left, right, judge))
     {
-        Executer_pushScope(this);
-        Executer_executeTree(this, ifNode);
-        Executer_popScope(this);
+        Executer_executeProgram(this, ifNode);
         isFinish = true;
     }
     // elseif
@@ -392,9 +392,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         Token *left = Stack_next(ifNode->tokens);
         if (!isFinish && Executer_checkJudge(this, left, right, judge))
         {
-            Executer_pushScope(this);
-            Executer_executeTree(this, ifNode);
-            Executer_popScope(this);
+            Executer_executeProgram(this, ifNode);
             isFinish = true;
         }
         ifNode = Queue_next(leaf->leafs);
@@ -408,9 +406,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         tools_assert(is_equal(judge->value, TVALUE_IF_NO), "invalid if");
         if (!isFinish)
         {
-            Executer_pushScope(this);
-            Executer_executeTree(this, ifNode);
-            Executer_popScope(this);
+            Executer_executeProgram(this, ifNode);
             isFinish = true;
         }
         ifNode = Queue_next(leaf->leafs);
@@ -428,12 +424,10 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
     Token *judge = Stack_next(leaf->tokens);
     Token *right = Stack_next(leaf->tokens);
     Token *left = Stack_next(leaf->tokens);
-    Executer_pushScope(this);
     while (Executer_checkJudge(this, left, right, judge))
     {
-        Executer_executeTree(this, leaf);
+        Executer_executeProgram(this, leaf);
     }
-    Executer_popScope(this);
 }
 
 void Executer_consumeFunction(Executer *this, Leaf *leaf)
@@ -498,7 +492,7 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     }
     //
     Stack_clear(this->callStack);
-    Executer_executeTree(this, leaf);
+    Executer_consumeTree(this, leaf);
 }
 
 
@@ -589,7 +583,7 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     // helper_print_leaf(leaf, " ");
 }
 
-bool Executer_executeTree(Executer *this, Leaf *tree)
+void Executer_consumeTree(Executer *this, Leaf *tree)
 {
     Queue_reset(tree->leafs);
     Leaf *leaf = Queue_next(tree->leafs);
@@ -598,7 +592,15 @@ bool Executer_executeTree(Executer *this, Leaf *tree)
         Executer_consumeLeaf(this, leaf);
         leaf = Queue_next(tree->leafs);
     }
-    return true;
+}
+
+
+Hashmap *Executer_executeProgram(Executer *this, Leaf *tree)
+{
+    Executer_pushScope(this);
+    Executer_consumeTree(this, tree);
+    Hashmap *scope = Executer_popScope(this);
+    return scope;
 }
 
 void Executer_free(Executer *this)

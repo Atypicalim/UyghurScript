@@ -25,8 +25,8 @@ bool Uyghur_execute(Uyghur *this, const char *path, const char *code)
 {
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
     Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
-    bool isSuccess = Executer_executeTree(this->executer, headLeaf);
-    return isSuccess;
+    Hashmap *scope = Executer_executeProgram(this->executer, headLeaf);
+    return scope != NULL;
 }
 
 void Uyghur_compile(Uyghur *this, const char *path)
