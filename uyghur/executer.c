@@ -461,16 +461,31 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
 
 Value *Executer_runFunc(Executer *this, Token *funcName)
 {
-    Value *codeValue = Executer_getTRValue(this, funcName);
-    tools_assert(!is_equal(codeValue->type, RTYPE_EMPTY), "function not found");
-    tools_assert(is_equal(codeValue->type, RTYPE_FUNCTION), "function not valid");
+    Value *funcValue = Executer_getTRValue(this, funcName);
+    tools_assert(is_equal(funcValue->type, RTYPE_FUNCTION), "function not valid");
     // execute func
-    Leaf *codeNode = codeValue->object;
+    Leaf *codeNode = funcValue->object;
     Executer_pushScope(this);
     Executer_consumeLeaf(this, codeNode);
     Executer_popScope(this);
     // return result
     Value *r = Stack_pop(this->callStack);
+    if (r == NULL)
+    {
+        r = Value_newEmpty(NULL);
+    }
+    return r;
+}
+
+Value *Executer_runCFunc(Executer *this, Token *funcName)
+{
+    Value *funcValue = Executer_getTRValue(this, funcName);
+    tools_assert(is_equal(funcValue->type, RTYPE_CFUNCTION), "cfunction not valid");
+    void (*funcBody)(Queue *) = funcValue->object;
+    Queue *queue = Queue_new();
+    // TODO get args and push to queue
+    funcBody(queue);
+    Value *r = Queue_pop(queue);
     if (r == NULL)
     {
         r = Value_newEmpty(NULL);
@@ -494,7 +509,20 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
         arg = Stack_next(leaf->tokens);
     }
     // get func
-    Value *r = Executer_runFunc(this, funcName);
+    Value *r = NULL;
+    Value *funcValue = Executer_getTRValue(this, funcName);
+    if (is_equal(funcValue->type, RTYPE_FUNCTION))
+    {
+        r = Executer_runFunc(this, funcName);
+    }
+    else if (is_equal(funcValue->type, RTYPE_CFUNCTION))
+    {
+        r = Executer_runCFunc(this, funcName);
+    }
+    else
+    {
+        tools_error("function not found for func name: %s", funcName->value);
+    }
     //
     if (!is_equal(resultName->type, RTYPE_EMPTY))
     {

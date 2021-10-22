@@ -93,7 +93,7 @@ void Bridge_pushString(Bridge *this, char *value)
 
 void Bridge_pushFunction(Bridge *this, void (*value)(Queue *))
 {
-    // Hashmap_set(this->cache, key, Value_newNative(value, NULL));
+    Bridge_pushValue(this,  Value_newCFunction(value, NULL));
 }
 
 void Bridge_register(Bridge *this)
@@ -137,16 +137,4 @@ Value *Bridge_call(Bridge *this)
     Value *result = Executer_runFunc(executer, funcName);
     Bridge_reset(this);
     return result;
-}
-
-void add_map_item(void *targetMap, char *key, void *data)
-{
-    Hashmap_set(targetMap, key, data);
-}
-
-void Bridge_commit(Bridge *this)
-{
-    // Hashmap *scope =
-    // Hashmap_foreach(this->cache, scope, add_map_item);
-    // Bridge_reset(this);
 }

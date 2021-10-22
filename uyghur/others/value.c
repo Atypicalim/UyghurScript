@@ -51,6 +51,11 @@ Value *Value_newFunction(void *function, void *extra)
     return Value_new(RTYPE_FUNCTION ,NULL, 0, NULL, function, extra);
 }
 
+Value *Value_newCFunction(void *function, void *extra)
+{
+    return Value_new(RTYPE_CFUNCTION ,NULL, 0, NULL, function, extra);
+}
+
 Value *Value_newObject(void *object, void *extra)
 {
     return Value_new(RTYPE_UNKNOWN ,NULL, 0, NULL, object, extra);

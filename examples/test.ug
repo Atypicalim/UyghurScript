@@ -133,10 +133,12 @@
 # ikrangha b yezilsun
 
 
-# ikrangha [c kowruk sinaq!] yezilsun
+ikrangha [c kowruk sinaq!] yezilsun
 # ikrangha cString yezilsun
 # ikrangha cBoolean yezilsun
 # ikrangha cNumber yezilsun
+# ikrangha cFunction yezilsun
+fonkisiye cFunction ishlitilsun
 
 
 
