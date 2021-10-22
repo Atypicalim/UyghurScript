@@ -2,14 +2,44 @@
 
 #include "uyghur.c"
 
-struct Bridge {
+// struct Params {
+//     struct _Stack;
+// };
+
+#define BRIDGE_STACK_TP_BOX 1
+#define BRIDGE_STACK_TP_FUN 2
+#define BRIDGE_ITEM_TP_KEY "BRIDGE_ITEM_TP_KEY"
+#define BRIDGE_ITEM_TP_VAL "BRIDGE_ITEM_TP_VAL"
+
+struct Bridge
+{
     Uyghur *uyghur;
-    Hashmap *cache;
+    Stack *stack;
+    char *name;
+    int type;
+    char *last;
 };
 
 void Bridge_reset(Bridge *this)
 {
-    this->cache = Hashmap_new(NULL);
+    this->stack = Stack_new();
+    this->name = NULL;
+    this->type = 0;
+    this->last = NULL;
+}
+
+void Bridge_startBox(Bridge *this, char *name)
+{
+    Bridge_reset(this);
+    this->name = name;
+    this->type = BRIDGE_STACK_TP_BOX;
+}
+
+void Bridge_startFunc(Bridge *this, char *name)
+{
+    Bridge_reset(this);
+    this->name = name;
+    this->type = BRIDGE_STACK_TP_FUN;
 }
 
 Bridge *Bridge_new(Uyghur *uyghur)
@@ -20,33 +50,94 @@ Bridge *Bridge_new(Uyghur *uyghur)
     return bridge;
 }
 
-void Bridge_pushBoolean(Bridge *this, char *key, bool value)
+void Bridge_pushKey(Bridge *this, char *key)
 {
-    Hashmap_set(this->cache, key, Value_newBoolean(value, NULL));
+    tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, key available for only box");
+    tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key neceessary for last value");
+    Stack_push(this->stack, Value_newString(key, NULL));
+    this->last = BRIDGE_ITEM_TP_KEY;
 }
 
-void Bridge_pushNumber(Bridge *this, char *key, double value)
+void Bridge_pushValue(Bridge *this, Value *value)
 {
-    Hashmap_set(this->cache, key, Value_newNumber(value, NULL));
+    if (this->type == BRIDGE_STACK_TP_BOX)
+    {
+        tools_assert(this->last != BRIDGE_ITEM_TP_VAL, "invalid bridge status, key neceessary for value");
+    }
+    else if (this->type == BRIDGE_STACK_TP_FUN)
+    {
+        tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key unnecessary for value");
+    }
+    else
+    {
+        tools_error("invalid bridge status, not started");
+    }
+    Stack_push(this->stack, value);
+    this->last = BRIDGE_ITEM_TP_VAL;
 }
 
-void Bridge_pushString(Bridge *this, char *key, char *value)
+void Bridge_pushBoolean(Bridge *this, bool value)
 {
-    Hashmap_set(this->cache, key, Value_newString(value, NULL));
+    Bridge_pushValue(this, Value_newBoolean(value, NULL));
 }
 
-void Bridge_pushFunction(Bridge *this, char *key, void (*value)(Queue *))
+void Bridge_pushNumber(Bridge *this, double value)
+{
+    Bridge_pushValue(this, Value_newNumber(value, NULL));
+}
+
+void Bridge_pushString(Bridge *this, char *value)
+{
+    Bridge_pushValue(this, Value_newString(value, NULL));
+}
+
+void Bridge_pushFunction(Bridge *this, void (*value)(Queue *))
 {
     // Hashmap_set(this->cache, key, Value_newNative(value, NULL));
 }
 
-void Bridge_createBox(Bridge *this, char *key)
+void Bridge_register(Bridge *this)
 {
-    Hashmap *value = this->cache;
+    tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, box expected for register");
+    tools_assert(this->last == BRIDGE_ITEM_TP_VAL, "invalid bridge status");
+    Stack_reset(this->stack);
+    Hashmap *map = this->name == NULL ? this->uyghur->executer->rootScope : Hashmap_new();
+    Value *item = Stack_next(this->stack);
+    while (item != NULL)
+    {
+        Value *value = item;
+        Value *key = Stack_next(this->stack);
+        Hashmap_set(map, key->string, value);
+        item = Stack_next(this->stack);
+    }
+    if (this->name != NULL)
+    {
+        tools_error("TODO register box");
+        // Hashmap_set(this->uyghur->executer->rootScope, this->name, Value_newObject(map, NULL));
+    }
     Bridge_reset(this);
-    // Hashmap_set(this->cache, key, Value_newBox(value, NULL));
 }
 
+Value *Bridge_call(Bridge *this)
+{
+    tools_assert(this->type == BRIDGE_STACK_TP_FUN, "invalid bridge status, func expected for call");
+    tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key unnecessary for call");
+    tools_assert(this->name != NULL, "invalid bridge status, func name unnecessary for call");
+    Stack_reset(this->stack);
+    Executer *executer = this->uyghur->executer;
+    Stack *stack = executer->callStack;
+    Stack_clear(stack);
+    Value *item = Stack_next(this->stack);
+    while (item != NULL)
+    {
+        Stack_push(stack, item);
+        item = Stack_next(this->stack);
+    }
+    Token *funcName = Token_new("", 0, 0, TTYPE_NAME, this->name);
+    Value *result = Executer_runFunc(executer, funcName);
+    Bridge_reset(this);
+    return result;
+}
 
 void add_map_item(void *targetMap, char *key, void *data)
 {
@@ -55,7 +146,7 @@ void add_map_item(void *targetMap, char *key, void *data)
 
 void Bridge_commit(Bridge *this)
 {
-    Hashmap *scope = this->uyghur->executer->rootScope;
-    Hashmap_foreach(this->cache, scope, add_map_item);
-    Bridge_reset(this);
+    // Hashmap *scope =
+    // Hashmap_foreach(this->cache, scope, add_map_item);
+    // Bridge_reset(this);
 }

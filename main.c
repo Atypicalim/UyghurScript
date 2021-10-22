@@ -10,7 +10,7 @@ int main(int argc, char const *argv[])
     //
     tools_assert(argc > 1, LANG_ERR_NO_INPUT_NAME);
     Uyghur *uyghur = Uyghur_new();
-    Uyghur_register(uyghur, test_register);
+    test_register(uyghur->bridge);
     Uyghur_run(uyghur, argv[1]);
     Uyghur_free(uyghur);
     //

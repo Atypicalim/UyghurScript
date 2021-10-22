@@ -440,43 +440,6 @@ void Executer_consumeFunction(Executer *this, Leaf *leaf)
     Executer_setTRValue(this, function, Value_newFunction(code, NULL));
 }
 
-void Executer_consumeCall(Executer *this, Leaf *leaf)
-{
-    Stack_clear(this->callStack);
-    Stack_reset(leaf->tokens);
-    // get func name and result name
-    Token *funcName = Stack_next(leaf->tokens);
-    Token *resultName = Stack_next(leaf->tokens);
-    // push args to use
-    Token *arg = Stack_next(leaf->tokens);
-    while(arg != NULL)
-    {
-        Value *value = Executer_getTRValue(this, arg);
-        Stack_push(this->callStack, value);
-        arg = Stack_next(leaf->tokens);
-    }
-    // get func
-    Value *codeValue = Executer_getTRValue(this, funcName);
-    tools_assert(!is_equal(codeValue->type, RTYPE_EMPTY), "function not found");
-    tools_assert(is_equal(codeValue->type, RTYPE_FUNCTION), "function not valid");
-    // execute func
-    Leaf *codeNode = codeValue->object;
-    Executer_pushScope(this);
-    Executer_consumeLeaf(this, codeNode);
-    Executer_popScope(this);
-    //
-    if (!is_equal(resultName->type, RTYPE_EMPTY))
-    {
-        Value *r = Stack_pop(this->callStack);
-        if (r == NULL)
-        {
-            r = Value_newEmpty(NULL);
-        }
-        Executer_setTRValue(this, resultName, r);
-    }
-    Stack_clear(this->callStack);
-}
-
 void Executer_consumeCode(Executer *this, Leaf *leaf)
 {
     Stack *callStack = Stack_reverse(this->callStack);
@@ -496,6 +459,49 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     Executer_consumeTree(this, leaf);
 }
 
+Value *Executer_runFunc(Executer *this, Token *funcName)
+{
+    Value *codeValue = Executer_getTRValue(this, funcName);
+    tools_assert(!is_equal(codeValue->type, RTYPE_EMPTY), "function not found");
+    tools_assert(is_equal(codeValue->type, RTYPE_FUNCTION), "function not valid");
+    // execute func
+    Leaf *codeNode = codeValue->object;
+    Executer_pushScope(this);
+    Executer_consumeLeaf(this, codeNode);
+    Executer_popScope(this);
+    // return result
+    Value *r = Stack_pop(this->callStack);
+    if (r == NULL)
+    {
+        r = Value_newEmpty(NULL);
+    }
+    return r;
+}
+
+void Executer_consumeCall(Executer *this, Leaf *leaf)
+{
+    Stack_clear(this->callStack);
+    Stack_reset(leaf->tokens);
+    // get func name and result name
+    Token *funcName = Stack_next(leaf->tokens);
+    Token *resultName = Stack_next(leaf->tokens);
+    // push args to use
+    Token *arg = Stack_next(leaf->tokens);
+    while(arg != NULL)
+    {
+        Value *value = Executer_getTRValue(this, arg);
+        Stack_push(this->callStack, value);
+        arg = Stack_next(leaf->tokens);
+    }
+    // get func
+    Value *r = Executer_runFunc(this, funcName);
+    //
+    if (!is_equal(resultName->type, RTYPE_EMPTY))
+    {
+        Executer_setTRValue(this, resultName, r);
+    }
+    Stack_clear(this->callStack);
+}
 
 void Executer_consumeResult(Executer *this, Leaf *leaf)
 {

@@ -34,26 +34,11 @@ bool Uyghur_execute(Uyghur *this, const char *path, const char *code)
     return scope != NULL;
 }
 
-void Uyghur_compile(Uyghur *this, const char *path)
-{
-    //
-}
-
 bool Uyghur_run(Uyghur *this, const char *path)
 {
     char *content = tools_read_file(path);
     tools_assert(content != NULL, tools_format(LANG_ERR_NO_INPUT_FILE, path));
     return Uyghur_execute(this, path, content);
-}
-
-void Uyghur_register(Uyghur *this, void (* func)(Bridge *))
-{
-    func(this->bridge);
-}
-
-void Uyghur_call(char *func, Stack *params)
-{
-    //
 }
 
 void Uyghur_free(Uyghur *this)
