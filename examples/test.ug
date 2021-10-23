@@ -100,16 +100,17 @@ ikrangha [salam uyghur script!] yezilsun
 # fonkisiye sanYezish mezmuni
 #     ikrangha yighinda yezilsun
 # tamamlansun
-# # fonkisiye sanQushush mixtar x y mezmuni
-# #     mixtar waqitliqMixtar qimmiti 0 bolsun
-# #     waqitliqMixtar qimmiti x qushulghan y bolsun
-# #     netije waqitliqMixtar qayturulsun
-# # tamamlansun
-# # fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
+# fonkisiye sanQushush mixtar x y mezmuni
+#     mixtar waqitliqMixtar qimmiti 0 bolsun
+#     waqitliqMixtar qimmiti x qushulghan y bolsun
+#     netije waqitliqMixtar qayturulsun
+# tamamlansun
+# fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
 
 # mixtar funcName qimmiti [sanYezish] bolsun
 # funcName qimmiti fonkisiye bolsun
 
+# ikrangha funcName yezilsun
 # fonkisiye funcName ishlitilsun
 
 # mixtar chongSan qimmiti quruq bolsun

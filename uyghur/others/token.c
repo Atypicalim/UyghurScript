@@ -33,7 +33,7 @@ Token *Token_empty()
 
 Token *Token_name(char *name)
 {
-    return Token_new(name, 0, 0, TTYPE_NAME, TVALUE_EMPTY);
+    return Token_new("", 0, 0, TTYPE_NAME, name);
 }
 
 void Token_print(Token *this)

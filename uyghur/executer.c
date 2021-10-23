@@ -219,8 +219,17 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
         }
         else if (is_equal(act, TVALUE_FUNCTION))
         {
-            // TODO return function
-            r = Value_newObject(NULL, NULL);
+            char *funcName = value->string;
+            Token *funcToken = Token_name(funcName);
+            Value *funcValue = Executer_getTRValue(this, funcToken);
+            if(is_equal(funcValue->type, RTYPE_FUNCTION) || is_equal(funcValue->type, RTYPE_CFUNCTION))
+            {
+                r = funcValue;
+            }
+            else
+            {
+                r = Value_newEmpty(NULL);
+            }
         }
     }
     else
