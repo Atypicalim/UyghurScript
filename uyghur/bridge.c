@@ -8,17 +8,10 @@
 
 #define BRIDGE_STACK_TP_BOX 1
 #define BRIDGE_STACK_TP_FUN 2
+#define BRIDGE_STACK_TP_ARG 3
+#define BRIDGE_STACK_TP_RES 4
 #define BRIDGE_ITEM_TP_KEY "BRIDGE_ITEM_TP_KEY"
 #define BRIDGE_ITEM_TP_VAL "BRIDGE_ITEM_TP_VAL"
-
-struct Bridge
-{
-    Uyghur *uyghur;
-    Stack *stack;
-    char *name;
-    int type;
-    char *last;
-};
 
 void Bridge_reset(Bridge *this)
 {
@@ -42,6 +35,18 @@ void Bridge_startFunc(Bridge *this, char *name)
     this->type = BRIDGE_STACK_TP_FUN;
 }
 
+void Bridge_startArgument(Bridge *this)
+{
+    Bridge_reset(this);
+    this->type = BRIDGE_STACK_TP_ARG;
+}
+
+void Bridge_startResult(Bridge *this)
+{
+    Bridge_reset(this);
+    this->type = BRIDGE_STACK_TP_RES;
+}
+
 Bridge *Bridge_new(Uyghur *uyghur)
 {
     Bridge *bridge = malloc(sizeof(Bridge));
@@ -58,22 +63,44 @@ void Bridge_pushKey(Bridge *this, char *key)
     this->last = BRIDGE_ITEM_TP_KEY;
 }
 
+char *Bridge_topType(Bridge *this)
+{
+    Block *tail = this->stack->tail;
+    Value *value = Value_newEmpty(NULL);
+    if (tail != NULL)
+    {
+        value = tail->data;
+    }
+    return value->type;
+}
+
 void Bridge_pushValue(Bridge *this, Value *value)
 {
+    tools_assert(this->type > 0, "invalid bridge status, not started");
     if (this->type == BRIDGE_STACK_TP_BOX)
     {
         tools_assert(this->last != BRIDGE_ITEM_TP_VAL, "invalid bridge status, key neceessary for value");
     }
-    else if (this->type == BRIDGE_STACK_TP_FUN)
+    else
     {
         tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key unnecessary for value");
     }
-    else
-    {
-        tools_error("invalid bridge status, not started");
-    }
     Stack_push(this->stack, value);
     this->last = BRIDGE_ITEM_TP_VAL;
+}
+
+Value *Bridge_popValue(Bridge *this)
+{
+    return Stack_pop(this->stack);
+}
+
+Value *Bridge_popValueForRType(Bridge *this, char *tp)
+{
+
+    Value *v = Bridge_popValue(this);
+    tools_assert(v != NULL, "invalid bridge arguments, next argument not found");
+    tools_assert(is_equal(v->type, tp), "invalid bridge arguments, %s argument not found", tp);
+    return v;
 }
 
 void Bridge_pushBoolean(Bridge *this, bool value)
@@ -81,9 +108,19 @@ void Bridge_pushBoolean(Bridge *this, bool value)
     Bridge_pushValue(this, Value_newBoolean(value, NULL));
 }
 
+bool Bridge_popBoolean(Bridge *this)
+{
+    return Bridge_popValueForRType(this, RTYPE_BOOLEAN)->boolean;
+}
+
 void Bridge_pushNumber(Bridge *this, double value)
 {
     Bridge_pushValue(this, Value_newNumber(value, NULL));
+}
+
+double Bridge_popNumber(Bridge *this)
+{
+    return Bridge_popValueForRType(this, RTYPE_NUMBER)->number;
 }
 
 void Bridge_pushString(Bridge *this, char *value)
@@ -91,7 +128,12 @@ void Bridge_pushString(Bridge *this, char *value)
     Bridge_pushValue(this, Value_newString(value, NULL));
 }
 
-void Bridge_pushFunction(Bridge *this, void (*value)(Queue *))
+char *Bridge_popString(Bridge *this)
+{
+    return Bridge_popValueForRType(this, RTYPE_STRING)->string;
+}
+
+void Bridge_pushFunction(Bridge *this, void (*value)(Bridge *))
 {
     Bridge_pushValue(this,  Value_newCFunction(value, NULL));
 }
@@ -137,4 +179,15 @@ Value *Bridge_call(Bridge *this)
     Value *result = Executer_runFunc(executer, funcName);
     Bridge_reset(this);
     return result;
+}
+
+void *Bridge_send(Bridge *this)
+{
+    // check arguments, only base values
+}
+
+
+void *Bridge_return(Bridge *this)
+{
+    // check result, only one value
 }

@@ -8,13 +8,13 @@
 typedef struct ValueNode {
     char *type;
     bool boolean;
-    float number;
+    double number;
     char *string;
     void *object;
     void *extra;
 } Value;
 
- Value *Value_new(char *type, bool boolean, float number, char *string, void *object, void *extra)
+ Value *Value_new(char *type, bool boolean, double number, char *string, void *object, void *extra)
 {
     Value *value = malloc(sizeof(Value));
     value->type = type;
@@ -36,7 +36,7 @@ Value *Value_newBoolean(bool boolean, void *extra)
     return Value_new(RTYPE_BOOLEAN, boolean, 0, NULL, NULL, extra);
 }
 
-Value *Value_newNumber(float number, void *extra)
+Value *Value_newNumber(double number, void *extra)
 {
     return Value_new(RTYPE_NUMBER, NULL, number, NULL, NULL, extra);
 }

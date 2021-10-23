@@ -42,4 +42,17 @@ typedef struct Uyghur {
     Bridge *bridge;
 } Uyghur;
 
+struct Bridge
+{
+    Uyghur *uyghur;
+    Stack *stack;
+    char *name;
+    int type;
+    char *last;
+};
+void Bridge_pushValue(Bridge *, Value *);
+Value *Bridge_popValue(Bridge *);
+void Bridge_startArgument(Bridge *);
+void *Bridge_send(Bridge *);
+
 #endif

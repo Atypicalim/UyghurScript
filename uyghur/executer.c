@@ -272,8 +272,8 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
     }
     else if (is_values(act, TVALUE_GROUP_EXP_NUMBER) && is_equal(firstType, RTYPE_NUMBER))
     {
-        float firstN = Value_toNumber(firstV)->number;
-        float secondN = Value_toNumber(secondV)->number;
+        double firstN = Value_toNumber(firstV)->number;
+        double secondN = Value_toNumber(secondV)->number;
         if (is_equal(act, TVALUE_EQUAL))
         {
             r = Value_newBoolean(firstN == secondN, NULL);
@@ -345,8 +345,8 @@ bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge
     }
     else if (is_equal(leftType, RTYPE_NUMBER) && is_equal(rightType, RTYPE_NUMBER))
     {
-        float leftN = Value_toNumber(leftV)->number;
-        float rightN = Value_toNumber(rightV)->number;
+        double leftN = Value_toNumber(leftV)->number;
+        double rightN = Value_toNumber(rightV)->number;
         return shouldYes == (leftN == rightN);
     }
     else if (is_equal(leftType, RTYPE_BOOLEAN) && is_equal(rightType, RTYPE_BOOLEAN))
@@ -462,7 +462,8 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
 Value *Executer_runFunc(Executer *this, Token *funcName)
 {
     Value *funcValue = Executer_getTRValue(this, funcName);
-    tools_assert(is_equal(funcValue->type, RTYPE_FUNCTION), "function not valid");
+    Value_print(funcValue);
+    tools_assert(is_equal(funcValue->type, RTYPE_FUNCTION), "function not valid for name: %s", funcName->value);
     // execute func
     Leaf *codeNode = funcValue->object;
     Executer_pushScope(this);
@@ -481,11 +482,23 @@ Value *Executer_runCFunc(Executer *this, Token *funcName)
 {
     Value *funcValue = Executer_getTRValue(this, funcName);
     tools_assert(is_equal(funcValue->type, RTYPE_CFUNCTION), "cfunction not valid");
-    void (*funcBody)(Queue *) = funcValue->object;
-    Queue *queue = Queue_new();
-    // TODO get args and push to queue
-    funcBody(queue);
-    Value *r = Queue_pop(queue);
+    void (*funcBody)(Bridge *) = funcValue->object;
+    //
+    Bridge *bridge = this->uyghur->bridge;
+    Bridge_startArgument(bridge);
+    Stack *callStack = Stack_reverse(this->callStack);
+    Stack_reset(callStack);
+    Value *value = Stack_next(callStack);
+    while (value != NULL)
+    {
+        Bridge_pushValue(bridge, value);
+        value = Stack_next(callStack);
+    }
+    Bridge_send(bridge);
+    //
+    funcBody(bridge);
+    //
+    Value *r = Bridge_popValue(bridge);
     if (r == NULL)
     {
         r = Value_newEmpty(NULL);
