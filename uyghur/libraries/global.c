@@ -47,9 +47,9 @@ void lib_global_register(Bridge *bridge)
 {
     Bridge_startBox(bridge, NULL);
     Bridge_pushKey(bridge, "NESHIR_ISMI");
-    Bridge_pushString(bridge, "0.0.1");
+    Bridge_pushString(bridge, UG_VERSION_NAME);
     Bridge_pushKey(bridge, "NESHIR_NUMIRI");
-    Bridge_pushNumber(bridge, 0.1);
+    Bridge_pushNumber(bridge, UG_VERSION_CODE);
     Bridge_pushKey(bridge, "yezish");
     Bridge_pushFunction(bridge, yezish);
     Bridge_pushKey(bridge, "oqush");

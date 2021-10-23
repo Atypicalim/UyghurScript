@@ -1,5 +1,8 @@
 // constant
 
+#define UG_VERSION_NAME "0.1" 
+#define UG_VERSION_CODE 0.1 
+
 // token types
 #define TTYPE_NAME "TTYPE_NAME"
 #define TTYPE_WORD "TTYPE_WORD"
