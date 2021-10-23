@@ -2,51 +2,61 @@
 
 ## 0. description
 
-> a toy script interpreter written in c, u can run your script in uyghur language grammar with it ...
+> a toy script interpreter written in c, u can write & run your script written in uyghur language grammar with it ...
 
 ## 1. data types and variable declaration
 
 ```python
 
-# only chars are supported for variable name, and all the variables are global
-mixtar mixtarName qimmiti 0 bolsun
-
 # string
-mixtar a qimmiti [Salam Uyghur Script!] bolsun
+mixtar s qimmiti [Salam Uyghur Script!] bolsun
 
 # number
-mixtar b qimmiti 1 bolsun
+mixtar n qimmiti 1 bolsun
 
 # bool (rast, yalghan)
-mixtar c qimmiti rast bolsun
+mixtar b qimmiti rast bolsun
 
-# nil
+# empty
 mixtar d qimmiti quruq bolsun
-
-# assign a value
-c qimmiti yalghan bolsun
-
-# transform data type (number & string)
-qimmet b tipi san bolsun
-qimmet b tipi xet bolsun
 
 ```
 
-## 2. operations
+## 2. expressions
 
 ```python
 
-# concat strings
-a qimmiti [hi! ] ulanghan a bolsun
+# assign a value
+b qimmiti yalghan bolsun
 
-# calculate numbers (qushulghan, elinghan, kupeytilgen, bulungen)
-b qimmiti a kupeytilghen 10 bolsun
+# string expressions (teng, ulanghan)
+s qimmiti [hi! ] ulanghan [boy ...] bolsun
 
-# logic operations (kichik, chong, teng)
-c qimmiti a kichik 5 bolsun
+# number expressions (teng, qushulghan, elinghan, kupeytilgen, bulungen)
+n qimmiti n kupeytilghen 10 bolsun
 
-# logic operations (hemde, yaki, ekische)
-c qimmiti c hemde yalghan bolsun
+# logic expressions (teng, kichik, chong)
+b qimmiti a kichik 5 bolsun
+
+# logic expressions (teng, hemde, yaki)
+b qimmiti b hemde yalghan bolsun
+
+```
+
+## 3. operations
+
+```python
+
+mixtar sQimmet qimmiti [yalghan] bolsun
+
+# transforming type (san, xet, quruq, logika, ekische, fonkisiye)
+sQimmet qimmiti logika bolsun
+
+# logic not
+sQimmet qimmiti ekische bolsun
+
+# print a logic value
+ikrangha sQimmet yezilsun
 
 ```
 
@@ -69,19 +79,28 @@ ikrangha a yezilsun
 ```python
 
 mixtar a qimmiti quruq bolsun
-mixtar b qimmiti quruq bolsun
-mixtar c qimmiti quruq bolsun
+mixtar b qimmiti rast bolsun
+mixtar c qimmiti rast bolsun
+mixtar d qimmiti [quruq!!!] bolsun
 
-# eger (variable) qimmiti (variable|string|number|bool|nil) bolsa
+# the left side can be any value
 eger a qimmiti rast bolsa
     ikrangha [eger] yezilsun
+    d qimmiti [eger] bolsun
 egerde b qimmiti rast bolsa
     ikrangha [egerde1] yezilsun
-egerde c qimmiti rast bolsa
+    d qimmiti [egerde1] bolsun
+egerde c qimmiti rast bolmisa
     ikrangha [egerde2] yezilsun
+    d qimmiti [egerde2] bolsun
 bolmisa
-    ikrangha [bolmisa] yezilsun
+    mixtar d qimmiti [ichide] bolsun
+    ikrangha d yezilsun
+    d qimmiti [bolmisa] bolsun
+    ikrangha d yezilsun
 tamamlansun
+
+ikrangha d yezilsun
 
 ```
 
@@ -89,13 +108,18 @@ tamamlansun
 
 ```python
 
-# u can write an if statement in it
-mixtar d qimmiti 0 bolsun
-# nawada (variable) qimmiti (variable|string|number|bool|nil) bolsa
-nawada c qimmiti rast bolsa
-    d qimmiti d qushulghan 1 bolsun
-    ikrangha d yezilsun
-    c qimmiti d kichik 5 bolsun
+mixtar yezildighanQimmet qimmiti [] bolsun
+mixtar sinaqQimmet qimmiti 1 bolsun
+mixtar tekshurulmeQimmet qimmiti rast bolsun
+
+# the left side can be any value
+nawada tekshurulmeQimmet qimmiti rast bolsa
+    mixtar sinaqQimmetS qimmiti sinaqQimmet bolsun
+    sinaqQimmetS qimmiti xet bolsun
+    yezildighanQimmet qimmiti [nawada: sanaq ] ulanghan sinaqQimmetS bolsun
+    ikrangha yezildighanQimmet yezilsun
+    sinaqQimmet qimmiti sinaqQimmet qushulghan 1 bolsun
+    tekshurulmeQimmet qimmiti sinaqQimmet kichik 5 bolsun
 tamamlansun
 
 ```
@@ -104,7 +128,7 @@ tamamlansun
 
 ```python
 
-# variable
+# a variable for function result
 mixtar yighinda qimmiti 0 bolsun
 
 # function without args and return
@@ -112,38 +136,68 @@ fonkisiye sanYezish mezmuni
     ikrangha yighinda yezilsun
 tamamlansun
 
-# function with variables and return
+# a function receiving two arguments and returning a result
 fonkisiye sanQushush mixtar x y mezmuni
     mixtar waqitliqMixtar qimmiti 0 bolsun
     waqitliqMixtar qimmiti x qushulghan y bolsun
     netije waqitliqMixtar qayturulsun
 tamamlansun
 
-# call with variables and receive result
+# call function with two arguments and receive the result
 fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
 
-# call without variable, and not result 
-fonkisiye sanYezish ishlitilsun
+# a string varibale storing a function name
+mixtar funcName qimmiti [sanYezish] bolsun
 
-# parse from a string
-mixtar isim qimmiti [Yezish] bolsun
-qimmet isim tipi fonkisiye bolsun
-fonkisiye isim ishlitilsun
+# transform the string to a func which is the string value targeting
+funcName qimmiti fonkisiye bolsun
+
+# call a function without any argument and result 
+fonkisiye funcName ishlitilsun
 
 ```
 
-## 7. usage
+## 7. bridge
 
-* just run the command `uyghur.exe test.ug` to execute your script
+> u can get the bridge objet and communicate between c and script, just check `main.c` for more information
 
-## 8. todo
+```c
+// register c values to script
+Bridge_startBox(bridge, NULL);
+// push a key
+Bridge_pushKey(bridge, "keyName");
+// push a value (string, number, bool)
+Bridge_pushValue(bridge, NULL);
+// register
+Bridge_register(bridge);
+```
+
+```c
+// call script function from c
+Bridge_startFunc(bridge, "functionName");
+// push a value (string, number, bool)
+Bridge_pushValue(bridge, NULL);
+// call
+Bridge_call(bridge);
+// get rsult type
+char *t = Bridge_topType(bridge);
+// get result value
+void *v = Bridge_popValue(bridge);
+
+```
+
+## 8. usage
+
+* jsut run the command `./release/uyghur.exe ./examples/hello.ug` in root directory and you will see the result
+
+## 9. todo
 
 * box
 * import
+* traceback
 * libraries
-* c & uyghur bridge
 * ...
 
-## 9. end
+## 10. others
 
 > i am still working on it ...

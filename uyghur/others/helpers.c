@@ -69,6 +69,18 @@ void helper_print_leaf(Leaf *this, char *_space)
     printf("%s[LEAF]\n", space);
 }
 
+void helper_print_tokens(Token *head)
+{
+    printf("[TOKENS => addr:%d]\n", head);
+    Token *token = head;
+    while(token != NULL)
+    {
+        Token_print(token);
+        token = token->next;
+    }
+    printf("[TOKENS]\n", head);
+}
+
 bool is_values(char *target, int num, char *s, ...)
 {
     va_list valist;

@@ -2,6 +2,8 @@
 
 ################################
 
+ikrangha [salam uyghur script!] yezilsun
+
 # mixtar dunyaghaSalam qimmiti [SalamDunya!] bolsun
 # ikrandin dunyaghaSalam oqulsun
 # ikrangha dunyaghaSalam yezilsun
@@ -68,7 +70,7 @@
 # egerde b qimmiti rast bolsa
 #     ikrangha [egerde1] yezilsun
 #     d qimmiti [egerde1] bolsun
-# egerde c qimmiti yalghan bolsa
+# egerde c qimmiti rast bolmisa
 #     ikrangha [egerde2] yezilsun
 #     d qimmiti [egerde2] bolsun
 # bolmisa
@@ -93,44 +95,28 @@
 #     tekshurulmeQimmet qimmiti sinaqQimmet kichik 5 bolsun
 # tamamlansun
 
+
 # mixtar yighinda qimmiti 0 bolsun
 # fonkisiye sanYezish mezmuni
 #     ikrangha yighinda yezilsun
 # tamamlansun
-# fonkisiye sanQushush mixtar x y mezmuni
-#     mixtar waqitliqMixtar qimmiti 0 bolsun
-#     waqitliqMixtar qimmiti x qushulghan y bolsun
-#     netije waqitliqMixtar qayturulsun
-# tamamlansun
-# fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
-# fonkisiye sanYezish ishlitilsun
+# # fonkisiye sanQushush mixtar x y mezmuni
+# #     mixtar waqitliqMixtar qimmiti 0 bolsun
+# #     waqitliqMixtar qimmiti x qushulghan y bolsun
+# #     netije waqitliqMixtar qayturulsun
+# # tamamlansun
+# # fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
+
+# mixtar funcName qimmiti [sanYezish] bolsun
+# funcName qimmiti fonkisiye bolsun
+
+# fonkisiye funcName ishlitilsun
 
 # mixtar chongSan qimmiti quruq bolsun
 # fonkisiye chongniTepish bilen 10 20 ishlitilsun we netije chongSan bolsun
 # ikrangha chongSan yezilsun
 
 # ikrangha [UyghurScript!] yezilsun
-
-
-# mixtar a qimmiti 3 bolsun
-# mixtar b qimmiti 5 bolsun
-# mixtar c qimmiti quruq bolsun
-
-# mixtar funName qimmiti [max] bolsun
-# qimmet funName tipi fonkisiye bolsun
-
-# fonkisiye max bilen a b ishlitilsun we netije c bolsun
-# fonkisiye funName bilen a b ishlitilsun we netije c bolsun
-# ikrangha c yezilsun
-
-# fonkisiye a mezmuni
-#     mixtar b qimmiti [c] bolsun
-#     ikrandin b oqulsun
-#     ikrangha b yezilsun
-# tamamlansun
-
-# fonkisiye a ishlitilsun
-# ikrangha b yezilsun
 
 
 # ikrangha [c kowruk sinaq!] yezilsun
@@ -157,6 +143,19 @@
 #     netije waqitliqMixtar qayturulsun
 # tamamlansun
 
+
+# global test
+# ikrangha NESHIR_ISMI yezilsun
+# fonkisiye yezish bilen NESHIR_ISMI ishlitilsun
+# mixtar a qimmiti [empty] bolsun
+# fonkisiye oqush ishlitilsun we netije a bolsun
+# fonkisiye yezish bilen a ishlitilsun
+
+
+# fonkisiye hojjetYezish bilen [hojjet.txt] [hojjet mezmuni ...] ishlitilsun
+# mixtar c qimmiti quruq bolsun
+# fonkisiye hojjetOqush bilen [hojjet.txt] ishlitilsun we netije c bolsun
+# fonkisiye yezish bilen c ishlitilsun
 
 # TOOD ################################################################################
 
@@ -192,7 +191,3 @@
 # mixtar a qimmiti quruq bolsun
 # a qimmiti 1 bolsun
 # a qimmiti 2 bolsun
-
-# portable c & uyghur bridge
-# register a c func to call
-# call a script func from c

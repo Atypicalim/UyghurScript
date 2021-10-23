@@ -36,10 +36,22 @@ char *tools_format(char *msg, ...)
     return t;
 }
 
+void tools_write_file(const char *path, const char *data)
+{
+    if (data == NULL) return;
+    FILE *fp = fopen(path, "ab");
+    if (fp != NULL)
+    {
+        fputs(data, fp);
+        fclose(fp);
+    }
+}
+
 char *tools_read_file(const char *path)
 {
     char *text;
     FILE *file = fopen(path, "rb");
+    if (file == NULL) return NULL;
     fseek(file, 0, SEEK_END);
     long lSize = ftell(file);
     text = (char *)malloc(lSize + 1);

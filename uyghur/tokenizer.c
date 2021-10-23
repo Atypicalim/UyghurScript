@@ -193,7 +193,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             while (true)
             {
                 c = Tokenizer_getchar(this, i);
-                if (!isalnum(c)) break;
+                if (!isalnum(c) && c != '_') break;
                 str = tools_str_apent(str, c, false);
                 i++;
             }

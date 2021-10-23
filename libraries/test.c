@@ -21,7 +21,7 @@ void cFuncTest(Bridge *bridge)
     // Bridge_return(bridge);
 }
 
-void test_register(Bridge *bridge)
+void lib_test_register(Bridge *bridge)
 {
     // // register values from c
     // Bridge_startBox(bridge, NULL);
@@ -36,9 +36,8 @@ void test_register(Bridge *bridge)
     // Bridge_register(bridge);
 }
 
-void test_call(Bridge *bridge)
+void lib_test_call(Bridge *bridge)
 {
-    // // TODO rgister func to root scope in script
     // // use values from c
     // Bridge_startFunc(bridge, "uyghurFuncTest");
     // Bridge_pushNumber(bridge, 333);
