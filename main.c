@@ -12,6 +12,7 @@ int main(int argc, char const *argv[])
     Uyghur *uyghur = Uyghur_new();
     test_register(uyghur->bridge);
     Uyghur_run(uyghur, argv[1]);
+    test_call(uyghur->bridge);
     Uyghur_free(uyghur);
     //
     // char c = 'c';

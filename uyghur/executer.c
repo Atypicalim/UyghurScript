@@ -13,8 +13,7 @@ struct Executer {
 };
 
 void Executer_consumeLeaf(Executer *, Leaf *);
-void Executer_consumeTree(Executer *, Leaf *);
-Hashmap *Executer_executeProgram(Executer *, Leaf *);
+bool Executer_executeTree(Executer *, Leaf *);
 
 void Executer_reset(Executer *this)
 {
@@ -380,7 +379,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     Token *left = Stack_next(ifNode->tokens);
     if (!isFinish && Executer_checkJudge(this, left, right, judge))
     {
-        Executer_executeProgram(this, ifNode);
+        Executer_pushScope(this);
+        Executer_executeTree(this, ifNode);
+        Executer_popScope(this);
         isFinish = true;
     }
     // elseif
@@ -393,7 +394,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         Token *left = Stack_next(ifNode->tokens);
         if (!isFinish && Executer_checkJudge(this, left, right, judge))
         {
-            Executer_executeProgram(this, ifNode);
+            Executer_pushScope(this);
+            Executer_executeTree(this, ifNode);
+            Executer_popScope(this);
             isFinish = true;
         }
         ifNode = Queue_next(leaf->leafs);
@@ -407,7 +410,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         tools_assert(is_equal(judge->value, TVALUE_IF_NO), "invalid if");
         if (!isFinish)
         {
-            Executer_executeProgram(this, ifNode);
+            Executer_pushScope(this);
+            Executer_executeTree(this, ifNode);
+            Executer_popScope(this);
             isFinish = true;
         }
         ifNode = Queue_next(leaf->leafs);
@@ -427,7 +432,9 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
     Token *left = Stack_next(leaf->tokens);
     while (Executer_checkJudge(this, left, right, judge))
     {
-        Executer_executeProgram(this, leaf);
+        Executer_pushScope(this);
+        Executer_executeTree(this, leaf);
+        Executer_popScope(this);
     }
 }
 
@@ -456,13 +463,12 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     }
     //
     Stack_clear(this->callStack);
-    Executer_consumeTree(this, leaf);
+    Executer_executeTree(this, leaf);
 }
 
 Value *Executer_runFunc(Executer *this, Token *funcName)
 {
     Value *funcValue = Executer_getTRValue(this, funcName);
-    Value_print(funcValue);
     tools_assert(is_equal(funcValue->type, RTYPE_FUNCTION), "function not valid for name: %s", funcName->value);
     // execute func
     Leaf *codeNode = funcValue->object;
@@ -631,7 +637,7 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     // helper_print_leaf(leaf, " ");
 }
 
-void Executer_consumeTree(Executer *this, Leaf *tree)
+bool Executer_executeTree(Executer *this, Leaf *tree)
 {
     Queue_reset(tree->leafs);
     Leaf *leaf = Queue_next(tree->leafs);
@@ -640,15 +646,7 @@ void Executer_consumeTree(Executer *this, Leaf *tree)
         Executer_consumeLeaf(this, leaf);
         leaf = Queue_next(tree->leafs);
     }
-}
-
-
-Hashmap *Executer_executeProgram(Executer *this, Leaf *tree)
-{
-    Executer_pushScope(this);
-    Executer_consumeTree(this, tree);
-    Hashmap *scope = Executer_popScope(this);
-    return scope;
+    return true;
 }
 
 void Executer_free(Executer *this)

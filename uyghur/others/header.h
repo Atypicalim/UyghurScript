@@ -60,5 +60,6 @@ void Bridge_pushValue(Bridge *, Value *);
 Value *Bridge_popValue(Bridge *);
 void Bridge_startArgument(Bridge *);
 void *Bridge_send(Bridge *);
+void *Bridge_return(Bridge *);
 
 #endif

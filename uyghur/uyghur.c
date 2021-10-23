@@ -30,8 +30,8 @@ bool Uyghur_execute(Uyghur *this, const char *path, const char *code)
 {
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
     Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
-    Hashmap *scope = Executer_executeProgram(this->executer, headLeaf);
-    return scope != NULL;
+    bool isSuccess = Executer_executeTree(this->executer, headLeaf);
+    return isSuccess;
 }
 
 bool Uyghur_run(Uyghur *this, const char *path)

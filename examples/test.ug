@@ -132,14 +132,30 @@
 # fonkisiye a ishlitilsun
 # ikrangha b yezilsun
 
+
 # ikrangha [c kowruk sinaq!] yezilsun
 # ikrangha cString yezilsun
 # ikrangha cBoolean yezilsun
 # ikrangha cNumber yezilsun
-# ikrangha cFunction yezilsun
-# fonkisiye cFunction bilen [stringFromUyghur] 445566 rast ishlitilsun we netije r bolsun
+# ikrangha cFuncTest yezilsun
+# fonkisiye cFuncTest bilen [stringFromUyghur] 445566 rast ishlitilsun we netije r bolsun
 # ikrangha r yezilsun
 
+# ikrangha [c kowruk sinaq!] yezilsun
+# fonkisiye uyghurFuncTest mixtar x y b s mezmuni
+#     mixtar waqitliqMixtar qimmiti 0 bolsun
+#     ikrangha [---c ewetken qimmiet:---] yezilsun
+#     ikrangha x yezilsun
+#     ikrangha [---] yezilsun
+#     ikrangha y yezilsun
+#     ikrangha [---] yezilsun
+#     ikrangha b yezilsun
+#     ikrangha [---] yezilsun
+#     ikrangha s yezilsun
+#     ikrangha [---] yezilsun
+#     waqitliqMixtar qimmiti x qushulghan y bolsun
+#     netije waqitliqMixtar qayturulsun
+# tamamlansun
 
 
 # TOOD ################################################################################

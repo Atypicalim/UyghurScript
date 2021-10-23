@@ -156,12 +156,13 @@ void Bridge_register(Bridge *this)
     Bridge_reset(this);
 }
 
-Value *Bridge_call(Bridge *this)
+void Bridge_call(Bridge *this)
 {
     tools_assert(this->type == BRIDGE_STACK_TP_FUN, "invalid bridge status, func expected for call");
     tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key unnecessary for call");
     tools_assert(this->name != NULL, "invalid bridge status, func name unnecessary for call");
     Stack_reset(this->stack);
+    // arguments
     Executer *executer = this->uyghur->executer;
     Stack *stack = executer->callStack;
     Stack_clear(stack);
@@ -171,10 +172,13 @@ Value *Bridge_call(Bridge *this)
         Stack_push(stack, item);
         item = Stack_next(this->stack);
     }
+    // execute
     Token *funcName = Token_new("", 0, 0, TTYPE_NAME, this->name);
     Value *result = Executer_runFunc(executer, funcName);
-    Bridge_reset(this);
-    return result;
+    // result
+    Bridge_startResult(this);
+    Bridge_pushValue(this,result);
+    Bridge_return(this);
 }
 
 void *Bridge_send(Bridge *this)
@@ -184,7 +188,6 @@ void *Bridge_send(Bridge *this)
     Value *v = Stack_next(this->stack);
     while(v != NULL)
     {
-        Value_print(v);
         if (!is_values(v->type, RTYPE_GROUP_BASE))
         {
             tools_error("invalid bridge status, type %s not available in c", v->type);

@@ -3,7 +3,7 @@
 #include "../uyghur/uyghur.c"
  
 
-void testFunc(Bridge *bridge)
+void cFuncTest(Bridge *bridge)
 {
     // // get arguments
     // printf("\n\n--c func arguments--\n");
@@ -31,15 +31,23 @@ void test_register(Bridge *bridge)
     // Bridge_pushBoolean(bridge, true);
     // Bridge_pushKey(bridge, "cNumber");
     // Bridge_pushNumber(bridge, 777);
-    // Bridge_pushKey(bridge, "cFunction");
-    // Bridge_pushFunction(bridge, testFunc);
+    // Bridge_pushKey(bridge, "cFuncTest");
+    // Bridge_pushFunction(bridge, cFuncTest);
     // Bridge_register(bridge);
+}
 
+void test_call(Bridge *bridge)
+{
     // // TODO rgister func to root scope in script
     // // use values from c
-    // Bridge_startFunc(bridge, "funcName");
-    // Bridge_pushString(bridge, "c value from bridge!");
+    // Bridge_startFunc(bridge, "uyghurFuncTest");
+    // Bridge_pushNumber(bridge, 333);
+    // Bridge_pushNumber(bridge, 222);
     // Bridge_pushBoolean(bridge, true);
-    // Bridge_pushNumber(bridge, 777);
+    // Bridge_pushString(bridge, "c value from bridge!");
     // Bridge_call(bridge);
+    // // get result
+    // printf("\n\n--uyghur func result--\n");
+    // printf("%s\n", Bridge_topType(bridge));
+    // printf("%f\n", Bridge_popNumber(bridge));
 }
