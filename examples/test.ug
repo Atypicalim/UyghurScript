@@ -132,13 +132,13 @@
 # fonkisiye a ishlitilsun
 # ikrangha b yezilsun
 
-ikrangha [c kowruk sinaq!] yezilsun
-ikrangha cString yezilsun
-ikrangha cBoolean yezilsun
-ikrangha cNumber yezilsun
-ikrangha cFunction yezilsun
-fonkisiye cFunction bilen [stringFromUyghur] 445566 rast ishlitilsun we netije r bolsun
-ikrangha r yezilsun
+# ikrangha [c kowruk sinaq!] yezilsun
+# ikrangha cString yezilsun
+# ikrangha cBoolean yezilsun
+# ikrangha cNumber yezilsun
+# ikrangha cFunction yezilsun
+# fonkisiye cFunction bilen [stringFromUyghur] 445566 rast ishlitilsun we netije r bolsun
+# ikrangha r yezilsun
 
 
 

@@ -6,10 +6,6 @@
 //     struct _Stack;
 // };
 
-#define BRIDGE_STACK_TP_BOX 1
-#define BRIDGE_STACK_TP_FUN 2
-#define BRIDGE_STACK_TP_ARG 3
-#define BRIDGE_STACK_TP_RES 4
 #define BRIDGE_ITEM_TP_KEY "BRIDGE_ITEM_TP_KEY"
 #define BRIDGE_ITEM_TP_VAL "BRIDGE_ITEM_TP_VAL"
 
@@ -183,11 +179,23 @@ Value *Bridge_call(Bridge *this)
 
 void *Bridge_send(Bridge *this)
 {
-    // check arguments, only base values
+    tools_assert(this->type == BRIDGE_STACK_TP_ARG, "invalid bridge status, argument expected for send");
+    Stack_reset(this->stack);
+    Value *v = Stack_next(this->stack);
+    while(v != NULL)
+    {
+        Value_print(v);
+        if (!is_values(v->type, RTYPE_GROUP_BASE))
+        {
+            tools_error("invalid bridge status, type %s not available in c", v->type);
+        }
+        v = Stack_next(this->stack);
+    }
 }
-
 
 void *Bridge_return(Bridge *this)
 {
-    // check result, only one value
+    tools_assert(this->type == BRIDGE_STACK_TP_RES, "invalid bridge status, result expected for return");
+    if (this->stack->head == NULL) Bridge_pushValue(this, Value_newEmpty(NULL));
+    tools_assert(this->stack->head == this->stack->tail, "invalid bridge status, can return only one value");
 }

@@ -42,6 +42,12 @@ typedef struct Uyghur {
     Bridge *bridge;
 } Uyghur;
 
+
+#define BRIDGE_STACK_TP_BOX 1
+#define BRIDGE_STACK_TP_FUN 2
+#define BRIDGE_STACK_TP_ARG 3
+#define BRIDGE_STACK_TP_RES 4
+
 struct Bridge
 {
     Uyghur *uyghur;
