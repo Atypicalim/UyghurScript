@@ -199,4 +199,8 @@ ikrangha [salam uyghur script!] yezilsun
 # strings: ~
 # logics: ! & |
 
+# scope
+# scope in interpreter equals to box, and box variable is a pointer of socpe hashmap.
 
+# import
+# importing a script file will execute the file in root scope and return the the root scope of new script file as a new box.
