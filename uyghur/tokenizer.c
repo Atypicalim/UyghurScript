@@ -74,6 +74,7 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     Hashmap_set(map, TVALUE_TRUE, TTYPE_BOOL);
     Hashmap_set(map, TVALUE_FALSE, TTYPE_BOOL);
     Hashmap_set(map, TVALUE_EMPTY, TTYPE_EMPTY);
+    Hashmap_set(map, TVALUE_BOX, TTYPE_BOX);
     tokenizer->keywordsMap = map;
     //
     return tokenizer;

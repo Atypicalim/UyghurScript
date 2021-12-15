@@ -31,6 +31,11 @@ Value *Value_newEmpty(void *extra)
     return Value_new(RTYPE_EMPTY, NULL, 0, NULL, NULL, extra);
 }
 
+Value *Value_newBox(void *extra)
+{
+    return Value_new(RTYPE_BOX, NULL, 0, NULL, Hashmap_new(NULL), extra);
+}
+
 Value *Value_newBoolean(bool boolean, void *extra)
 {
     return Value_new(RTYPE_BOOLEAN, boolean, 0, NULL, NULL, extra);
@@ -114,8 +119,8 @@ char *Value_toString(Value *this)
     }
     else
     {
-        char *value = this->object;
-        return tools_format("[RV => t:%s]\n", this->type);
+        void *value = this->object;
+        return tools_format("[RV => t:%s p:%d]\n", this->type, value != NULL ? value : 0);
     } 
 }
 

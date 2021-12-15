@@ -72,6 +72,10 @@ Value *Executer_getTRValue(Executer *this, Token *token)
     {
         return Value_newEmpty(token);
     }
+    else if (is_equal(token->type, TTYPE_BOX))
+    {
+        return Value_newBox(token);
+    }
     else if (is_equal(token->type, TTYPE_BOOL))
     {
         bool boolean = is_equal(token->value, TVALUE_TRUE) ? true : false;
@@ -267,7 +271,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
     {
         char *firstS = Value_toString(firstV);
         char *secondS = Value_toString(secondV);
-        if (is_equal(act, RTYPE_STRING))
+        if (is_equal(act, TVALUE_EQUAL))
         {
             bool boolean = is_equal(firstS, secondS);
             r = Value_newBoolean(boolean, NULL);
@@ -328,6 +332,16 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
             r = Value_newBoolean(firstB == true || secondB == true, NULL);
         }
     }
+    else if (is_values(act, TVALUE_GROUP_EXP_BOX) && is_equal(firstType, RTYPE_BOX))
+    {
+        char *firstS = Value_toString(firstV);
+        char *secondS = Value_toString(secondV);
+        if (is_equal(act, TVALUE_EQUAL))
+        {
+            bool boolean = is_equal(firstS, secondS);
+            r = Value_newBoolean(boolean, NULL);
+        }
+    }
     tools_assert(r != NULL, "not supported action for expression:%s", act);
     Executer_setTRValue(this, target, r);
 }
@@ -366,6 +380,12 @@ bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge
     else if (is_equal(leftType, RTYPE_EMPTY) && is_equal(rightType, RTYPE_EMPTY))
     {
         return true;
+    }
+    else if (is_equal(leftType, RTYPE_BOX) && is_equal(rightType, RTYPE_BOX))
+    {
+        char *leftS = Value_toString(leftV);
+        char *rightS = Value_toString(rightV);
+        return shouldYes == is_equal(leftS, rightS); // check pointer id
     }
     else
     {

@@ -295,10 +295,25 @@ void Parser_consumeAstExpression(Parser *this)
             action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_ALL);
             second = Parser_checkType(this, 1, 1, TTYPE_NAME);
         }
+        else if (Parser_isType(this, 2, TTYPE_BOX))
+        {
+            action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_BOX);
+            second = Parser_checkType(this, 1, 1, TTYPE_BOX);
+        }
         else
         {
             Parser_error(this, NULL);
         }
+        Parser_checkWord(this, 1, 1, TVALUE_MADE);
+        Parser_pushLeaf(this, ASTTYPE_EXPRESSION_DOUBLE, 4, target, first, action, second);
+        return;
+    }
+    // box
+    if (Parser_isType(this, 1, TTYPE_BOX))
+    {
+        Token *first = Parser_checkType(this, 1, 1, TTYPE_BOX);
+        Token *action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_BOX);
+        Token *second = Parser_checkType(this, 1, 2, TTYPE_BOX, TTYPE_NAME);
         Parser_checkWord(this, 1, 1, TVALUE_MADE);
         Parser_pushLeaf(this, ASTTYPE_EXPRESSION_DOUBLE, 4, target, first, action, second);
         return;

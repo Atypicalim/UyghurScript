@@ -2,7 +2,7 @@
 
 ################################
 
-ikrangha [salam uyghur script!] yezilsun
+# ikrangha [salam uyghur script!] yezilsun
 
 # mixtar dunyaghaSalam qimmiti [SalamDunya!] bolsun
 # ikrandin dunyaghaSalam oqulsun
@@ -157,6 +157,15 @@ ikrangha [salam uyghur script!] yezilsun
 # mixtar c qimmiti quruq bolsun
 # fonkisiye hojjetOqush bilen [hojjet.txt] ishlitilsun we netije c bolsun
 # fonkisiye yezish bilen c ishlitilsun
+
+# box test
+# mixtar x qimmiti sanduq bolsun
+# mixtar y qimmiti sanduq bolsun
+# mixtar z qimmiti quruq bolsun
+# z qimmiti x teng y bolsun
+# ikrangha x yezilsun
+# ikrangha y yezilsun
+# ikrangha z yezilsun
 
 # TOOD ################################################################################
 
