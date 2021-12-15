@@ -204,3 +204,7 @@ ikrangha [salam uyghur script!] yezilsun
 
 # import
 # importing a script file will execute the file in root scope and return the the root scope of new script file as a new box.
+
+#change
+# variable value function made => @{variable} == get a key from root scope
+
