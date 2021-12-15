@@ -125,6 +125,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
     this->code = code;
     this->length = strlen(code);
     int currentChar;
+    char *currentAlias = NULL;
 
     while (this->position < this->length)
     {
@@ -162,6 +163,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                 str = tools_str_apent(str, c, false);
                 i++;
             }
+            // TODO add alias
             Tokenizer_addToken(this, TTYPE_STRING, str);
             Tokenizer_skipN(this, i + 1);
             continue;
@@ -181,6 +183,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                 str = tools_str_apent(str, c, false);
                 i++;
             }
+            // TODO add alias
             Tokenizer_addToken(this, TTYPE_NUMBER, str); // strtod(str, NULL)
             Tokenizer_skipN(this, i + 1);
             continue; 
@@ -198,9 +201,38 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                 str = tools_str_apent(str, c, false);
                 i++;
             }
+            // TODO add alias
             Tokenizer_addToken(this, TTYPE_NAME, str);
             Tokenizer_skipN(this, i + 1);
             continue; 
+        }
+        // box alias
+        if (currentChar == '@')
+        {
+            char* alias = tools_str_new("", 0);
+            int i;
+            char c;
+            //
+            i = 1;
+            while ((c = Tokenizer_getchar(this, i)) != '{')
+            {
+                alias = tools_str_apent(alias, c, false);
+                i++;
+            }
+            currentAlias = alias;
+            Tokenizer_skipN(this, i);
+            continue;
+        }
+        if (currentChar == '{' && currentAlias != NULL)
+        {
+            Tokenizer_skipN(this, 1);
+            continue;
+        }
+        if (currentChar == '}' && currentAlias != NULL)
+        {
+            currentAlias = NULL;
+            Tokenizer_skipN(this, 1);
+            continue;
         }
         // unsupported
         char s[1024];

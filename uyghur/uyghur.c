@@ -31,9 +31,11 @@ Uyghur *Uyghur_new()
 bool Uyghur_execute(Uyghur *this, const char *path, const char *code)
 {
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
-    Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
-    bool isSuccess = Executer_executeTree(this->executer, headLeaf);
-    return isSuccess;
+    helper_print_tokens(headToken);
+    // Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
+    // bool isSuccess = Executer_executeTree(this->executer, headLeaf);
+    // return isSuccess;
+    return true;
 }
 
 bool Uyghur_run(Uyghur *this, const char *path)

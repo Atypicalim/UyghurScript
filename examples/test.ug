@@ -159,13 +159,15 @@
 # fonkisiye yezish bilen c ishlitilsun
 
 # box test
-# mixtar x qimmiti sanduq bolsun
+mixtar x qimmiti sanduq bolsun
 # mixtar y qimmiti sanduq bolsun
 # mixtar z qimmiti quruq bolsun
 # z qimmiti x teng y bolsun
 # ikrangha x yezilsun
 # ikrangha y yezilsun
 # ikrangha z yezilsun
+
+@x{[key]} qimmiti [value] bolsun
 
 # TOOD ################################################################################
 
