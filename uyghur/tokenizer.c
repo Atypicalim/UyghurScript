@@ -13,6 +13,8 @@ struct Tokenizer{
     Token *head;
     Token *tail;
     Hashmap *keywordsMap;
+    char *scope;
+    bool isRecordingScope;
 };
 
 void Tokenizer_reset(Tokenizer *this)
@@ -27,6 +29,8 @@ void Tokenizer_reset(Tokenizer *this)
     this->path = NULL;
     this->code = NULL;
     this->keywordsMap = NULL;
+    this->scope = NULL;
+    this->isRecordingScope = false;
 }
 
 Tokenizer *Tokenizer_new(Uyghur *uyghur)
@@ -106,7 +110,12 @@ void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
             type = is_equal(v, value) ? TTYPE_WORD : v;
         }
     }
-    Token *token = Token_new(this->path, this->line, this->column, type, value);
+    //
+    char *s = tools_format(LANG_ERR_TOKEN_PLACE, value, this->line, this->column, this->path);
+    tools_assert(!this->isRecordingScope || this->scope != NULL, "%s%s", LANG_ERR_NO_VALID_TOKEN, s);
+    Token *token = Token_new(this->path, this->line, this->column, type, value, this->scope);
+    this->scope = NULL;
+    //
     if (this->head == NULL)
     {
         this->head = token;
@@ -125,7 +134,6 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
     this->code = code;
     this->length = strlen(code);
     int currentChar;
-    char *currentAlias = NULL;
 
     while (this->position < this->length)
     {
@@ -163,7 +171,6 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                 str = tools_str_apent(str, c, false);
                 i++;
             }
-            // TODO add alias
             Tokenizer_addToken(this, TTYPE_STRING, str);
             Tokenizer_skipN(this, i + 1);
             continue;
@@ -183,9 +190,8 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                 str = tools_str_apent(str, c, false);
                 i++;
             }
-            // TODO add alias
             Tokenizer_addToken(this, TTYPE_NUMBER, str); // strtod(str, NULL)
-            Tokenizer_skipN(this, i + 1);
+            Tokenizer_skipN(this, i);
             continue; 
         }
         // letter
@@ -201,36 +207,37 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                 str = tools_str_apent(str, c, false);
                 i++;
             }
-            // TODO add alias
             Tokenizer_addToken(this, TTYPE_NAME, str);
-            Tokenizer_skipN(this, i + 1);
+            Tokenizer_skipN(this, i);
             continue; 
         }
-        // box alias
+        // scope
         if (currentChar == '@')
         {
-            char* alias = tools_str_new("", 0);
+            char* scope = tools_str_new("", 0);
             int i;
             char c;
             //
             i = 1;
             while ((c = Tokenizer_getchar(this, i)) != '{')
             {
-                alias = tools_str_apent(alias, c, false);
+                scope = tools_str_apent(scope, c, false);
                 i++;
             }
-            currentAlias = alias;
+            this->scope = scope;
             Tokenizer_skipN(this, i);
             continue;
         }
-        if (currentChar == '{' && currentAlias != NULL)
+        if (currentChar == '{' && this->scope != NULL)
         {
+            this->isRecordingScope = true;
             Tokenizer_skipN(this, 1);
             continue;
         }
-        if (currentChar == '}' && currentAlias != NULL)
-        {
-            currentAlias = NULL;
+
+        if (currentChar == '}' && this->scope == NULL)
+        { 
+            this->isRecordingScope = false;
             Tokenizer_skipN(this, 1);
             continue;
         }

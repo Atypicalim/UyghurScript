@@ -167,7 +167,7 @@ mixtar x qimmiti sanduq bolsun
 # ikrangha y yezilsun
 # ikrangha z yezilsun
 
-@x{[key]} qimmiti [value] bolsun
+@{[key]} qimmiti [value] bolsun
 
 # TOOD ################################################################################
 
@@ -176,6 +176,13 @@ mixtar x qimmiti sanduq bolsun
 # @box{[key]}
 # @box{variable}
 # @box{1}
+
+# box
+# key : declare in current, search recursive
+# @_{key} : declare in global, search in global
+# @{key} declare in current, search in current
+# @scope{key} declare in target, serarch in target
+
 
 # import a file to execute and return root scope as a box
 # fonkisiye @ug{ekirish} bilen test.ug ishlitilsun we netije testBox bolsun
