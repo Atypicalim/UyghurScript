@@ -12,30 +12,48 @@ typedef struct _Token {
     int column;
     char *type;
     char *value;
+    bool isKey;
     char *scope;
+    char *kind;
 } Token;
 
-Token *Token_new(const char *file, int line, int column, char *type, void *value, void *scope)
+Token *Token_new(char *type, void *value)
 {
     Token *token = (Token *)malloc(sizeof(Token));
     Block_init(token, NULL);
-    token->file = file;
-    token->line = line;
-    token->column = column;
+    token->file = "";
+    token->line = 0;
+    token->column = 0;
     token->type = type;
     token->value = value;
-    token->scope = scope;
+    token->isKey = false;
+    token->scope = NULL;
+    token->kind = NULL;
     return token;
+}
+
+void Token_bindInfo(Token *this, const char *file, int line, int column)
+{
+    this->file = file;
+    this->line = line;
+    this->column = column;
+}
+
+void TOkens_becomeKey(Token *this, char *scope, char *kind)
+{
+    this->isKey = true;
+    this->scope = scope;
+    this->kind = kind;
 }
 
 Token *Token_empty()
 {
-    return Token_new("", 0, 0, TTYPE_WORD, TVALUE_EMPTY, NULL);
+    return Token_new(TTYPE_WORD, TVALUE_EMPTY);
 }
 
 Token *Token_name(char *name)
 {
-    return Token_new("", 0, 0, TTYPE_NAME, name, NULL);
+    return Token_new(TTYPE_NAME, name);
 }
 
 void Token_print(Token *this)

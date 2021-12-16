@@ -111,10 +111,22 @@ void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
         }
     }
     //
+    Token *token = NULL;
     char *s = tools_format(LANG_ERR_TOKEN_PLACE, value, this->line, this->column, this->path);
-    tools_assert(!this->isRecordingScope || this->scope != NULL, "%s%s", LANG_ERR_NO_VALID_TOKEN, s);
-    Token *token = Token_new(this->path, this->line, this->column, type, value, this->scope);
+    if (this->isRecordingScope)
+    {
+        tools_assert(this->scope != NULL, "%s%s", LANG_ERR_NO_VALID_TOKEN, s);
+        token = Token_new(TTYPE_NAME, value);
+        TOkens_becomeKey(token, this->scope, type);
+    }
+    else
+    {
+        tools_assert(this->scope == NULL, "%s%s", LANG_ERR_NO_VALID_TOKEN, s);
+        token = Token_new(type, value);
+    }
+    Token_bindInfo(token, this->path, this->line, this->column);
     this->scope = NULL;
+    
     //
     if (this->head == NULL)
     {

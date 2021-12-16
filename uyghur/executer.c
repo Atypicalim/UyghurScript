@@ -10,6 +10,7 @@ struct Executer {
     Stack *scopeStack;
     Hashmap *currentScope;
     Hashmap *rootScope;
+    Hashmap *globalScope;
 };
 
 void Executer_consumeLeaf(Executer *, Leaf *);
@@ -24,6 +25,7 @@ void Executer_reset(Executer *this)
     this->scopeStack = Stack_new();
     this->currentScope = NULL;
     this->rootScope = NULL;
+    this->globalScope = Hashmap_new(NULL);;
 }
 
 void Executer_pushScope(Executer *this)
@@ -117,6 +119,7 @@ Value *Executer_getTRValue(Executer *this, Token *token)
     {
         return Value_newObject(token->value, token);
     }
+    // TODO
 }
 
 void Executer_setTRValue(Executer *this, Token *key, Value *value)
@@ -138,6 +141,7 @@ void Executer_setTRValue(Executer *this, Token *key, Value *value)
         block = this->scopeStack->tail;
     }
     Hashmap_set(block->data, key->value, value);
+    // TODO
 }
 
 void Executer_consumeVariable(Executer *this, Leaf *leaf)

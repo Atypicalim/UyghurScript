@@ -173,7 +173,7 @@ void Bridge_call(Bridge *this)
         item = Stack_next(this->stack);
     }
     // execute
-    Token *funcName = Token_new("", 0, 0, TTYPE_NAME, this->name, TODO_FLAG_SCOPE);
+    Token *funcName = Token_new(TTYPE_NAME, this->name);
     Value *result = Executer_runFunc(executer, funcName);
     // result
     Bridge_startResult(this);
