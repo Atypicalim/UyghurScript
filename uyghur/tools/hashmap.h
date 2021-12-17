@@ -16,7 +16,7 @@ typedef struct EntryNode{
     struct EntryNode *next;
 } Entry;
 
-typedef struct {
+typedef struct _Hashmap {
     int size;
     Entry *position;
 } Hashmap;

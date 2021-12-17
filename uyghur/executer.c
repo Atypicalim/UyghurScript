@@ -25,12 +25,12 @@ void Executer_reset(Executer *this)
     this->scopeStack = Stack_new();
     this->currentScope = NULL;
     this->rootScope = NULL;
-    this->globalScope = Hashmap_new(NULL);;
+    this->globalScope = Hashmap_new();;
 }
 
 void Executer_pushScope(Executer *this)
 {
-    Hashmap *scope = Hashmap_new(NULL);
+    Hashmap *scope = Hashmap_new();
     Stack_push(this->scopeStack, scope);
     this->currentScope = (Hashmap *)this->scopeStack->tail->data;
     this->rootScope = (Hashmap *)this->scopeStack->head->data;
@@ -141,7 +141,6 @@ void Executer_setTRValue(Executer *this, Token *key, Value *value)
         block = this->scopeStack->tail;
     }
     Hashmap_set(block->data, key->value, value);
-    // TODO
 }
 
 void Executer_consumeVariable(Executer *this, Leaf *leaf)

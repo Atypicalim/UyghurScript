@@ -139,13 +139,13 @@ void Bridge_register(Bridge *this)
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, box expected for register");
     tools_assert(this->last == BRIDGE_ITEM_TP_VAL, "invalid bridge status");
     Stack_reset(this->stack);
-    Hashmap *map = this->name == NULL ? this->uyghur->executer->rootScope : Hashmap_new();
+    Hashmap *container = this->name == NULL ? this->uyghur->executer->globalScope : Hashmap_new();
     Value *item = Stack_next(this->stack);
     while (item != NULL)
     {
         Value *value = item;
         Value *key = Stack_next(this->stack);
-        Hashmap_set(map, key->string, value);
+        Hashmap_set(container, key->string, value);
         item = Stack_next(this->stack);
     }
     if (this->name != NULL)

@@ -33,7 +33,7 @@ Value *Value_newEmpty(void *extra)
 
 Value *Value_newBox(void *extra)
 {
-    return Value_new(RTYPE_BOX, NULL, 0, NULL, Hashmap_new(NULL), extra);
+    return Value_new(RTYPE_BOX, NULL, 0, NULL, Hashmap_new(), extra);
 }
 
 Value *Value_newBoolean(bool boolean, void *extra)
@@ -80,6 +80,7 @@ void Value_print(Value *this)
     }
     else if (is_equal(this->type, RTYPE_NUMBER))
     {
+        printf("\n\n--------------number\n\n");
         double value = this->number;
         printf("[RV => t:%s v:%f]\n", this->type, value);
     }
@@ -90,7 +91,6 @@ void Value_print(Value *this)
     }
     else
     {
-        char *value = this->object;
         printf("[RV => t:%s]\n", this->type);
     }
 }
