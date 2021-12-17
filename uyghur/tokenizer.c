@@ -115,9 +115,9 @@ void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
     char *s = tools_format(LANG_ERR_TOKEN_PLACE, value, this->line, this->column, this->path);
     if (this->isRecordingScope)
     {
+        tools_assert(is_values(type, TTYPES_GROUP_KEYS), "%s%s", LANG_ERR_NO_VALID_TOKEN, s);
         tools_assert(this->scope != NULL, "%s%s", LANG_ERR_NO_VALID_TOKEN, s);
-        token = Token_new(TTYPE_NAME, value);
-        TOkens_becomeKey(token, this->scope, type);
+        token = Token_key(value, this->scope, type);
     }
     else
     {

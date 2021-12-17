@@ -39,13 +39,6 @@ void Token_bindInfo(Token *this, const char *file, int line, int column)
     this->column = column;
 }
 
-void TOkens_becomeKey(Token *this, char *scope, char *kind)
-{
-    this->isKey = true;
-    this->scope = scope;
-    this->kind = kind;
-}
-
 Token *Token_empty()
 {
     return Token_new(TTYPE_WORD, TVALUE_EMPTY);
@@ -54,6 +47,15 @@ Token *Token_empty()
 Token *Token_name(char *name)
 {
     return Token_new(TTYPE_NAME, name);
+}
+
+Token *Token_key(char *key, char *scope, char *kind)
+{
+    Token *token = Token_new(TTYPE_KEY, key);
+    token->isKey = true;
+    token->scope = scope;
+    token->kind = kind;
+    return token;
 }
 
 void Token_print(Token *this)
