@@ -8,9 +8,9 @@ struct Executer {
     Leaf *leaf;
     Stack *callStack;
     Stack *scopeStack;
-    Hashmap *currentScope;
-    Hashmap *rootScope;
-    Hashmap *globalScope;
+    Container *currentScope;
+    Container *rootScope;
+    Container *globalScope;
 };
 
 void Executer_consumeLeaf(Executer *, Leaf *);
@@ -25,22 +25,22 @@ void Executer_reset(Executer *this)
     this->scopeStack = Stack_new();
     this->currentScope = NULL;
     this->rootScope = NULL;
-    this->globalScope = Hashmap_new();;
+    this->globalScope = Container_newScope();;
 }
 
 void Executer_pushScope(Executer *this)
 {
-    Hashmap *scope = Hashmap_new();
+    Container *scope = Container_newScope();
     Stack_push(this->scopeStack, scope);
-    this->currentScope = (Hashmap *)this->scopeStack->tail->data;
-    this->rootScope = (Hashmap *)this->scopeStack->head->data;
+    this->currentScope = (Container *)this->scopeStack->tail->data;
+    this->rootScope = (Container *)this->scopeStack->head->data;
 }
 
-Hashmap *Executer_popScope(Executer *this)
+Container *Executer_popScope(Executer *this)
 {
     tools_assert(this->scopeStack->head->data != this->currentScope, "executer trying to exit root scope");
-    Hashmap *scope = Stack_pop(this->scopeStack);
-    this->currentScope = (Hashmap *)this->scopeStack->tail->data;
+    Container *scope = Stack_pop(this->scopeStack);
+    this->currentScope = (Container *)this->scopeStack->tail->data;
     return scope;
 }
 
@@ -98,7 +98,7 @@ Value *Executer_getTRValue(Executer *this, Token *token)
         Value *value = NULL;
         while (value == NULL && block != NULL)
         {
-            Value *v = Hashmap_get(block->data, token->value);
+            Value *v = Container_get(block->data, token->value);
             if (v != NULL)
             {
                 value = v;
@@ -127,7 +127,7 @@ void Executer_setTRValue(Executer *this, Token *key, Value *value)
     Block *block = this->scopeStack->tail;
     while (block != NULL)
     {
-        if (Hashmap_get(block->data, key->value) != NULL)
+        if (Container_get(block->data, key->value) != NULL)
         {
             break;
         }
@@ -140,7 +140,7 @@ void Executer_setTRValue(Executer *this, Token *key, Value *value)
     {
         block = this->scopeStack->tail;
     }
-    Hashmap_set(block->data, key->value, value);
+    Container_set(block->data, key->value, value);
 }
 
 void Executer_consumeVariable(Executer *this, Leaf *leaf)
@@ -149,7 +149,7 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     Token *value = Stack_next(leaf->tokens);
     Token *key = Stack_next(leaf->tokens);
     Value *v = Executer_getTRValue(this, value);
-    Hashmap_set(this->currentScope, key->value, v);
+    Container_set(this->currentScope, key->value, v);
 }
 
 void Executer_consumeOperate(Executer *this, Leaf *leaf)
@@ -490,7 +490,7 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     while(arg != NULL)
     {
         Value *value = Stack_next(callStack);
-        Hashmap_set(this->currentScope, arg->value, value);
+        Container_set(this->currentScope, arg->value, value);
         arg = Stack_next(leaf->tokens);
     }
     //
