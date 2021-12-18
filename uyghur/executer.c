@@ -152,7 +152,9 @@ Container *Executer_getScope(Executer *this, Token *token, bool isWrite)
     else
     {
         Value *value = Executer_getNameRValue(this, token->scope);
-        return value != NULL && value->type == RTYPE_BOX ? value->object : NULL;
+        if (value == NULL) return NULL;
+        Executer_assert(this, value->type == RTYPE_BOX, token, LANG_ERR_INVALID_BOX_NAME);
+        return value->object;
     }
 }
 
@@ -209,8 +211,6 @@ void Executer_setTRValue(Executer *this, Token *key, Value *value)
 {
     Container *container = Executer_getScope(this, key, true);
     Container_set(container, key->value, value);
-    // Container_print(container);
-    // Hashmap_print(container->map);
 }
 
 void Executer_consumeVariable(Executer *this, Leaf *leaf)

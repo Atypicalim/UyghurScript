@@ -159,31 +159,31 @@
 # fonkisiye yezish bilen c ishlitilsun
 
 # box test
-mixtar x qimmiti sanduq bolsun
-# mixtar y qimmiti sanduq bolsun
-# mixtar z qimmiti quruq bolsun
-# z qimmiti x teng y bolsun
-# ikrangha x yezilsun
-# ikrangha y yezilsun
-# ikrangha z yezilsun
+mixtar xxx qimmiti sanduq bolsun
+# mixtar yyy qimmiti sanduq bolsun
+# mixtar zzz qimmiti quruq bolsun
+# zzz qimmiti xxx teng yyy bolsun
+# ikrangha xxx yezilsun
+# ikrangha yyy yezilsun
+# ikrangha zzz yezilsun
 
 # keyVariable qimmiti [keyName] bolsun
 
-@x{[key1]} qimmiti 11 bolsun
-@x{[key2]} qimmiti 22 bolsun
+@xxx{[key1]} qimmiti 11 bolsun
+@xxx{[key2]} qimmiti 22 bolsun
 
-@x{[key3]} qimmiti @x{[key1]} qushulghan @x{[key2]} bolsun
+@xxx{[key3]} qimmiti 1 qushulghan 2 bolsun
 
-fonkisiye @x{[key4]} mixtar x y mezmuni
-    xx qimmiti x qushulghan y bolsun
-    ikrangha xx yezilsun
+fonkisiye @xxx{[key4]} mixtar x y mezmuni
+    @xxx{[key3]} qimmiti x qushulghan y bolsun
+    ikrangha @xxx{[key3]} yezilsun
 tamamlansun
-fonkisiye @x{[key4]} bilen @x{[key1]} @x{[key2]} ishlitilsun
+fonkisiye @xxx{[key4]} bilen @xxx{[key1]} @xxx{[key2]} ishlitilsun
 
-ikrangha @x{[key1]} yezilsun
-ikrangha @x{[key2]} yezilsun
-ikrangha @x{[key3]} yezilsun
-ikrangha @x{[key4]} yezilsun
+# ikrangha @x{[key1]} yezilsun
+# ikrangha @x{[key2]} yezilsun
+# ikrangha @x{[key3]} yezilsun
+# ikrangha @x{[key4]} yezilsun
 
 # TOOD ################################################################################
 

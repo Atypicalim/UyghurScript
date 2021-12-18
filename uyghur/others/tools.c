@@ -103,4 +103,10 @@ char *b2s(bool value)
     return "empty";
 }
 
+char *o2s(void *value)
+{
+    if (value == NULL) return "<NULL>";
+    return tools_format("<Object => p:%d>", value);
+}
+
 #endif
