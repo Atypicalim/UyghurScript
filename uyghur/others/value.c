@@ -80,7 +80,6 @@ void Value_print(Value *this)
     }
     else if (is_equal(this->type, RTYPE_NUMBER))
     {
-        printf("\n\n--------------number\n\n");
         double value = this->number;
         printf("[RV => t:%s v:%f]\n", this->type, value);
     }

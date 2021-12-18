@@ -7,14 +7,14 @@ struct Executer {
     Leaf *tree;
     Leaf *leaf;
     Stack *callStack;
-    Stack *scopeStack;
-    Container *currentScope;
-    Container *rootScope;
-    Container *globalScope;
+    Stack *containerStack;
+    Container *currentContainer;
+    Container *rootContainer;
+    Container *globalContainer;
 };
 
 void Executer_consumeLeaf(Executer *, Leaf *);
-bool Executer_executeTree(Executer *, Leaf *);
+bool Executer_consumeTree(Executer *, Leaf *);
 
 void Executer_reset(Executer *this)
 {
@@ -22,33 +22,33 @@ void Executer_reset(Executer *this)
     this->tree = NULL;
     this->leaf = NULL;
     this->callStack = Stack_new();
-    this->scopeStack = Stack_new();
-    this->currentScope = NULL;
-    this->rootScope = NULL;
-    this->globalScope = Container_newScope();;
+    this->containerStack = Stack_new();
+    this->currentContainer = NULL;
+    this->rootContainer = NULL;
+    this->globalContainer = Container_newScope();;
 }
 
-void Executer_pushScope(Executer *this)
+void Executer_pushContainer(Executer *this, bool isBox)
 {
-    Container *scope = Container_newScope();
-    Stack_push(this->scopeStack, scope);
-    this->currentScope = (Container *)this->scopeStack->tail->data;
-    this->rootScope = (Container *)this->scopeStack->head->data;
+    Container *container = isBox ? Container_newBox() : Container_newScope();
+    Stack_push(this->containerStack, container);
+    this->currentContainer = (Container *)this->containerStack->tail->data;
+    this->rootContainer = (Container *)this->containerStack->head->data;
 }
 
-Container *Executer_popScope(Executer *this)
+Container *Executer_popContainer(Executer *this, bool isBox)
 {
-    tools_assert(this->scopeStack->head->data != this->currentScope, "executer trying to exit root scope");
-    Container *scope = Stack_pop(this->scopeStack);
-    this->currentScope = (Container *)this->scopeStack->tail->data;
-    return scope;
+    Container *container = Stack_pop(this->containerStack);
+    this->currentContainer = (Container *)this->containerStack->tail->data;
+    tools_assert(container != NULL && container->isBox == isBox, LANG_ERR_NO_VALID_STATE);
+    return container;
 }
 
 Executer *Executer_new(Uyghur *uyghur)
 {
     Executer *executer = malloc(sizeof(Executer));
     Executer_reset(executer);
-    Executer_pushScope(executer);
+    Executer_pushContainer(executer, false);
     executer->uyghur = uyghur;
     return executer;
 }
@@ -69,7 +69,7 @@ void Executer_assert(Executer *this, bool value, Token *token, char *msg)
 // get token runtime value
 Value *Executer_getTRValue(Executer *this, Token *token)
 {
-    // TODO: put const values like empty or number to globalScope
+    // TODO: put const values like empty or number to globalContainer
     if (is_equal(token->type, TTYPE_EMPTY))
     {
         return Value_newEmpty(token);
@@ -94,7 +94,7 @@ Value *Executer_getTRValue(Executer *this, Token *token)
     }
     else if (is_equal(token->type, TTYPE_NAME))
     {
-        Block *block = this->scopeStack->tail;
+        Block *block = this->containerStack->tail;
         Value *value = NULL;
         while (value == NULL && block != NULL)
         {
@@ -124,7 +124,7 @@ Value *Executer_getTRValue(Executer *this, Token *token)
 
 void Executer_setTRValue(Executer *this, Token *key, Value *value)
 {
-    Block *block = this->scopeStack->tail;
+    Block *block = this->containerStack->tail;
     while (block != NULL)
     {
         if (Container_get(block->data, key->value) != NULL)
@@ -138,7 +138,7 @@ void Executer_setTRValue(Executer *this, Token *key, Value *value)
     }
     if (block == NULL)
     {
-        block = this->scopeStack->tail;
+        block = this->containerStack->tail;
     }
     Container_set(block->data, key->value, value);
 }
@@ -149,7 +149,7 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     Token *value = Stack_next(leaf->tokens);
     Token *key = Stack_next(leaf->tokens);
     Value *v = Executer_getTRValue(this, value);
-    Container_set(this->currentScope, key->value, v);
+    Container_set(this->currentContainer, key->value, v);
 }
 
 void Executer_consumeOperate(Executer *this, Leaf *leaf)
@@ -411,9 +411,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     Token *left = Stack_next(ifNode->tokens);
     if (!isFinish && Executer_checkJudge(this, left, right, judge))
     {
-        Executer_pushScope(this);
-        Executer_executeTree(this, ifNode);
-        Executer_popScope(this);
+        Executer_pushContainer(this, false);
+        Executer_consumeTree(this, ifNode);
+        Executer_popContainer(this, false);
         isFinish = true;
     }
     // elseif
@@ -426,9 +426,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         Token *left = Stack_next(ifNode->tokens);
         if (!isFinish && Executer_checkJudge(this, left, right, judge))
         {
-            Executer_pushScope(this);
-            Executer_executeTree(this, ifNode);
-            Executer_popScope(this);
+            Executer_pushContainer(this, false);
+            Executer_consumeTree(this, ifNode);
+            Executer_popContainer(this, false);
             isFinish = true;
         }
         ifNode = Queue_next(leaf->leafs);
@@ -442,9 +442,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         tools_assert(is_equal(judge->value, TVALUE_IF_NO), "invalid if");
         if (!isFinish)
         {
-            Executer_pushScope(this);
-            Executer_executeTree(this, ifNode);
-            Executer_popScope(this);
+            Executer_pushContainer(this, false);
+            Executer_consumeTree(this, ifNode);
+            Executer_popContainer(this, false);
             isFinish = true;
         }
         ifNode = Queue_next(leaf->leafs);
@@ -464,9 +464,9 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
     Token *left = Stack_next(leaf->tokens);
     while (Executer_checkJudge(this, left, right, judge))
     {
-        Executer_pushScope(this);
-        Executer_executeTree(this, leaf);
-        Executer_popScope(this);
+        Executer_pushContainer(this, false);
+        Executer_consumeTree(this, leaf);
+        Executer_popContainer(this, false);
     }
 }
 
@@ -490,12 +490,12 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     while(arg != NULL)
     {
         Value *value = Stack_next(callStack);
-        Container_set(this->currentScope, arg->value, value);
+        Container_set(this->currentContainer, arg->value, value);
         arg = Stack_next(leaf->tokens);
     }
     //
     Stack_clear(this->callStack);
-    Executer_executeTree(this, leaf);
+    Executer_consumeTree(this, leaf);
 }
 
 Value *Executer_runFunc(Executer *this, Token *funcName)
@@ -504,9 +504,9 @@ Value *Executer_runFunc(Executer *this, Token *funcName)
     tools_assert(is_equal(funcValue->type, RTYPE_FUNCTION), "function not valid for name: %s", funcName->value);
     // execute func
     Leaf *codeNode = funcValue->object;
-    Executer_pushScope(this);
+    Executer_pushContainer(this, false);
     Executer_consumeLeaf(this, codeNode);
-    Executer_popScope(this);
+    Executer_popContainer(this, false);
     // return result
     Value *r = Stack_pop(this->callStack);
     if (r == NULL)
@@ -669,7 +669,7 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     // helper_print_leaf(leaf, " ");
 }
 
-bool Executer_executeTree(Executer *this, Leaf *tree)
+bool Executer_consumeTree(Executer *this, Leaf *tree)
 {
     Queue_reset(tree->leafs);
     Leaf *leaf = Queue_next(tree->leafs);
@@ -678,6 +678,15 @@ bool Executer_executeTree(Executer *this, Leaf *tree)
         Executer_consumeLeaf(this, leaf);
         leaf = Queue_next(tree->leafs);
     }
+    return true;
+}
+
+bool Executer_executeTree(Executer *this, char *path, Leaf *tree)
+{
+    Executer_pushContainer(this, true);
+    Executer_consumeTree(this, tree);
+    Container *container = Executer_popContainer(this, true);
+    Container_set(this->globalContainer, path, container);
     return true;
 }
 

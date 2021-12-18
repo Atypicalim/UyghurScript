@@ -139,7 +139,7 @@ void Bridge_register(Bridge *this)
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, box expected for register");
     tools_assert(this->last == BRIDGE_ITEM_TP_VAL, "invalid bridge status");
     Stack_reset(this->stack);
-    Container *container = this->name == NULL ? this->uyghur->executer->globalScope : Container_newScope();
+    Container *container = this->name == NULL ? this->uyghur->executer->globalContainer : Container_newScope();
     Value *item = Stack_next(this->stack);
     while (item != NULL)
     {

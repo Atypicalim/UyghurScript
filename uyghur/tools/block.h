@@ -31,8 +31,15 @@ Block *Block_new(void *data)
 
 void Block_print(void *_this)
 {
-    Block *this = _this;
-    printf("[(Block) => address:%d, data:%d]\n", this, (char *)this->data);
+    if (_this == NULL)
+    {
+        printf("[(Block) => NULL]\n");
+    }
+    else
+    {
+        Block *this = _this;
+        printf("[(Block) => address:%d, data:%d]\n", this, (char *)this->data);
+    }
 }
 
 void Block_link(void *_first, void *_second)
