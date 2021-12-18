@@ -41,7 +41,7 @@ void Container_set(Container *this, char *key, void *value)
 
 void *Container_get(Container *this, char *key)
 {
-return Hashmap_get(this->map, key);
+    return Hashmap_get(this->map, key);
 }
 
 void Container_del(Container *this, char *key)
@@ -49,16 +49,16 @@ void Container_del(Container *this, char *key)
     Hashmap_del(this->map, key);
 }
 
-void Container_print(Container *this)
-{
-    printf("[Container => t:%d]\n", this);
-}
-
-// TODO return Container
 char *Container_toString(Container *this)
 {
-    printf("[Container => t:%d]\n", this);
+    return tools_format("[Container => t:%d, box:%s, scope:%s]", this, b2s(this->isBox), b2s(this->isScope));
 }
+
+void Container_print(Container *this)
+{
+    printf(Container_toString(this));
+}
+
 
 void Container_free(Container *this)
 {

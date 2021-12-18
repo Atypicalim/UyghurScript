@@ -33,7 +33,7 @@ Value *Value_newEmpty(void *extra)
 
 Value *Value_newBox(void *extra)
 {
-    return Value_new(RTYPE_BOX, NULL, 0, NULL, Hashmap_new(), extra);
+    return Value_new(RTYPE_BOX, NULL, 0, NULL, Container_newBox(), extra);
 }
 
 Value *Value_newBoolean(bool boolean, void *extra)

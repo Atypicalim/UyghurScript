@@ -66,10 +66,105 @@ void Executer_assert(Executer *this, bool value, Token *token, char *msg)
     Executer_error(this, token, msg);
 }
 
+Container *Executer_getNearestBox(Executer *this)
+{
+    Block *block = this->containerStack->tail;
+    while (block->data != NULL)
+    {
+        Container *container = block->data;
+        if (container->isBox) break;
+        block = block->last;
+    }
+    Container *container = block->data;
+    tools_assert(container->isBox, "box search error");
+    return container;
+}
+
+/**
+ * @brief get the scope containing name, search order : scope -> closest box -> global scope
+ * 
+ * @param this 
+ * @param token 
+ * @return Value* 
+ */
+Container *Executer_getNameScope(Executer *this, char *name)
+{
+    Block *block = this->containerStack->tail;
+    Value *value = NULL;
+    while (value == NULL && block != NULL)
+    {
+        Container *container = block->data;
+        Value *v = Container_get(container, name);
+        if (v != NULL) value = v;
+        if (v != NULL) break;
+        if (container->isBox) break;
+        block = block->last;
+    }
+    if (value != NULL) return block->data;
+    value = Container_get(this->globalContainer, name);
+    if (value != NULL) return this->globalContainer;
+    return NULL;
+}
+
+/**
+ * @brief get name runtime value, search order : context -> closest box -> global scope
+ * 
+ * @param this 
+ * @param token 
+ * @return Value* 
+ */
+Value *Executer_getNameRValue(Executer *this, char *name)
+{
+    Container *container = Executer_getNameScope(this, name);
+    if (container == NULL) return Value_newEmpty(NULL);
+    Value *value = Container_get(container, name);
+    return value != NULL ? value : Value_newEmpty(NULL);
+}
+
+/**
+ * @brief get scope for a token, check scope attiribute of token
+ * no_scope:
+ *  write: closest container, read: container -> closest box
+ * _ global: socpe
+ * empty_string: closest box
+ * some_string: target box
+ * 
+ * @param this 
+ * @param token 
+ * @param isWrite 
+ * @return Container* 
+ */
+Container *Executer_getScope(Executer *this, Token *token, bool isWrite)
+{
+    // name
+    if (!token->isKey)
+    {
+        return isWrite ? this->currentContainer : Executer_getNameScope(this, token->value);
+    }
+    else if (is_equal(token->scope, "_"))
+    {
+        return this->globalContainer;
+    }
+    else if (is_equal(token->scope, ""))
+    {
+        return Executer_getNearestBox(this);
+    }
+    else
+    {
+        Value *value = Executer_getNameRValue(this, token->scope);
+        return value != NULL && value->type == RTYPE_BOX ? value->object : NULL;
+    }
+}
+
+// TODO return different key according to the kind & value
+char *Executer_getKey(Executer *this, Token *token)
+{
+    return token->value;
+}
+
 // get token runtime value
 Value *Executer_getTRValue(Executer *this, Token *token)
 {
-    // TODO: put const values like empty or number to globalContainer
     if (is_equal(token->type, TTYPE_EMPTY))
     {
         return Value_newEmpty(token);
@@ -77,6 +172,14 @@ Value *Executer_getTRValue(Executer *this, Token *token)
     else if (is_equal(token->type, TTYPE_BOX))
     {
         return Value_newBox(token);
+    }
+    else if (is_equal(token->type, TTYPE_KEY))
+    {
+        Container *container = Executer_getScope(this, token, false);
+        char *key = Executer_getKey(this, token);
+        if (container == NULL || key == NULL) return Value_newEmpty(token);
+        Value *value = Container_get(container, key);
+        return value != NULL ? value : Value_newEmpty(token);
     }
     else if (is_equal(token->type, TTYPE_BOOL))
     {
@@ -94,53 +197,20 @@ Value *Executer_getTRValue(Executer *this, Token *token)
     }
     else if (is_equal(token->type, TTYPE_NAME))
     {
-        Block *block = this->containerStack->tail;
-        Value *value = NULL;
-        while (value == NULL && block != NULL)
-        {
-            Value *v = Container_get(block->data, token->value);
-            if (v != NULL)
-            {
-                value = v;
-                break;
-            }
-            else
-            {
-                block = block->last;
-            }
-        }
-        if (value == NULL)
-        {
-            value = Value_newEmpty(NULL);
-        }
-        return value;
+        return Executer_getNameRValue(this, token->value);
     }
     else
     {
         return Value_newObject(token->value, token);
     }
-    // TODO
 }
 
 void Executer_setTRValue(Executer *this, Token *key, Value *value)
 {
-    Block *block = this->containerStack->tail;
-    while (block != NULL)
-    {
-        if (Container_get(block->data, key->value) != NULL)
-        {
-            break;
-        }
-        else
-        {
-            block = block->last;
-        }
-    }
-    if (block == NULL)
-    {
-        block = this->containerStack->tail;
-    }
-    Container_set(block->data, key->value, value);
+    Container *container = Executer_getScope(this, key, true);
+    Container_set(container, key->value, value);
+    // Container_print(container);
+    // Hashmap_print(container->map);
 }
 
 void Executer_consumeVariable(Executer *this, Leaf *leaf)

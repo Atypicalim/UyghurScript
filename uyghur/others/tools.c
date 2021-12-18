@@ -96,4 +96,11 @@ bool is_equal(char *this, char*other)
     return strcmp(this, other) == 0;
 }
 
+char *b2s(bool value)
+{
+    if (value == true) return "true";
+    if (value == false) return "false";
+    return "empty";
+}
+
 #endif

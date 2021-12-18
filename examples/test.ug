@@ -172,16 +172,18 @@ mixtar x qimmiti sanduq bolsun
 @x{[key1]} qimmiti 11 bolsun
 @x{[key2]} qimmiti 22 bolsun
 
-# @x{[key3]} qimmiti @x{[key1]} qushulghan @x{[key2]} bolsun
+@x{[key3]} qimmiti @x{[key1]} qushulghan @x{[key2]} bolsun
 
-# fonkisiye @x{[key4]} mixtar x y mezmuni
-#     @x{[key3]} qimmiti x qushulghan y bolsun
-#     ikrangha @x{[key3]} yezilsun
-# tamamlansun
-# fonkisiye @x{[key4]} bilen @x{[key1]} @x{[key2]} ishlitilsun
+fonkisiye @x{[key4]} mixtar x y mezmuni
+    xx qimmiti x qushulghan y bolsun
+    ikrangha xx yezilsun
+tamamlansun
+fonkisiye @x{[key4]} bilen @x{[key1]} @x{[key2]} ishlitilsun
 
-# ikrangha @x{[key3]} yezilsun
-# ikrangha @x{[key4]} yezilsun
+ikrangha @x{[key1]} yezilsun
+ikrangha @x{[key2]} yezilsun
+ikrangha @x{[key3]} yezilsun
+ikrangha @x{[key4]} yezilsun
 
 # TOOD ################################################################################
 
