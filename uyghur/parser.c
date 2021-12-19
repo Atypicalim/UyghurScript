@@ -14,7 +14,6 @@ struct Parser
 
 void Parser_reset(Parser *this)
 {
-    this->uyghur = NULL;
     this->position = 1;
     this->tokens = NULL;
     this->token = NULL;
@@ -25,7 +24,6 @@ void Parser_reset(Parser *this)
 Parser *Parser_new(Uyghur *uyghur)
 {
     Parser *parser = malloc(sizeof(Parser));
-    Parser_reset(parser);
     parser->uyghur = uyghur;
     return parser;
 }
@@ -541,6 +539,7 @@ void Parser_consumeToken(Parser *this, Token *token)
 
 Leaf *Parser_parseTokens(Parser *this, Token *tokens)
 {
+    Parser_reset(this);
     this->tokens = tokens;
     this->tree = Leaf_new(ASTTYPE_PROGRAM);
     this->leaf = this->tree;
@@ -556,6 +555,7 @@ Leaf *Parser_parseTokens(Parser *this, Token *tokens)
 
 void Parser_free(Parser *this)
 {
+    this->uyghur = NULL;
     Parser_reset(this);
     free(this);
 }

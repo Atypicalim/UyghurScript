@@ -202,7 +202,10 @@
 # tamamlansun
 # fonkisiye boxTest bilen _ $ ishlitilsun
 
-
+# module
+# fonkisiye bolekEkirish bilen [../examples/hello.ug] ishlitilsun we netije hello bolsun
+# fonkisiye bolekTazilash bilen [../examples/hello.ug] ishlitilsun
+# ikrangha @hello{[variable]} yezilsun
 
 # TOOD ################################################################################
 
@@ -226,8 +229,8 @@
 # make standard library to necessary functions
 # fonkisiye @ikran{oqush} ishlitilsun we netije content bolsun
 # fonkisiye @ikran{yezish} bilen content ishlitilsun
-# fonkisiye @io{xojjetOqush} bilen test.txt [rb+] ishlitilsun we netije textContent bolsun
-# fonkisiye @io{xojjetYezish} bilen test.txt [rb+] textContent ishlitilsun
+# fonkisiye @io{hejjetOqush} bilen test.txt [rb+] ishlitilsun we netije textContent bolsun
+# fonkisiye @io{hejjetYezish} bilen test.txt [rb+] textContent ishlitilsun
 
 # locate a variable to current scope
 # miqdar r orni yerlik bolsun

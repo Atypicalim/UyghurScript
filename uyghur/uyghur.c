@@ -28,20 +28,21 @@ Uyghur *Uyghur_new()
     return uyghur;
 }
 
-bool Uyghur_execute(Uyghur *this, char *path)
+Value *Uyghur_execute(Uyghur *this, char *path, bool isEntry)
 {
     char *content = tools_read_file(path);
     if (content == NULL) return false;
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, content);
     Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
-    bool isSuccess = Executer_executeTree(this->executer, path, headLeaf);
-    return isSuccess;
+    Value *moduleBox = Executer_executeTree(this->executer, path, headLeaf);
+    return moduleBox;
 }
 
 bool Uyghur_run(Uyghur *this, const char *path)
 {
-    bool isSuccess = Uyghur_execute(this, (char *)path);
-    tools_assert(isSuccess, tools_format(LANG_ERR_INVALID_INPUT_FILE, path));
+    Value *moduleBox = Uyghur_execute(this, (char *)path, true);
+    tools_assert(moduleBox != NULL, tools_format(LANG_ERR_INVALID_INPUT_FILE, path));
+    return moduleBox != NULL;
 }
 
 void Uyghur_free(Uyghur *this)

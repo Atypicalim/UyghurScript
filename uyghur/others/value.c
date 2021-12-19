@@ -31,9 +31,9 @@ Value *Value_newEmpty(void *extra)
     return Value_new(RTYPE_EMPTY, NULL, 0, NULL, NULL, extra);
 }
 
-Value *Value_newBox(void *extra)
+Value *Value_newBox(Container *box, void *extra)
 {
-    return Value_new(RTYPE_BOX, NULL, 0, NULL, Container_newBox(), extra);
+    return Value_new(RTYPE_BOX, NULL, 0, NULL, box, extra);
 }
 
 Value *Value_newBoolean(bool boolean, void *extra)

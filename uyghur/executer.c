@@ -189,7 +189,7 @@ Value *Executer_getTRValue(Executer *this, Token *token)
     }
     else if (is_equal(token->type, TTYPE_BOX))
     {
-        return Value_newBox(token);
+        return Value_newBox(Container_newBox(), token);
     }
     else if (is_equal(token->type, TTYPE_KEY))
     {
@@ -787,13 +787,14 @@ bool Executer_consumeTree(Executer *this, Leaf *tree)
     return true;
 }
 
-bool Executer_executeTree(Executer *this, char *path, Leaf *tree)
+Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
 {
     Executer_pushContainer(this, true);
     Executer_consumeTree(this, tree);
     Container *container = Executer_popContainer(this, true);
-    Container_set(this->globalContainer, path, container);
-    return true;
+    Value *module = Value_newBox(container, NULL);
+    Container_set(this->globalContainer, path, module);
+    return module;
 }
 
 void Executer_free(Executer *this)

@@ -19,7 +19,6 @@ struct Tokenizer{
 
 void Tokenizer_reset(Tokenizer *this)
 {
-    this->uyghur = NULL;
     this->line = 1;
     this->column = 1;
     this->position = 0;
@@ -28,7 +27,6 @@ void Tokenizer_reset(Tokenizer *this)
     this->tail = NULL;
     this->path = NULL;
     this->code = NULL;
-    this->keywordsMap = NULL;
     this->scope = NULL;
     this->isRecordingScope = false;
 }
@@ -36,8 +34,6 @@ void Tokenizer_reset(Tokenizer *this)
 Tokenizer *Tokenizer_new(Uyghur *uyghur)
 {
     Tokenizer *tokenizer = malloc(sizeof(Tokenizer));
-    Tokenizer_reset(tokenizer);
-    //
     tokenizer->uyghur = uyghur;
     Hashmap *map = Hashmap_new();
     Hashmap_fill(map, TVALUE_WHILE);
@@ -80,7 +76,6 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     Hashmap_set(map, TVALUE_EMPTY, TTYPE_EMPTY);
     Hashmap_set(map, TVALUE_BOX, TTYPE_BOX);
     tokenizer->keywordsMap = map;
-    //
     return tokenizer;
 }
 
@@ -142,6 +137,7 @@ void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
 
 Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
 {
+    Tokenizer_reset(this);
     this->path = path;
     this->code = code;
     this->length = strlen(code);
@@ -276,7 +272,9 @@ void Tokenizer_free(Tokenizer *this)
     if (this->keywordsMap != NULL)
     {
         Hashmap_free(this->keywordsMap);
+        this->keywordsMap = NULL;
     }
+    this->uyghur = NULL;
     Tokenizer_reset(this);
     free(this);
 }
