@@ -90,17 +90,17 @@ void Queue_free(Queue *this)
     free(this);
 }
 
+Cursor *Queue_reset(Queue *this)
+{
+    return Cursor_new(this->head);
+}
+
 void *Queue_next(Queue *this, Cursor *cursor)
 {
     Block *temp = Cursor_get(cursor);
     if (temp == NULL) return NULL;
     Cursor_set(cursor, temp->next);
     return temp->data;
-}
-
-Cursor *Queue_reset(Queue *this)
-{
-    return Cursor_new(this->head);
 }
 
 #endif

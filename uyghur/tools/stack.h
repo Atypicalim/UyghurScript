@@ -76,7 +76,6 @@ void Stack_clear(Stack *this)
 {
     this->head = NULL;
     this->tail = NULL;
-    this->cursor = NULL;
 }
 
 void Stack_free(Stack *this)
@@ -91,35 +90,28 @@ void Stack_free(Stack *this)
     free(this);
 }
 
-void *Stack_next(Stack *this)
+Cursor *Stack_reset(Stack *this)
 {
-    Block *temp = this->cursor;
-    if (temp == NULL)
-    {
-        return NULL;
-    }
-    else
-    {
-        this->cursor = temp->last;
-        return temp->data;
-    }
-
+    return Cursor_new(this->tail);
 }
 
-void Stack_reset(Stack *this)
+void *Stack_next(Stack *this, Cursor *cursor)
 {
-    this->cursor = this->tail;
+    Block *temp = Cursor_get(cursor);
+    if (temp == NULL) return NULL;
+    Cursor_set(cursor, temp->last);
+    return temp->data;
 }
 
 void *Stack_reverse(Stack *this)
 {
     Stack *other = Stack_new();
-    Stack_reset(this);
-    void *data = Stack_next(this);
+    Cursor *cursor = Stack_reset(this);
+    void *data = Stack_next(this, cursor);
     while (data != NULL)
     {
         Stack_push(other, data);
-        data = Stack_next(this);
+        data = Stack_next(this, cursor);
     }
     return other;
 }

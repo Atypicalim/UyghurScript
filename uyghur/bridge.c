@@ -138,16 +138,17 @@ void Bridge_register(Bridge *this)
 {
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, box expected for register");
     tools_assert(this->last == BRIDGE_ITEM_TP_VAL, "invalid bridge status");
-    Stack_reset(this->stack);
+    Cursor *cursor = Stack_reset(this->stack);
     Container *container = this->name == NULL ? this->uyghur->executer->globalContainer : Container_newScope();
-    Value *item = Stack_next(this->stack);
+    Value *item = Stack_next(this->stack, cursor);
     while (item != NULL)
     {
         Value *value = item;
-        Value *key = Stack_next(this->stack);
+        Value *key = Stack_next(this->stack, cursor);
         Container_set(container, key->string, value);
-        item = Stack_next(this->stack);
+        item = Stack_next(this->stack, cursor);
     }
+    Cursor_free(cursor);
     if (this->name != NULL)
     {
         tools_error("TODO register box");
@@ -161,17 +162,18 @@ void Bridge_call(Bridge *this)
     tools_assert(this->type == BRIDGE_STACK_TP_FUN, "invalid bridge status, func expected for call");
     tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key unnecessary for call");
     tools_assert(this->name != NULL, "invalid bridge status, func name unnecessary for call");
-    Stack_reset(this->stack);
+    Cursor *cursor = Stack_reset(this->stack);
     // arguments
     Executer *executer = this->uyghur->executer;
     Stack *stack = executer->callStack;
     Stack_clear(stack);
-    Value *item = Stack_next(this->stack);
+    Value *item = Stack_next(this->stack, cursor);
     while (item != NULL)
     {
         Stack_push(stack, item);
-        item = Stack_next(this->stack);
+        item = Stack_next(this->stack, cursor);
     }
+    Cursor_free(cursor);
     // execute
     Token *funcName = Token_new(TTYPE_NAME, this->name);
     Value *result = Executer_runFunc(executer, funcName);
@@ -184,16 +186,17 @@ void Bridge_call(Bridge *this)
 void *Bridge_send(Bridge *this)
 {
     tools_assert(this->type == BRIDGE_STACK_TP_ARG, "invalid bridge status, argument expected for send");
-    Stack_reset(this->stack);
-    Value *v = Stack_next(this->stack);
+    Cursor *cursor = Stack_reset(this->stack);
+    Value *v = Stack_next(this->stack, cursor);
     while(v != NULL)
     {
         if (!is_values(v->type, RTYPE_GROUP_BASE))
         {
             tools_error("invalid bridge status, type %s not available in c", v->type);
         }
-        v = Stack_next(this->stack);
+        v = Stack_next(this->stack, cursor);
     }
+    Cursor_free(cursor);
 }
 
 void *Bridge_return(Bridge *this)
