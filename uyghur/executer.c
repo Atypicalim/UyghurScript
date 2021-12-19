@@ -139,7 +139,9 @@ Container *Executer_getScope(Executer *this, Token *token, bool isWrite)
     // name
     if (!token->isKey)
     {
-        return isWrite ? this->currentContainer : Executer_getNameScope(this, token->value);
+        Container *container = Executer_getNameScope(this, token->value);
+        if (container != NULL) return container;
+        return NULL; // isWrite ? this->currentContainer : NULL;
     }
     else if (is_equal(token->scope, "_"))
     {
@@ -161,7 +163,15 @@ Container *Executer_getScope(Executer *this, Token *token, bool isWrite)
 // TODO return different key according to the kind & value
 char *Executer_getKey(Executer *this, Token *token)
 {
-    return token->value;
+    char *key = token->value;
+    if (token->isKey && is_equal(token->kind, TTYPE_NAME))
+    {
+        Value *value = Executer_getNameRValue(this, token->value);
+        Executer_assert(this, value!= NULL, token, LANG_ERR_INVALID_KEY_NAME);
+        key = Value_toString(value);
+    }
+    
+    return key;
 }
 
 // get token runtime value
@@ -210,6 +220,7 @@ Value *Executer_getTRValue(Executer *this, Token *token)
 void Executer_setTRValue(Executer *this, Token *key, Value *value)
 {
     Container *container = Executer_getScope(this, key, true);
+    Executer_assert(this, container != NULL, key, LANG_ERR_INVALID_VARIABLE_NAME);
     Container_set(container, key->value, value);
 }
 
@@ -651,7 +662,7 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
         tools_error("function not found for func name: %s", funcName->value);
     }
     //
-    if (!is_equal(resultName->type, RTYPE_EMPTY))
+    if (!is_equal(resultName->type, TTYPE_EMPTY) && !is_equal(resultName->value, TVALUE_EMPTY))
     {
         Executer_setTRValue(this, resultName, r);
     }
