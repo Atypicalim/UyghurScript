@@ -207,7 +207,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue; 
         }
         // letter
-        if (isalpha(currentChar) || currentChar == '_')
+        if (isalpha(currentChar) || currentChar == '_'|| currentChar == '$')
         {
             char* str = tools_str_apent(tools_str_new("", 0), currentChar, false);
             int i = 1;
@@ -215,7 +215,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             while (true)
             {
                 c = Tokenizer_getchar(this, i);
-                if (!isalnum(c) && c != '_') break;
+                if (!isalnum(c) && c != '_' && c != '$') break;
                 str = tools_str_apent(str, c, false);
                 i++;
             }

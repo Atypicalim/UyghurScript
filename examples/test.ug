@@ -4,20 +4,20 @@
 
 # ikrangha [salam uyghur script!] yezilsun
 
-# mixtar dunyaghaSalam qimmiti [SalamDunya!] bolsun
+# miqdar dunyaghaSalam qimmiti [SalamDunya!] bolsun
 # ikrandin dunyaghaSalam oqulsun
 # ikrangha dunyaghaSalam yezilsun
 
-# mixtar miningIsmim qimmiti [] bolsun
+# miqdar miningIsmim qimmiti [] bolsun
 # ikrangha [ismingizni kurguzung:] yezilsun
 # ikrandin miningIsmim oqulsun
 # ikrangha miningIsmim yezilsun
 
-# mixtar salamMezmuni qimmiti [Xush Kepsiz ] bolsun
+# miqdar salamMezmuni qimmiti [Xush Kepsiz ] bolsun
 # salamMezmuni qimmiti salamMezmuni ulanghan miningIsmim bolsun
 # ikrangha salamMezmuni yezilsun
 
-# mixtar sQimmet qimmiti [yalghan] bolsun
+# miqdar sQimmet qimmiti [yalghan] bolsun
 # sQimmet qimmiti san bolsun
 # sQimmet qimmiti xet bolsun
 # sQimmet qimmiti quruq bolsun
@@ -26,43 +26,43 @@
 # sQimmet qimmiti fonkisiye bolsun
 # ikrangha sQimmet yezilsun
 
-# mixtar sanliqQimmet qimmiti 2 bolsun
+# miqdar sanliqQimmet qimmiti 2 bolsun
 # sanliqQimmet qimmiti 4 bolsun
 # sanliqQimmet qimmiti sanliqQimmet qushulghan 3 bolsun
 # ikrangha sanliqQimmet yezilsun
 
-# mixtar sinaqR qimmiti quruq bolsun
-# mixtar sinaqA qimmiti 1 bolsun
-# mixtar sinaqB qimmiti [rast] bolsun
-# sinaqR qimmiti sinaqA xemde sinaqB bolsun
+# miqdar sinaqR qimmiti quruq bolsun
+# miqdar sinaqA qimmiti 1 bolsun
+# miqdar sinaqB qimmiti [rast] bolsun
+# sinaqR qimmiti sinaqA hemde sinaqB bolsun
 # ikrangha sinaqR yezilsun
 
-# mixtar qimmetBir qimmiti 2 bolsun
-# mixtar qimmetIkki qimmiti 3 bolsun
-# mixtar logikiliqQimmet qimmiti quruq bolsun
+# miqdar qimmetBir qimmiti 2 bolsun
+# miqdar qimmetIkki qimmiti 3 bolsun
+# miqdar logikiliqQimmet qimmiti quruq bolsun
 # logikiliqQimmet qimmiti 3 kichik 2 bolsun
 # logikiliqQimmet qimmiti ekische bolsun
 # ikrangha logikiliqQimmet yezilsun
 
-# mixtar a qimmiti [1] bolsun
+# miqdar a qimmiti [1] bolsun
 # a qimmiti san bolsun
-# mixtar c qimmiti quruq bolsun
+# miqdar c qimmiti quruq bolsun
 # c qimmiti a qushulghan 1 bolsun
 # ikrangha c yezilsun
 
 
-# mixtar sinaqBir qimmiti rast bolsun
+# miqdar sinaqBir qimmiti rast bolsun
 # eger sinaqBir qimmiti rast bolsa
 #     ikrangha [eger: sinaqBir qimmiti rast ...] yezilsun
-#     sinaqBir qimmiti yalghan xemde yalghan bolsun
+#     sinaqBir qimmiti yalghan hemde yalghan bolsun
 # tamamlansun
 # ikrangha sinaqBir yezilsun
 
 
-# mixtar a qimmiti quruq bolsun
-# mixtar b qimmiti rast bolsun
-# mixtar c qimmiti rast bolsun
-# mixtar d qimmiti [quruq!!!] bolsun
+# miqdar a qimmiti quruq bolsun
+# miqdar b qimmiti rast bolsun
+# miqdar c qimmiti rast bolsun
+# miqdar d qimmiti [quruq!!!] bolsun
 
 # eger a qimmiti rast bolsa
 #     ikrangha [eger] yezilsun
@@ -74,7 +74,7 @@
 #     ikrangha [egerde2] yezilsun
 #     d qimmiti [egerde2] bolsun
 # bolmisa
-#     mixtar d qimmiti [ichide] bolsun
+#     miqdar d qimmiti [ichide] bolsun
 #     ikrangha d yezilsun
 #     d qimmiti [bolmisa] bolsun
 #     ikrangha d yezilsun
@@ -83,11 +83,11 @@
 # ikrangha d yezilsun
 
 
-# mixtar yezildighanQimmet qimmiti [] bolsun
-# mixtar sinaqQimmet qimmiti 1 bolsun
-# mixtar tekshurulmeQimmet qimmiti rast bolsun
+# miqdar yezildighanQimmet qimmiti [] bolsun
+# miqdar sinaqQimmet qimmiti 1 bolsun
+# miqdar tekshurulmeQimmet qimmiti rast bolsun
 # nawada tekshurulmeQimmet qimmiti rast bolsa
-#     mixtar sinaqQimmetS qimmiti sinaqQimmet bolsun
+#     miqdar sinaqQimmetS qimmiti sinaqQimmet bolsun
 #     sinaqQimmetS qimmiti xet bolsun
 #     yezildighanQimmet qimmiti [nawada: sanaq ] ulanghan sinaqQimmetS bolsun
 #     ikrangha yezildighanQimmet yezilsun
@@ -96,24 +96,24 @@
 # tamamlansun
 
 
-# mixtar yighinda qimmiti 0 bolsun
+# miqdar yighinda qimmiti 0 bolsun
 # fonkisiye sanYezish mezmuni
 #     ikrangha yighinda yezilsun
 # tamamlansun
-# fonkisiye sanQushush mixtar x y mezmuni
-#     mixtar waqitliqMixtar qimmiti 0 bolsun
-#     waqitliqMixtar qimmiti x qushulghan y bolsun
-#     netije waqitliqMixtar qayturulsun
+# fonkisiye sanQushush miqdar x y mezmuni
+#     miqdar waqitliqMiqdar qimmiti 0 bolsun
+#     waqitliqMiqdar qimmiti x qushulghan y bolsun
+#     netije waqitliqMiqdar qayturulsun
 # tamamlansun
 # fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
 
-# mixtar funcName qimmiti [sanYezish] bolsun
+# miqdar funcName qimmiti [sanYezish] bolsun
 # funcName qimmiti fonkisiye bolsun
 
 # ikrangha funcName yezilsun
 # fonkisiye funcName ishlitilsun
 
-# mixtar chongSan qimmiti quruq bolsun
+# miqdar chongSan qimmiti quruq bolsun
 # fonkisiye chongniTepish bilen 10 20 ishlitilsun we netije chongSan bolsun
 # ikrangha chongSan yezilsun
 
@@ -129,8 +129,8 @@
 # ikrangha r yezilsun
 
 # ikrangha [c kowruk sinaq!] yezilsun
-# fonkisiye uyghurFuncTest mixtar x y b s mezmuni
-#     mixtar waqitliqMixtar qimmiti 0 bolsun
+# fonkisiye uyghurFuncTest miqdar x y b s mezmuni
+#     miqdar waqitliqMiqdar qimmiti 0 bolsun
 #     ikrangha [---c ewetken qimmiet:---] yezilsun
 #     ikrangha x yezilsun
 #     ikrangha [---] yezilsun
@@ -140,56 +140,74 @@
 #     ikrangha [---] yezilsun
 #     ikrangha s yezilsun
 #     ikrangha [---] yezilsun
-#     waqitliqMixtar qimmiti x qushulghan y bolsun
-#     netije waqitliqMixtar qayturulsun
+#     waqitliqMiqdar qimmiti x qushulghan y bolsun
+#     netije waqitliqMiqdar qayturulsun
 # tamamlansun
 
 
 # global test
 # ikrangha NESHIR_ISMI yezilsun
 # fonkisiye yezish bilen NESHIR_ISMI ishlitilsun
-# mixtar a qimmiti [empty] bolsun
+# miqdar a qimmiti [empty] bolsun
 # fonkisiye oqush ishlitilsun we netije a bolsun
 # fonkisiye yezish bilen a ishlitilsun
 
 
 # fonkisiye hojjetYezish bilen [hojjet.txt] [hojjet mezmuni ...] ishlitilsun
-# mixtar c qimmiti quruq bolsun
+# miqdar c qimmiti quruq bolsun
 # fonkisiye hojjetOqush bilen [hojjet.txt] ishlitilsun we netije c bolsun
 # fonkisiye yezish bilen c ishlitilsun
 
-# box test
-# mixtar xxx qimmiti sanduq bolsun
-# mixtar yyy qimmiti sanduq bolsun
-# mixtar zzz qimmiti quruq bolsun
+# box init
+# miqdar xxx qimmiti sanduq bolsun
+# miqdar yyy qimmiti sanduq bolsun
+# miqdar zzz qimmiti quruq bolsun
 # zzz qimmiti xxx teng yyy bolsun
 # ikrangha xxx yezilsun
 # ikrangha yyy yezilsun
 # ikrangha zzz yezilsun
-# 
-# mixtar keyVariable qimmiti [key5] bolsun
+
+# box and variable
+# miqdar keyVariable qimmiti [key5] bolsun
 # @xxx{[key1]} qimmiti 11 bolsun
 # @xxx{[key2]} qimmiti 22 bolsun
-# mixtar @xxx{[key3]} qimmiti [xyz] bolsun
+# miqdar @xxx{[key3]} qimmiti [xyz] bolsun
 # @xxx{[key3]} qimmiti 1 qushulghan 2 bolsun
-# 
-# fonkisiye @xxx{[key4]} mixtar x y mezmuni
+
+# box and function
+# fonkisiye @xxx{[key4]} miqdar x y mezmuni
 #     @{[key3]} qimmiti x qushulghan y bolsun
 #     ikrangha @{[key3]} yezilsun
 #     netije @{[key3]} qayturulsun
 # tamamlansun
 # fonkisiye @xxx{[key4]} bilen @xxx{[key1]} @xxx{[key2]} ishlitilsun we netije @xxx{[key5]} bolsun
-# 
+
+# box and variable
 # ikrangha @xxx{[key1]} yezilsun
 # ikrangha @xxx{[key2]} yezilsun
 # ikrangha @xxx{[key3]} yezilsun
 # ikrangha @xxx{[key4]} yezilsun
 # ikrangha @xxx{keyVariable} yezilsun
 
+# box alias
+# ikrangha _ yezilsun # global
+# ikrangha $ yezilsun # closest
+
+# box as variable
+# @_{[key1]} qimmiti 11 bolsun
+# @${[key2]} qimmiti 22 bolsun
+# fonkisiye boxTest miqdar boxValue1 boxValue2 mezmuni
+#     ikrangha @boxValue1{[key1]} yezilsun
+#     ikrangha @boxValue2{[key2]} yezilsun
+# tamamlansun
+# fonkisiye boxTest bilen _ $ ishlitilsun
+
+
+
 # TOOD ################################################################################
 
 # box variable type
-# mixtar s qimmiti sanduq bolsun
+# miqdar s qimmiti sanduq bolsun
 # @box{[key]}
 # @box{variable}
 # @box{1}
@@ -212,19 +230,19 @@
 # fonkisiye @io{xojjetYezish} bilen test.txt [rb+] textContent ishlitilsun
 
 # locate a variable to current scope
-# mixtar r orni yerlik bolsun
-# mixtar r orni erkin bolsun
+# miqdar r orni yerlik bolsun
+# miqdar r orni erkin bolsun
 
 # declare a dynamic type and give any value for the first time
-# mixtar r qimmiti quruq bolsun
+# miqdar r qimmiti quruq bolsun
 
 # declate a static type and convert to another type when necessary
-# mixtar s qimmiti sanduq bolsun
-# mixtar s tipi quruq bolsun
+# miqdar s qimmiti sanduq bolsun
+# miqdar s tipi quruq bolsun
 # s qimmiti [text] bolsun
 
 # should i change the Value object or create a new one
-# mixtar a qimmiti quruq bolsun
+# miqdar a qimmiti quruq bolsun
 # a qimmiti 1 bolsun
 # a qimmiti 2 bolsun
 
@@ -244,8 +262,9 @@
 # variable value function made => @{variable} == get a key from root scope
 
 # variable
-# mixtar x tipi turaqliq/turaqsiz bolsun
+# miqdar x tipi turaqliq/turaqsiz bolsun
 
-# -----------------------------error--------------------------------------
+# alias alias
+# _ global
+# $ this
 
-# remove queue reset from executer, we have a stuation, call a code block itself, then we need restore the outer block's code cursor when inner bock is finished.

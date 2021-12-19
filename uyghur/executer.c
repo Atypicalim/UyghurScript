@@ -66,7 +66,7 @@ void Executer_assert(Executer *this, bool value, Token *token, char *msg)
     Executer_error(this, token, msg);
 }
 
-Container *Executer_getNearestBox(Executer *this)
+Container *Executer_getClosestBox(Executer *this)
 {
     Block *block = this->containerStack->tail;
     while (block->data != NULL)
@@ -115,6 +115,8 @@ Container *Executer_getNameScope(Executer *this, char *name)
  */
 Value *Executer_getNameRValue(Executer *this, char *name)
 {
+    if (is_equal(name, "$")) return Value_new(RTYPE_BOX, NULL, 0, NULL, Executer_getClosestBox(this), NULL);
+    if (is_equal(name, "_")) return Value_new(RTYPE_BOX, NULL, 0, NULL, this->globalContainer, NULL);
     Container *container = Executer_getNameScope(this, name);
     if (container == NULL) return Value_newEmpty(NULL);
     Value *value = Container_get(container, name);
@@ -134,22 +136,26 @@ Value *Executer_getNameRValue(Executer *this, char *name)
  * @param isWrite 
  * @return Container* 
  */
-Container *Executer_getScope(Executer *this, Token *token, bool isWrite)
+Container *Executer_getScope(Executer *this, Token *token, bool isLoose)
 {
     // name
     if (!token->isKey)
     {
         Container *container = Executer_getNameScope(this, token->value);
         if (container != NULL) return container;
-        return NULL; // isWrite ? this->currentContainer : NULL;
+        return isLoose ? this->currentContainer : NULL;
     }
     else if (is_equal(token->scope, "_"))
     {
         return this->globalContainer;
     }
+    else if (is_equal(token->scope, "$"))
+    {
+        return Executer_getClosestBox(this);
+    }
     else if (is_equal(token->scope, ""))
     {
-        return Executer_getNearestBox(this);
+        return Executer_getClosestBox(this);
     }
     else
     {
@@ -217,9 +223,9 @@ Value *Executer_getTRValue(Executer *this, Token *token)
     }
 }
 
-void Executer_setTRValue(Executer *this, Token *key, Value *value)
+void Executer_setTRValue(Executer *this, Token *key, Value *value, bool canDeclare)
 {
-    Container *container = Executer_getScope(this, key, true);
+    Container *container = Executer_getScope(this, key, canDeclare);
     Executer_assert(this, container != NULL, key, LANG_ERR_INVALID_VARIABLE_NAME);
     Container_set(container, key->value, value);
 }
@@ -251,7 +257,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
         char line[1024];
         scanf(" %[^\n]", line);
         char *l = tools_format("%s", line);
-        Executer_setTRValue(this, name, Value_newString(l, NULL));
+        Executer_setTRValue(this, name, Value_newString(l, NULL), false);
     }
 }
 
@@ -328,7 +334,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
         r = Executer_getTRValue(this, action);
     }
     tools_assert(r != NULL, "not supported action for expression:%s", act);
-    Executer_setTRValue(this, target, r);
+    Executer_setTRValue(this, target, r, false);
 }
 
 void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
@@ -431,7 +437,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
         }
     }
     tools_assert(r != NULL, "not supported action for expression:%s", act);
-    Executer_setTRValue(this, target, r);
+    Executer_setTRValue(this, target, r, false);
 }
 
 bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge)
@@ -503,7 +509,6 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         isFinish = true;
     }
     // elseif
-    // Leaf_print(leaf);
     ifNode = Queue_next(leaf->leafs, cursor1);
     while (is_equal(ifNode->type, ASTTYPE_IF_MIDDLE))
     {
@@ -569,7 +574,7 @@ void Executer_consumeFunction(Executer *this, Leaf *leaf)
     Cursor *cursor2 = Queue_reset(leaf->leafs);
     Leaf *code = Queue_next(leaf->leafs, cursor2);
     Cursor_free(cursor2);
-    Executer_setTRValue(this, function, Value_newFunction(code, NULL));
+    Executer_setTRValue(this, function, Value_newFunction(code, NULL), true);
 }
 
 void Executer_consumeCode(Executer *this, Leaf *leaf)
@@ -677,7 +682,7 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     //
     if (!is_equal(resultName->type, TTYPE_EMPTY) && !is_equal(resultName->value, TVALUE_EMPTY))
     {
-        Executer_setTRValue(this, resultName, r);
+        Executer_setTRValue(this, resultName, r, true);
     }
     Stack_clear(this->callStack);
 }

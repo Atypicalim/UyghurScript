@@ -9,16 +9,16 @@
 ```python
 
 # string
-mixtar s qimmiti [Salam Uyghur Script!] bolsun
+miqdar s qimmiti [Salam Uyghur Script!] bolsun
 
 # number
-mixtar n qimmiti 1 bolsun
+miqdar n qimmiti 1 bolsun
 
 # bool (rast, yalghan)
-mixtar b qimmiti rast bolsun
+miqdar b qimmiti rast bolsun
 
 # empty
-mixtar d qimmiti quruq bolsun
+miqdar d qimmiti quruq bolsun
 
 ```
 
@@ -47,7 +47,7 @@ b qimmiti b hemde yalghan bolsun
 
 ```python
 
-mixtar sQimmet qimmiti [yalghan] bolsun
+miqdar sQimmet qimmiti [yalghan] bolsun
 
 # transforming type (san, xet, quruq, logika, ekische, fonkisiye)
 sQimmet qimmiti logika bolsun
@@ -78,10 +78,10 @@ ikrangha a yezilsun
 
 ```python
 
-mixtar a qimmiti quruq bolsun
-mixtar b qimmiti rast bolsun
-mixtar c qimmiti rast bolsun
-mixtar d qimmiti [quruq!!!] bolsun
+miqdar a qimmiti quruq bolsun
+miqdar b qimmiti rast bolsun
+miqdar c qimmiti rast bolsun
+miqdar d qimmiti [quruq!!!] bolsun
 
 # the left side can be any value
 eger a qimmiti rast bolsa
@@ -94,7 +94,7 @@ egerde c qimmiti rast bolmisa
     ikrangha [egerde2] yezilsun
     d qimmiti [egerde2] bolsun
 bolmisa
-    mixtar d qimmiti [ichide] bolsun
+    miqdar d qimmiti [ichide] bolsun
     ikrangha d yezilsun
     d qimmiti [bolmisa] bolsun
     ikrangha d yezilsun
@@ -108,13 +108,13 @@ ikrangha d yezilsun
 
 ```python
 
-mixtar yezildighanQimmet qimmiti [] bolsun
-mixtar sinaqQimmet qimmiti 1 bolsun
-mixtar tekshurulmeQimmet qimmiti rast bolsun
+miqdar yezildighanQimmet qimmiti [] bolsun
+miqdar sinaqQimmet qimmiti 1 bolsun
+miqdar tekshurulmeQimmet qimmiti rast bolsun
 
 # the left side can be any value
 nawada tekshurulmeQimmet qimmiti rast bolsa
-    mixtar sinaqQimmetS qimmiti sinaqQimmet bolsun
+    miqdar sinaqQimmetS qimmiti sinaqQimmet bolsun
     sinaqQimmetS qimmiti xet bolsun
     yezildighanQimmet qimmiti [nawada: sanaq ] ulanghan sinaqQimmetS bolsun
     ikrangha yezildighanQimmet yezilsun
@@ -129,7 +129,7 @@ tamamlansun
 ```python
 
 # a variable for function result
-mixtar yighinda qimmiti 0 bolsun
+miqdar yighinda qimmiti 0 bolsun
 
 # function without args and return
 fonkisiye sanYezish mezmuni
@@ -137,17 +137,17 @@ fonkisiye sanYezish mezmuni
 tamamlansun
 
 # a function receiving two arguments and returning a result
-fonkisiye sanQushush mixtar x y mezmuni
-    mixtar waqitliqMixtar qimmiti 0 bolsun
-    waqitliqMixtar qimmiti x qushulghan y bolsun
-    netije waqitliqMixtar qayturulsun
+fonkisiye sanQushush miqdar x y mezmuni
+    miqdar waqitliqMiqdar qimmiti 0 bolsun
+    waqitliqMiqdar qimmiti x qushulghan y bolsun
+    netije waqitliqMiqdar qayturulsun
 tamamlansun
 
 # call function with two arguments and receive the result
 fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
 
 # a string varibale storing a function name
-mixtar funcName qimmiti [sanYezish] bolsun
+miqdar funcName qimmiti [sanYezish] bolsun
 
 # transform the string to a func which is the string value targeting
 funcName qimmiti fonkisiye bolsun

@@ -38,7 +38,7 @@
 #define TVALUE_TRUE "rast"
 #define TVALUE_FALSE "yalghan"
 //
-#define TVALUE_AND "xemde"
+#define TVALUE_AND "hemde"
 #define TVALUE_OR "yaki"
 #define TVALUE_NOT "ekische"
 //
@@ -55,7 +55,7 @@
 #define TVALUE_TARGET_FROM "ikrandin" // TODO implement with standart library -> box+func
 #define TVALUE_TARGET_TO "ikrangha" // TODO implement with standart library -> box+func (screen, file, etc)
 //
-#define TVALUE_VARIABLE "mixtar"
+#define TVALUE_VARIABLE "miqdar"
 #define TVALUE_VALUE "qimmiti"
 #define TVALUE_MADE "bolsun"
 
