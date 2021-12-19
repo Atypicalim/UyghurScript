@@ -207,6 +207,9 @@
 # fonkisiye bolekTazilash bilen [../examples/hello.ug] ishlitilsun
 # ikrangha @hello{[variable]} yezilsun
 
+# 
+# ikrangha @cBox{[cString]} yezilsun
+
 # TOOD ################################################################################
 
 # box variable type

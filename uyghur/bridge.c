@@ -139,7 +139,7 @@ void Bridge_register(Bridge *this)
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, box expected for register");
     tools_assert(this->last == BRIDGE_ITEM_TP_VAL, "invalid bridge status");
     Cursor *cursor = Stack_reset(this->stack);
-    Container *container = this->name == NULL ? this->uyghur->executer->globalContainer : Container_newScope();
+    Container *container = this->name == NULL ? this->uyghur->executer->globalContainer : Container_newBox();
     Value *item = Stack_next(this->stack, cursor);
     while (item != NULL)
     {
@@ -151,8 +151,7 @@ void Bridge_register(Bridge *this)
     Cursor_free(cursor);
     if (this->name != NULL)
     {
-        tools_error("TODO register box");
-        // Hashmap_set(this->uyghur->executer->rootScope, this->name, Value_newObject(map, NULL));
+        Container_set(this->uyghur->executer->globalContainer, this->name, Value_newBox(container, NULL));
     }
     Bridge_reset(this);
 }

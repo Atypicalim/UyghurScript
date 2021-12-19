@@ -4,10 +4,13 @@
 
 > a toy script interpreter written in c, u can write & run your script written in uyghur language grammar with it ...
 
-## 1. data types and variable declaration
+## 1. usage
+
+* jsut run the command `./release/uyghur.exe ./examples/hello.ug` in root directory and you will see the result
+
+## 2. data types and variable declaration
 
 ```python
-
 # string
 miqdar s qimmiti [Salam Uyghur Script!] bolsun
 
@@ -19,13 +22,11 @@ miqdar b qimmiti rast bolsun
 
 # empty
 miqdar d qimmiti quruq bolsun
-
 ```
 
-## 2. expressions
+## 3. expressions
 
 ```python
-
 # assign a value
 b qimmiti yalghan bolsun
 
@@ -40,13 +41,11 @@ b qimmiti a kichik 5 bolsun
 
 # logic expressions (teng, hemde, yaki)
 b qimmiti b hemde yalghan bolsun
-
 ```
 
-## 3. operations
+## 4. operations
 
 ```python
-
 miqdar sQimmet qimmiti [yalghan] bolsun
 
 # transforming type (san, xet, quruq, logika, ekische, fonkisiye)
@@ -57,13 +56,11 @@ sQimmet qimmiti ekische bolsun
 
 # print a logic value
 ikrangha sQimmet yezilsun
-
 ```
 
-## 3. io
+## 5. io
 
 ```python
-
 # output
 ikrangha [Ana Tilim Zer Tilim!] yezilsun
 
@@ -71,13 +68,11 @@ ikrangha [Ana Tilim Zer Tilim!] yezilsun
 ikrandin a oqulsun
 a qimmiti [mezmun:] ulanghan a bolsun
 ikrangha a yezilsun
-
 ```
 
-## 4. if
+## 6. if
 
 ```python
-
 miqdar a qimmiti quruq bolsun
 miqdar b qimmiti rast bolsun
 miqdar c qimmiti rast bolsun
@@ -101,13 +96,11 @@ bolmisa
 tamamlansun
 
 ikrangha d yezilsun
-
 ```
 
-## 5. while
+## 7. while
 
 ```python
-
 miqdar yezildighanQimmet qimmiti [] bolsun
 miqdar sinaqQimmet qimmiti 1 bolsun
 miqdar tekshurulmeQimmet qimmiti rast bolsun
@@ -121,13 +114,11 @@ nawada tekshurulmeQimmet qimmiti rast bolsa
     sinaqQimmet qimmiti sinaqQimmet qushulghan 1 bolsun
     tekshurulmeQimmet qimmiti sinaqQimmet kichik 5 bolsun
 tamamlansun
-
 ```
 
-## 6. functions
+## 8. functions
 
 ```python
-
 # a variable for function result
 miqdar yighinda qimmiti 0 bolsun
 
@@ -154,50 +145,92 @@ funcName qimmiti fonkisiye bolsun
 
 # call a function without any argument and result 
 fonkisiye funcName ishlitilsun
-
 ```
 
-## 7. bridge
+## 9. box
+
+```python
+#  declare a box
+miqdar s qimmiti sanduq bolsun
+
+# put a number
+@s{[yighinda]} qimmiti 1 qushulghan 2 bolsun
+
+# bind a function
+fonkisiye @s{[sinaqFonkisiye]} miqdar x y mezmuni
+    @s{[yighinda]} qimmiti x qushulghan y bolsun
+    ikrangha @s{[yighinda]} yezilsun
+    netije @s{[yighinda]} qayturulsun
+tamamlansun
+
+# call and get result as a box varibale
+fonkisiye @s{[sinaqFonkisiye]} bilen 11 22 ishlitilsun we netije @s{[sinaqNetije]} bolsun
+
+# print the resultType
+ikrangha @s{[sinaqNetije]} yezilsun
+
+# this box pointer: $, find in closest box
+@${[keyName]}
+
+# global box pointer: _, find in global scope
+@_{[keyName]}
+
+# supported key types: variable, string, number
+@s{sinaqMiqdar}
+@s{[sinaqKorsetkuch]}
+@s{123}
+```
+
+## 10. bridge
 
 > u can get the bridge objet and communicate between c and script, just check `main.c` for more information
 
 ```c
-// register c values to script
+// register c values to script (NULL in start function to global scope)
 Bridge_startBox(bridge, NULL);
-// push a key
 Bridge_pushKey(bridge, "keyName");
-// push a value (string, number, bool)
 Bridge_pushValue(bridge, NULL);
-// register
 Bridge_register(bridge);
 ```
 
 ```c
-// call script function from c
+// call script function from c, and get the result
 Bridge_startFunc(bridge, "functionName");
-// push a value (string, number, bool)
 Bridge_pushValue(bridge, NULL);
-// call
 Bridge_call(bridge);
-// get rsult type
-char *t = Bridge_topType(bridge);
-// get result value
-void *v = Bridge_popValue(bridge);
-
+char *resultType = Bridge_topType(bridge);
+void *resultValue = Bridge_popValue(bridge);
 ```
 
-## 8. usage
+## 11. import
 
-* jsut run the command `./release/uyghur.exe ./examples/hello.ug` in root directory and you will see the result
+```python
+# bolek_programma.ug
+ikrangha [bolek programmidin salam ...] yezilsun
+miqdar bolektikiQimmet qimmiti [bolektiki sinaq qimmet ...] bolsun
 
-## 9. todo
+# bash_programma.ug
+ikrangha [bash programmidin salam ...] yezilsun
+fonkisiye bolekEkirish bilen [../bolek_programma.ug] ishlitilsun we netije bolekSanduq bolsun
+ikrangha @bolekSanduq{[bolektikiQimmet]} yezilsun
 
-* box
-* import
+# run the program
+`.uyghur.exe ./bash_programma.ug`
+
+# get the result
+bash programmidin salam ...
+bolek programmidin salam ...
+bolektiki sinaq qimmet ...
+```
+
+## -2. todo
+
 * traceback
 * libraries
+* gc
+* editor support (highlight and autocomplete)
 * ...
 
-## 10. others
+## -1. others
 
 > i am still working on it ...

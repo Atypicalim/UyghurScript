@@ -118,9 +118,8 @@ Value *Executer_getNameRValue(Executer *this, char *name)
     if (is_equal(name, "$")) return Value_new(RTYPE_BOX, NULL, 0, NULL, Executer_getClosestBox(this), NULL);
     if (is_equal(name, "_")) return Value_new(RTYPE_BOX, NULL, 0, NULL, this->globalContainer, NULL);
     Container *container = Executer_getNameScope(this, name);
-    if (container == NULL) return Value_newEmpty(NULL);
-    Value *value = Container_get(container, name);
-    return value != NULL ? value : Value_newEmpty(NULL);
+    if (container == NULL) return NULL;
+    return Container_get(container, name);
 }
 
 /**
@@ -176,7 +175,7 @@ char *Executer_getKey(Executer *this, Token *token)
         Executer_assert(this, value!= NULL, token, LANG_ERR_INVALID_KEY_NAME);
         key = Value_toString(value);
     }
-    
+    printf("===");
     return key;
 }
 
@@ -215,7 +214,8 @@ Value *Executer_getTRValue(Executer *this, Token *token)
     }
     else if (is_equal(token->type, TTYPE_NAME))
     {
-        return Executer_getNameRValue(this, token->value);
+        Value *value = Executer_getNameRValue(this, token->value);
+        return value != NULL ? value : Value_newEmpty(token);
     }
     else
     {

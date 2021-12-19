@@ -23,7 +23,7 @@ void cFuncTest(Bridge *bridge)
 
 void lib_test_register(Bridge *bridge)
 {
-    // // register values from c
+    // // register variables from c (NUll to register globals, name to register a box)
     // Bridge_startBox(bridge, NULL);
     // Bridge_pushKey(bridge, "cString");
     // Bridge_pushString(bridge, "c value from bridge!");
