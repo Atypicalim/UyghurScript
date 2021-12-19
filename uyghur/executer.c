@@ -470,9 +470,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
 {
     //
     bool isFinish = false;
-    Queue_reset(leaf->leafs);
+    Cursor *cursor = Queue_reset(leaf->leafs);
     // if
-    Leaf *ifNode = Queue_next(leaf->leafs);
+    Leaf *ifNode = Queue_next(leaf->leafs, cursor);
     tools_assert(ifNode != NULL, "invalid if");
     tools_assert(is_equal(ifNode->type, ASTTYPE_IF_FIRST), "invalid if");
     Stack_reset(ifNode->tokens);
@@ -487,7 +487,8 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         isFinish = true;
     }
     // elseif
-    ifNode = Queue_next(leaf->leafs);
+    // Leaf_print(leaf);
+    ifNode = Queue_next(leaf->leafs, cursor);
     while (is_equal(ifNode->type, ASTTYPE_IF_MIDDLE))
     {
         Stack_reset(ifNode->tokens);
@@ -501,7 +502,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
             Executer_popContainer(this, false);
             isFinish = true;
         }
-        ifNode = Queue_next(leaf->leafs);
+        ifNode = Queue_next(leaf->leafs, cursor);
         tools_assert(ifNode != NULL, "invalid if");
     }
     // else
@@ -517,12 +518,13 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
             Executer_popContainer(this, false);
             isFinish = true;
         }
-        ifNode = Queue_next(leaf->leafs);
+        ifNode = Queue_next(leaf->leafs, cursor);
         tools_assert(ifNode != NULL, "invalid if");
     }
     // end
     tools_assert(is_equal(ifNode->type, ASTTYPE_END), "invalid if");
-    Leaf *nullValue = Queue_next(leaf->leafs);
+    Leaf *nullValue = Queue_next(leaf->leafs, cursor);
+    Cursor_free(cursor);
     tools_assert(nullValue == NULL, "invalid if");
 }
 
@@ -544,9 +546,10 @@ void Executer_consumeFunction(Executer *this, Leaf *leaf)
 {
     Stack_reset(leaf->tokens);
     Token *function = Stack_next(leaf->tokens);
-    Queue_reset(leaf->leafs);
-    Leaf *code = Queue_next(leaf->leafs);
+    Cursor *cursor = Queue_reset(leaf->leafs);
+    Leaf *code = Queue_next(leaf->leafs, cursor);
     Executer_setTRValue(this, function, Value_newFunction(code, NULL));
+    Cursor_free(cursor);
 }
 
 void Executer_consumeCode(Executer *this, Leaf *leaf)
@@ -565,7 +568,9 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     }
     //
     Stack_clear(this->callStack);
+    Executer_pushContainer(this, false);
     Executer_consumeTree(this, leaf);
+    Executer_popContainer(this, false);
 }
 
 Value *Executer_runFunc(Executer *this, Token *funcName)
@@ -741,13 +746,14 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 
 bool Executer_consumeTree(Executer *this, Leaf *tree)
 {
-    Queue_reset(tree->leafs);
-    Leaf *leaf = Queue_next(tree->leafs);
+    Cursor *cursor = Queue_reset(tree->leafs);
+    Leaf *leaf = Queue_next(tree->leafs, cursor);
     while (leaf != NULL)
     {
         Executer_consumeLeaf(this, leaf);
-        leaf = Queue_next(tree->leafs);
+        leaf = Queue_next(tree->leafs, cursor);
     }
+    Cursor_free(cursor);
     return true;
 }
 

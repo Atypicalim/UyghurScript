@@ -16,6 +16,7 @@
 
 #include "../tools/hashmap.h"
 #include "../tools/block.h"
+#include "../tools/cursor.h"
 #include "../tools/stack.h"
 #include "../tools/queue.h"
 

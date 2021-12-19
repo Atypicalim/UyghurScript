@@ -159,7 +159,7 @@
 # fonkisiye yezish bilen c ishlitilsun
 
 # box test
-mixtar xxx qimmiti sanduq bolsun
+# mixtar xxx qimmiti sanduq bolsun
 # mixtar yyy qimmiti sanduq bolsun
 # mixtar zzz qimmiti quruq bolsun
 # zzz qimmiti xxx teng yyy bolsun
@@ -169,16 +169,28 @@ mixtar xxx qimmiti sanduq bolsun
 
 # keyVariable qimmiti [keyName] bolsun
 
-@xxx{[key1]} qimmiti 11 bolsun
-@xxx{[key2]} qimmiti 22 bolsun
+# @xxx{[key1]} qimmiti 11 bolsun
+# @xxx{[key2]} qimmiti 22 bolsun
 
-@xxx{[key3]} qimmiti 1 qushulghan 2 bolsun
+# mixtar key3 qimmiti [xyz] bolsun
 
-fonkisiye @xxx{[key4]} mixtar x y mezmuni
-    @xxx{[key3]} qimmiti x qushulghan y bolsun
-    ikrangha @xxx{[key3]} yezilsun
+# @{[key3]} qimmiti 1 qushulghan 2 bolsun
+
+# fonkisiye @xxx{[key4]} mixtar x y mezmuni
+#     ikrangha key3 yezilsun
+# tamamlansun
+# fonkisiye @xxx{[key4]} bilen @xxx{[key1]} @xxx{[key2]} ishlitilsun
+
+n qimmiti 0 bolsun
+fonkisiye func mezmuni
+    ikrangha [func...] yezilsun
+    n qimmiti n qushulghan 1 bolsun
+    t qimmiti n kichik 5 bolsun
+    eger t qimmiti rast bolsa
+        fonkisiye func ishlitilsun
+    tamamlansun
 tamamlansun
-fonkisiye @xxx{[key4]} bilen @xxx{[key1]} @xxx{[key2]} ishlitilsun
+fonkisiye func ishlitilsun
 
 # ikrangha @x{[key1]} yezilsun
 # ikrangha @x{[key2]} yezilsun
@@ -245,4 +257,6 @@ fonkisiye @xxx{[key4]} bilen @xxx{[key1]} @xxx{[key2]} ishlitilsun
 # variable
 # mixtar x tipi turaqliq/turaqsiz bolsun
 
+# -----------------------------error--------------------------------------
 
+# remove queue reset from executer, we have a stuation, call a code block itself, then we need restore the outer block's code cursor when inner bock is finished.

@@ -76,7 +76,6 @@ void Queue_clear(Queue *this)
 {
     this->head = NULL;
     this->tail = NULL;
-    this->cursor = NULL;
 }
 
 void Queue_free(Queue *this)
@@ -91,24 +90,17 @@ void Queue_free(Queue *this)
     free(this);
 }
 
-void *Queue_next(Queue *this)
+void *Queue_next(Queue *this, Cursor *cursor)
 {
-    Block *temp = this->cursor;
-    if (temp == NULL)
-    {
-        return NULL;
-    }
-    else
-    {
-        this->cursor = temp->next;
-        return temp->data;
-    }
-
+    Block *temp = Cursor_get(cursor);
+    if (temp == NULL) return NULL;
+    Cursor_set(cursor, temp->next);
+    return temp->data;
 }
 
-void Queue_reset(Queue *this)
+Cursor *Queue_reset(Queue *this)
 {
-    this->cursor = this->head;
+    return Cursor_new(this->head);
 }
 
 #endif
