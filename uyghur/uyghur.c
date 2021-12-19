@@ -9,7 +9,11 @@
 #include "parser.c"
 #include "executer.c"
 #include "bridge.c"
+
 #include "libraries/global.c"
+#include "libraries/number.c"
+#include "libraries/string.c"
+#include "libraries/box.c"
 
 void Uyghur_init(Uyghur *this)
 {
@@ -25,6 +29,9 @@ Uyghur *Uyghur_new()
     uyghur->executer = Executer_new(uyghur);
     uyghur->bridge = Bridge_new(uyghur);
     lib_global_register(uyghur->bridge);
+    lib_number_register(uyghur->bridge);
+    lib_string_register(uyghur->bridge);
+    lib_box_register(uyghur->bridge);
     return uyghur;
 }
 
