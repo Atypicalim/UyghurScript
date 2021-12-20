@@ -109,4 +109,45 @@ char *o2s(void *value)
     return tools_format("<Object => p:%d>", value);
 }
 
+
+char decode_escape(char c)
+{
+    switch (c)
+    {
+    case '[':
+        return '[';
+        break;
+    case ']':
+        return ']';
+        break;
+    case '\\':
+        return '\\';
+        break;
+    case 'n':
+        return '\n';
+        break;
+    case 'a':
+        return '\a';
+        break;
+    case 'b':
+        return '\b';
+        break;
+    case 'f':
+        return '\f';
+        break;
+    case 'v':
+        return '\v';
+        break;
+    case 'r':
+        return '\r';
+        break;
+    case 't':
+        return '\t';
+        break;
+    default:
+        return '\0';  
+        break;
+    }       
+}
+
 #endif
