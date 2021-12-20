@@ -10,7 +10,7 @@
 
 ## 2. data types and variable declaration
 
-```python
+```coffeescript
 # string
 miqdar s qimmiti [Salam Uyghur Script!] bolsun
 
@@ -26,7 +26,7 @@ miqdar d qimmiti quruq bolsun
 
 ## 3. expressions
 
-```python
+```coffeescript
 # assign a value
 b qimmiti yalghan bolsun
 
@@ -45,7 +45,7 @@ b qimmiti b hemde yalghan bolsun
 
 ## 4. operations
 
-```python
+```coffeescript
 miqdar sQimmet qimmiti [yalghan] bolsun
 
 # transforming type (san, xet, quruq, logika, ekische, fonkisiye)
@@ -60,7 +60,7 @@ ikrangha sQimmet yezilsun
 
 ## 5. io
 
-```python
+```coffeescript
 # output
 ikrangha [Ana Tilim Zer Tilim!] yezilsun
 
@@ -72,7 +72,7 @@ ikrangha a yezilsun
 
 ## 6. if
 
-```python
+```coffeescript
 miqdar a qimmiti quruq bolsun
 miqdar b qimmiti rast bolsun
 miqdar c qimmiti rast bolsun
@@ -100,7 +100,7 @@ ikrangha d yezilsun
 
 ## 7. while
 
-```python
+```coffeescript
 miqdar yezildighanQimmet qimmiti [] bolsun
 miqdar sinaqQimmet qimmiti 1 bolsun
 miqdar tekshurulmeQimmet qimmiti rast bolsun
@@ -118,7 +118,7 @@ tamamlansun
 
 ## 8. functions
 
-```python
+```coffeescript
 # a variable for function result
 miqdar yighinda qimmiti 0 bolsun
 
@@ -149,7 +149,7 @@ fonkisiye funcName ishlitilsun
 
 ## 9. box
 
-```python
+```coffeescript
 #  declare a box
 miqdar s qimmiti sanduq bolsun
 
@@ -204,7 +204,7 @@ void *resultValue = Bridge_popValue(bridge);
 
 ## 11. import
 
-```python
+```coffeescript
 # bolek_programma.ug
 ikrangha [bolek programmidin salam ...] yezilsun
 miqdar bolektikiQimmet qimmiti [bolektiki sinaq qimmet ...] bolsun
