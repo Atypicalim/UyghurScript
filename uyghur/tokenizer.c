@@ -179,9 +179,11 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                 if (c == '\\')
                 {
                     char r = decode_escape(Tokenizer_getchar(this, i + 1));
-                    if (r == '\0') continue;
-                    c = r;
-                    i++;
+                    if (r == '\0')
+                    {
+                        c = r;
+                        i++;
+                    }
                 }
                 str = tools_str_apent(str, c, false);
                 i++;
