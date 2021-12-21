@@ -13,13 +13,5 @@ int main(int argc, char const *argv[])
     lib_test_call(uyghur->bridge);
     Uyghur_free(uyghur);
     //
-    // char *s = "abcdeabcdeabcdeabcdeabcdeabcdeabcde";
-    // char *r = str_replace(s, "bc", "12", 1, -1);
-    // printf("%s\n%s\n", s, r);
-    // printf("%d\n", str_count(s));
-    // printf("%s\n", str_link(s, "--122"));
-    // printf("%s\n%s\n", s, str_cut(s, 1, -2));
-    // printf("-------------------------------%s %d ", s, str_find(s, "bcd", 1, 35, -100000));
-    //
     return 0;
 }

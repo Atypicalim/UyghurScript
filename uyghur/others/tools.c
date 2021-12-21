@@ -251,8 +251,10 @@ char *str_cut(char *origin, int from, int to)
     to = to <= len ? to : len;
     if (from > to) return "";
     int size = to - from + 1;
-    char* substr = malloc(size);
-    strncpy(substr, origin + from - 1, size);
+    char* new = malloc(size);
+    strncpy(new, origin + from - 1, size);
+    new[size] = '\0';
+    return new;
 }
 
 int str_count(char *origin)
