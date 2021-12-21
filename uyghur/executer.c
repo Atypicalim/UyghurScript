@@ -175,7 +175,6 @@ char *Executer_getKey(Executer *this, Token *token)
         Executer_assert(this, value!= NULL, token, LANG_ERR_INVALID_KEY_NAME);
         key = Value_toString(value);
     }
-    printf("===");
     return key;
 }
 

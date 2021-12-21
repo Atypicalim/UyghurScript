@@ -152,7 +152,7 @@ char decode_escape(char c)
 
 char *str_replace(char *origin, char *from, char *to, int direction, int num)
 {
-    if (origin == NULL || from == NULL || to == NULL || direction == 0 || num <= 0) return origin;
+    if (origin == NULL || from == NULL || to == NULL || direction == 0 || num == 0) return origin;
     int lenOrigin = strlen(origin);
     int lenFrom = strlen(from);
     int lenTo = strlen(to);
@@ -161,7 +161,7 @@ char *str_replace(char *origin, char *from, char *to, int direction, int num)
     int countFound = 0;
     for(char *left = origin;(left = strstr(left, from)) != 0;left = left + lenFrom) countFound++;
     if (countFound == 0) return origin;
-    int countReplace = num < countFound ? num : countFound;
+    int countReplace = num < countFound & num > 0 ? num : countFound;
     //
     int size = lenOrigin - lenFrom * countReplace + lenTo * countReplace;
     char *target = malloc(size + 1);
@@ -194,6 +194,89 @@ char *str_replace(char *origin, char *from, char *to, int direction, int num)
     strcpy(tmp, origin);
     // need free
     return target;
+}
+
+int str_find(char *origin, char *find, int from, int to, int index)
+{
+    //
+    int lenOrigin = strlen(origin);
+    int lenFind = strlen(find);
+    if (lenOrigin == 0 || lenFind == 0 || index == 0) return 0;
+    //
+    to = to > 0 ? to : (lenOrigin + to + 1);
+    from = from >= 1 ? from : 1;
+    to = to <= lenOrigin ? to : lenOrigin;
+    if (from > to) return 0;
+    //
+    char *fromPointer = origin + from - 1;
+    char *toPointer = origin + to - 1;
+    int countFound;
+    char *left;
+    //
+    countFound = 0;
+    left = strstr(fromPointer, find);
+    while(left != 0)
+    {
+        if (toPointer - left < lenFind) break;
+        countFound++;
+        left = left + lenFind;
+        left = strstr(left, find);
+    }
+    //
+    int targetIndex = index > 0 ? index : countFound + index + 1;
+    if (targetIndex > countFound || targetIndex < 1) return 0;  
+    //
+    countFound = 0;
+    left = strstr(fromPointer, find);
+    while(left != 0)
+    {
+        if (toPointer - left < lenFind) break;
+        countFound++;
+        if (countFound == targetIndex)
+        {
+            return left - origin + 1;
+        }
+        left = left + lenFind;
+        left = strstr(left, find);
+    }
+    //
+    return 0;
+}
+
+char *str_cut(char *origin, int from, int to)
+{
+    int len = strlen(origin);
+    to = to > 0 ? to : (len + to + 1);
+    from = from >= 1 ? from : 1;
+    to = to <= len ? to : len;
+    if (from > to) return "";
+    int size = to - from + 1;
+    char* substr = malloc(size);
+    strncpy(substr, origin + from - 1, size);
+}
+
+int str_count(char *origin)
+{
+    return strlen(origin);
+}
+
+char *str_link(char *origin, char *other)
+{
+    int size = snprintf(NULL, 0, "%s%s", origin, other);
+    char* buf = malloc(size + 1);
+    snprintf(buf, size + 1, "%s%s", origin, other);
+    return buf;
+}
+
+char *str_format(char *template, ...)
+{
+    va_list lst;
+    va_start(lst, template);
+    int bufsz = vsnprintf(NULL, 0, template, lst);
+    char* t = malloc(bufsz + 1);
+    vsnprintf(t, bufsz + 1, template, lst);
+    va_end(lst);
+    return t;
 }
 
 #endif
