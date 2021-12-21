@@ -150,4 +150,50 @@ char decode_escape(char c)
     }       
 }
 
+char *str_replace(char *origin, char *from, char *to, int direction, int num)
+{
+    if (origin == NULL || from == NULL || to == NULL || direction == 0 || num <= 0) return origin;
+    int lenOrigin = strlen(origin);
+    int lenFrom = strlen(from);
+    int lenTo = strlen(to);
+    if (lenOrigin == 0 || lenFrom == 0) return origin;
+    //
+    int countFound = 0;
+    for(char *left = origin;(left = strstr(left, from)) != 0;left = left + lenFrom) countFound++;
+    if (countFound == 0) return origin;
+    int countReplace = num < countFound ? num : countFound;
+    //
+    int size = lenOrigin - lenFrom * countReplace + lenTo * countReplace;
+    char *target = malloc(size + 1);
+    if (target == NULL) return origin;
+    //
+    char *tmp = target;    // varies
+    int lenFront; // distance between rep and end of last rep
+    char *foundPoint;    // the next insert point
+    int index = 1;
+    while (index <= countFound) {
+        foundPoint = strstr(origin, from);
+        lenFront = foundPoint - origin;
+        tmp = strncpy(tmp, origin, lenFront);
+        tmp = tmp + lenFront;
+        //
+        if ((direction > 0 && index <= countReplace) || (direction < 0 && index > countFound - countReplace))
+        {
+            tmp = strcpy(tmp, to);
+            tmp = tmp + lenTo;
+        }
+        else
+        {
+            tmp = strcpy(tmp, from);
+            tmp = tmp + lenFrom;
+        }
+        //
+        origin += lenFront + lenFrom;
+        index++;
+    }
+    strcpy(tmp, origin);
+    // need free
+    return target;
+}
+
 #endif
