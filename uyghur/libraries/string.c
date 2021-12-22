@@ -2,15 +2,6 @@
 
 #include "../uyghur.c"
 
-void test_string(Bridge *bridge)
-{
-    Value *value = Bridge_popValue(bridge);
-    // todo
-    Bridge_startResult(bridge);
-    Bridge_pushValue(bridge, NULL);
-    Bridge_return(bridge);
-}
-
 void ug_string_replace(Bridge *bridge)
 {
     char *origin = Bridge_popString(bridge);
@@ -123,9 +114,6 @@ void ug_string_link(Bridge *bridge)
 void lib_string_register(Bridge *bridge)
 {
     Bridge_startBox(bridge, "xet");
-    //
-    Bridge_pushKey(bridge, "xetSinaq");
-    Bridge_pushFunction(bridge, test_string);
     //
     Bridge_pushKey(bridge, "almashturush");
     Bridge_pushFunction(bridge, ug_string_replace);

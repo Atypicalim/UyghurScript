@@ -83,6 +83,14 @@ char *tools_str_apent(char *str, char c, bool notFree)
     return dest;
 }
 
+char *tools_char_arr_to_pointer(char arr[])
+{
+    int length = strlen(arr);
+    char* str = (char*)malloc((length + 1) * sizeof(char));
+    memcpy(str, arr, length + 1);
+    return str;
+}
+
 char *str_concat(char *one, char *two)
 {
     int bufsz = snprintf(NULL, 0, "%s%s", one, two);
@@ -289,6 +297,75 @@ int num_random(int from, int to)
     int num = rand() % count;
     int r = small + num;
     return r;
+}
+
+int time_get_zone()
+{
+    time_t currentTime = time(NULL);
+    struct tm *localTime = localtime(&currentTime);
+    int hour1 = localTime->tm_hour;
+    struct tm *globalTime = gmtime(&currentTime);
+    int hour2 = globalTime->tm_hour;
+    int distance = hour1 - hour2;
+    return distance;
+}
+
+int time_get_seconds()
+{
+    time_t currentTime = time(NULL);
+    int seconds = (int)currentTime;
+    return seconds;
+}
+
+// "2000-02-02 22:22:22"
+int time_create_seconds(char *str)
+{
+    if (strlen(str) != 19) return -1;
+    int year = atoi(str + 0);
+    int month = atoi(str + 5);
+    int day = atoi(str + 8);
+    int hour = atoi(str + 11);
+    int minute = atoi(str + 14);
+    int second = atoi(str + 17);
+    struct tm info = {0};
+    info.tm_year = year - 1900;
+    info.tm_mon = month - 1;
+    info.tm_mday = day;
+    info.tm_hour = hour;
+    info.tm_min = minute;
+    info.tm_sec = second;
+    info.tm_isdst = -1;
+    time_t  result = mktime(&info);
+    return (int) result;
+}
+
+// "%Y-%m-%d %H:%M:%S"
+char *time_format_seconds(int seconds, char *format)
+{
+    time_t currentTime = seconds >= 0 ? seconds : time(NULL);
+    struct tm *localTime = localtime(&currentTime);
+    char formattedLocalDate[100];
+    strftime(formattedLocalDate, 100, format, localTime);
+    return tools_char_arr_to_pointer(formattedLocalDate);
+}
+
+char *time_get_date()
+{
+    time_t currentTime = time(NULL);
+    char *fullLocalDate = ctime(&currentTime);
+    return fullLocalDate;
+}
+
+int time_get_clock()
+{
+    clock_t clockTime = clock();
+    double seconds = (double)clockTime / CLOCKS_PER_SEC;
+    return seconds;
+}
+
+void time_sleep_seconds(double seconds)
+{
+    sleep(seconds);
 }
 
 #endif

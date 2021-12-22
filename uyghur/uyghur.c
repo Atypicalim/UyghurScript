@@ -13,6 +13,7 @@
 #include "libraries/global.c"
 #include "libraries/number.c"
 #include "libraries/string.c"
+#include "libraries/time.c"
 #include "libraries/box.c"
 
 void Uyghur_init(Uyghur *this)
@@ -31,6 +32,7 @@ Uyghur *Uyghur_new()
     lib_global_register(uyghur->bridge);
     lib_number_register(uyghur->bridge);
     lib_string_register(uyghur->bridge);
+    lib_time_register(uyghur->bridge);
     lib_box_register(uyghur->bridge);
     return uyghur;
 }

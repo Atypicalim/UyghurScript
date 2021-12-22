@@ -2,15 +2,6 @@
 
 #include "../uyghur.c"
 
-void test_number(Bridge *bridge)
-{
-    Value *value = Bridge_popValue(bridge);
-    // todo
-    Bridge_startResult(bridge);
-    Bridge_pushValue(bridge, NULL);
-    Bridge_return(bridge);
-}
-
 void ug_number_ceil(Bridge *bridge)
 {
     double num = Bridge_popNumber(bridge);
@@ -208,9 +199,6 @@ void ug_number_dec_part(Bridge *bridge)
 void lib_number_register(Bridge *bridge)
 {
     Bridge_startBox(bridge, "san");
-    //
-    Bridge_pushKey(bridge, "sanSinaq");
-    Bridge_pushFunction(bridge, test_number);
     //
     Bridge_pushKey(bridge, "pi");
     Bridge_pushNumber(bridge, acos(-1));
