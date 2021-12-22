@@ -210,6 +210,11 @@
 # 
 # ikrangha @cBox{[cString]} yezilsun
 
+
+fonkisiye @san{[ixtiyariyUruqBikitish]} bilen -1 ishlitilsun
+fonkisiye @san{[ixtiyariySanHasillash]} bilen 1 10 ishlitilsun we netije r bolsun
+ikrangha r yezilsun
+
 # TOOD ################################################################################
 
 # box variable type

@@ -281,4 +281,14 @@ char *str_format(char *template, ...)
     return t;
 }
 
+int num_random(int from, int to)
+{
+    int big = to > from ? to : from;
+    int small = to > from ? from : to;
+    int count = big - small + 1;
+    int num = rand() % count;
+    int r = small + num;
+    return r;
+}
+
 #endif

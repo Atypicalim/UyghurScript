@@ -13,6 +13,7 @@
 #include <math.h>
 #include <ctype.h>
 #include <stdarg.h>
+#include <time.h>
 
 #include "../tools/hashmap.h"
 #include "../tools/block.h"
