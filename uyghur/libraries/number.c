@@ -59,7 +59,7 @@ void ug_number_random(Bridge *bridge)
 void ug_number_radian(Bridge *bridge)
 {
     double num = Bridge_popNumber(bridge);
-    int r = num * M_PI / 180.0;
+    double r = num * M_PI / 180.0;
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
     Bridge_return(bridge);
@@ -68,7 +68,7 @@ void ug_number_radian(Bridge *bridge)
 void ug_number_degree(Bridge *bridge)
 {
     double num = Bridge_popNumber(bridge);
-    int r = num * 180.0 / M_PI;
+    double r = num * 180.0 / M_PI;
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
     Bridge_return(bridge);
