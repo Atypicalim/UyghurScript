@@ -15,6 +15,8 @@
 #include <stdarg.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "../tools/hashmap.h"
 #include "../tools/block.h"

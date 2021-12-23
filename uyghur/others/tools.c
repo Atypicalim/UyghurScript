@@ -451,4 +451,76 @@ void system_write_terminal(char *value)
     printf("%s", value);
 }
 
+bool file_copy(char *path, char *to)
+{
+    int BUF_SIZE = 1024;
+    FILE *src, *dst;
+    size_t in, out;
+    src = fopen(path, "rb");
+    dst = fopen(to, "wb");
+    if (src == NULL || dst == NULL) {
+        if (src != NULL) return fclose(src);
+        if (dst != NULL) return fclose(dst);
+        return false;
+    }
+    char *buf = (char*) malloc(BUF_SIZE * sizeof(char));
+    while (1) {
+        in = fread(buf, sizeof(char), BUF_SIZE, src);
+        if (0 == in) break;
+        out = fwrite(buf, sizeof(char), in, dst);
+        if (0 == out) break;
+    }
+    fclose(src);
+    fclose(dst);
+    free(buf);
+    return true;
+}
+
+int file_rename(char *path, char *to)
+{
+    return rename(path, to);
+}
+
+int file_remove(char *path)
+{
+    return unlink(path);
+}
+
+bool file_exist(char *path)
+{
+    return access(path, F_OK) == 0;
+}
+
+bool file_is_file(char *path)
+{
+    struct stat path_stat;
+    stat(path, &path_stat);
+    return S_ISREG(path_stat.st_mode);
+}
+
+bool file_is_directory(char *path)
+{
+    struct stat path_stat;
+    stat(path, &path_stat);
+    return S_ISDIR(path_stat.st_mode);
+}
+
+int file_create_directory(char *path)
+{
+    char tmp[1024];
+    char *p = NULL;
+    size_t len;
+    snprintf(tmp, sizeof(tmp),"%s",path);
+    len = strlen(tmp);
+    if (tmp[len - 1] == '/') tmp[len - 1] = 0;
+    for (p = tmp + 1; *p; p++)
+    {
+        if (*p != '/') continue;
+        *p = 0;
+        mkdir(tmp);
+        *p = '/';
+    }
+    return mkdir(tmp);
+}
+
 #endif

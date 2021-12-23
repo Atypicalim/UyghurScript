@@ -1,0 +1,22 @@
+# file test
+
+fonkisiye @xojjet{[kuchurush]} bilen [../uyghur/parser.c] [./parser.c] ishlitilsun we netije r bolsun
+# rast
+
+fonkisiye @xojjet{[yotkesh]} bilen [../uyghur/parser.c] [./parser.c] ishlitilsun we netije r bolsun
+# 0
+
+fonkisiye @xojjet{[uchurush]} bilen [../uyghur/parser.c] ishlitilsun we netije r bolsun
+# 0
+
+fonkisiye @xojjet{[buMewjutmu]} bilen [../uyghur/parser.c] ishlitilsun we netije r bolsun
+# rast
+
+fonkisiye @xojjet{[buXojjetmu]} bilen [../uyghur/parser.c] ishlitilsun we netije r bolsun
+# rast
+
+fonkisiye @xojjet{[buSomkimu]} bilen [../uyghur/parser.c] ishlitilsun we netije r bolsun
+# yalghan
+
+fonkisiye @xojjet{[somkaQurush]} bilen [./a/b/c] ishlitilsun we netije r bolsun
+# 0
