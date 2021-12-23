@@ -144,20 +144,6 @@
 #     netije waqitliqMiqdar qayturulsun
 # tamamlansun
 
-
-# global test
-# ikrangha NESHIR_ISMI yezilsun
-# fonkisiye yezish bilen NESHIR_ISMI ishlitilsun
-# miqdar a qimmiti [empty] bolsun
-# fonkisiye oqush ishlitilsun we netije a bolsun
-# fonkisiye yezish bilen a ishlitilsun
-
-
-# fonkisiye hojjetYezish bilen [hojjet.txt] [hojjet mezmuni ...] ishlitilsun
-# miqdar c qimmiti quruq bolsun
-# fonkisiye hojjetOqush bilen [hojjet.txt] ishlitilsun we netije c bolsun
-# fonkisiye yezish bilen c ishlitilsun
-
 # box init
 # miqdar xxx qimmiti sanduq bolsun
 # miqdar yyy qimmiti sanduq bolsun
@@ -202,11 +188,6 @@
 # tamamlansun
 # fonkisiye boxTest bilen _ $ ishlitilsun
 
-# module
-# fonkisiye bolekEkirish bilen [../examples/hello.ug] ishlitilsun we netije hello bolsun
-# fonkisiye bolekTazilash bilen [../examples/hello.ug] ishlitilsun
-# ikrangha @hello{[variable]} yezilsun
-
 # 
 # ikrangha @cBox{[cString]} yezilsun
 
@@ -233,12 +214,6 @@
 # import a file to execute and return root scope as a box
 # fonkisiye @ug{ekirish} bilen test.ug ishlitilsun we netije testBox bolsun
 # fonkisiye @testBox{testFunc} bilen testVariable ishlitilsun we netije testResult bolsun
-
-# make standard library to necessary functions
-# fonkisiye @ikran{oqush} ishlitilsun we netije content bolsun
-# fonkisiye @ikran{yezish} bilen content ishlitilsun
-# fonkisiye @io{hejjetOqush} bilen test.txt [rb+] ishlitilsun we netije textContent bolsun
-# fonkisiye @io{hejjetYezish} bilen test.txt [rb+] textContent ishlitilsun
 
 # locate a variable to current scope
 # miqdar r orni yerlik bolsun

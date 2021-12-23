@@ -43,7 +43,7 @@ Uyghur *Uyghur_new()
 
 Value *Uyghur_execute(Uyghur *this, char *path, bool isEntry)
 {
-    char *content = tools_read_file(path);
+    char *content = file_read(path);
     if (content == NULL) return false;
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, content);
     Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);

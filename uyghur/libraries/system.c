@@ -53,7 +53,8 @@ void ug_system_read_terminal(Bridge *bridge)
 
 void ug_system_write_terminal(Bridge *bridge)
 {
-    system_write_terminal(Bridge_popString(bridge));
+    Value *v = Bridge_popValue(bridge);
+    system_write_terminal(Value_toString(v));
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }

@@ -87,7 +87,9 @@ void Bridge_pushValue(Bridge *this, Value *value)
 
 Value *Bridge_popValue(Bridge *this)
 {
-    return Stack_pop(this->stack);
+    Value *v = Stack_pop(this->stack);
+    if (v == NULL) return Value_newEmpty(NULL);
+    return v;
 }
 
 Value *Bridge_popValueForRType(Bridge *this, char *tp)

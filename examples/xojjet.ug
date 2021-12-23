@@ -1,5 +1,11 @@
 # file test
 
+fonkisiye @xojjet{[yezish]} bilen [./test.txt] [test...] ishlitilsun we netije r bolsun
+# rast
+
+fonkisiye @xojjet{[oqush]} bilen [./test.txt] ishlitilsun we netije r bolsun
+# oqush
+
 fonkisiye @xojjet{[kuchurush]} bilen [../uyghur/parser.c] [./parser.c] ishlitilsun we netije r bolsun
 # rast
 

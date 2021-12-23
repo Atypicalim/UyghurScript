@@ -1,0 +1,22 @@
+# global test
+
+ikrangha NESHIR_ISMI yezilsun
+# 0.1
+
+ikrangha NESHIR_NUMIRI yezilsun
+# 0.1
+
+fonkisiye oqush ishlitilsun we netije r bolsun
+# input a value from termial
+
+fonkisiye yezish bilen r ishlitilsun
+# output a value to terminal
+
+fonkisiye ekirish bilen [../examples/hello.ug] ishlitilsun we netije hello bolsun
+# inport a module and return a box
+
+fonkisiye tazilash bilen [../examples/hello.ug] ishlitilsun
+# merhaba uyghur script!
+
+ikrangha hello yezilsun
+# [RV => t:RTYPE_BOX p:-613914656]

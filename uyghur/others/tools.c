@@ -36,32 +36,6 @@ char *tools_format(char *msg, ...)
     return t;
 }
 
-void tools_write_file(const char *path, const char *data)
-{
-    if (data == NULL) return;
-    FILE *fp = fopen(path, "ab");
-    if (fp != NULL)
-    {
-        fputs(data, fp);
-        fclose(fp);
-    }
-}
-
-char *tools_read_file(const char *path)
-{
-    char *text;
-    FILE *file = fopen(path, "rb");
-    if (file == NULL) return NULL;
-    fseek(file, 0, SEEK_END);
-    long lSize = ftell(file);
-    text = (char *)malloc(lSize + 1);
-    rewind(file);
-    fread(text, sizeof(char), lSize, file);
-    text[lSize] = '\0';
-    fclose(file);
-    return text;
-}
-
 char *tools_str_new(char *str, int extraLen)
 {
     size_t len = strlen(str);
@@ -449,6 +423,31 @@ char *system_read_terminal()
 void system_write_terminal(char *value)
 {
     printf("%s", value);
+}
+
+bool file_write(char *path, char *data)
+{
+    if (data == NULL) return false;
+    FILE *fp = fopen(path, "ab");
+    if (fp == NULL) return false;
+    fputs(data, fp);
+    fclose(fp);
+    return true;
+}
+
+char *file_read(char *path)
+{
+    char *text;
+    FILE *file = fopen(path, "rb");
+    if (file == NULL) return NULL;
+    fseek(file, 0, SEEK_END);
+    long lSize = ftell(file);
+    text = (char *)malloc(lSize + 1);
+    rewind(file);
+    fread(text, sizeof(char), lSize, file);
+    text[lSize] = '\0';
+    fclose(file);
+    return text;
 }
 
 bool file_copy(char *path, char *to)

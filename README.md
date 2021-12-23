@@ -211,7 +211,7 @@ miqdar bolektikiQimmet qimmiti [bolektiki sinaq qimmet ...] bolsun
 
 # bash_programma.ug
 ikrangha [bash programmidin salam ...] yezilsun
-fonkisiye bolekEkirish bilen [../bolek_programma.ug] ishlitilsun we netije bolekSanduq bolsun
+fonkisiye ekirish bilen [../bolek_programma.ug] ishlitilsun we netije bolekSanduq bolsun
 ikrangha @bolekSanduq{[bolektikiQimmet]} yezilsun
 
 # run the program
