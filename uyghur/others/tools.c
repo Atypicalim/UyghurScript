@@ -439,16 +439,16 @@ char *system_get_env(char *name)
     return getenv(name);
 }
 
-void system_write_terminal(char *value)
-{
-    printf("%s", value);
-}
-
 char *system_read_terminal()
 {
     char value[1024];
     scanf(" %[^\n]", value);
     return tools_char_arr_to_pointer(value);
+}
+
+void system_write_terminal(char *value)
+{
+    printf("%s", value);
 }
 
 #endif
