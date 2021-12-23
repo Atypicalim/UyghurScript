@@ -158,6 +158,12 @@ char decode_escape(char c)
     }       
 }
 
+char *str_new(char *str)
+{
+    char* buf = malloc(strlen(str) + 1);
+    return strcpy(buf, str);
+}
+
 char *str_replace(char *origin, char *from, char *to, int direction, int num)
 {
     if (origin == NULL || from == NULL || to == NULL || direction == 0 || num == 0) return origin;
@@ -366,6 +372,83 @@ int time_get_clock()
 void time_sleep_seconds(double seconds)
 {
     sleep(seconds);
+}
+
+// os type
+#define PLATFORM_WINDOWS "PLATFORM_WINDOWS"
+#define PLATFORM_APPLE "PLATFORM_APPLE"
+#define PLATFORM_LINUX "PLATFORM_LINUX"
+#define PLATFORM_UNIX "PLATFORM_UNIX"
+#define PLATFORM_FREEBSD "PLATFORM_FREEBSD"
+#define PLATFORM_UNKNOWN "PLATFORM_UNKNOWN"
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    #define PLATFORM_NAME PLATFORM_WINDOWS
+#elif __APPLE__
+    #define PLATFORM_NAME PLATFORM_APPLE
+#elif __linux__
+    #define PLATFORM_NAME PLATFORM_LINUX
+#elif __unix || __unix__
+    #define PLATFORM_NAME PLATFORM_UNIX
+#elif __FreeBSD__
+    #define PLATFORM_NAME PLATFORM_FREEBSD
+#else
+    #define PLATFORM_NAME PLATFORM_UNKNOWN
+#endif
+
+char *system_get_name()
+{
+    return PLATFORM_NAME;
+}
+
+void system_exit_program(int code)
+{
+    exit(code);
+}
+
+char *system_execute_command(char *cmd)
+{
+    FILE *fp;
+    if ((fp = popen(cmd, "r")) == NULL) return NULL;
+    int BUFSIZE = 1024;
+    char buf[BUFSIZE];
+    char *result = str_new("");
+    char *temp1;
+    char *temp2;
+    while (fgets(buf, BUFSIZE, fp) != NULL) {
+        temp1 = tools_char_arr_to_pointer(buf);
+        temp2 = str_link(result, temp1);
+        free(temp1);
+        free(result);
+        result = temp2;
+    }
+    if(pclose(fp)) return NULL;
+    return result;
+}
+
+void system_set_env(char *name, char *value)
+{
+    char *temp = str_link(name, "=");
+    char *target = str_link(temp, value);
+    putenv(target);
+    free(temp);
+    free(target);
+}
+
+char *system_get_env(char *name)
+{
+    return getenv(name);
+}
+
+void system_write_terminal(char *value)
+{
+    printf("%s", value);
+}
+
+char *system_read_terminal()
+{
+    char value[1024];
+    scanf(" %[^\n]", value);
+    return tools_char_arr_to_pointer(value);
 }
 
 #endif
