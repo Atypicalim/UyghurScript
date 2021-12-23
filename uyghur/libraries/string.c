@@ -111,6 +111,19 @@ void ug_string_link(Bridge *bridge)
     Bridge_return(bridge);
 }
 
+void ug_str_format(Bridge *bridge)
+{
+    char *f = Bridge_popString(bridge);
+    Value *v = Bridge_popValue(bridge);
+    char *r = Value_toString(v);
+    if (v->type == RTYPE_NUMBER) r = str_format(f, v->number);
+    if (v->type == RTYPE_STRING) r = str_format(f, v->string);
+    if (v->type == RTYPE_BOOLEAN) r = str_format(f, v->boolean);
+    Bridge_startResult(bridge);
+    Bridge_pushString(bridge, r);
+    Bridge_return(bridge);
+}
+
 void lib_string_register(Bridge *bridge)
 {
     Bridge_startBox(bridge, "xet");
@@ -139,6 +152,8 @@ void lib_string_register(Bridge *bridge)
     // 
     Bridge_pushKey(bridge, "ulash");
     Bridge_pushFunction(bridge, ug_string_link);
+    Bridge_pushKey(bridge, "formatlash");
+    Bridge_pushFunction(bridge, ug_str_format);
     //
     Bridge_register(bridge);
 }

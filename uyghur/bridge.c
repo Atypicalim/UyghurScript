@@ -133,7 +133,7 @@ char *Bridge_popString(Bridge *this)
 
 void Bridge_pushFunction(Bridge *this, void (*value)(Bridge *))
 {
-    Bridge_pushValue(this,  Value_newCFunction(value, NULL));
+    Bridge_pushValue(this, Value_newCFunction(value, NULL));
 }
 
 void Bridge_register(Bridge *this)

@@ -54,7 +54,11 @@ void ug_system_read_terminal(Bridge *bridge)
 void ug_system_write_terminal(Bridge *bridge)
 {
     Value *v = Bridge_popValue(bridge);
-    system_write_terminal(Value_toString(v));
+    while (v->type != RTYPE_EMPTY)
+    {
+        system_write_terminal(Value_toString(v));
+        v = Bridge_popValue(bridge);
+    }
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }

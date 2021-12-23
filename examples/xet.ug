@@ -29,3 +29,7 @@ fonkisiye @xet{[sanash]} bilen [abcde] ishlitilsun we netije r bolsun
 # link
 fonkisiye @xet{[ulash]} bilen [abcde] [123] ishlitilsun we netije r bolsun
 # abcde123
+
+# format
+fonkisiye @xet{[formatlash]} bilen [=%.2f=] 12.5 ishlitilsun we netije r bolsun
+# =12.50=

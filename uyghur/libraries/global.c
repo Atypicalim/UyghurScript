@@ -12,7 +12,11 @@ void oqush(Bridge *bridge)
 void yezish(Bridge *bridge)
 {
     Value *v = Bridge_popValue(bridge);
-    system_write_terminal(Value_toString(v));
+    while (v->type != RTYPE_EMPTY)
+    {
+        system_write_terminal(Value_toString(v));
+        v = Bridge_popValue(bridge);
+    }
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }
