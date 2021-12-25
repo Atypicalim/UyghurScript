@@ -269,6 +269,27 @@ char *str_format(char *template, ...)
     return t;
 }
 
+int char_to_int(char c)
+{
+    int i = c - '0';
+    if (i >= 49) i-= 39;
+    if (i < 0 || i > 15) return 0;
+    return i;
+}
+
+int hex_to_int(char *str)
+{
+    int len = strlen(str);
+    int result = 0;
+    int number;
+    for (int i = len - 1; i >= 0; i--)
+    {
+        number = char_to_int(str[len - i - 1]);
+        result = result + number * pow(16, i);
+    }
+    return result;
+}
+
 int num_random(int from, int to)
 {
     int big = to > from ? to : from;

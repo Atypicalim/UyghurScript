@@ -3,79 +3,44 @@
 #include "raylib.h"
 #include "../uyghur/uyghur.c"
 
+// data
+
 // tool
+
+Color color_from_bridge(Bridge *bridge)
+{
+    char *str = Bridge_popString(bridge);
+    if (strlen(str) != 8) return BLACK;
+    int r = char_to_int(str[0]) * 16 + char_to_int(str[1]);
+    int g = char_to_int(str[2]) * 16 + char_to_int(str[3]);
+    int b = char_to_int(str[4]) * 16 + char_to_int(str[5]);
+    int a = char_to_int(str[6]) * 16 + char_to_int(str[7]);
+    return (Color){r, g, b, a};
+}
+
+Vector2 vector_from_bridge(Bridge *bridge)
+{
+    int x = Bridge_popNumber(bridge);
+    int y = Bridge_popNumber(bridge);
+    return (Vector2){x, y};
+}
+
+Rectangle rectangle_from_bridge(Bridge *bridge)
+{
+    int x = Bridge_popNumber(bridge);
+    int y = Bridge_popNumber(bridge);
+    int w = Bridge_popNumber(bridge);
+    int h = Bridge_popNumber(bridge);
+    return (Rectangle){x, y, w, h};
+}
 
 void raylib_on_show()
 { 
 
-    // RLAPI void PollInputEvents(void);                                 // Register all input events
-    // RLAPI void WaitTime(float ms); 
-
-    // RLAPI void BeginDrawing(void);                                    // Setup canvas (framebuffer) to start drawing
-    // RLAPI void EndDrawing(void); 
-
-    // key
-    // RLAPI bool IsKeyPressed(int key);                             // Check if a key has been pressed once
-    // RLAPI bool IsKeyDown(int key);       // Check if a key is being pressed
-    // RLAPI bool IsKeyReleased(int key);                            // Check if a key has been released once
-    // RLAPI bool IsKeyUp(int key);         // Check if a key is NOT being pressed
-    // RLAPI int GetKeyPressed(void);          // Get keycode pressed, call it multiple times for keys queued, returns 0 when empty
-
-    // mouse
-    // RLAPI bool IsMouseButtonPressed(int button);                  // Check if a mouse button has been pressed once
-    // RLAPI bool IsMouseButtonDown(int button);                     // Check if a mouse button is being pressed
-    // RLAPI bool IsMouseButtonReleased(int button);                 // Check if a mouse button has been released once
-    // RLAPI bool IsMouseButtonUp(int button);                       // Check if a mouse button is NOT being pressed
-    // RLAPI int GetMouseX(void);                                    // Get mouse position X
-    // RLAPI int GetMouseY(void);                                    // Get mouse position Y
-    // RLAPI Vector2 GetMouseDelta(void);                            // Get mouse delta between frames
-    // RLAPI float GetMouseWheelMove(void);                          // Get mouse wheel movement Y
-    // RLAPI void SetMouseCursor(int cursor);                        // Set mouse cursor
-
-    // RLAPI void ClearBackground(Color color);                          // Set background color (framebuffer clear color)
-    
-    // pixel
-    // DrawPixelV(Vector2 position, Color color); 
-
-    // line
-    // RLAPI void DrawLineEx(Vector2 startPos, Vector2 endPos, float thick, Color color);
-    // RLAPI void DrawLineBezierQuad(Vector2 startPos, Vector2 endPos, Vector2 controlPos, float thick, Color color);
-    // RLAPI void DrawLineBezierCubic(Vector2 startPos, Vector2 endPos, Vector2 startControlPos, Vector2 endControlPos, float thick, Color color);
-
-    // circle
-    // RLAPI void DrawCircleLines(int centerX, int centerY, float radius, Color color);  
-    // RLAPI void DrawCircle(int centerX, int centerY, float radius, Color color);
-    // RLAPI void DrawCircleGradient(int centerX, int centerY, float radius, Color color1, Color color2);
-
-    // ellipse
-    // DrawEllipse(int centerX, int centerY, float radiusH, float radiusV, Color color);             // Draw ellipse
-    // DrawEllipseLines(int centerX, int centerY, float radiusH, float radiusV, Color color);        // Draw ellipse outline
-
-    // ring
-// DrawRing(Vector2 center, float innerRadius, float outerRadius, float startAngle, float endAngle, int segments, Color color); // Draw ring
-// DrawRingLines(Vector2 center, float innerRadius, float outerRadius, float startAngle, float endAngle, int segments, Color color);    // Draw ring outline
-
-
-    // rectangle
-    // RLAPI void DrawRectanglePro(Rectangle rec, Vector2 origin, float rotation, Color color);                 // Draw a color-filled rectangle with pro parameters
-    // RLAPI void DrawRectangleGradientEx(Rectangle rec, Color col1, Color col2, Color col3, Color col4);       // Draw a gradient-filled rectangle with custom vertex colors
-    // RLAPI void DrawRectangleLinesEx(Rectangle rec, float lineThick, Color color);                            // Draw rectangle outline with extended parameters
-    // RLAPI void DrawRectangleRounded(Rectangle rec, float roundness, int segments, Color color);              // Draw rectangle with rounded edges
-    // RLAPI void DrawRectangleRoundedLines(Rectangle rec, float roundness, int segments, float lineThick, Color color); // Draw rectangle with 
-
-    // triangle
-    // RLAPI void DrawTriangle(Vector2 v1, Vector2 v2, Vector2 v3, Color color); 
-    // RLAPI void DrawTriangleLines(Vector2 v1, Vector2 v2, Vector2 v3, Color color); 
-    
-    // polygon
-    // RLAPI void DrawPoly(Vector2 center, int sides, float radius, float rotation, Color color);
-    // RLAPI void DrawPolyLines(Vector2 center, int sides, float radius, float rotation, Color color);
-    // RLAPI void DrawPolyLinesEx(Vector2 center, int sides, float radius, float rotation, float lineThick, Color color);
-
-
     // image
     // RLAPI Image LoadImage(const char *fileName);  
     // RLAPI void UnloadImage(Image image); 
+    // RLAPI Image ImageCopy(Image image);  
     // RLAPI Image LoadImageFromScreen(void); 
     // RLAPI bool ExportImage(Image image, const char *fileName); 
     // RLAPI Image ImageFromImage(Image image, Rectangle rec);  
@@ -145,8 +110,14 @@ void raylib_on_show()
 void raylib_on_frame()
 {
     Vector2 center = (Vector2){250, 250};
-    Color color = (Color){50, 100, 200, 100};
-    Rectangle rectangle = (Rectangle){11, 11, 198, 198};
+    Color color = (Color){50, 100, 200, 255};
+    Rectangle rectangle = (Rectangle){250, 250, 200, 200};
+    //
+    // DrawRectangleGradientEx(rectangle,
+    //     (Color){255, 0, 0, 255}, (Color){0, 255, 0, 255}, (Color){0, 0, 255, 255}, (Color){0, 0, 0, 255}
+    // );
+    DrawRectanglePro(rectangle, (Vector2){100, 100}, 0, color);
+
 }
 
 void raylib_on_focus()
@@ -172,12 +143,15 @@ void raylib_on_hide()
 
 }
 
-void raylib_show_window(int width, int height)
+void raylib_show_window(int width, int height, char *title, int mode)
 {
     if (IsWindowReady()) return;
     if (width < 0) width = 500;
     if (height < 0) height = 500;
-    InitWindow(width, height, "");
+    if (strlen(title) == 0) title = "Uyghur Script!";
+    if (mode < 0) mode = FLAG_WINDOW_RESIZABLE;
+    SetConfigFlags(mode);
+    InitWindow(width, height, title);
     raylib_on_show();
     while (!WindowShouldClose())
     {
@@ -193,16 +167,18 @@ void raylib_show_window(int width, int height)
 
 // api
 
-void ug_board_show(Bridge *bridge)
+void ug_board_show_window(Bridge *bridge)
 {
     int w = Bridge_popNumber(bridge);
     int h = Bridge_popNumber(bridge);
-    raylib_show_window(w, h);
+    char *title = Bridge_popString(bridge);
+    int mode = Bridge_popNumber(bridge);
+    raylib_show_window(w, h, title, mode);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }
 
-void ug_baord_hide(Bridge *bridge)
+void ug_baord_hide_window(Bridge *bridge)
 {
     if (IsWindowReady()) CloseWindow();
     Bridge_startResult(bridge);
@@ -301,6 +277,14 @@ void ug_baord_set_size(Bridge *bridge)
 
 void ug_baord_get_size(Bridge *bridge)
 {
+    Bridge_startResult(bridge);
+    Bridge_pushNumber(bridge, GetScreenWidth());
+    Bridge_pushNumber(bridge, GetScreenHeight());
+    Bridge_return(bridge);
+}
+
+void ug_baord_get_screen_size(Bridge *bridge)
+{
     int w = GetScreenWidth();
     int h = GetScreenHeight();
     Bridge_startResult(bridge);
@@ -382,6 +366,288 @@ void ug_baord_get_clipboard(Bridge *bridge)
     Bridge_return(bridge);
 }
 
+void ug_baord_set_mourse_cursor(Bridge *bridge)
+{
+    SetMouseCursor(Bridge_popNumber(bridge));
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_get_mouse_position(Bridge *bridge)
+{
+    Bridge_startResult(bridge);
+    Bridge_pushNumber(bridge, GetMouseX());
+    Bridge_pushNumber(bridge, GetMouseY());
+    Bridge_return(bridge);
+}
+
+void ug_baord_get_mouse_wheel(Bridge *bridge)
+{
+    Bridge_startResult(bridge);
+    Bridge_pushNumber(bridge, GetMouseWheelMove());
+    Bridge_return(bridge);
+}
+
+void ug_baord_get_mouse_key_action(Bridge *bridge)
+{
+    int keyCode = Bridge_popNumber(bridge);
+    int action = 0;
+    if (IsMouseButtonPressed(keyCode)) action = 1;
+    if (IsMouseButtonReleased(keyCode)) action = -1;
+    Bridge_startResult(bridge);
+    Bridge_pushNumber(bridge, action);
+    Bridge_return(bridge);
+}
+
+void ug_baord_get_mouse_key_state(Bridge *bridge)
+{
+    int keyCode = Bridge_popNumber(bridge);
+    int action = 0;
+    if (IsMouseButtonDown(keyCode)) action = 1;
+    if (IsMouseButtonUp(keyCode)) action = -1;
+    Bridge_startResult(bridge);
+    Bridge_pushNumber(bridge, action);
+    Bridge_return(bridge);
+}
+
+void ug_baord_get_keyboard_key_action(Bridge *bridge)
+{
+    int keyCode = Bridge_popNumber(bridge);
+    int action = 0;
+    if (IsKeyPressed(keyCode)) action = 1;
+    if (IsKeyReleased(keyCode)) action = -1;
+    Bridge_startResult(bridge);
+    Bridge_pushNumber(bridge, action);
+    Bridge_return(bridge);
+}
+
+void ug_baord_get_keybaord_key_state(Bridge *bridge)
+{
+    int keyCode = Bridge_popNumber(bridge);
+    int action = 0;
+    if (IsKeyDown(keyCode)) action = 1;
+    if (IsKeyUp(keyCode)) action = -1;
+    Bridge_startResult(bridge);
+    Bridge_pushNumber(bridge, action);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_start(Bridge *bridge)
+{
+    BeginDrawing();
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_end(Bridge *bridge)
+{
+    EndDrawing();
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_pixel(Bridge *bridge)
+{
+    Vector2 poit = vector_from_bridge(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawPixelV(poit, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_line_no_controll(Bridge *bridge)
+{
+    Vector2 poit1 = vector_from_bridge(bridge);
+    Vector2 poit2 = vector_from_bridge(bridge);
+    int thickness = Bridge_popNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawLineEx(poit1, poit2, thickness, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_line_one_controll(Bridge *bridge)
+{
+    Vector2 poit1 = vector_from_bridge(bridge);
+    Vector2 poit2 = vector_from_bridge(bridge);
+    int thickness = Bridge_popNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    Vector2 controll1 = vector_from_bridge(bridge);
+    DrawLineEx(poit1, poit2, thickness, color);
+    DrawLineBezierQuad(poit1, poit2, controll1, thickness, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_line_two_controll(Bridge *bridge)
+{
+    Vector2 poit1 = vector_from_bridge(bridge);
+    Vector2 poit2 = vector_from_bridge(bridge);
+    int thickness = Bridge_popNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    Vector2 controll1 = vector_from_bridge(bridge);
+    Vector2 controll2 = vector_from_bridge(bridge);
+    DrawLineEx(poit1, poit2, thickness, color);
+    DrawLineBezierCubic(poit1, poit2, controll1, controll1, thickness, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_rectangle_fill_transformed(Bridge *bridge)
+{
+    Rectangle rectangle = rectangle_from_bridge(bridge);
+    Vector2 anchor = vector_from_bridge(bridge);
+    double rotation = Bridge_popNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawRectanglePro(rectangle, anchor, rotation, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_rectangle_fill_colorful(Bridge *bridge)
+{
+    Rectangle rectangle = rectangle_from_bridge(bridge);
+    int roundness = Bridge_popNumber(bridge);
+    int thickness = Bridge_popNumber(bridge);
+    Color leftTop = color_from_bridge(bridge);
+    Color leftBottom = color_from_bridge(bridge);
+    Color rightBottom = color_from_bridge(bridge);
+    Color rightTop = color_from_bridge(bridge);
+    DrawRectangleGradientEx(rectangle, leftTop, leftBottom, rightBottom, rightTop);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_rectangle_fill_round(Bridge *bridge)
+{
+    Rectangle rectangle = rectangle_from_bridge(bridge);
+    int roundness = Bridge_popNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawRectangleRounded(rectangle, roundness, 0, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_rectangle_stroke(Bridge *bridge)
+{
+    Rectangle rectangle = rectangle_from_bridge(bridge);
+    double roundness = Bridge_popNumber(bridge);
+    double thickness = Bridge_popNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawRectangleRoundedLines(rectangle, roundness, 0, thickness, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_circle_fill(Bridge *bridge)
+{
+    int centerX = Bridge_popNumber(bridge);
+    int centerY = Bridge_popNumber(bridge);
+    int radiusH = Bridge_popNumber(bridge);
+    int radiusV = Bridge_popNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawEllipse(centerX, centerY, radiusH, radiusV, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_circle_stroke(Bridge *bridge)
+{
+    int centerX = Bridge_popNumber(bridge);
+    int centerY = Bridge_popNumber(bridge);
+    int radiusH = Bridge_popNumber(bridge);
+    int radiusV = Bridge_popNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawEllipseLines(centerX, centerY, radiusH, radiusV, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_circle_gradient(Bridge *bridge)
+{
+    int centerX = Bridge_popNumber(bridge);
+    int centerY = Bridge_popNumber(bridge);
+    double radius = Bridge_popNumber(bridge);
+    Color color1 = color_from_bridge(bridge);
+    Color color2 = color_from_bridge(bridge);
+    DrawCircleGradient(centerX, centerY, radius, color1, color2);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_ring_fill(Bridge *bridge)
+{
+    Vector2 center = vector_from_bridge(bridge);
+    double innerRadius = Bridge_popNumber(bridge);
+    double outerRadius = Bridge_popNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    double startAngle = Bridge_popNumber(bridge);
+    double endAngle = Bridge_popNumber(bridge);
+    DrawRing(center, innerRadius, outerRadius, startAngle, endAngle, 0, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_ring_stroke(Bridge *bridge)
+{
+    Vector2 center = vector_from_bridge(bridge);
+    double innerRadius = Bridge_popNumber(bridge);
+    double outerRadius = Bridge_popNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    double startAngle = Bridge_popNumber(bridge);
+    double endAngle = Bridge_popNumber(bridge);
+    DrawRingLines(center, innerRadius, outerRadius, startAngle, endAngle, 0, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_triangle_fill(Bridge *bridge)
+{
+    Vector2 point1 = vector_from_bridge(bridge);
+    Vector2 point2 = vector_from_bridge(bridge);
+    Vector2 point3 = vector_from_bridge(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawTriangle(point1, point2, point3, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_triangle_stroke(Bridge *bridge)
+{
+    Vector2 point1 = vector_from_bridge(bridge);
+    Vector2 point2 = vector_from_bridge(bridge);
+    Vector2 point3 = vector_from_bridge(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawTriangleLines(point1, point2, point3, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_polygon_fill(Bridge *bridge)
+{
+    Vector2 center = vector_from_bridge(bridge);
+    int sides = Bridge_popNumber(bridge);
+    double radius = Bridge_popNumber(bridge);
+    double rotation = Bridge_popNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawPoly(center, sides, radius, rotation, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_polygon_stroke(Bridge *bridge)
+{
+    Vector2 center = vector_from_bridge(bridge);
+    int sides = Bridge_popNumber(bridge);
+    double radius = Bridge_popNumber(bridge);
+    double rotation = Bridge_popNumber(bridge);
+    double thickness = Bridge_popNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawPolyLinesEx(center, sides, radius, rotation, thickness, color);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
 
 void ug_baord_test(Bridge *bridge)
 {
@@ -397,9 +663,9 @@ void lib_raylib_register(Bridge *bridge)
     Bridge_startBox(bridge, "doska");
     //
     Bridge_pushKey(bridge, "korsitish");
-    Bridge_pushFunction(bridge, ug_board_show);
+    Bridge_pushFunction(bridge, ug_board_show_window);
     //
     Bridge_register(bridge);
     //
-    // raylib_show_window(0, 0);
+    raylib_show_window(-1, -1, "", 4096);
 }
