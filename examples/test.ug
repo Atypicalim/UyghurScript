@@ -196,6 +196,8 @@
 # fonkisiye @box{[sinaq]} bilen 0 ishlitilsun we netije r bolsun
 # ikrangha r yezilsun
 
+fonkisiye @doska{[korsitish]} bilen -1 -1 ishlitilsun
+
 # TOOD ################################################################################
 
 # box variable type

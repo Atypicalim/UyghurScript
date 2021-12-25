@@ -8,7 +8,7 @@
 
 void register_external_libraries(Bridge *bridge)
 {
-    lib_board_register(bridge);
+    lib_raylib_register(bridge);
     lib_test_register(bridge);
 }
 
