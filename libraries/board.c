@@ -95,26 +95,114 @@ void raylib_unload_font(char *path)
     free(fnt);
 }
 
-void raylib_create_texture_from_image(char *path)
+typedef struct ImgInfo {
+    char *path;
+    int x;
+    int y;
+    int w;
+    int h;
+    int scaleX;
+    int scaleY;
+    bool flipX;
+    bool flipY;
+    int rotate;
+    Color color;
+} ImgInfo;
+
+char *get_tex4img_tag(ImgInfo info)
 {
-    // TODO
+    int x = info.x;
+    int y = info.y;
+    int w = info.w;
+    int h = info.h;
+    return tools_format(
+        "T-IMAGE:%s:%d,%d:%d,%d:%f%f:%s,%s:%d:%d,%d,%d,%d",
+        info.path,
+        x, y, w, h,
+        info.scaleX, info.scaleY,
+        b2s(info.flipX), b2s(info.flipY),
+        info.rotate,
+        info.color.r, info.color.g, info.color.b, info.color.a
+    );
 }
 
-Texture raylib_create_texture_from_text(char *path, char *text, int size, int spacing, Color color)
+Texture raylib_create_texture_from_image(ImgInfo info, char *tag)
 {
-    char *tag = tools_format("P:%s-T:%s-S:%d-S:%d-C:%d,%d,%d,%d", path, text, size, spacing, color.r, color.g, color.b, color.a);
     Texture *tex = Hashmap_get(resourcesMap, tag);
     if (tex != NULL) {
-        free(tag);
         return tex[0];
     }
-    Font font = raylib_load_font(path);
-    Image image = ImageTextEx(font, text, size, spacing, color);
-    Texture texture = LoadTextureFromImage(image);
+    //
+    int x = info.x;
+    int y = info.y;
+    int w = info.w;
+    int h = info.h;
+    int r = info.rotate;
+    //
+    Image img = raylib_load_image(info.path);
+    int imgW = img.width;
+    int imgH = img.height;
+    x = MAX(0, MIN(x, imgW - 1));
+    y = MAX(0, MIN(y, imgH - 1));
+    int leftX = imgW - x;
+    int leftY = imgH - y;
+    w = MAX(1, MIN((w <= 0 ? imgW : w), leftX));
+    h = MAX(1, MIN((h <= 0 ? imgH : h), leftY));
+    img = ImageFromImage(img, (Rectangle){x, y, w, h});
+    //
+    if (info.scaleX >= 0 && info.scaleY >= 0) ImageResize(&img, w * info.scaleX, h * info.scaleY);
+    if (info.flipX) ImageFlipHorizontal(&img);
+    if (info.flipY) ImageFlipVertical(&img);
+    if (r > 0)
+    {
+        while (r > 0) {
+            ImageRotateCW(&img);
+            r--;
+        }
+    }
+    ImageColorTint(&img, info.color); 
+    // // 
+    Texture texture = LoadTextureFromImage(img);
     tex = (Texture *)malloc(sizeof(texture));
     tex[0] = texture;
     Hashmap_set(resourcesMap, tag, tex);
-    free(tag);
+    UnloadImage(img);
+    return texture;
+}
+
+typedef struct TxtInfo {
+    char *path;
+    char *text;
+    int size;
+    int spacing;
+    Color color;
+} TxtInfo;
+
+char *get_tex4txt_tag(TxtInfo info)
+{
+    return tools_format(
+        "T-TEXT:%s:%s:%d:%d:%d,%d,%d,%d",
+        info.path,
+        info.text,
+        info.size,
+        info.spacing,
+        info.color.r, info.color.g, info.color.b, info.color.a
+    );
+}
+
+Texture raylib_create_texture_from_text(TxtInfo info, char *tag)
+{
+    Texture *tex = Hashmap_get(resourcesMap, tag);
+    if (tex != NULL) {
+        return tex[0];
+    }
+    Font font = raylib_load_font(info.path);
+    Image img = ImageTextEx(font, info.text, info.size, info.spacing, info.color);
+    Texture texture = LoadTextureFromImage(img);
+    tex = (Texture *)malloc(sizeof(texture));
+    tex[0] = texture;
+    Hashmap_set(resourcesMap, tag, tex);
+    UnloadImage(img);
     return texture;
 }
 
@@ -169,18 +257,24 @@ void raylib_on_frame()
     Color color = (Color){50, 100, 200, 255};
     Rectangle rectangle = (Rectangle){250, 250, 200, 200};
     //
-    // DrawRectangleGradientEx(rectangle,
-    //     (Color){255, 0, 0, 255}, (Color){0, 255, 0, 255}, (Color){0, 0, 255, 255}, (Color){0, 0, 0, 255}
-    // );
-    // DrawRectanglePro(rectangle, (Vector2){100, 100}, 0, color);
-    DrawFPS(50, 50);
+    DrawFPS(400, 450);
 
 
-    // Image img = raylib_load_image("../resources/rose.png");
-    // // raylib_unload_image("../resources/rose.png");
-    // // Image img = LoadImage("../resources/rose.png");  
-    // texture = LoadTextureFromImage(img);
-    DrawTextureEx(texture, (Vector2){100, 20}, 0, 1, WHITE);
+    // Image img = LoadImage("../resources/rose.png");             // Load image in CPU memory (RAM)
+    // Image img = raylib_load_image("../resources/rse.png");
+    // // // Image img = raylib_load_image("../resources/gift.png");
+    // img = ImageFromImage(img, (Rectangle){0, 0, 300, 300});
+    // int w = img.width;
+    // int h = img.height;
+
+
+    
+    // Texture texture = LoadTextureFromImage(img);
+    // DrawTextureEx(texture, (Vector2){20, 20}, 0, 1, WHITE);
+
+    // RLAPI void DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint);
+    // RLAPI void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint);
+    // RLAPI void DrawTextureTiled(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, float scale, Color tint);
 
 }
 
@@ -734,88 +828,39 @@ void ug_baord_draw_polygon_stroke(Bridge *bridge)
 
 // image
 
-// image
-// path
+void ug_baord_create_texture_from_image(Bridge *bridge)
+{
+    ImgInfo info = (ImgInfo) {"../resources/rose.png", 100, 0, 200, 200, 2, 2, false, false, 0, (Color) {0, 255, 255, 255}};
+    char *tag = get_tex4img_tag(info);
+    Texture texture = raylib_create_texture_from_image(info, tag);
+    free(tag);
+    DrawTextureEx(texture, (Vector2){20, 20}, 0, 1, WHITE);
+}
 
-// font
 // text
-// size
-// color
-// spacing
+
+// RLAPI Vector2 MeasureTextEx(Font font, const char *text, float fontSize, float spacing);
+void ug_baord_create_texture_from_text(Bridge *bridge)
+{
+    TxtInfo info = (TxtInfo) {"../resources/ukij.ttf", "TEST", 36, 2, (Color) {0, 100, 255, 255}};
+    char *tag = get_tex4txt_tag(info);
+    Texture texture = raylib_create_texture_from_text(info, tag);
+    free(tag);
+    DrawTextureEx(texture, (Vector2){20, 20}, 0, 1, WHITE);
+}
 
 // texture
-// x
-// y
-// color
-// rotation
-// scale
-// from rectange
-// to rectangle
-// anchor
-// 
 
-char *get_image_key(char *path)
+void ug_baord_draw_texture_from_text(Bridge *bridge)
 {
-
+    // 
 }
-
-char *get_font_key(char *paht)
-{
-
-}
-
-void ug_baord_load_texture_from_image(Bridge *bridge)
-{
-    // raylib_create_texture_from_image();
-}
-
-void ug_baord_load_texture_from_text(Bridge *bridge)
-{
-    // raylib_create_texture_from_text("../resources/ukij.ttf", text, fontSize, 2, color);
-}
-
-    // texture
-    // RLAPI Texture2D LoadTextureFromImage(Image image);  
-    // RLAPI void DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint);
-    // RLAPI void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint);
-    // RLAPI void DrawTextureTiled(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, float scale, Color tint);
-
-
-    // RLAPI Image ImageCopy(Image image);  
-    // RLAPI Image ImageFromImage(Image image, Rectangle rec);  
-    // RLAPI void ImageCrop(Image *image, Rectangle crop);
-
-    // RLAPI Image ImageText(const char *text, int fontSize, Color color);
-    // RLAPI Image ImageTextEx(Font font, const char *text, float fontSize, float spacing, Color tint); 
-
-    // RLAPI void ImageResize(Image *image, int newWidth, int newHeight); 
-    // RLAPI void ImageResizeNN(Image *image, int newWidth,int newHeight); 
-
-    // RLAPI void ImageFlipVertical(Image *image);
-    // RLAPI void ImageFlipHorizontal(Image *image);
-    // RLAPI void ImageRotateCW(Image *image); 
-    // ImageColorTint(Image *image, Color color); 
-
-    
-    // RLAPI void DrawText(const char *text, int posX, int posY, int fontSize, Color color);
-    // RLAPI void DrawTextEx(Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint);
-    
-    // RLAPI void DrawTextPro(Font font, const char *text, Vector2 position, Vector2 origin, float rotation, float fontSize, float spacing, Color tint);
-    // RLAPI int MeasureText(const char *text, int fontSize);
-    // RLAPI Vector2 MeasureTextEx(Font font, const char *text, float fontSize, float spacing);
-
-// font
+ 
+// RLAPI void DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint);
+// RLAPI void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint);
+// RLAPI void DrawTextureTiled(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, float scale, Color tint);
 
 // other
-
-void ug_baord_test(Bridge *bridge)
-{
-    char *a = Bridge_popString(bridge);
-    char *r = "";
-    Bridge_startResult(bridge);
-    Bridge_pushString(bridge, r);
-    Bridge_return(bridge);
-}
 
 void lib_raylib_register(Bridge *bridge)
 {

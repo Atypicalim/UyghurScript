@@ -3,6 +3,9 @@
 #ifndef H_TOOLS
 #define H_TOOLS
 
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+
 void tools_error(const char* msg, ...) {
     va_list lst;
     va_start(lst, msg);
