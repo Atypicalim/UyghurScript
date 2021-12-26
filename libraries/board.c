@@ -6,9 +6,9 @@
 // data
 Bridge *uyghurBridge;
 Hashmap *resourcesMap;
-Font font;
-Image image;
-Texture2D texture;
+Font defaultFont;
+Image defaultImage;
+Texture2D defaultTexture;
 
 // tool
 
@@ -43,13 +43,14 @@ Rectangle rectangle_from_bridge(Bridge *bridge)
 Image raylib_load_image(char *path)
 {
     if (path == NULL) path = "";
+    if (strlen(path) == 0) return defaultImage;
     Image *img;
     img = Hashmap_get(resourcesMap, path);
     if (img != NULL) {
         return img[0];
     }
     Image image = LoadImage(path);
-    if (!image.data) image = GenImageGradientRadial(300, 300, 0, (Color){255, 255, 255, 50}, (Color){0, 0, 0, 50});
+    if (!image.data) image = defaultImage;
     img = (Image *)malloc(sizeof(image));
     img[0] = image;
     Hashmap_set(resourcesMap, path, img);
@@ -70,11 +71,11 @@ void raylib_unload_image(char *path)
 Font raylib_load_font(char *path)
 {
     if (path == NULL) path = "";
+    if (strlen(path) == 0) return defaultFont;
     Font *fnt;
     fnt = Hashmap_get(resourcesMap, path);
     if (fnt != NULL) {
-        Font font = fnt[0];
-        return font;
+        return fnt[0];
     }
     Font font = LoadFont(path);
     fnt = (Font *)malloc(sizeof(font));
@@ -92,6 +93,29 @@ void raylib_unload_font(char *path)
     Font image = fnt[0];
     UnloadFont(image);
     free(fnt);
+}
+
+void raylib_create_texture_from_image(char *path)
+{
+    // TODO
+}
+
+Texture raylib_create_texture_from_text(char *path, char *text, int size, int spacing, Color color)
+{
+    char *tag = tools_format("P:%s-T:%s-S:%d-S:%d-C:%d,%d,%d,%d", path, text, size, spacing, color.r, color.g, color.b, color.a);
+    Texture *tex = Hashmap_get(resourcesMap, tag);
+    if (tex != NULL) {
+        free(tag);
+        return tex[0];
+    }
+    Font font = raylib_load_font(path);
+    Image image = ImageTextEx(font, text, size, spacing, color);
+    Texture texture = LoadTextureFromImage(image);
+    tex = (Texture *)malloc(sizeof(texture));
+    tex[0] = texture;
+    Hashmap_set(resourcesMap, tag, tex);
+    free(tag);
+    return texture;
 }
 
 // callback
@@ -135,7 +159,7 @@ void raylib_on_show()
 
     // SetTraceLogLevel(LOG_NONE);
 }
-
+int test = 0;
 void raylib_on_frame()
 {
     Bridge_startFunc(uyghurBridge, "doska_sizish_qayturmisi");
@@ -152,23 +176,10 @@ void raylib_on_frame()
     DrawFPS(50, 50);
 
 
-    // font = raylib_load_font("../resources/ukij.ttf");
-    // raylib_unload_font("../resources/ukij.ttf");
-    // // font = LoadFont("../resources/ukij.ttf");
-    // char *text = "TEST";
-    // int fontSize = 36;
-    // // font = GetFontDefault();
-    // image = ImageTextEx(font, text, fontSize, 2, color);
-    // texture = LoadTextureFromImage(image);
-    // // DrawText(text, 20, 300, fontSize, color);
-    // DrawTextEx(font, text, (Vector2){20, 400}, fontSize, 2, color);
-
-    Image img = raylib_load_image("../resources/rose.png");
-    // raylib_unload_image("../resources/rose.png");
-    // Image img = LoadImage("../resources/rose.png");
-    // RLAPI Image ImageFromImage(Image image, Rectangle rec);  
-    // RLAPI void ImageCrop(Image *image, Rectangle crop);
-    texture = LoadTextureFromImage(img);
+    // Image img = raylib_load_image("../resources/rose.png");
+    // // raylib_unload_image("../resources/rose.png");
+    // // Image img = LoadImage("../resources/rose.png");  
+    // texture = LoadTextureFromImage(img);
     DrawTextureEx(texture, (Vector2){100, 20}, 0, 1, WHITE);
 
 }
@@ -205,6 +216,9 @@ void raylib_show_window(int width, int height, char *title, int mode)
     if (mode < 0) mode = FLAG_WINDOW_RESIZABLE;
     SetConfigFlags(mode);
     InitWindow(width, height, title);
+    defaultFont = GetFontDefault();
+    defaultImage = GenImageGradientRadial(300, 300, 0, (Color){255, 255, 255, 50}, (Color){0, 0, 0, 50});
+    defaultTexture = LoadTextureFromImage(defaultImage);
     raylib_on_show();
     while (!WindowShouldClose())
     {
@@ -749,25 +763,15 @@ char *get_font_key(char *paht)
 {
 
 }
-    
-    // font = GetFontDefault();
-    // image = ImageTextEx(font, text, fontSize, 2, color);
-    // texture = LoadTextureFromImage(image);
-    // DrawText(text, 20, 300, fontSize, color);
-    // DrawTextEx(font, text, (Vector2){20, 400}, fontSize, 2, color);
-    // DrawTextureEx(texture, (Vector2){20, 300}, 0, 1, WHITE);
-
 
 void ug_baord_load_texture_from_image(Bridge *bridge)
 {
-    char *path = Bridge_popString(bridge);
-
-
+    // raylib_create_texture_from_image();
 }
 
 void ug_baord_load_texture_from_text(Bridge *bridge)
 {
-    // TODO
+    // raylib_create_texture_from_text("../resources/ukij.ttf", text, fontSize, 2, color);
 }
 
     // texture
