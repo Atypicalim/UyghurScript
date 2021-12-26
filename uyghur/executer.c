@@ -41,7 +41,8 @@ Container *Executer_popContainer(Executer *this, bool isBox)
     Container *container = Stack_pop(this->containerStack);
     this->currentContainer = (Container *)this->containerStack->tail->data;
     tools_assert(container != NULL && container->isBox == isBox, LANG_ERR_NO_VALID_STATE);
-    return container;
+    if (!isBox) Container_free(container);
+    return isBox ? container : NULL;
 }
 
 Executer *Executer_new(Uyghur *uyghur)
@@ -578,15 +579,15 @@ void Executer_consumeFunction(Executer *this, Leaf *leaf)
 
 void Executer_consumeCode(Executer *this, Leaf *leaf)
 {
-    Stack *callStack = Stack_reverse(this->callStack);
-    Cursor *cursor1 = Stack_reset(callStack);
+    Stack_reverse(this->callStack);
+    Cursor *cursor1 = Stack_reset(this->callStack);
     Cursor *cursor2 = Stack_reset(leaf->tokens);
     // 
     Token *funcName = Stack_next(leaf->tokens, cursor2);
     Token *arg = Stack_next(leaf->tokens, cursor2);
     while(arg != NULL)
     {
-        Value *value = Stack_next(callStack, cursor1);
+        Value *value = Stack_next(this->callStack, cursor1);
         Container_set(this->currentContainer, arg->value, value);
         arg = Stack_next(leaf->tokens, cursor2);
     }
@@ -625,13 +626,13 @@ Value *Executer_runCFunc(Executer *this, Token *funcName)
     //
     Bridge *bridge = this->uyghur->bridge;
     Bridge_startArgument(bridge);
-    Stack *callStack = Stack_reverse(this->callStack);
-    Cursor *cursor = Stack_reset(callStack);
-    Value *value = Stack_next(callStack, cursor);
+    Stack_reverse(this->callStack);
+    Cursor *cursor = Stack_reset(this->callStack);
+    Value *value = Stack_next(this->callStack, cursor);
     while (value != NULL)
     {
         Bridge_pushValue(bridge, value);
-        value = Stack_next(callStack, cursor);
+        value = Stack_next(this->callStack, cursor);
     }
     Cursor_free(cursor);
     Bridge_send(bridge);

@@ -11,10 +11,22 @@
 
 void Bridge_reset(Bridge *this)
 {
+    Stack_free(this->stack);
     this->stack = Stack_new();
     this->name = NULL;
     this->type = 0;
     this->last = NULL;
+}
+
+Bridge *Bridge_new(Uyghur *uyghur)
+{
+    Bridge *bridge = malloc(sizeof(Bridge));
+    bridge->uyghur = uyghur;
+    bridge->stack = Stack_new();
+    bridge->name = NULL;
+    bridge->type = 0;
+    bridge->last = NULL;
+    return bridge;
 }
 
 void Bridge_startBox(Bridge *this, char *name)
@@ -41,14 +53,6 @@ void Bridge_startResult(Bridge *this)
 {
     Bridge_reset(this);
     this->type = BRIDGE_STACK_TP_RES;
-}
-
-Bridge *Bridge_new(Uyghur *uyghur)
-{
-    Bridge *bridge = malloc(sizeof(Bridge));
-    bridge->uyghur = uyghur;
-    Bridge_reset(bridge);
-    return bridge;
 }
 
 void Bridge_pushKey(Bridge *this, char *key)

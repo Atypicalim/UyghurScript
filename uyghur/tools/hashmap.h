@@ -51,12 +51,14 @@ Hashmap* Hashmap_new() {
 }
 
 void Hashmap_free(Hashmap *this) {
+    Entry *ptr;
+    Entry *head;
     for (int i = 0; i < CAPACITY; ++i) {
-        Entry *ptr = this[i].position;
+        ptr = this[i].position;
         while (ptr != NULL) {
-            Entry *head = ptr;
+            head = ptr;
             ptr = ptr->next;
-            if (ptr) free(head);
+            free(head);
         }
     }
     free(this);

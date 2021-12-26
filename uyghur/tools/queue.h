@@ -74,8 +74,11 @@ void *Queue_pop(Queue *this)
 
 void Queue_clear(Queue *this)
 {
-    this->head = NULL;
-    this->tail = NULL;
+    void *data = Queue_pop(this);
+    while (data != NULL)
+    {
+        data = Queue_pop(this);
+    }
 }
 
 void Queue_free(Queue *this)
@@ -84,6 +87,7 @@ void Queue_free(Queue *this)
     while (head != NULL)
     {
         this->head = head->next;
+        head->data = NULL;
         Block_free(head);
         head = this->head;
     }

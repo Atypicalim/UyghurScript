@@ -74,8 +74,11 @@ void *Stack_pop(Stack *this)
 
 void Stack_clear(Stack *this)
 {
-    this->head = NULL;
-    this->tail = NULL;
+    void *data = Stack_pop(this);
+    while (data != NULL)
+    {
+        data = Stack_pop(this);
+    }
 }
 
 void Stack_free(Stack *this)
@@ -84,6 +87,7 @@ void Stack_free(Stack *this)
     while (tail != NULL)
     {
         this->tail = tail->last;
+        tail->data = NULL;
         Block_free(tail);
         tail = this->tail;
     }
@@ -103,17 +107,27 @@ void *Stack_next(Stack *this, Cursor *cursor)
     return temp->data;
 }
 
-void *Stack_reverse(Stack *this)
+void Stack_reverse(Stack *this)
 {
-    Stack *other = Stack_new();
-    Cursor *cursor = Stack_reset(this);
-    void *data = Stack_next(this, cursor);
+    Queue *queue = Queue_new();
+    Cursor *cursor1 = Stack_reset(this);
+    void *data1 = Stack_next(this, cursor1);
+    while (data1 != NULL)
+    {
+        Queue_push(queue, data1);
+        data1 = Stack_next(this, cursor1);
+    }
+    Stack_clear(this);
+    Cursor *cursor2 = Queue_reset(queue);
+    void *data = Queue_next(queue, cursor2);
     while (data != NULL)
     {
-        Stack_push(other, data);
-        data = Stack_next(this, cursor);
+        Stack_push(this, data);
+        data = Queue_next(queue, cursor2);
     }
-    return other;
+    Cursor_free(cursor1);
+    Cursor_free(cursor2);
+    Queue_free(queue);
 }
 
 #endif

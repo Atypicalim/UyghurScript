@@ -18,15 +18,16 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "../tools/hashmap.h"
-#include "../tools/block.h"
-#include "../tools/cursor.h"
-#include "../tools/stack.h"
-#include "../tools/queue.h"
-
 #include "language.h"
 #include "constant.h"
 #include "tools.c"
+
+#include "../tools/hashmap.h"
+#include "../tools/block.h"
+#include "../tools/cursor.h"
+#include "../tools/queue.h"
+#include "../tools/stack.h"
+
 
 #include "token.c"
 #include "leaf.c"
