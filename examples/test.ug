@@ -196,7 +196,27 @@
 # fonkisiye @box{[sinaq]} bilen 0 ishlitilsun we netije r bolsun
 # ikrangha r yezilsun
 
-fonkisiye @doska{[korsitish]} bilen -1 -1 ishlitilsun
+miqdar x qimmiti 0 bolsun
+miqdar y qimmiti 0 bolsun
+miqdar t1 qimmiti quruq bolsun
+miqdar t2 qimmiti quruq bolsun
+miqdar d qimmiti 0.1 bolsun
+
+fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+    t1 qimmiti x chong 400 bolsun
+    t2 qimmiti x kichik 100 bolsun
+    eger t1 qimmiti rast bolsa
+        d qimmiti -0.1 bolsun
+    egerde t2 qimmiti rast bolsa
+        d qimmiti 0.1 bolsun
+    tamamlansun
+    x qimmiti x qushulghan d bolsun
+    y qimmiti y qushulghan d bolsun
+    fonkisiye @doska{[chemberSizish]} bilen x y 100 100 [55aaff] ishlitilsun
+tamamlansun
+
+fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
+
 
 # TOOD ################################################################################
 

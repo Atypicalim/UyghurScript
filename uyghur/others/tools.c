@@ -25,6 +25,15 @@ void tools_assert(bool value, const char *msg, ...)
     exit(1);
 }
 
+void tools_warning(const char* msg, ...) {
+    va_list lst;
+    va_start(lst, msg);
+    printf("[%s] => ", LANG_WAR);
+    vfprintf(stdout, msg, lst);
+    printf("\n");
+    va_end(lst);
+}
+
 char *tools_format(char *msg, ...)
 {
     va_list lst;

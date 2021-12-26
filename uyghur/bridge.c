@@ -176,11 +176,21 @@ void Bridge_call(Bridge *this)
     }
     Cursor_free(cursor);
     // execute
-    Token *funcName = Token_new(TTYPE_NAME, this->name);
-    Value *result = Executer_runFunc(executer, funcName);
+    Token *funcName = Token_key(this->name, "_", TTYPE_STRING);
+    Value *funcValue = Executer_getTRValue(executer, funcName);
+    Value *r = NULL;
+    if (is_equal(funcValue->type, RTYPE_FUNCTION))
+    {
+        r = Executer_runFunc(executer, funcName);
+    }
+    else
+    {
+        tools_warning("function not found for func name: %s", funcName->value);
+        r = Value_newEmpty(NULL);
+    }
     // result
     Bridge_startResult(this);
-    Bridge_pushValue(this,result);
+    Bridge_pushValue(this, r);
     Bridge_return(this);
 }
 

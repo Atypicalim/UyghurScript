@@ -1,6 +1,7 @@
 // language
 
 #define LANG_ERR "XATALIQ"
+#define LANG_WAR "AGAHLANDURUSH"
 #define LANG_ERR_NO_VALID_STATE "inawetsiz xalet kuruldi"
 #define LANG_ERR_NO_INPUT_NAME "uyghur script programma hejjet ismi birilmidi"
 #define LANG_ERR_INVALID_INPUT_FILE "uyghur script programma xojjiti inawetsiz:[%s]"

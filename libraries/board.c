@@ -4,17 +4,19 @@
 #include "../uyghur/uyghur.c"
 
 // data
+Bridge *uyghurBridge;
 
 // tool
 
 Color color_from_bridge(Bridge *bridge)
 {
     char *str = Bridge_popString(bridge);
-    if (strlen(str) != 8) return BLACK;
+    int len = strlen(str);
+    if (len != 6 && len != 8) return BLACK;
     int r = char_to_int(str[0]) * 16 + char_to_int(str[1]);
     int g = char_to_int(str[2]) * 16 + char_to_int(str[3]);
     int b = char_to_int(str[4]) * 16 + char_to_int(str[5]);
-    int a = char_to_int(str[6]) * 16 + char_to_int(str[7]);
+    int a = len == 6 ? 255 : char_to_int(str[6]) * 16 + char_to_int(str[7]);;
     return (Color){r, g, b, a};
 }
 
@@ -35,7 +37,9 @@ Rectangle rectangle_from_bridge(Bridge *bridge)
 }
 
 void raylib_on_show()
-{ 
+{
+    Bridge_startFunc(uyghurBridge, "doska_korsitish_qayturmisi");
+    Bridge_call(uyghurBridge);
 
     // image
     // RLAPI Image LoadImage(const char *fileName);  
@@ -109,6 +113,9 @@ void raylib_on_show()
 
 void raylib_on_frame()
 {
+    Bridge_startFunc(uyghurBridge, "doska_sizish_qayturmisi");
+    Bridge_call(uyghurBridge);
+    //
     Vector2 center = (Vector2){250, 250};
     Color color = (Color){50, 100, 200, 255};
     Rectangle rectangle = (Rectangle){250, 250, 200, 200};
@@ -116,7 +123,8 @@ void raylib_on_frame()
     // DrawRectangleGradientEx(rectangle,
     //     (Color){255, 0, 0, 255}, (Color){0, 255, 0, 255}, (Color){0, 0, 255, 255}, (Color){0, 0, 0, 255}
     // );
-    DrawRectanglePro(rectangle, (Vector2){100, 100}, 0, color);
+    // DrawRectanglePro(rectangle, (Vector2){100, 100}, 0, color);
+    DrawFPS(50, 50);
 
 }
 
@@ -660,12 +668,16 @@ void ug_baord_test(Bridge *bridge)
 
 void lib_raylib_register(Bridge *bridge)
 {
+    uyghurBridge = bridge;
     Bridge_startBox(bridge, "doska");
     //
     Bridge_pushKey(bridge, "korsitish");
     Bridge_pushFunction(bridge, ug_board_show_window);
+    // 
+    Bridge_pushKey(bridge, "chemberSizish");
+    Bridge_pushFunction(bridge, ug_baord_draw_circle_fill);
     //
     Bridge_register(bridge);
     //
-    raylib_show_window(-1, -1, "", 4096);
+    // raylib_show_window(-1, -1, "", 4096);
 }
