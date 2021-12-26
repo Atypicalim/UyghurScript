@@ -192,6 +192,7 @@ void Bridge_call(Bridge *this)
         tools_warning("function not found for func name: %s", funcName->value);
         r = Value_newEmpty(NULL);
     }
+    Token_free(funcName);
     // result
     Bridge_startResult(this);
     Bridge_pushValue(this, r);
