@@ -5,6 +5,10 @@
 
 // data
 Bridge *uyghurBridge;
+Hashmap *resourcesMap;
+Font font;
+Image image;
+Texture2D texture;
 
 // tool
 
@@ -36,42 +40,66 @@ Rectangle rectangle_from_bridge(Bridge *bridge)
     return (Rectangle){x, y, w, h};
 }
 
+Image raylib_load_image(char *path)
+{
+    if (path == NULL) path = "";
+    Image *img;
+    img = Hashmap_get(resourcesMap, path);
+    if (img != NULL) {
+        return img[0];
+    }
+    Image image = LoadImage(path);
+    if (!image.data) image = GenImageGradientRadial(300, 300, 0, (Color){255, 255, 255, 50}, (Color){0, 0, 0, 50});
+    img = (Image *)malloc(sizeof(image));
+    img[0] = image;
+    Hashmap_set(resourcesMap, path, img);
+    return image;
+}
+
+void raylib_unload_image(char *path)
+{
+    if (path == NULL) path = "";
+    Image *img = Hashmap_get(resourcesMap, path);
+    if (img == NULL) return;
+    Hashmap_del(resourcesMap, path);
+    Image image = img[0];
+    UnloadImage(image);
+    free(img);
+}
+
+Font raylib_load_font(char *path)
+{
+    if (path == NULL) path = "";
+    Font *fnt;
+    fnt = Hashmap_get(resourcesMap, path);
+    if (fnt != NULL) {
+        Font font = fnt[0];
+        return font;
+    }
+    Font font = LoadFont(path);
+    fnt = (Font *)malloc(sizeof(font));
+    fnt[0] = font;
+    Hashmap_set(resourcesMap, path, fnt);
+    return font;
+}
+
+void raylib_unload_font(char *path)
+{
+    if (path == NULL) path = "";
+    Font *fnt = Hashmap_get(resourcesMap, path);
+    if (fnt == NULL) return;
+    Hashmap_del(resourcesMap, path);
+    Font image = fnt[0];
+    UnloadFont(image);
+    free(fnt);
+}
+
+// callback
+
 void raylib_on_show()
 {
     Bridge_startFunc(uyghurBridge, "doska_korsitish_qayturmisi");
     Bridge_call(uyghurBridge);
-
-    // image
-    // RLAPI Image LoadImage(const char *fileName);  
-    // RLAPI void UnloadImage(Image image); 
-    // RLAPI Image ImageCopy(Image image);  
-    // RLAPI Image LoadImageFromScreen(void); 
-    // RLAPI bool ExportImage(Image image, const char *fileName); 
-    // RLAPI Image ImageFromImage(Image image, Rectangle rec);  
-    // RLAPI Image ImageText(const char *text, int fontSize, Color color);
-    // RLAPI void ImageCrop(Image *image, Rectangle crop);
-    // RLAPI void ImageResize(Image *image, int newWidth, int newHeight); 
-    // RLAPI void ImageResizeNN(Image *image, int newWidth,int newHeight); 
-    // RLAPI void ImageFlipVertical(Image *image);                                                              // Flip image vertically
-    // RLAPI void ImageFlipHorizontal(Image *image);                                                            // Flip image horizontally
-    // RLAPI void ImageRotateCW(Image *image); 
-    // RLAPI Color GetImageColor(Image image, int x, int y);
-
-    // texture
-    // RLAPI Texture2D LoadTextureFromImage(Image image);  
-    // RLAPI void DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint);
-    // RLAPI void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint);
-    // RLAPI void DrawTextureTiled(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, float scale, Color tint);
-
-    // font
-    // RLAPI Font GetFontDefault(void);                                                            // Get the default Font
-    // RLAPI Font LoadFont(const char *fileName);
-    // RLAPI void UnloadFont(Font font);
-    // RLAPI void DrawText(const char *text, int posX, int posY, int fontSize, Color color);
-    // RLAPI void DrawTextEx(Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint);
-    // RLAPI void DrawTextPro(Font font, const char *text, Vector2 position, Vector2 origin, float rotation, float fontSize, float spacing, Color tint);
-    // RLAPI int MeasureText(const char *text, int fontSize);
-    // RLAPI Vector2 MeasureTextEx(Font font, const char *text, float fontSize, float spacing);
     
     // audio
     // RLAPI void InitAudioDevice(void);                                     // Initialize audio device and context
@@ -105,10 +133,7 @@ void raylib_on_show()
     // RLAPI float GetMusicTimeLength(Music music);                          // Get music time length (in seconds)
     // RLAPI float GetMusicTimePlayed(Music music);                          // Get current music time played (in seconds)
 
-    // complex
-    // SetWindowIcon(Image image);
-    // void TakeScreenshot(const char *fileName);                  // Takes a screenshot of current screen (filename extension defines format)
-
+    // SetTraceLogLevel(LOG_NONE);
 }
 
 void raylib_on_frame()
@@ -125,6 +150,26 @@ void raylib_on_frame()
     // );
     // DrawRectanglePro(rectangle, (Vector2){100, 100}, 0, color);
     DrawFPS(50, 50);
+
+
+    // font = raylib_load_font("../resources/ukij.ttf");
+    // raylib_unload_font("../resources/ukij.ttf");
+    // // font = LoadFont("../resources/ukij.ttf");
+    // char *text = "TEST";
+    // int fontSize = 36;
+    // // font = GetFontDefault();
+    // image = ImageTextEx(font, text, fontSize, 2, color);
+    // texture = LoadTextureFromImage(image);
+    // // DrawText(text, 20, 300, fontSize, color);
+    // DrawTextEx(font, text, (Vector2){20, 400}, fontSize, 2, color);
+
+    Image img = raylib_load_image("../resources/rose.png");
+    // raylib_unload_image("../resources/rose.png");
+    // Image img = LoadImage("../resources/rose.png");
+    // RLAPI Image ImageFromImage(Image image, Rectangle rec);  
+    // RLAPI void ImageCrop(Image *image, Rectangle crop);
+    texture = LoadTextureFromImage(img);
+    DrawTextureEx(texture, (Vector2){100, 20}, 0, 1, WHITE);
 
 }
 
@@ -252,6 +297,15 @@ void ug_baord_set_normalize(Bridge *bridge)
 void ug_baord_set_title(Bridge *bridge)
 {
     SetWindowTitle(Bridge_popString(bridge));
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_set_icon(Bridge *bridge)
+{
+    char *path = Bridge_popString(bridge);
+    Image image = LoadImage(path);
+    SetWindowIcon(image);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }
@@ -437,6 +491,14 @@ void ug_baord_get_keybaord_key_state(Bridge *bridge)
     if (IsKeyUp(keyCode)) action = -1;
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, action);
+    Bridge_return(bridge);
+}
+
+void ug_baord_save_screenshot(Bridge *bridge)
+{
+    char *path = Bridge_popString(bridge);
+    TakeScreenshot(path);
+    Bridge_startResult(bridge);
     Bridge_return(bridge);
 }
 
@@ -656,6 +718,91 @@ void ug_baord_draw_polygon_stroke(Bridge *bridge)
     Bridge_return(bridge);
 }
 
+// image
+
+// image
+// path
+
+// font
+// text
+// size
+// color
+// spacing
+
+// texture
+// x
+// y
+// color
+// rotation
+// scale
+// from rectange
+// to rectangle
+// anchor
+// 
+
+char *get_image_key(char *path)
+{
+
+}
+
+char *get_font_key(char *paht)
+{
+
+}
+    
+    // font = GetFontDefault();
+    // image = ImageTextEx(font, text, fontSize, 2, color);
+    // texture = LoadTextureFromImage(image);
+    // DrawText(text, 20, 300, fontSize, color);
+    // DrawTextEx(font, text, (Vector2){20, 400}, fontSize, 2, color);
+    // DrawTextureEx(texture, (Vector2){20, 300}, 0, 1, WHITE);
+
+
+void ug_baord_load_texture_from_image(Bridge *bridge)
+{
+    char *path = Bridge_popString(bridge);
+
+
+}
+
+void ug_baord_load_texture_from_text(Bridge *bridge)
+{
+    // TODO
+}
+
+    // texture
+    // RLAPI Texture2D LoadTextureFromImage(Image image);  
+    // RLAPI void DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint);
+    // RLAPI void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint);
+    // RLAPI void DrawTextureTiled(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, float scale, Color tint);
+
+
+    // RLAPI Image ImageCopy(Image image);  
+    // RLAPI Image ImageFromImage(Image image, Rectangle rec);  
+    // RLAPI void ImageCrop(Image *image, Rectangle crop);
+
+    // RLAPI Image ImageText(const char *text, int fontSize, Color color);
+    // RLAPI Image ImageTextEx(Font font, const char *text, float fontSize, float spacing, Color tint); 
+
+    // RLAPI void ImageResize(Image *image, int newWidth, int newHeight); 
+    // RLAPI void ImageResizeNN(Image *image, int newWidth,int newHeight); 
+
+    // RLAPI void ImageFlipVertical(Image *image);
+    // RLAPI void ImageFlipHorizontal(Image *image);
+    // RLAPI void ImageRotateCW(Image *image); 
+    // ImageColorTint(Image *image, Color color); 
+
+    
+    // RLAPI void DrawText(const char *text, int posX, int posY, int fontSize, Color color);
+    // RLAPI void DrawTextEx(Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint);
+    
+    // RLAPI void DrawTextPro(Font font, const char *text, Vector2 position, Vector2 origin, float rotation, float fontSize, float spacing, Color tint);
+    // RLAPI int MeasureText(const char *text, int fontSize);
+    // RLAPI Vector2 MeasureTextEx(Font font, const char *text, float fontSize, float spacing);
+
+// font
+
+// other
 
 void ug_baord_test(Bridge *bridge)
 {
@@ -669,6 +816,8 @@ void ug_baord_test(Bridge *bridge)
 void lib_raylib_register(Bridge *bridge)
 {
     uyghurBridge = bridge;
+    resourcesMap = Hashmap_new(NULL);
+    //
     Bridge_startBox(bridge, "doska");
     //
     Bridge_pushKey(bridge, "korsitish");
