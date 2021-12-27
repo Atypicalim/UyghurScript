@@ -103,6 +103,9 @@ char *o2s(void *value)
     return tools_format("<Object => p:%d>", value);
 }
 
+int p2i(void* value){
+    return *((int*) value);
+}
 
 char decode_escape(char c)
 {

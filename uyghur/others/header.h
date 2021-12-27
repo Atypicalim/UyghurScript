@@ -27,6 +27,7 @@
 #include "../tools/cursor.h"
 #include "../tools/queue.h"
 #include "../tools/stack.h"
+#include "../tools/array.h"
 
 
 #include "token.c"
