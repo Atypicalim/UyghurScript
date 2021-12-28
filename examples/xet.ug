@@ -1,0 +1,20 @@
+# scaling text
+
+miqdar s qimmiti 1 bolsun
+miqdar t qimmiti quruq bolsun
+
+fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+
+    t qimmiti s chong 2 bolsun
+    eger t qimmiti rast bolsa
+        s qimmiti 1 bolsun
+    bolmisa
+        s qimmiti s qushulghan 0.0001 bolsun
+    tamamlansun
+
+    fonkisiye @doska{[xetEkirish]} bilen [] ishlitilsun we netije r bolsun
+    fonkisiye @doska{[tamghaBesish]} bilen r 250 250 0.5 0.5 [ffaaaaff] 0 0 -1 -1 0 s ishlitilsun
+
+tamamlansun
+
+fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun

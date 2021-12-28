@@ -213,6 +213,34 @@ Texture ralib_get_texture_by_tag(char *tag)
     return tex[0];
 }
 
+void raylib_draw_texture_by_texture(
+    Texture texture,
+    int x, int y,
+    float anchorX, float anchorY,
+    Color color,
+    int fromX, int fromY, int width, int height,
+    float rotation,
+    float scale
+)
+{
+    //
+    fromX = MAX(0, MIN(fromX, texture.width - 1));
+    fromY = MAX(0, MIN(fromY, texture.height - 1));
+    int leftX = texture.width - fromX;
+    int leftY = texture.height - fromY;
+    width = MAX(1, MIN((width <= 0 ? texture.width : width), leftX));
+    height = MAX(1, MIN((height <= 0 ? texture.height : height), leftY));
+    //
+    Rectangle source = (Rectangle){fromX, fromY, width, height};
+    float destW = width * scale;
+    float destH = height * scale;
+    float destX = x;
+    float destY = y;
+    Rectangle dest = (Rectangle){destX, destY, destW, destH};
+    Vector2 origin = (Vector2){destW * anchorX, destH * anchorY};
+    DrawTextureTiled(texture, source, dest, origin, rotation, scale, color);
+}
+
 // callback
 
 void raylib_on_show()
@@ -268,7 +296,7 @@ void raylib_on_frame()
 
 
     // Image img = LoadImage("../resources/rose.png");             // Load image in CPU memory (RAM)
-    Image img = raylib_load_image("../resources/rose.png");
+    // Image img = raylib_load_image("../resources/rose.png");
     // // // Image img = raylib_load_image("../resources/gift.png");
     // img = ImageFromImage(img, (Rectangle){0, 0, 300, 300});
     // int w = img.width;
@@ -866,7 +894,7 @@ void ug_baord_draw_texture_by_tag(Bridge *bridge)
     int y = Bridge_popNumber(bridge);
     float anchorX = Bridge_popNumber(bridge);
     float anchorY = Bridge_popNumber(bridge);
-    Color c = color_from_bridge(bridge);
+    Color color = color_from_bridge(bridge);
     int fromX = Bridge_popNumber(bridge);
     int fromY = Bridge_popNumber(bridge);
     int width = Bridge_popNumber(bridge);
@@ -875,28 +903,11 @@ void ug_baord_draw_texture_by_tag(Bridge *bridge)
     float scale = Bridge_popNumber(bridge);
     //
     Texture texture = ralib_get_texture_by_tag(tag);
-    //
-    fromX = MAX(0, MIN(fromX, texture.width - 1));
-    fromY = MAX(0, MIN(fromY, texture.height - 1));
-    int leftX = texture.width - fromX;
-    int leftY = texture.height - fromY;
-    width = MAX(1, MIN((width <= 0 ? texture.width : width), leftX));
-    height = MAX(1, MIN((height <= 0 ? texture.height : height), leftY));
-    //
-    Rectangle source = (Rectangle){fromX, fromY, width, height};
-    Rectangle dest = (Rectangle){0, 0, width * scale, height * scale};
-    float positionX = dest.width * anchorX - x;
-    float positionY = dest.height * anchorY - y;
-    Vector2 position = (Vector2){positionX, positionY};
-    DrawTextureTiled(texture, source, dest, position, rotation, scale, c);
+    raylib_draw_texture_by_texture(texture, x, y, anchorX, anchorY, color, fromX, fromY, width, height, rotation, scale);
     //
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }
- 
-// RLAPI void DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint);
-// RLAPI void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint);
-// RLAPI void DrawTextureTiled(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, float scale, Color tint);
 
 // other
 
