@@ -6,7 +6,8 @@
 #define ARRAY_DEFAULT_CAPACITY 1024
 #define ARRAY_INVALID_INDEX 0
 
-typedef int (* ArrayCompareFunction)(void const*, void const*);
+typedef int (* ArraySortFunction)(void const*, void const*);
+typedef bool (* ArrayFindFunction)(void const*);
 
 typedef struct _Array {
     void **elements;
@@ -19,7 +20,7 @@ void _array_clear(Array *this)
     for (int i = this->size; i < this->capacity; i++) this->elements[i] = NULL;
 }
 
-Array *Array_new(int evementSize)
+Array *Array_new()
 {
     Array *array = (Array *)malloc(sizeof(Array));
     array->capacity = ARRAY_DEFAULT_CAPACITY;
@@ -129,10 +130,66 @@ int Array_size(Array *this)
     return this->size;
 }
 
-// int compare(const void * num1, const void * num2) { return 0; }
-void Array_sort(Array *this, ArrayCompareFunction func)
+// int compare(const void *num1, const void *num2) { return 0; }
+void Array_sort(Array *this, ArraySortFunction func)
 {
     qsort(this->elements, this->size, sizeof(void *), func);
+}
+
+// int search(const void *num2) { return true; }
+int Array_find(Array *this, int from, int to, bool isReverse, ArrayFindFunction func)
+{
+    if (from == 0 || to == 0 || this->size == 0) return 0;
+    if (from < 0) from = this->size + from + 1;
+    if (to < 0) to = this->size + to + 1;
+    if (from < 1 || from > this->size) return 0;
+    if (to < 1 || to > this->size) return 0;
+    if (from > to) return 0;
+    void *item;
+    bool result;
+    if (isReverse)
+    {
+        for (int i = to; i >= from; i--)
+        {
+            item = Array_get(this, i);
+            result = func(item);
+            if (result) return i;
+        }
+    }
+    else
+    {
+        for (int i = from; i <= to; i++)
+        {
+            item = Array_get(this, i);
+            result = func(item);
+            if (result) return i;
+        }
+    }
+    return 0;
+}
+
+Array *Array_slice(Array *this, int from, int to)
+{
+    if (from == 0 || to == 0 || this->size == 0) return NULL;
+    if (from < 0) from = this->size + from + 1;
+    if (to < 0) to = this->size + to + 1;
+    if (from < 1 || from > this->size) return NULL;
+    if (to < 1 || to > this->size) return NULL;
+    if (from > to) return NULL;
+    Array *other = Array_new();
+    void *item;
+    for (int i = from; i <= to; i++)
+    {
+        item = Array_get(this, i);
+        Array_append(other, item);
+    }
+    return other;
+}
+
+void Array_clear(Array *this)
+{
+    this->size = 0;
+    _array_clear(this);
 }
 
 void Array_print(Array *this)
