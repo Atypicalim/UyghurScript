@@ -203,6 +203,8 @@ miqdar t2 qimmiti quruq bolsun
 miqdar d qimmiti 0.1 bolsun
 
 fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+
+    #
     t1 qimmiti x chong 400 bolsun
     t2 qimmiti x kichik 100 bolsun
     eger t1 qimmiti rast bolsa
@@ -213,6 +215,14 @@ fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
     x qimmiti x qushulghan d bolsun
     y qimmiti y qushulghan d bolsun
     fonkisiye @doska{[chemberSizish]} bilen x y 100 100 [55aaff] ishlitilsun
+
+    # 
+    fonkisiye @doska{[resimEkirish]} bilen [] ishlitilsun we netije r bolsun
+    fonkisiye @doska{[tamghaBesish]} bilen r 250 250 0.5 0.5 [aaffffff] 0 0 -1 -1 0 1 ishlitilsun
+    fonkisiye @doska{[xetEkirish]} bilen [] ishlitilsun we netije r bolsun
+    fonkisiye @doska{[tamghaBesish]} bilen r 250 250 0.5 0.5 [ffaaaaff] 0 0 -1 -1 0 1 ishlitilsun
+    
+ 
 tamamlansun
 
 fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun

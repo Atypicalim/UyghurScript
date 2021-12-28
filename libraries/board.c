@@ -116,7 +116,7 @@ char *get_tex4img_tag(ImgInfo info)
     int w = info.w;
     int h = info.h;
     return tools_format(
-        "T-IMAGE:%s:%d,%d:%d,%d:%f%f:%s,%s:%d:%d,%d,%d,%d",
+        "<T-IMAGE:%s:%d,%d:%d,%d:%f%f:%s,%s:%d:%d,%d,%d,%d>",
         info.path,
         x, y, w, h,
         info.scaleX, info.scaleY,
@@ -181,7 +181,7 @@ typedef struct TxtInfo {
 char *get_tex4txt_tag(TxtInfo info)
 {
     return tools_format(
-        "T-TEXT:%s:%s:%d:%d:%d,%d,%d,%d",
+        "<T-TEXT:%s:%s:%d:%d:%d,%d,%d,%d>",
         info.path,
         info.text,
         info.size,
@@ -204,6 +204,13 @@ Texture raylib_create_texture_from_text(TxtInfo info, char *tag)
     Hashmap_set(resourcesMap, tag, tex);
     UnloadImage(img);
     return texture;
+}
+
+Texture ralib_get_texture_by_tag(char *tag)
+{
+    Texture *tex = Hashmap_get(resourcesMap, tag);
+    if (tex == NULL) return defaultTexture;
+    return tex[0];
 }
 
 // callback
@@ -253,15 +260,15 @@ void raylib_on_frame()
     Bridge_startFunc(uyghurBridge, "doska_sizish_qayturmisi");
     Bridge_call(uyghurBridge);
     //
-    Vector2 center = (Vector2){250, 250};
-    Color color = (Color){50, 100, 200, 255};
-    Rectangle rectangle = (Rectangle){250, 250, 200, 200};
+    // Vector2 center = (Vector2){250, 250};
+    // Color color = (Color){50, 100, 200, 255};
+    // Rectangle rectangle = (Rectangle){250, 250, 200, 200};
     //
     DrawFPS(400, 450);
 
 
     // Image img = LoadImage("../resources/rose.png");             // Load image in CPU memory (RAM)
-    // Image img = raylib_load_image("../resources/rse.png");
+    Image img = raylib_load_image("../resources/rose.png");
     // // // Image img = raylib_load_image("../resources/gift.png");
     // img = ImageFromImage(img, (Rectangle){0, 0, 300, 300});
     // int w = img.width;
@@ -270,12 +277,9 @@ void raylib_on_frame()
 
     
     // Texture texture = LoadTextureFromImage(img);
-    // DrawTextureEx(texture, (Vector2){20, 20}, 0, 1, WHITE);
-
-    // RLAPI void DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint);
-    // RLAPI void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint);
-    // RLAPI void DrawTextureTiled(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, float scale, Color tint);
-
+    // DrawTextureEx(texture, (Vector2){100, 100}, 0, 1, WHITE);
+    // DrawTextureRec(texture, (Rectangle){0, 150, 300, 150}, (Vector2){0, 0}, WHITE);
+    // DrawRectangle(100, 100, 200, 200, GREEN); 
 }
 
 void raylib_on_focus()
@@ -830,11 +834,13 @@ void ug_baord_draw_polygon_stroke(Bridge *bridge)
 
 void ug_baord_create_texture_from_image(Bridge *bridge)
 {
-    ImgInfo info = (ImgInfo) {"../resources/rose.png", 100, 0, 200, 200, 2, 2, false, false, 0, (Color) {0, 255, 255, 255}};
+    ImgInfo info = (ImgInfo) {"../resources/rose.png", 100, 0, 200, 200, 2, 2, false, false, 0, (Color) {255, 255, 255, 255}};
     char *tag = get_tex4img_tag(info);
     Texture texture = raylib_create_texture_from_image(info, tag);
-    free(tag);
-    DrawTextureEx(texture, (Vector2){20, 20}, 0, 1, WHITE);
+    // free(tag);
+    Bridge_startResult(bridge);
+    Bridge_pushString(bridge, tag);
+    Bridge_return(bridge);
 }
 
 // text
@@ -842,18 +848,50 @@ void ug_baord_create_texture_from_image(Bridge *bridge)
 // RLAPI Vector2 MeasureTextEx(Font font, const char *text, float fontSize, float spacing);
 void ug_baord_create_texture_from_text(Bridge *bridge)
 {
-    TxtInfo info = (TxtInfo) {"../resources/ukij.ttf", "TEST", 36, 2, (Color) {0, 100, 255, 255}};
+    TxtInfo info = (TxtInfo) {"../resources/ukij.ttf", "TEST", 36, 2, (Color) {255, 255, 255, 255}};
     char *tag = get_tex4txt_tag(info);
     Texture texture = raylib_create_texture_from_text(info, tag);
-    free(tag);
-    DrawTextureEx(texture, (Vector2){20, 20}, 0, 1, WHITE);
+    // free(tag);
+    Bridge_startResult(bridge);
+    Bridge_pushString(bridge, tag);
+    Bridge_return(bridge);
 }
 
 // texture
 
-void ug_baord_draw_texture_from_text(Bridge *bridge)
+void ug_baord_draw_texture_by_tag(Bridge *bridge)
 {
-    // 
+    char *tag = Bridge_popString(bridge);
+    int x = Bridge_popNumber(bridge);
+    int y = Bridge_popNumber(bridge);
+    float anchorX = Bridge_popNumber(bridge);
+    float anchorY = Bridge_popNumber(bridge);
+    Color c = color_from_bridge(bridge);
+    int fromX = Bridge_popNumber(bridge);
+    int fromY = Bridge_popNumber(bridge);
+    int width = Bridge_popNumber(bridge);
+    int height = Bridge_popNumber(bridge);
+    float rotation = Bridge_popNumber(bridge);
+    float scale = Bridge_popNumber(bridge);
+    //
+    Texture texture = ralib_get_texture_by_tag(tag);
+    //
+    fromX = MAX(0, MIN(fromX, texture.width - 1));
+    fromY = MAX(0, MIN(fromY, texture.height - 1));
+    int leftX = texture.width - fromX;
+    int leftY = texture.height - fromY;
+    width = MAX(1, MIN((width <= 0 ? texture.width : width), leftX));
+    height = MAX(1, MIN((height <= 0 ? texture.height : height), leftY));
+    //
+    Rectangle source = (Rectangle){fromX, fromY, width, height};
+    Rectangle dest = (Rectangle){0, 0, width * scale, height * scale};
+    float positionX = dest.width * anchorX - x;
+    float positionY = dest.height * anchorY - y;
+    Vector2 position = (Vector2){positionX, positionY};
+    DrawTextureTiled(texture, source, dest, position, rotation, scale, c);
+    //
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
 }
  
 // RLAPI void DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint);
@@ -874,6 +912,15 @@ void lib_raylib_register(Bridge *bridge)
     // 
     Bridge_pushKey(bridge, "chemberSizish");
     Bridge_pushFunction(bridge, ug_baord_draw_circle_fill);
+    // 
+    Bridge_pushKey(bridge, "resimEkirish");
+    Bridge_pushFunction(bridge, ug_baord_create_texture_from_image);
+    // 
+    Bridge_pushKey(bridge, "xetEkirish");
+    Bridge_pushFunction(bridge, ug_baord_create_texture_from_text);
+    // 
+    Bridge_pushKey(bridge, "tamghaBesish");
+    Bridge_pushFunction(bridge, ug_baord_draw_texture_by_tag);
     //
     Bridge_register(bridge);
     //
