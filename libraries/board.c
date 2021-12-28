@@ -109,14 +109,14 @@ typedef struct ImgInfo {
     Color color;
 } ImgInfo;
 
-char *get_tex4img_tag(ImgInfo info)
+char *get_texture_tag_for_image(ImgInfo info)
 {
     int x = info.x;
     int y = info.y;
     int w = info.w;
     int h = info.h;
     return tools_format(
-        "<T-IMAGE:%s:%d,%d:%d,%d:%f%f:%s,%s:%d:%d,%d,%d,%d>",
+        "<R-IMAGE:%s:%d,%d:%d,%d:%f%f:%s,%s:%d:%d,%d,%d,%d>",
         info.path,
         x, y, w, h,
         info.scaleX, info.scaleY,
@@ -178,10 +178,10 @@ typedef struct TxtInfo {
     Color color;
 } TxtInfo;
 
-char *get_tex4txt_tag(TxtInfo info)
+char *get_texture_tag_for_text(TxtInfo info)
 {
     return tools_format(
-        "<T-TEXT:%s:%s:%d:%d:%d,%d,%d,%d>",
+        "<R-TEXT:%s:%s:%d:%d:%d,%d,%d,%d>",
         info.path,
         info.text,
         info.size,
@@ -241,6 +241,74 @@ void raylib_draw_texture_by_texture(
     DrawTextureTiled(texture, source, dest, origin, rotation, scale, color);
 }
 
+// music
+
+char *get_audio_tag_for_music(char *path)
+{
+    return tools_format("<R-MUSIC:%s>", path);
+}
+
+Music raylib_load_music_by_tag(char *tag, char *path)
+{
+    Music *music = Hashmap_get(resourcesMap, tag);
+    if (music != NULL) {
+        return music[0];
+    }
+    Music m = LoadMusicStream(path);
+    music = (Music *)malloc(sizeof(m));
+    music[0] = m;
+    Hashmap_set(resourcesMap, tag, music);
+    return m;
+}
+
+Music raylib_get_music_by_tag(char *tag)
+{
+    Music *music = Hashmap_get(resourcesMap, tag);
+    if (music == NULL) return LoadMusicStream("");
+    return music[0];
+}
+
+void raylib_unload_music_by_tag(char *tag)
+{
+    Music *music = Hashmap_get(resourcesMap, tag);
+    if (music == NULL) return;
+    UnloadMusicStream(music[0]);
+}
+
+// sound
+
+char *get_audio_tag_for_sound(char *path)
+{
+    return tools_format("<R-SOUND:%s>", path);
+}
+
+Sound raylib_load_sound_by_tag(char *tag, char *path)
+{
+    Sound *sound = Hashmap_get(resourcesMap, tag);
+    if (sound != NULL) {
+        return sound[0];
+    }
+    Sound s = LoadSound(path);
+    sound = (Sound *)malloc(sizeof(s));
+    sound[0] = s;
+    Hashmap_set(resourcesMap, tag, sound);
+    return s;
+}
+
+Sound raylib_get_sound_by_tag(char *tag)
+{
+    Sound *sound = Hashmap_get(resourcesMap, tag);
+    if (sound == NULL) return LoadSound("");
+    return sound[0];
+}
+
+void raylib_unload_sound_by_tag(char *tag)
+{
+    Sound *sound = Hashmap_get(resourcesMap, tag);
+    if (sound == NULL) return;
+    UnloadSound(sound[0]);
+}
+
 // callback
 
 void raylib_on_show()
@@ -248,39 +316,35 @@ void raylib_on_show()
     Bridge_startFunc(uyghurBridge, "doska_korsitish_qayturmisi");
     Bridge_call(uyghurBridge);
     
-    // audio
-    // RLAPI void InitAudioDevice(void);                                     // Initialize audio device and context
-    // RLAPI void CloseAudioDevice(void);                                    // Close the audio device and context
-    // RLAPI bool IsAudioDeviceReady(void);                                  // Check if audio device has been initialized successfully
-    // RLAPI void SetMasterVolume(float volume);                             // Set master volume (listener)
 
     // sound
-    // RLAPI Sound LoadSound(const char *fileName);                          // Load sound from file
-    // RLAPI void UnloadSound(Sound sound);                                  // Unload sound
+
     // RLAPI void UpdateSound(Sound sound, const void *data, int sampleCount); // Update sound buffer with new data
+
     // RLAPI void PlaySound(Sound sound);                                    // Play a sound
     // RLAPI void StopSound(Sound sound);                                    // Stop playing a sound
     // RLAPI void PauseSound(Sound sound);                                   // Pause a sound
     // RLAPI void ResumeSound(Sound sound);                                  // Resume a paused sound
     // RLAPI bool IsSoundPlaying(Sound sound);                               // Check if a sound is currently playing
+
     // RLAPI void SetSoundVolume(Sound sound, float volume);                 // Set volume for a sound (1.0 is max level)
 
     // Music
-    // RLAPI Music LoadMusicStream(const char *fileName);                    // Load music stream from file
-    // RLAPI void UnloadMusicStream(Music music);                            // Unload music stream
-    // RLAPI void UnloadMusicStream(Music music);                            // Unload music stream
-    // RLAPI void PlayMusicStream(Music music);                              // Start music playing
-    // RLAPI bool IsMusicStreamPlaying(Music music);                         // Check if music is playing
+
     // RLAPI void UpdateMusicStream(Music music);                            // Updates buffers for music streaming
+
+    // RLAPI void PlayMusicStream(Music music);                              // Start music playing
     // RLAPI void StopMusicStream(Music music);                              // Stop music playing
     // RLAPI void PauseMusicStream(Music music);                             // Pause music playing
     // RLAPI void ResumeMusicStream(Music music);                            // Resume playing paused music
-    // RLAPI void SeekMusicStream(Music music, float position);              // Seek music to a position (in seconds)
+    // RLAPI bool IsMusicStreamPlaying(Music music);                         // Check if music is playing
+
     // RLAPI void SetMusicVolume(Music music, float volume);                 // Set volume for music (1.0 is max level)
+
     // RLAPI float GetMusicTimeLength(Music music);                          // Get music time length (in seconds)
     // RLAPI float GetMusicTimePlayed(Music music);                          // Get current music time played (in seconds)
+    // RLAPI void SeekMusicStream(Music music, float position);              // Seek music to a position (in seconds)
 
-    // SetTraceLogLevel(LOG_NONE);
 }
 int test = 0;
 void raylib_on_frame()
@@ -342,6 +406,7 @@ void raylib_show_window(int width, int height, char *title, int mode)
     if (mode < 0) mode = FLAG_WINDOW_RESIZABLE;
     SetConfigFlags(mode);
     InitWindow(width, height, title);
+    InitAudioDevice();
     defaultFont = GetFontDefault();
     defaultImage = GenImageGradientRadial(300, 300, 0, (Color){255, 255, 255, 50}, (Color){0, 0, 0, 50});
     defaultTexture = LoadTextureFromImage(defaultImage);
@@ -354,11 +419,20 @@ void raylib_show_window(int width, int height, char *title, int mode)
         raylib_on_frame();
         EndDrawing();
     }
+    CloseAudioDevice();
     CloseWindow();
     raylib_on_hide();
 }
 
 // api
+
+void ug_baord_set_log(Bridge *bridge)
+{
+    int level = Bridge_popNumber(bridge);
+    SetTraceLogLevel(level);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
 
 void ug_board_show_window(Bridge *bridge)
 {
@@ -863,7 +937,7 @@ void ug_baord_draw_polygon_stroke(Bridge *bridge)
 void ug_baord_create_texture_from_image(Bridge *bridge)
 {
     ImgInfo info = (ImgInfo) {"../resources/rose.png", 100, 0, 200, 200, 2, 2, false, false, 0, (Color) {255, 255, 255, 255}};
-    char *tag = get_tex4img_tag(info);
+    char *tag = get_texture_tag_for_image(info);
     Texture texture = raylib_create_texture_from_image(info, tag);
     // free(tag);
     Bridge_startResult(bridge);
@@ -877,7 +951,7 @@ void ug_baord_create_texture_from_image(Bridge *bridge)
 void ug_baord_create_texture_from_text(Bridge *bridge)
 {
     TxtInfo info = (TxtInfo) {"../resources/ukij.ttf", "TEST", 36, 2, (Color) {255, 255, 255, 255}};
-    char *tag = get_tex4txt_tag(info);
+    char *tag = get_texture_tag_for_text(info);
     Texture texture = raylib_create_texture_from_text(info, tag);
     // free(tag);
     Bridge_startResult(bridge);
@@ -905,6 +979,56 @@ void ug_baord_draw_texture_by_tag(Bridge *bridge)
     Texture texture = ralib_get_texture_by_tag(tag);
     raylib_draw_texture_by_texture(texture, x, y, anchorX, anchorY, color, fromX, fromY, width, height, rotation, scale);
     //
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+// audio
+
+void ug_board_audio_set_volume(Bridge *bridge)
+{
+    float v = Bridge_popNumber(bridge);
+    SetMasterVolume(v);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+// music
+
+void ug_board_music_load(Bridge *bridge)
+{
+    char *path = Bridge_popString(bridge);
+    char *tag = get_audio_tag_for_music(path);
+    raylib_load_music_by_tag(tag, tag);
+    Bridge_startResult(bridge);
+    Bridge_pushString(bridge, tag);
+    Bridge_return(bridge);
+}
+
+void ug_board_music_unload(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    raylib_unload_music_by_tag(tag);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+// sound
+
+void ug_board_sound_load(Bridge *bridge)
+{
+    char *path = Bridge_popString(bridge);
+    char *tag = get_audio_tag_for_sound(path);
+    raylib_load_sound_by_tag(tag, path);
+    Bridge_startResult(bridge);
+    Bridge_pushString(bridge, tag);
+    Bridge_return(bridge);
+}
+
+void ug_board_sound_unload(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    raylib_unload_sound_by_tag(tag);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }
