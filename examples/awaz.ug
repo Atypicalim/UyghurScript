@@ -1,0 +1,16 @@
+# playing music
+
+miqdar tag qimmiti quruq bolsun
+
+fonkisiye @_{[doska_korsitish_qayturmisi]} mezmuni
+    fonkisiye @doska{[muzikaEkirish]} bilen [../resources/bahar.mp3] ishlitilsun we netije tag bolsun
+    fonkisiye @doska{[muzikaQuyush]} bilen tag ishlitilsun
+    fonkisiye @doska{[muzikaAwaziniBikitish]} bilen tag 1 ishlitilsun
+    fonkisiye @doska{[muzikaOrniniBikitish]} bilen tag 25 ishlitilsun
+tamamlansun
+
+fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+    fonkisiye @doska{[muzikaYingilash]} bilen tag ishlitilsun
+tamamlansun
+
+fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun

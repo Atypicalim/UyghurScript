@@ -315,38 +315,8 @@ void raylib_on_show()
 {
     Bridge_startFunc(uyghurBridge, "doska_korsitish_qayturmisi");
     Bridge_call(uyghurBridge);
-    
-
-    // sound
-
-    // RLAPI void UpdateSound(Sound sound, const void *data, int sampleCount); // Update sound buffer with new data
-
-    // RLAPI void PlaySound(Sound sound);                                    // Play a sound
-    // RLAPI void StopSound(Sound sound);                                    // Stop playing a sound
-    // RLAPI void PauseSound(Sound sound);                                   // Pause a sound
-    // RLAPI void ResumeSound(Sound sound);                                  // Resume a paused sound
-    // RLAPI bool IsSoundPlaying(Sound sound);                               // Check if a sound is currently playing
-
-    // RLAPI void SetSoundVolume(Sound sound, float volume);                 // Set volume for a sound (1.0 is max level)
-
-    // Music
-
-    // RLAPI void UpdateMusicStream(Music music);                            // Updates buffers for music streaming
-
-    // RLAPI void PlayMusicStream(Music music);                              // Start music playing
-    // RLAPI void StopMusicStream(Music music);                              // Stop music playing
-    // RLAPI void PauseMusicStream(Music music);                             // Pause music playing
-    // RLAPI void ResumeMusicStream(Music music);                            // Resume playing paused music
-    // RLAPI bool IsMusicStreamPlaying(Music music);                         // Check if music is playing
-
-    // RLAPI void SetMusicVolume(Music music, float volume);                 // Set volume for music (1.0 is max level)
-
-    // RLAPI float GetMusicTimeLength(Music music);                          // Get music time length (in seconds)
-    // RLAPI float GetMusicTimePlayed(Music music);                          // Get current music time played (in seconds)
-    // RLAPI void SeekMusicStream(Music music, float position);              // Seek music to a position (in seconds)
-
 }
-int test = 0;
+
 void raylib_on_frame()
 {
     Bridge_startFunc(uyghurBridge, "doska_sizish_qayturmisi");
@@ -999,7 +969,7 @@ void ug_board_music_load(Bridge *bridge)
 {
     char *path = Bridge_popString(bridge);
     char *tag = get_audio_tag_for_music(path);
-    raylib_load_music_by_tag(tag, tag);
+    raylib_load_music_by_tag(tag, path);
     Bridge_startResult(bridge);
     Bridge_pushString(bridge, tag);
     Bridge_return(bridge);
@@ -1009,6 +979,101 @@ void ug_board_music_unload(Bridge *bridge)
 {
     char *tag = Bridge_popString(bridge);
     raylib_unload_music_by_tag(tag);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_board_music_play(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Music music = raylib_get_music_by_tag(tag);
+    PlayMusicStream(music);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_board_music_stop(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Music music = raylib_get_music_by_tag(tag);
+    StopMusicStream(music);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_board_music_resume(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Music music = raylib_get_music_by_tag(tag);
+    ResumeMusicStream(music);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_board_music_pause(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Music music = raylib_get_music_by_tag(tag);
+    PauseMusicStream(music);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_board_music_is_playing(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Music music = raylib_get_music_by_tag(tag);
+    bool r = IsMusicStreamPlaying(music);
+    Bridge_startResult(bridge);
+    Bridge_pushBoolean(bridge, r);
+    Bridge_return(bridge);
+}
+
+void ug_board_music_set_volume(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Music music = raylib_get_music_by_tag(tag);
+    float volume = Bridge_popNumber(bridge);
+    SetMusicVolume(music, volume);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_board_music_update(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Music music = raylib_get_music_by_tag(tag);
+    UpdateMusicStream(music);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_board_music_get_length(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Music music = raylib_get_music_by_tag(tag);
+    float r = GetMusicTimeLength(music);
+    Bridge_startResult(bridge);
+    Bridge_pushNumber(bridge, r);
+    Bridge_return(bridge);
+}
+
+void ug_board_music_get_position(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Music music = raylib_get_music_by_tag(tag);
+    float r = GetMusicTimePlayed(music);
+    Bridge_startResult(bridge);
+    Bridge_pushNumber(bridge, r);
+    Bridge_return(bridge);
+}
+
+void ug_board_music_set_position(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Music music = raylib_get_music_by_tag(tag);
+    float position = Bridge_popNumber(bridge);
+    SeekMusicStream(music, position);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }
@@ -1029,6 +1094,62 @@ void ug_board_sound_unload(Bridge *bridge)
 {
     char *tag = Bridge_popString(bridge);
     raylib_unload_sound_by_tag(tag);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_board_sound_play(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Sound sound = raylib_get_sound_by_tag(tag);
+    PlaySound(sound);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_board_sound_stop(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Sound sound = raylib_get_sound_by_tag(tag);
+    StopSound(sound);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_board_sound_resume(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Sound sound = raylib_get_sound_by_tag(tag);
+    ResumeSound(sound);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_board_sound_pause(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Sound sound = raylib_get_sound_by_tag(tag);
+    PauseSound(sound);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_board_sound_is_playing(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Sound sound = raylib_get_sound_by_tag(tag);
+    bool r = IsSoundPlaying(sound);
+    Bridge_startResult(bridge);
+    Bridge_pushBoolean(bridge, r);
+    Bridge_return(bridge);
+}
+
+void ug_board_sound_set_volume(Bridge *bridge)
+{
+    char *tag = Bridge_popString(bridge);
+    Sound sound = raylib_get_sound_by_tag(tag);
+    float volume = Bridge_popNumber(bridge);
+    SetSoundVolume(sound, volume);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }
@@ -1056,6 +1177,48 @@ void lib_raylib_register(Bridge *bridge)
     // 
     Bridge_pushKey(bridge, "tamghaBesish");
     Bridge_pushFunction(bridge, ug_baord_draw_texture_by_tag);
+    // music
+    Bridge_pushKey(bridge, "muzikaEkirish");
+    Bridge_pushFunction(bridge, ug_board_music_load);
+    Bridge_pushKey(bridge, "muzikaTazilash");
+    Bridge_pushFunction(bridge, ug_board_music_unload);
+    Bridge_pushKey(bridge, "muzikaQuyush");
+    Bridge_pushFunction(bridge, ug_board_music_play);
+    Bridge_pushKey(bridge, "muzikaToxtitish");
+    Bridge_pushFunction(bridge, ug_board_music_stop);
+    Bridge_pushKey(bridge, "muzikaTurghuzush");
+    Bridge_pushFunction(bridge, ug_board_music_pause);
+    Bridge_pushKey(bridge, "muzikaMangghuzush");
+    Bridge_pushFunction(bridge, ug_board_music_resume);
+    Bridge_pushKey(bridge, "muzikaQuyuliwatamdu");
+    Bridge_pushFunction(bridge, ug_board_music_is_playing);
+    Bridge_pushKey(bridge, "muzikaAwaziniBikitish");
+    Bridge_pushFunction(bridge, ug_board_music_set_volume);
+    Bridge_pushKey(bridge, "muzikaYingilash");
+    Bridge_pushFunction(bridge, ug_board_music_update);
+    Bridge_pushKey(bridge, "muzikaUzunliqiniElish");
+    Bridge_pushFunction(bridge, ug_board_music_get_length);
+    Bridge_pushKey(bridge, "muzikaOrniniElish");
+    Bridge_pushFunction(bridge, ug_board_music_get_position);
+    Bridge_pushKey(bridge, "muzikaOrniniBikitish");
+    Bridge_pushFunction(bridge, ug_board_music_set_position);
+    // sound
+    Bridge_pushKey(bridge, "awazEkirish");
+    Bridge_pushFunction(bridge, ug_board_sound_load);
+    Bridge_pushKey(bridge, "awazTazilash");
+    Bridge_pushFunction(bridge, ug_board_sound_unload);
+    Bridge_pushKey(bridge, "awazQuyush");
+    Bridge_pushFunction(bridge, ug_board_sound_play);
+    Bridge_pushKey(bridge, "awazToxtitish");
+    Bridge_pushFunction(bridge, ug_board_sound_stop);
+    Bridge_pushKey(bridge, "awazTurghuzush");
+    Bridge_pushFunction(bridge, ug_board_sound_pause);
+    Bridge_pushKey(bridge, "awazMangghuzush");
+    Bridge_pushFunction(bridge, ug_board_sound_resume);
+    Bridge_pushKey(bridge, "awazQuyuliwatamdu");
+    Bridge_pushFunction(bridge, ug_board_sound_is_playing);
+    Bridge_pushKey(bridge, "awazAwaziniBikitish");
+    Bridge_pushFunction(bridge, ug_board_sound_set_volume);
     //
     Bridge_register(bridge);
     //

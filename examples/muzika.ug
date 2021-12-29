@@ -1,0 +1,15 @@
+# double sound
+
+miqdar tag qimmiti quruq bolsun
+
+fonkisiye @_{[doska_korsitish_qayturmisi]} mezmuni
+    fonkisiye @doska{[awazEkirish]} bilen [../resources/road.wav] ishlitilsun we netije tag bolsun
+    fonkisiye @doska{[awazQuyush]} bilen tag ishlitilsun
+    fonkisiye @doska{[awazEkirish]} bilen [../resources/door.wav] ishlitilsun we netije tag bolsun
+    fonkisiye @doska{[awazQuyush]} bilen tag ishlitilsun
+tamamlansun
+
+fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+tamamlansun
+
+fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
