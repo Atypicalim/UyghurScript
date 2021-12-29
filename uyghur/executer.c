@@ -49,7 +49,6 @@ Executer *Executer_new(Uyghur *uyghur)
 {
     Executer *executer = malloc(sizeof(Executer));
     Executer_reset(executer);
-    Executer_pushContainer(executer, false);
     executer->uyghur = uyghur;
     return executer;
 }
@@ -116,8 +115,6 @@ Container *Executer_getNameScope(Executer *this, char *name)
  */
 Value *Executer_getNameRValue(Executer *this, char *name)
 {
-    if (is_equal(name, "$")) return Value_new(RTYPE_BOX, NULL, 0, NULL, Executer_getClosestBox(this), NULL);
-    if (is_equal(name, "_")) return Value_new(RTYPE_BOX, NULL, 0, NULL, this->globalContainer, NULL);
     Container *container = Executer_getNameScope(this, name);
     if (container == NULL) return NULL;
     return Container_get(container, name);
@@ -159,6 +156,8 @@ Container *Executer_getScope(Executer *this, Token *token, bool isLoose)
     }
     else
     {
+        if (is_equal(token->scope, "$")) return Executer_getClosestBox(this);
+        if (is_equal(token->scope, "_")) return this->globalContainer;
         Value *value = Executer_getNameRValue(this, token->scope);
         if (value == NULL) return NULL;
         Executer_assert(this, value->type == RTYPE_BOX, token, LANG_ERR_INVALID_BOX_NAME);
@@ -237,7 +236,7 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     Token *key = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
     Value *v = Executer_getTRValue(this, value);
-    Container_set(this->currentContainer, key->value, v);
+    Executer_setTRValue(this, key, v, true);
 }
 
 void Executer_consumeOperate(Executer *this, Leaf *leaf)
@@ -595,9 +594,7 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     Cursor_free(cursor2);
     //
     Stack_clear(this->callStack);
-    Executer_pushContainer(this, false);
     Executer_consumeTree(this, leaf);
-    Executer_popContainer(this, false);
 }
 
 Value *Executer_runFunc(Executer *this, Token *funcName)
@@ -791,6 +788,7 @@ Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
 {
     Executer_pushContainer(this, true);
     Executer_consumeTree(this, tree);
+    if (this->containerStack->head == this->containerStack->tail) return NULL;
     Container *container = Executer_popContainer(this, true);
     Value *module = Value_newBox(container, NULL);
     Container_set(this->globalContainer, path, module);

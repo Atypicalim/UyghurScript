@@ -67,6 +67,7 @@ void Token_print(Token *this)
 void Token_free(Token *this)
 {
     Block_free(this);
+    // TODO: ug free pointers
 }
 
 #endif

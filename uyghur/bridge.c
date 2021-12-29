@@ -11,6 +11,14 @@
 
 void Bridge_reset(Bridge *this)
 {
+    Cursor *cursor = Stack_reset(this->stack);
+    Value *value = Stack_next(this->stack, cursor);
+    while(value != NULL)
+    {
+        Value_free(value);
+        value = Stack_next(this->stack, cursor);
+    }
+    Cursor_free(cursor);
     Stack_free(this->stack);
     this->stack = Stack_new();
     this->name = NULL;
@@ -197,6 +205,7 @@ void Bridge_call(Bridge *this)
     Bridge_startResult(this);
     Bridge_pushValue(this, r);
     Bridge_return(this);
+    // // TODO: ug free result when call
 }
 
 void *Bridge_send(Bridge *this)

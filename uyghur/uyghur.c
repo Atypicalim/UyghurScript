@@ -42,8 +42,8 @@ Value *Uyghur_execute(Uyghur *this, char *path, bool isEntry)
 bool Uyghur_run(Uyghur *this, const char *path)
 {
     Value *moduleBox = Uyghur_execute(this, (char *)path, true);
-    tools_assert(moduleBox != NULL, tools_format(LANG_ERR_INVALID_INPUT_FILE, path));
-    return moduleBox != NULL;
+    tools_assert(moduleBox == NULL, tools_format(LANG_ERR_INVALID_INPUT_FILE, path));
+    return moduleBox == NULL;
 }
 
 void Uyghur_free(Uyghur *this)

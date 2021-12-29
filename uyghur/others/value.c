@@ -175,6 +175,7 @@ Value *Value_toNumber(Value *this)
 void Value_free(Value *this)
 {
     free(this);
+    // TODO: ug free pointers
 }
 
 #endif

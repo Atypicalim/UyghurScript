@@ -38,7 +38,7 @@ void Block_print(void *_this)
     else
     {
         Block *this = _this;
-        printf("[(Block) => address:%d, data:%d]\n", this, (char *)this->data);
+        printf("[(Block) => address:%d, data:%d]\n", this, this->data);
     }
 }
 
