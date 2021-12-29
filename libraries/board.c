@@ -404,6 +404,29 @@ void ug_baord_set_log(Bridge *bridge)
     Bridge_return(bridge);
 }
 
+void ug_baord_set_fps(Bridge *bridge)
+{
+    SetTargetFPS(Bridge_popNumber(bridge));
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
+void ug_baord_get_fps(Bridge *bridge)
+{
+    Bridge_startResult(bridge);
+    Bridge_pushNumber(bridge, GetFPS());
+    Bridge_return(bridge);
+}
+
+void ug_baord_draw_fps(Bridge *bridge)
+{
+    int x = Bridge_popNumber(bridge);
+    int y = Bridge_popNumber(bridge);
+    DrawFPS(x, y);
+    Bridge_startResult(bridge);
+    Bridge_return(bridge);
+}
+
 void ug_board_show_window(Bridge *bridge)
 {
     int w = Bridge_popNumber(bridge);
@@ -572,29 +595,6 @@ void ug_baord_have_cursor(Bridge *bridge)
     Bridge_pushBoolean(bridge, IsCursorOnScreen());
     Bridge_return(bridge);
 } 
-
-void ug_baord_set_fps(Bridge *bridge)
-{
-    SetTargetFPS(Bridge_popNumber(bridge));
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
-}
-
-void ug_baord_get_fps(Bridge *bridge)
-{
-    Bridge_startResult(bridge);
-    Bridge_pushNumber(bridge, GetFPS());
-    Bridge_return(bridge);
-}
-
-void ug_baord_draw_fps(Bridge *bridge)
-{
-    int x = Bridge_popNumber(bridge);
-    int y = Bridge_popNumber(bridge);
-    DrawFPS(x, y);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
-}
 
 void ug_baord_set_clipboard(Bridge *bridge)
 {
@@ -1162,9 +1162,80 @@ void lib_raylib_register(Bridge *bridge)
     resourcesMap = Hashmap_new(NULL);
     //
     Bridge_startBox(bridge, "doska");
-    //
+    // settings
+    Bridge_pushKey(bridge, "logDerijisiniBikitish");
+    Bridge_pushFunction(bridge, ug_baord_set_log);
+    Bridge_pushKey(bridge, "fpsBikitish");
+    Bridge_pushFunction(bridge, ug_baord_set_fps);
+    Bridge_pushKey(bridge, "fpsElish");
+    Bridge_pushFunction(bridge, ug_baord_get_fps);
+    Bridge_pushKey(bridge, "fpsSizish");
+    Bridge_pushFunction(bridge, ug_baord_draw_fps);
+    // window
     Bridge_pushKey(bridge, "korsitish");
     Bridge_pushFunction(bridge, ug_board_show_window);
+    Bridge_pushKey(bridge, "yushurush");
+    Bridge_pushFunction(bridge, ug_baord_hide_window);
+    Bridge_pushKey(bridge, "putunIkranmu");
+    Bridge_pushFunction(bridge, ug_baord_is_fullscreen);
+    Bridge_pushKey(bridge, "yushurunghanmu");
+    Bridge_pushFunction(bridge, ug_baord_is_hidden);
+    Bridge_pushKey(bridge, "kichiklitilgenmu");
+    Bridge_pushFunction(bridge, ug_baord_is_minimized);
+    Bridge_pushKey(bridge, "chongaytilghanmu");
+    Bridge_pushFunction(bridge, ug_baord_is_maximized);
+    Bridge_pushKey(bridge, "putunIkranHalitiniAlmashturush");
+    Bridge_pushFunction(bridge, ug_baord_toggle_fullscreen);
+    Bridge_pushKey(bridge, "kichiklitish");
+    Bridge_pushFunction(bridge, ug_baord_set_minimize);
+    Bridge_pushKey(bridge, "chongaytish");
+    Bridge_pushFunction(bridge, ug_baord_set_maximize);
+    Bridge_pushKey(bridge, "normallashturush");
+    Bridge_pushFunction(bridge, ug_baord_set_normalize);
+    Bridge_pushKey(bridge, "temaBikitish");
+    Bridge_pushFunction(bridge, ug_baord_set_title);
+    Bridge_pushKey(bridge, "sibelgeBikitish");
+    Bridge_pushFunction(bridge, ug_baord_set_icon);
+    Bridge_pushKey(bridge, "orniniBikitish");
+    Bridge_pushFunction(bridge, ug_baord_set_position);
+    Bridge_pushKey(bridge, "orniniElish");
+    Bridge_pushFunction(bridge, ug_baord_get_position);
+    Bridge_pushKey(bridge, "chongliqiniBikitish");
+    Bridge_pushFunction(bridge, ug_baord_set_size);
+    Bridge_pushKey(bridge, "chongliqiniElish");
+    Bridge_pushFunction(bridge, ug_baord_get_size);
+    Bridge_pushKey(bridge, "ikranChongliqiniElish");
+    Bridge_pushFunction(bridge, ug_baord_get_screen_size);
+    Bridge_pushKey(bridge, "engKichikChongliqiniBikitish");
+    Bridge_pushFunction(bridge, ug_baord_set_min_size);
+    Bridge_pushKey(bridge, "istirilkaKorsitish");
+    Bridge_pushFunction(bridge, ug_baord_show_cursor);
+    Bridge_pushKey(bridge, "istirilkaQozghitish");
+    Bridge_pushFunction(bridge, ug_baord_enable_cursor);
+    Bridge_pushKey(bridge, "istirilkaIchidimu");
+    Bridge_pushFunction(bridge, ug_baord_have_cursor);
+    // system
+    Bridge_pushKey(bridge, "chaplashTaxtisiniBikitish");
+    Bridge_pushFunction(bridge, ug_baord_set_clipboard);
+    Bridge_pushKey(bridge, "chaplashTaxtisiniElish");
+    Bridge_pushFunction(bridge, ug_baord_get_clipboard);
+    Bridge_pushKey(bridge, "mausIstirilkaBelgisiniBikitish");
+    Bridge_pushFunction(bridge, ug_baord_set_mourse_cursor);
+    Bridge_pushKey(bridge, "mausIstirilkaOrniniElish");
+    Bridge_pushFunction(bridge, ug_baord_get_mouse_position);
+    Bridge_pushKey(bridge, "mausAylanmaOrniniElish");
+    Bridge_pushFunction(bridge, ug_baord_get_mouse_wheel);
+    Bridge_pushKey(bridge, "mausKunupkisiHerkitiniElish");
+    Bridge_pushFunction(bridge, ug_baord_get_mouse_key_action);
+    Bridge_pushKey(bridge, "mausKunupkisiHalitiniElish");
+    Bridge_pushFunction(bridge, ug_baord_get_mouse_key_state);
+    Bridge_pushKey(bridge, "tahtayKunupkisiHerkitiniElish");
+    Bridge_pushFunction(bridge, ug_baord_get_keyboard_key_action);
+    Bridge_pushKey(bridge, "tahtayKunupkisiHalitiniElish");
+    Bridge_pushFunction(bridge, ug_baord_get_keybaord_key_state);
+    // other
+    Bridge_pushKey(bridge, "ikranniResimgeTartipSaxlash");
+    Bridge_pushFunction(bridge, ug_baord_save_screenshot);
     // 
     Bridge_pushKey(bridge, "chemberSizish");
     Bridge_pushFunction(bridge, ug_baord_draw_circle_fill);
@@ -1177,6 +1248,9 @@ void lib_raylib_register(Bridge *bridge)
     // 
     Bridge_pushKey(bridge, "tamghaBesish");
     Bridge_pushFunction(bridge, ug_baord_draw_texture_by_tag);
+    // audio
+    Bridge_pushKey(bridge, "programmaAwaziniBikitish");
+    Bridge_pushFunction(bridge, ug_board_audio_set_volume);
     // music
     Bridge_pushKey(bridge, "muzikaEkirish");
     Bridge_pushFunction(bridge, ug_board_music_load);
