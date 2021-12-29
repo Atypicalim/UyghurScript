@@ -41,7 +41,21 @@ Container *Executer_popContainer(Executer *this, bool isBox)
     Container *container = Stack_pop(this->containerStack);
     this->currentContainer = (Container *)this->containerStack->tail->data;
     tools_assert(container != NULL && container->isBox == isBox, LANG_ERR_NO_VALID_STATE);
-    if (!isBox) Container_free(container);
+    //
+    if (!isBox)
+    {
+        // Cursor *cursor = Hashmap_reset(container->map);
+        // char *item = Hashmap_next(container->map, cursor);
+        // while(item != NULL)
+        // {
+        //     Value *v = Hashmap_get(container->map, item);
+        //     Hashmap_del(container->map, item);
+        //     item = Hashmap_next(container->map, cursor);
+        // }
+        // Cursor_free(cursor);
+        Container_free(container);
+    };
+    // 
     return isBox ? container : NULL;
 }
 

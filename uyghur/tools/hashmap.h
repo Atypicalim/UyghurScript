@@ -125,6 +125,40 @@ void Hashmap_del(Hashmap *this, char *key) {
     }
 }
 
+Cursor *Hashmap_reset(Hashmap *this)
+{
+    return Cursor_new(NULL);
+}
+
+char *Hashmap_next(Hashmap *this, Cursor *cursor)
+{
+    void *checkItem = Cursor_get(cursor);
+    bool emptyCursor = checkItem == NULL;
+    bool returnNext = emptyCursor == true;
+    if (checkItem) returnNext = true;
+    for (int i = 0; i < CAPACITY; i++) {
+        if (this[i].position != NULL) {
+            Entry *ptr = this[i].position;
+            while (ptr != NULL) {
+                if (returnNext)
+                {
+                    if (emptyCursor)
+                    {
+                        Cursor_set(cursor, ptr);
+                    }
+                    return ptr->key;
+                }
+                else if (checkItem == ptr)
+                {
+                    returnNext = true;
+                }
+                ptr = ptr->next;
+            }
+        }
+    } 
+    return NULL;
+}
+
 void Hashmap_foreach(Hashmap *this, void *bindObj, void (*func)(void *, char *, void *))
 {
     int i;
