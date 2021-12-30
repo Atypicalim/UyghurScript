@@ -1,0 +1,17 @@
+# clock
+
+miqdar o qimmiti 0 bolsun
+
+fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+
+    fonkisiye @waqit{[sikuntElish]} ishlitilsun we netije tt bolsun
+    fonkisiye @waqit{[sikuntniAylandurush]} bilen tt [%Y-%m-%d %H:%M:%S] ishlitilsun we netije tt bolsun
+
+    fonkisiye @ressam{[xetMolcherlesh]} bilen [../resources/ukij.ttf] tt 36 0 ishlitilsun we netije w bolsun
+    o qimmiti w bulungen 2 bolsun
+    o qimmiti 250 elinghan o bolsun
+    fonkisiye @ressam{[xetYezish]} bilen [../resources/ukij.ttf] tt 36 0 [ff0000ff] o 250 ishlitilsun
+
+tamamlansun
+
+fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun

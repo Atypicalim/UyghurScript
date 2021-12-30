@@ -1,0 +1,31 @@
+# drawing
+
+miqdar QIZIL qimmiti [ff0000] bolsun
+miqdar KOK qimmiti [00ff00] bolsun
+miqdar YESHIL qimmiti [0000ff] bolsun
+miqdar QARA qimmiti [000000] bolsun
+
+miqdar x qimmiti 0 bolsun
+
+fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+
+    x qimmiti x qushulghan 0.01 bolsun
+
+    fonkisiye @ressam{[nuqtaSizish]} bilen 10 10 QIZIL ishlitilsun
+    fonkisiye @ressam{[nuqtaSizish]} bilen 490 10 QIZIL ishlitilsun
+
+    fonkisiye @ressam{[siziqSizish]} bilen 20 10 480 10 2 QIZIL ishlitilsun
+
+    fonkisiye @ressam{[rayunToldurushRenggareng]} bilen 50 20 110 120 QIZIL YESHIL KOK QARA ishlitilsun
+
+    fonkisiye @ressam{[chemberToldurush]} bilen 260 80 70 50 YESHIL ishlitilsun
+
+    fonkisiye @ressam{[uzukToldurush]} bilen 400 80 30 50 KOK 15 345 ishlitilsun
+
+    fonkisiye @ressam{[uchTereplikToldurush]} bilen 100 300 400 300 250 150 QIZIL ishlitilsun
+
+    fonkisiye @ressam{[kopTereplikToldurush]} bilen 250 400 8 75 0 KOK ishlitilsun
+
+tamamlansun
+
+fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun

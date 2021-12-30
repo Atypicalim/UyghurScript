@@ -518,7 +518,6 @@ void lib_raylib_painter_register(Bridge *bridge)
     resourcesMap = Hashmap_new(NULL);
     //
     Bridge_startBox(bridge, "ressam");
-    // TODO: ug write example for drawing
     // draw
     Bridge_pushKey(bridge, "sizishniBashlash");
     Bridge_pushFunction(bridge, ug_baord_draw_start);
