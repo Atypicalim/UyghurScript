@@ -417,7 +417,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
         {
             r = Value_newNumber(firstN * secondN, NULL);
         }
-        else if (is_equal(act, TVALUE_MUL))
+        else if (is_equal(act, TVALUE_DIV))
         {
             r = Value_newNumber(firstN / secondN, NULL);
         }

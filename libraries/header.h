@@ -4,11 +4,19 @@
 #define H_LIB_EXTERNAL_HEADER
 
 #include "board.c"
+#include "music.c"
+#include "sound.c"
+#include "painter.c"
 #include "test.c"
 
 void register_external_libraries(Bridge *bridge)
 {
-    lib_raylib_register(bridge);
+    // raylib
+    lib_raylib_main_register(bridge);
+    lib_raylib_music_register(bridge);
+    lib_raylib_sound_register(bridge);
+    lib_raylib_painter_register(bridge);
+    //
     lib_test_register(bridge);
 }
 

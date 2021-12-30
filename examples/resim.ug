@@ -5,8 +5,8 @@ miqdar rotation qimmiti 0 bolsun
 fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
 
     rotation qimmiti rotation qushulghan 0.05 bolsun
-    fonkisiye @doska{[resimEkirish]} bilen [] ishlitilsun we netije r bolsun
-    fonkisiye @doska{[tamghaBesish]} bilen r 250 250 0.5 0.5 [aaffffff] 0 0 -1 -1 rotation 0.5 ishlitilsun
+    fonkisiye @ressam{[resimEkirish]} bilen [../resources/rose.png] 100 0 200 200 yalghan yalghan ishlitilsun we netije r bolsun
+    fonkisiye @ressam{[tamghaBesish]} bilen r 250 250 0.5 0.5 [aaffffff] 0 0 -1 -1 rotation 0.5 ishlitilsun
 
 tamamlansun
 

@@ -17,7 +17,7 @@ fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
     tamamlansun
     x qimmiti x qushulghan d bolsun
     y qimmiti y qushulghan d bolsun
-    fonkisiye @doska{[chemberSizish]} bilen x y 100 100 [55aaff] ishlitilsun
+    fonkisiye @ressam{[chemberSizish]} bilen x y 100 100 [55aaff] ishlitilsun
 
 tamamlansun
 
