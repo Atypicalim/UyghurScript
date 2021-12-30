@@ -324,7 +324,8 @@ void raylib_on_frame()
     //
     // Vector2 center = (Vector2){250, 250};
     // Color color = (Color){50, 100, 200, 255};
-    // Rectangle rectangle = (Rectangle){250, 250, 200, 200};
+    Rectangle rectangle = (Rectangle){250, 250, 200, 200};
+    Vector2 anchor = (Vector2){100, 100};
     //
     DrawFPS(400, 450);
 
@@ -385,7 +386,6 @@ void raylib_show_window(int width, int height, char *title, int mode)
     {
         BeginDrawing();
         ClearBackground(RAYWHITE);
-        DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
         raylib_on_frame();
         EndDrawing();
     }
@@ -750,10 +750,11 @@ void ug_baord_draw_line_two_controll(Bridge *bridge)
 void ug_baord_draw_rectangle_fill_transformed(Bridge *bridge)
 {
     Rectangle rectangle = rectangle_from_bridge(bridge);
-    Vector2 anchor = vector_from_bridge(bridge);
-    double rotation = Bridge_popNumber(bridge);
     Color color = color_from_bridge(bridge);
-    DrawRectanglePro(rectangle, anchor, rotation, color);
+    Vector2 anchor = vector_from_bridge(bridge);
+    anchor.x = anchor.x * rectangle.width;
+    anchor.y = anchor.y * rectangle.height;
+    DrawRectanglePro(rectangle, anchor, 0, color);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }
@@ -761,8 +762,6 @@ void ug_baord_draw_rectangle_fill_transformed(Bridge *bridge)
 void ug_baord_draw_rectangle_fill_colorful(Bridge *bridge)
 {
     Rectangle rectangle = rectangle_from_bridge(bridge);
-    int roundness = Bridge_popNumber(bridge);
-    int thickness = Bridge_popNumber(bridge);
     Color leftTop = color_from_bridge(bridge);
     Color leftBottom = color_from_bridge(bridge);
     Color rightBottom = color_from_bridge(bridge);
@@ -775,8 +774,8 @@ void ug_baord_draw_rectangle_fill_colorful(Bridge *bridge)
 void ug_baord_draw_rectangle_fill_round(Bridge *bridge)
 {
     Rectangle rectangle = rectangle_from_bridge(bridge);
-    int roundness = Bridge_popNumber(bridge);
     Color color = color_from_bridge(bridge);
+    int roundness = Bridge_popNumber(bridge);
     DrawRectangleRounded(rectangle, roundness, 0, color);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -785,9 +784,9 @@ void ug_baord_draw_rectangle_fill_round(Bridge *bridge)
 void ug_baord_draw_rectangle_stroke(Bridge *bridge)
 {
     Rectangle rectangle = rectangle_from_bridge(bridge);
+    Color color = color_from_bridge(bridge);
     double roundness = Bridge_popNumber(bridge);
     double thickness = Bridge_popNumber(bridge);
-    Color color = color_from_bridge(bridge);
     DrawRectangleRoundedLines(rectangle, roundness, 0, thickness, color);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -813,18 +812,6 @@ void ug_baord_draw_circle_stroke(Bridge *bridge)
     int radiusV = Bridge_popNumber(bridge);
     Color color = color_from_bridge(bridge);
     DrawEllipseLines(centerX, centerY, radiusH, radiusV, color);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
-}
-
-void ug_baord_draw_circle_gradient(Bridge *bridge)
-{
-    int centerX = Bridge_popNumber(bridge);
-    int centerY = Bridge_popNumber(bridge);
-    double radius = Bridge_popNumber(bridge);
-    Color color1 = color_from_bridge(bridge);
-    Color color2 = color_from_bridge(bridge);
-    DrawCircleGradient(centerX, centerY, radius, color1, color2);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }
@@ -1236,16 +1223,54 @@ void lib_raylib_register(Bridge *bridge)
     // other
     Bridge_pushKey(bridge, "ikranniResimgeTartipSaxlash");
     Bridge_pushFunction(bridge, ug_baord_save_screenshot);
-    // 
-    Bridge_pushKey(bridge, "chemberSizish");
+    // TODO: ug write example for drawing
+    // draw
+    Bridge_pushKey(bridge, "sizishniBashlash");
+    Bridge_pushFunction(bridge, ug_baord_draw_start);
+    Bridge_pushKey(bridge, "sizishniTamamlash");
+    Bridge_pushFunction(bridge, ug_baord_draw_end);
+    // draw point & line
+    Bridge_pushKey(bridge, "nuqtaSizish");
+    Bridge_pushFunction(bridge, ug_baord_draw_pixel);
+    Bridge_pushKey(bridge, "siziqSizish");
+    Bridge_pushFunction(bridge, ug_baord_draw_line_no_controll);
+    Bridge_pushKey(bridge, "siziqSizishBirKontrolluq");
+    Bridge_pushFunction(bridge, ug_baord_draw_line_one_controll);
+    Bridge_pushKey(bridge, "siziqSizishIkkiKontirolluq");
+    // draw rectangle
+    Bridge_pushFunction(bridge, ug_baord_draw_line_two_controll);
+    Bridge_pushKey(bridge, "rayunToldurushAylandurulghan");
+    Bridge_pushFunction(bridge, ug_baord_draw_rectangle_fill_transformed);
+    Bridge_pushKey(bridge, "rayunToldurushRenggareng");
+    Bridge_pushFunction(bridge, ug_baord_draw_rectangle_fill_colorful);
+    Bridge_pushKey(bridge, "rayunToldurushSiliqlanghan");
+    Bridge_pushFunction(bridge, ug_baord_draw_rectangle_fill_round);
+    Bridge_pushKey(bridge, "rayunSizishSiliqlanghan");
+    Bridge_pushFunction(bridge, ug_baord_draw_rectangle_stroke);
+    // draw circle & ring
+    Bridge_pushKey(bridge, "chemberToldurush");
     Bridge_pushFunction(bridge, ug_baord_draw_circle_fill);
-    // 
+    Bridge_pushKey(bridge, "chemberSizish");
+    Bridge_pushFunction(bridge, ug_baord_draw_circle_stroke);
+    Bridge_pushKey(bridge, "uzukToldurush");
+    Bridge_pushFunction(bridge, ug_baord_draw_ring_fill);
+    Bridge_pushKey(bridge, "uzukSizish");
+    Bridge_pushFunction(bridge, ug_baord_draw_ring_stroke);
+    // draw triangle & polygon
+    Bridge_pushKey(bridge, "uchTereplikToldurush");
+    Bridge_pushFunction(bridge, ug_baord_draw_triangle_fill);
+    Bridge_pushKey(bridge, "uchTereplikSizish");
+    Bridge_pushFunction(bridge, ug_baord_draw_triangle_stroke);
+    Bridge_pushKey(bridge, "kopTereplikToldurush");
+    Bridge_pushFunction(bridge, ug_baord_draw_polygon_fill);
+    Bridge_pushKey(bridge, "kopTereplikSizish");
+    Bridge_pushFunction(bridge, ug_baord_draw_polygon_stroke);
+    // TODO: ug check image params and igrore duplicate with texture
+    // TODO: ug interface for drawing dynamic text with a font
     Bridge_pushKey(bridge, "resimEkirish");
     Bridge_pushFunction(bridge, ug_baord_create_texture_from_image);
-    // 
     Bridge_pushKey(bridge, "xetEkirish");
     Bridge_pushFunction(bridge, ug_baord_create_texture_from_text);
-    // 
     Bridge_pushKey(bridge, "tamghaBesish");
     Bridge_pushFunction(bridge, ug_baord_draw_texture_by_tag);
     // audio
