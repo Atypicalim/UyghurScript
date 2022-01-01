@@ -16,7 +16,8 @@
 
 #define LANG_ERR_INVALID_BOX_NAME "sanduq ismi inawetsiz: "
 #define LANG_ERR_INVALID_KEY_NAME "sanduq korsetkuchi inawetsiz: "
-#define LANG_ERR_INVALID_VARIABLE_NAME "miqdar texi iniqlanmighan: "
+#define LANG_ERR_VARIABLE_NOT_FOUND "miqdar texi iniqlanmighan: "
+#define LANG_ERR_VARIABLE_IS_FOUND "miqdar alliburun iniqlanghan: "
 
 #define LANG_ERR_EXECUTER_EXCEPTION "ijra xataliqi kuruldi: "
 #define LANG_ERR_EXECUTER_EXP_INVALID_TYPE "oxshashmighan miqdar tipi arisida xisablash elip barghili bolmaydu: "

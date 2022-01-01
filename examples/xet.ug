@@ -1,8 +1,11 @@
 # scaling text
 
-miqdar s qimmiti 1 bolsun
-miqdar t qimmiti quruq bolsun
-miqdar o qimmiti 0 bolsun
+miqdar s tewellut bolsun
+miqdar t tewellut bolsun
+miqdar o tewellut bolsun
+s qimmiti 1 bolsun
+t qimmiti quruq bolsun
+o qimmiti 0 bolsun
 
 fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
 

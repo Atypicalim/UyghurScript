@@ -56,6 +56,9 @@
 #define TVALUE_TARGET_TO "ikrangha" // TODO implement with standart library -> box+func (screen, file, etc)
 //
 #define TVALUE_VARIABLE "miqdar"
+#define TVALUE_CREATE "tewellut"
+#define TVALUE_FREE "azad"
+#define TVALUE_REMOVE "wapat"
 #define TVALUE_VALUE "qimmiti"
 #define TVALUE_MADE "bolsun"
 

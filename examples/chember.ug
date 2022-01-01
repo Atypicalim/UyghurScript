@@ -1,10 +1,17 @@
 # moving circle
 
-miqdar x qimmiti 0 bolsun
-miqdar y qimmiti 0 bolsun
-miqdar t1 qimmiti quruq bolsun
-miqdar t2 qimmiti quruq bolsun
-miqdar d qimmiti 0.1 bolsun
+
+miqdar x tewellut bolsun
+miqdar y tewellut bolsun
+miqdar t1 tewellut bolsun
+miqdar t2 tewellut bolsun
+miqdar d tewellut bolsun
+
+x qimmiti 0 bolsun
+y qimmiti 0 bolsun
+t1 qimmiti quruq bolsun
+t2 qimmiti quruq bolsun
+d qimmiti 0.1 bolsun
 
 fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
 

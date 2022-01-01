@@ -4,160 +4,29 @@
 
 # ikrangha [salam uyghur script!] yezilsun
 
-# miqdar dunyaghaSalam qimmiti [SalamDunya!] bolsun
+# miqdar dunyaghaSalam tewellut bolsun
+# dunyaghaSalam qimmiti [SalamDunya!] bolsun
 # ikrandin dunyaghaSalam oqulsun
 # ikrangha dunyaghaSalam yezilsun
 
-# miqdar miningIsmim qimmiti [] bolsun
-# ikrangha [ismingizni kurguzung:] yezilsun
-# ikrandin miningIsmim oqulsun
-# ikrangha miningIsmim yezilsun
-
-# miqdar salamMezmuni qimmiti [Xush Kepsiz ] bolsun
-# salamMezmuni qimmiti salamMezmuni ulanghan miningIsmim bolsun
-# ikrangha salamMezmuni yezilsun
-
-# miqdar sQimmet qimmiti [yalghan] bolsun
-# sQimmet qimmiti san bolsun
-# sQimmet qimmiti xet bolsun
-# sQimmet qimmiti quruq bolsun
-# sQimmet qimmiti logika bolsun
-# sQimmet qimmiti ekische bolsun
-# sQimmet qimmiti fonkisiye bolsun
-# ikrangha sQimmet yezilsun
-
-# miqdar sanliqQimmet qimmiti 2 bolsun
-# sanliqQimmet qimmiti 4 bolsun
-# sanliqQimmet qimmiti sanliqQimmet qushulghan 3 bolsun
-# ikrangha sanliqQimmet yezilsun
-
-# miqdar sinaqR qimmiti quruq bolsun
-# miqdar sinaqA qimmiti 1 bolsun
-# miqdar sinaqB qimmiti [rast] bolsun
-# sinaqR qimmiti sinaqA hemde sinaqB bolsun
-# ikrangha sinaqR yezilsun
-
-# miqdar qimmetBir qimmiti 2 bolsun
-# miqdar qimmetIkki qimmiti 3 bolsun
-# miqdar logikiliqQimmet qimmiti quruq bolsun
-# logikiliqQimmet qimmiti 3 kichik 2 bolsun
-# logikiliqQimmet qimmiti ekische bolsun
-# ikrangha logikiliqQimmet yezilsun
-
-# miqdar a qimmiti [1] bolsun
-# a qimmiti san bolsun
-# miqdar c qimmiti quruq bolsun
-# c qimmiti a qushulghan 1 bolsun
-# ikrangha c yezilsun
-
-
-# miqdar sinaqBir qimmiti rast bolsun
-# eger sinaqBir qimmiti rast bolsa
-#     ikrangha [eger: sinaqBir qimmiti rast ...] yezilsun
-#     sinaqBir qimmiti yalghan hemde yalghan bolsun
-# tamamlansun
-# ikrangha sinaqBir yezilsun
-
-
-# miqdar a qimmiti quruq bolsun
-# miqdar b qimmiti rast bolsun
-# miqdar c qimmiti rast bolsun
-# miqdar d qimmiti [quruq!!!] bolsun
-
-# eger a qimmiti rast bolsa
-#     ikrangha [eger] yezilsun
-#     d qimmiti [eger] bolsun
-# egerde b qimmiti rast bolsa
-#     ikrangha [egerde1] yezilsun
-#     d qimmiti [egerde1] bolsun
-# egerde c qimmiti rast bolmisa
-#     ikrangha [egerde2] yezilsun
-#     d qimmiti [egerde2] bolsun
-# bolmisa
-#     miqdar d qimmiti [ichide] bolsun
-#     ikrangha d yezilsun
-#     d qimmiti [bolmisa] bolsun
-#     ikrangha d yezilsun
-# tamamlansun
-
-# ikrangha d yezilsun
-
-
-# miqdar yezildighanQimmet qimmiti [] bolsun
-# miqdar sinaqQimmet qimmiti 1 bolsun
-# miqdar tekshurulmeQimmet qimmiti rast bolsun
-# nawada tekshurulmeQimmet qimmiti rast bolsa
-#     miqdar sinaqQimmetS qimmiti sinaqQimmet bolsun
-#     sinaqQimmetS qimmiti xet bolsun
-#     yezildighanQimmet qimmiti [nawada: sanaq ] ulanghan sinaqQimmetS bolsun
-#     ikrangha yezildighanQimmet yezilsun
-#     sinaqQimmet qimmiti sinaqQimmet qushulghan 1 bolsun
-#     tekshurulmeQimmet qimmiti sinaqQimmet kichik 5 bolsun
-# tamamlansun
-
-
-# miqdar yighinda qimmiti 0 bolsun
-# fonkisiye sanYezish mezmuni
-#     ikrangha yighinda yezilsun
-# tamamlansun
-# fonkisiye sanQushush miqdar x y mezmuni
-#     miqdar waqitliqMiqdar qimmiti 0 bolsun
-#     waqitliqMiqdar qimmiti x qushulghan y bolsun
-#     netije waqitliqMiqdar qayturulsun
-# tamamlansun
-# fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
-
-# miqdar funcName qimmiti [sanYezish] bolsun
-# funcName qimmiti fonkisiye bolsun
-
-# ikrangha funcName yezilsun
-# fonkisiye funcName ishlitilsun
-
-# miqdar chongSan qimmiti quruq bolsun
-# fonkisiye chongniTepish bilen 10 20 ishlitilsun we netije chongSan bolsun
-# ikrangha chongSan yezilsun
-
-# ikrangha [UyghurScript!] yezilsun
-
-
-# ikrangha [c kowruk sinaq!] yezilsun
-# ikrangha cString yezilsun
-# ikrangha cBoolean yezilsun
-# ikrangha cNumber yezilsun
-# ikrangha cFuncTest yezilsun
-# fonkisiye cFuncTest bilen [stringFromUyghur] 445566 rast ishlitilsun we netije r bolsun
-# ikrangha r yezilsun
-
-# ikrangha [c kowruk sinaq!] yezilsun
-# fonkisiye uyghurFuncTest miqdar x y b s mezmuni
-#     miqdar waqitliqMiqdar qimmiti 0 bolsun
-#     ikrangha [---c ewetken qimmiet:---] yezilsun
-#     ikrangha x yezilsun
-#     ikrangha [---] yezilsun
-#     ikrangha y yezilsun
-#     ikrangha [---] yezilsun
-#     ikrangha b yezilsun
-#     ikrangha [---] yezilsun
-#     ikrangha s yezilsun
-#     ikrangha [---] yezilsun
-#     waqitliqMiqdar qimmiti x qushulghan y bolsun
-#     netije waqitliqMiqdar qayturulsun
-# tamamlansun
-
 # box init
-# miqdar xxx qimmiti sanduq bolsun
-# miqdar yyy qimmiti sanduq bolsun
-# miqdar zzz qimmiti quruq bolsun
+# miqdar xxx tewellut bolsun
+# miqdar yyy tewellut bolsun
+# miqdar zzz tewellut bolsun
+# xxx qimmiti sanduq bolsun
+# yyy qimmiti sanduq bolsun
+# zzz qimmiti quruq bolsun
 # zzz qimmiti xxx teng yyy bolsun
 # ikrangha xxx yezilsun
 # ikrangha yyy yezilsun
 # ikrangha zzz yezilsun
 
 # box and variable
-# miqdar keyVariable qimmiti [key5] bolsun
+# miqdar keyVariable tewellut bolsun
+# keyVariable qimmiti [key5] bolsun
 # @xxx{[key1]} qimmiti 11 bolsun
 # @xxx{[key2]} qimmiti 22 bolsun
-# miqdar @xxx{[key3]} qimmiti [xyz] bolsun
+# @xxx{[key3]} qimmiti [xyz] bolsun
 # @xxx{[key3]} qimmiti 1 qushulghan 2 bolsun
 
 # box and function
@@ -196,49 +65,65 @@
 # fonkisiye @box{[sinaq]} bilen 0 ishlitilsun we netije r bolsun
 # ikrangha r yezilsun
 
-miqdar x qimmiti 0 bolsun
-miqdar y qimmiti 0 bolsun
-miqdar t1 qimmiti quruq bolsun
-miqdar t2 qimmiti quruq bolsun
-miqdar d qimmiti 0.1 bolsun
+miqdar x tewellut bolsun
+miqdar y tewellut bolsun
+miqdar t1 tewellut bolsun
+miqdar t2 tewellut bolsun
+miqdar d tewellut bolsun
+miqdar rotation tewellut bolsun
 
-miqdar rotation qimmiti 0 bolsun
-
-# fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
-
-#     #
-#     t1 qimmiti x chong 400 bolsun
-#     t2 qimmiti x kichik 100 bolsun
-#     eger t1 qimmiti rast bolsa
-#         d qimmiti -0.1 bolsun
-#     egerde t2 qimmiti rast bolsa
-#         d qimmiti 0.1 bolsun
-#     tamamlansun
-#     x qimmiti x qushulghan d bolsun
-#     y qimmiti y qushulghan d bolsun
-#     fonkisiye @doska{[chemberSizish]} bilen x y 100 100 [55aaff] ishlitilsun
-
-#     # 
-#     rotation qimmiti rotation qushulghan 0.05 bolsun
-#     fonkisiye @doska{[resimEkirish]} bilen [] ishlitilsun we netije r bolsun
-#     fonkisiye @doska{[tamghaBesish]} bilen r 250 250 0.5 0.5 [aaffffff] 0 0 -1 -1 rotation 0.5 ishlitilsun
-#     fonkisiye @doska{[xetEkirish]} bilen [] ishlitilsun we netije r bolsun
-#     fonkisiye @doska{[tamghaBesish]} bilen r 250 250 0.5 0.5 [ffaaaaff] 0 0 -1 -1 rotation 0.5 ishlitilsun
-    
- 
-# tamamlansun
-
+x qimmiti 0 bolsun
+y qimmiti 0 bolsun
+t1 qimmiti quruq bolsun
+t2 qimmiti quruq bolsun
+d qimmiti 0.1 bolsun
+rotation qimmiti 0 bolsun
 
 fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+
+    #
+    t1 qimmiti x chong 400 bolsun
+    t2 qimmiti x kichik 100 bolsun
+    eger t1 qimmiti rast bolsa
+        d qimmiti -0.1 bolsun
+    egerde t2 qimmiti rast bolsa
+        d qimmiti 0.1 bolsun
+    tamamlansun
+    x qimmiti x qushulghan d bolsun
+    y qimmiti y qushulghan d bolsun
+    fonkisiye @ressam{[chemberSizish]} bilen x y 100 100 [55aaff] ishlitilsun
+
+    # 
+    rotation qimmiti rotation qushulghan 0.05 bolsun
+
+    # 
+    fonkisiye @ressam{[resimEkirish]} bilen [../resources/rose.png] 100 0 200 200 yalghan yalghan ishlitilsun we netije r bolsun
+    fonkisiye @ressam{[tamghaBesish]} bilen r 250 250 0.5 0.5 [aaffffff] 0 0 -1 -1 rotation 0.5 ishlitilsun
+
+    # 
+    fonkisiye @ressam{[xetEkirish]} bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we netije r bolsun
+    fonkisiye @ressam{[tamghaBesish]} bilen r 250 250 0.5 0.5 [ffaaaaff] 0 0 -1 -1 0 1 ishlitilsun
+    
+ 
 tamamlansun
 
+
+# fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+# tamamlansun
+
 fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
+
+miqdar a tewellut bolsun
+a qimmiti 1 qushulghan 2 bolsun
+ikrangha a yezilsun
+miqdar a azad bolsun
+miqdar a wapat bolsun
 
 
 # TOOD ################################################################################
 
 # box variable type
-# miqdar s qimmiti sanduq bolsun
+# s qimmiti sanduq bolsun
 # @box{[key]}
 # @box{variable}
 # @box{1}
@@ -255,19 +140,19 @@ fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
 # fonkisiye @testBox{testFunc} bilen testVariable ishlitilsun we netije testResult bolsun
 
 # locate a variable to current scope
-# miqdar r orni yerlik bolsun
-# miqdar r orni erkin bolsun
+# r orni yerlik bolsun
+# r orni erkin bolsun
 
 # declare a dynamic type and give any value for the first time
-# miqdar r qimmiti quruq bolsun
+# r qimmiti quruq bolsun
 
 # declate a static type and convert to another type when necessary
-# miqdar s qimmiti sanduq bolsun
+# s qimmiti sanduq bolsun
 # miqdar s tipi quruq bolsun
 # s qimmiti [text] bolsun
 
 # should i change the Value object or create a new one
-# miqdar a qimmiti quruq bolsun
+# a qimmiti quruq bolsun
 # a qimmiti 1 bolsun
 # a qimmiti 2 bolsun
 

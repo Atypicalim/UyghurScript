@@ -1,11 +1,18 @@
 # drawing
 
-miqdar QIZIL qimmiti [ff0000] bolsun
-miqdar KOK qimmiti [00ff00] bolsun
-miqdar YESHIL qimmiti [0000ff] bolsun
-miqdar QARA qimmiti [000000] bolsun
+miqdar QIZIL tewellut bolsun
+miqdar KOK tewellut bolsun
+miqdar YESHIL tewellut bolsun
+miqdar QARA tewellut bolsun
 
-miqdar x qimmiti 0 bolsun
+miqdar x tewellut bolsun
+
+QIZIL qimmiti [ff0000] bolsun
+KOK qimmiti [00ff00] bolsun
+YESHIL qimmiti [0000ff] bolsun
+QARA qimmiti [000000] bolsun
+
+x qimmiti 0 bolsun
 
 fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
 

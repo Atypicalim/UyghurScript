@@ -1,8 +1,10 @@
 # print date
 
 # varibale
-miqdar hazirqiWaqit qimmiti quruq bolsun
-miqdar hazirqiChisla qimmiti quruq bolsun
+miqdar hazirqiWaqit tewellut bolsun
+miqdar hazirqiChisla tewellut bolsun
+hazirqiWaqit qimmiti quruq bolsun
+hazirqiChisla qimmiti quruq bolsun
 
 # get time
 fonkisiye @waqit{[sikuntElish]} ishlitilsun we netije hazirqiWaqit bolsun

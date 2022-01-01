@@ -190,7 +190,7 @@ void Bridge_call(Bridge *this)
     Cursor_free(cursor);
     // execute
     Token *funcName = Token_key(this->name, "_", TTYPE_STRING);
-    Value *funcValue = Executer_getTRValue(executer, funcName);
+    Value *funcValue = Executer_getTRValue(executer, funcName, true);
     Value *r = NULL;
     if (is_equal(funcValue->type, RTYPE_FUNCTION))
     {

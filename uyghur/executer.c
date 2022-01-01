@@ -193,7 +193,7 @@ char *Executer_getKey(Executer *this, Token *token)
 }
 
 // get token runtime value
-Value *Executer_getTRValue(Executer *this, Token *token)
+Value *Executer_getTRValue(Executer *this, Token *token, bool withEmpty)
 {
     if (is_equal(token->type, TTYPE_EMPTY))
     {
@@ -209,7 +209,7 @@ Value *Executer_getTRValue(Executer *this, Token *token)
         char *key = Executer_getKey(this, token);
         if (container == NULL || key == NULL) return Value_newEmpty(token);
         Value *value = Container_get(container, key);
-        return value != NULL ? value : Value_newEmpty(token);
+        if (value != NULL) return value;
     }
     else if (is_equal(token->type, TTYPE_BOOL))
     {
@@ -228,29 +228,62 @@ Value *Executer_getTRValue(Executer *this, Token *token)
     else if (is_equal(token->type, TTYPE_NAME))
     {
         Value *value = Executer_getNameRValue(this, token->value);
-        return value != NULL ? value : Value_newEmpty(token);
+        if (value != NULL) return value;
     }
     else
     {
         return Value_newObject(token->value, token);
+    }
+    if (withEmpty)
+    {
+        return Value_newEmpty(token);
+    }
+    else
+    {
+        return NULL;
     }
 }
 
 void Executer_setTRValue(Executer *this, Token *key, Value *value, bool canDeclare)
 {
     Container *container = Executer_getScope(this, key, canDeclare);
-    Executer_assert(this, container != NULL, key, LANG_ERR_INVALID_VARIABLE_NAME);
+    Executer_assert(this, container != NULL, key, LANG_ERR_VARIABLE_NOT_FOUND);
     Container_set(container, key->value, value);
+}
+
+void Executer_delTRValue(Executer *this, Token *key)
+{
+    Container *container = Executer_getScope(this, key, false);
+    if (container != NULL) Container_del(container, key->value);
 }
 
 void Executer_consumeVariable(Executer *this, Leaf *leaf)
 {
     Cursor *cursor = Stack_reset(leaf->tokens);
-    Token *value = Stack_next(leaf->tokens, cursor);
-    Token *key = Stack_next(leaf->tokens, cursor);
+    Token *action = Stack_next(leaf->tokens, cursor);
+    Token *name = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
-    Value *v = Executer_getTRValue(this, value);
-    Executer_setTRValue(this, key, v, true);
+    if (is_equal(action->value, TVALUE_CREATE))
+    {
+        Value *v = Executer_getTRValue(this, name, false);
+        Executer_assert(this, v == NULL, name, LANG_ERR_VARIABLE_IS_FOUND);
+        Executer_setTRValue(this, name, Value_newEmpty(NULL), true);
+    }
+    else if (is_equal(action->value, TVALUE_FREE))
+    {
+        Value *v = Executer_getTRValue(this, name, false);
+        Executer_assert(this, v != NULL, name, LANG_ERR_VARIABLE_NOT_FOUND);
+        char *tp = v->type;
+        if (is_equal(tp, RTYPE_STRING) || is_equal(tp, RTYPE_BOX) || is_equal(tp, RTYPE_UNKNOWN))
+        {
+            Value_free(v);
+        }
+        Executer_setTRValue(this, name, Value_newEmpty(NULL), false);
+    }
+    else if (is_equal(action->value, TVALUE_REMOVE))
+    {
+        Executer_delTRValue(this, name);
+    }
 }
 
 void Executer_consumeOperate(Executer *this, Leaf *leaf)
@@ -262,7 +295,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     Cursor_free(cursor);
     if (is_equal(target->value, TVALUE_TARGET_TO) && is_equal(action->value, TVALUE_OUTPUT))
     {
-        Value *value = Executer_getTRValue(this, name);
+        Value *value = Executer_getTRValue(this, name, true);
         printf("%s", Value_toString(value));
     }
     else if (is_equal(target->value, TVALUE_TARGET_FROM) && is_equal(action->value, TVALUE_INPUT))
@@ -280,7 +313,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
     Token *action = Stack_next(leaf->tokens, cursor);
     Token *target = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
-    Value *value = Executer_getTRValue(this, target);
+    Value *value = Executer_getTRValue(this, target, true);
     Value *r = NULL;
     char *act = action->value;
     //
@@ -331,7 +364,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
         {
             char *funcName = value->string;
             Token *funcToken = Token_name(funcName);
-            Value *funcValue = Executer_getTRValue(this, funcToken);
+            Value *funcValue = Executer_getTRValue(this, funcToken, true);
             if(is_equal(funcValue->type, RTYPE_FUNCTION) || is_equal(funcValue->type, RTYPE_CFUNCTION))
             {
                 r = funcValue;
@@ -344,7 +377,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
     }
     else
     {
-        r = Executer_getTRValue(this, action);
+        r = Executer_getTRValue(this, action, true);
     }
     tools_assert(r != NULL, "not supported action for expression:%s", act);
     Executer_setTRValue(this, target, r, false);
@@ -358,8 +391,8 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
     Token *first = Stack_next(leaf->tokens, cursor);
     Token *target = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
-    Value *secondV = Executer_getTRValue(this, second);
-    Value *firstV = Executer_getTRValue(this, first);
+    Value *secondV = Executer_getTRValue(this, second, true);
+    Value *firstV = Executer_getTRValue(this, first, true);
     char *firstType = firstV->type;
     char *secondType = secondV->type;
     Value *r = NULL;
@@ -455,8 +488,8 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
 
 bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge)
 {
-    Value *leftV = Executer_getTRValue(this, left);
-    Value *rightV = Executer_getTRValue(this, right);
+    Value *leftV = Executer_getTRValue(this, left, true);
+    Value *rightV = Executer_getTRValue(this, right, true);
     char *judgeValue = judge->value;
     char *leftType = leftV->type;
     char *rightType = rightV->type;
@@ -613,7 +646,7 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
 
 Value *Executer_runFunc(Executer *this, Token *funcName)
 {
-    Value *funcValue = Executer_getTRValue(this, funcName);
+    Value *funcValue = Executer_getTRValue(this, funcName, true);
     tools_assert(is_equal(funcValue->type, RTYPE_FUNCTION), "function not valid for name: %s", funcName->value);
     // execute func
     Leaf *codeNode = funcValue->object;
@@ -631,7 +664,7 @@ Value *Executer_runFunc(Executer *this, Token *funcName)
 
 Value *Executer_runCFunc(Executer *this, Token *funcName)
 {
-    Value *funcValue = Executer_getTRValue(this, funcName);
+    Value *funcValue = Executer_getTRValue(this, funcName, true);
     tools_assert(is_equal(funcValue->type, RTYPE_CFUNCTION), "cfunction not valid");
     void (*funcBody)(Bridge *) = funcValue->object;
     //
@@ -670,14 +703,14 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     Token *arg = Stack_next(leaf->tokens, cursor);
     while(arg != NULL)
     {
-        Value *value = Executer_getTRValue(this, arg);
+        Value *value = Executer_getTRValue(this, arg, true);
         Stack_push(this->callStack, value);
         arg = Stack_next(leaf->tokens, cursor);
     }
     Cursor_free(cursor);
     // get func
     Value *r = NULL;
-    Value *funcValue = Executer_getTRValue(this, funcName);
+    Value *funcValue = Executer_getTRValue(this, funcName, true);
     if (is_equal(funcValue->type, RTYPE_FUNCTION))
     {
         r = Executer_runFunc(this, funcName);
@@ -703,7 +736,7 @@ void Executer_consumeResult(Executer *this, Leaf *leaf)
     Cursor *cursor = Stack_reset(leaf->tokens);
     Token *result = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
-    Value *value = Executer_getTRValue(this, result);
+    Value *value = Executer_getTRValue(this, result, true);
     Stack_clear(this->callStack);
     Stack_push(this->callStack, value);
 }

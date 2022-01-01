@@ -11,17 +11,26 @@
 ## 2. data types and variable declaration
 
 ```python
+# declare
+miqdar m tewellut bolsun
+
+# free
+miqdar m azad bolsun
+
+# delete
+miqdar m wapat bolsun
+
 # string
-miqdar s qimmiti [Salam Uyghur Script!] bolsun
+s qimmiti [Salam Uyghur Script!] bolsun
 
 # number
-miqdar n qimmiti 1 bolsun
+n qimmiti 1 bolsun
 
 # bool (rast, yalghan)
-miqdar b qimmiti rast bolsun
+b qimmiti rast bolsun
 
 # empty
-miqdar d qimmiti quruq bolsun
+d qimmiti quruq bolsun
 ```
 
 ## 3. expressions
@@ -46,7 +55,7 @@ b qimmiti b hemde yalghan bolsun
 ## 4. operations
 
 ```python
-miqdar sQimmet qimmiti [yalghan] bolsun
+sQimmet qimmiti [yalghan] bolsun
 
 # transforming type (san, xet, quruq, logika, ekische, fonkisiye)
 sQimmet qimmiti logika bolsun
@@ -73,10 +82,11 @@ ikrangha a yezilsun
 ## 6. if
 
 ```python
-miqdar a qimmiti quruq bolsun
-miqdar b qimmiti rast bolsun
-miqdar c qimmiti rast bolsun
-miqdar d qimmiti [quruq!!!] bolsun
+
+a qimmiti quruq bolsun
+b qimmiti rast bolsun
+c qimmiti rast bolsun
+d qimmiti [quruq!!!] bolsun
 
 # the left side can be any value
 eger a qimmiti rast bolsa
@@ -89,7 +99,7 @@ egerde c qimmiti rast bolmisa
     ikrangha [egerde2] yezilsun
     d qimmiti [egerde2] bolsun
 bolmisa
-    miqdar d qimmiti [ichide] bolsun
+    d qimmiti [ichide] bolsun
     ikrangha d yezilsun
     d qimmiti [bolmisa] bolsun
     ikrangha d yezilsun
@@ -101,13 +111,13 @@ ikrangha d yezilsun
 ## 7. while
 
 ```python
-miqdar yezildighanQimmet qimmiti [] bolsun
-miqdar sinaqQimmet qimmiti 1 bolsun
-miqdar tekshurulmeQimmet qimmiti rast bolsun
+yezildighanQimmet qimmiti [] bolsun
+sinaqQimmet qimmiti 1 bolsun
+tekshurulmeQimmet qimmiti rast bolsun
 
 # the left side can be any value
 nawada tekshurulmeQimmet qimmiti rast bolsa
-    miqdar sinaqQimmetS qimmiti sinaqQimmet bolsun
+    sinaqQimmetS qimmiti sinaqQimmet bolsun
     sinaqQimmetS qimmiti xet bolsun
     yezildighanQimmet qimmiti [nawada: sanaq ] ulanghan sinaqQimmetS bolsun
     ikrangha yezildighanQimmet yezilsun
@@ -120,7 +130,7 @@ tamamlansun
 
 ```python
 # a variable for function result
-miqdar yighinda qimmiti 0 bolsun
+yighinda qimmiti 0 bolsun
 
 # function without args and return
 fonkisiye sanYezish mezmuni
@@ -129,7 +139,7 @@ tamamlansun
 
 # a function receiving two arguments and returning a result
 fonkisiye sanQushush miqdar x y mezmuni
-    miqdar waqitliqMiqdar qimmiti 0 bolsun
+    waqitliqMiqdar qimmiti 0 bolsun
     waqitliqMiqdar qimmiti x qushulghan y bolsun
     netije waqitliqMiqdar qayturulsun
 tamamlansun
@@ -138,7 +148,7 @@ tamamlansun
 fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
 
 # a string varibale storing a function name
-miqdar funcName qimmiti [sanYezish] bolsun
+funcName qimmiti [sanYezish] bolsun
 
 # transform the string to a func which is the string value targeting
 funcName qimmiti fonkisiye bolsun
@@ -151,7 +161,7 @@ fonkisiye funcName ishlitilsun
 
 ```python
 #  declare a box
-miqdar s qimmiti sanduq bolsun
+s qimmiti sanduq bolsun
 
 # put a number
 @s{[yighinda]} qimmiti 1 qushulghan 2 bolsun
@@ -207,7 +217,7 @@ void *resultValue = Bridge_popValue(bridge);
 ```python
 # bolek_programma.ug
 ikrangha [bolek programmidin salam ...] yezilsun
-miqdar bolektikiQimmet qimmiti [bolektiki sinaq qimmet ...] bolsun
+bolektikiQimmet qimmiti [bolektiki sinaq qimmet ...] bolsun
 
 # bash_programma.ug
 ikrangha [bash programmidin salam ...] yezilsun

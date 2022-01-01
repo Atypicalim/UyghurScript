@@ -193,10 +193,9 @@ void Parser_consumeAstVariable(Parser *this)
 {
     Parser_checkWord(this, 0, 1, TVALUE_VARIABLE);
     Token *name = Parser_checkType(this, 1, 2, TTYPE_NAME, TTYPE_KEY);
-    Parser_checkWord(this, 1, 1, TVALUE_VALUE);
-    Token *value = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
+    Token *action = Parser_checkWord(this, 1, 3, TVALUE_CREATE, TVALUE_FREE, TVALUE_REMOVE);
     Parser_checkWord(this, 1, 1, TVALUE_MADE);
-    Parser_pushLeaf(this, ASTTYPE_VARIABLE, 2, name, value);
+    Parser_pushLeaf(this, ASTTYPE_VARIABLE, 2, name, action);
 }
 
 void Parser_consumeAstOperate(Parser *this)
@@ -477,7 +476,6 @@ void Parser_consumeToken(Parser *this, Token *token)
         Parser_consumeAstEnd(this);
         return;
     }
-    // ASSIGN
     // RESULT
     if (is_equal(v, TVALUE_RESULT))
     {
