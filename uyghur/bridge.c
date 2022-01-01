@@ -21,7 +21,11 @@ void Bridge_reset(Bridge *this)
     // }
     // Cursor_free(cursor);
     Stack_free(this->stack);
-    this->stack = Stack_new();
+    this->stack = Stack_new(); // make a call stack containing stack: call cFunc in ugCallback
+    if (this->name != NULL)
+    {
+        free(this->name);
+    }
     this->name = NULL;
     this->type = 0;
     this->last = NULL;
@@ -169,6 +173,7 @@ void Bridge_register(Bridge *this)
     {
         Container_set(this->uyghur->executer->globalContainer, this->name, Value_newBox(container, NULL));
     }
+    this->name = NULL;
     Bridge_reset(this);
 }
 
@@ -202,7 +207,11 @@ void Bridge_call(Bridge *this)
         tools_warning("function not found for func name: %s", funcName->value);
         r = Value_newEmpty(NULL);
     }
-    if (this->name != NULL) free(this->name);
+    if (this->name != NULL)
+    {
+        free(this->name);
+        this->name = NULL;
+    }
     Token_free(funcName);
     // result
     Bridge_startResult(this);

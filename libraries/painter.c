@@ -463,10 +463,10 @@ void ug_baord_create_texture_from_image(Bridge *bridge)
     ImgInfo info = (ImgInfo) {image, x, y, w, h, flipX, flipY};
     char *tag = get_texture_tag_for_image(info);
     Texture texture = raylib_create_texture_from_image(info, tag);
-    // free(tag);
     Bridge_startResult(bridge);
     Bridge_pushString(bridge, tag);
     Bridge_return(bridge);
+    free(tag);
 }
 
 // text texture

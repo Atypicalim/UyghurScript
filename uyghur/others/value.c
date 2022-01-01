@@ -46,16 +46,11 @@ char *_get_cache_tag(char *type, bool boolean, double number, char *string)
         if (v != NULL)
         {
             free(tag);
-            // if (string != NULL)
-            // {
-            //     free(string);
-            //     string = NULL;
-            // }
-            // if (object != NULL)
-            // {
-            //     free(object);
-            //     object = NULL;
-            // }
+            if (string != NULL)
+            {
+                free(string);
+                string = NULL;
+            }
             return v;
         }
     }

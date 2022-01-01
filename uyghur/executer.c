@@ -223,7 +223,7 @@ Value *Executer_getTRValue(Executer *this, Token *token, bool withEmpty)
     }
     else if (is_equal(token->type, TTYPE_STRING))
     {
-        return Value_newString(token->value, token);
+        return Value_newString(str_new(token->value), token);
     }
     else if (is_equal(token->type, TTYPE_NAME))
     {
