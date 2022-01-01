@@ -5,6 +5,8 @@
 
 #include "header.h"
 
+Hashmap *valueCache = NULL;
+
 typedef struct ValueNode {
     char *type;
     bool boolean;
@@ -14,8 +16,39 @@ typedef struct ValueNode {
     void *extra;
 } Value;
 
+char *_get_value_tag(char *type, bool boolean, double number, char *string)
+{
+    if (is_equal(type, RTYPE_EMPTY)) return tools_format("<R-VALUE:%s>", type);
+    if (is_equal(type, RTYPE_BOOLEAN)) return tools_format("<R-VALUE:%s:%s>", type, b2s(boolean));
+    if (is_equal(type, RTYPE_NUMBER) && round(number) == number)
+    {
+        return tools_format("<R-VALUE:%s:%f>", type, number);
+    }
+    if (is_equal(type, RTYPE_STRING) && strlen(string) <= CACHE_STRING_MAX_LENGTH)
+    {
+        return tools_format("<R-VALUE:%s:%s>", type, string);
+    }
+    return NULL;
+}
+
  Value *Value_new(char *type, bool boolean, double number, char *string, void *object, void *extra)
 {
+    // cache
+    if (valueCache == NULL) valueCache = Hashmap_new(NULL);
+    char *tag = _get_value_tag(type, boolean, number, string);
+    bool canCache = tag != NULL;
+    int hashValue = 0;
+    // get
+    if (canCache) {
+        hashValue =hashValue = hash(tag);
+        Value *v = Hashmap_getWithHash(valueCache, tag, hashValue);
+        if (v != NULL)
+        {
+            free(tag);
+            return v;
+        }
+    }
+    // create
     Value *value = malloc(sizeof(Value));
     value->type = type;
     value->boolean = boolean;
@@ -23,6 +56,12 @@ typedef struct ValueNode {
     value->string = string;
     value->object = object;
     value->extra = extra;
+    // save
+    if (canCache)
+    {
+        Hashmap_setWithHash(valueCache, tag, value, hashValue);
+    }
+    // return
     return value;
 }
 

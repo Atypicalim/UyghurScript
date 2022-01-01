@@ -274,7 +274,11 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
         Value *v = Executer_getTRValue(this, name, false);
         Executer_assert(this, v != NULL, name, LANG_ERR_VARIABLE_NOT_FOUND);
         char *tp = v->type;
-        if (is_equal(tp, RTYPE_STRING) || is_equal(tp, RTYPE_BOX) || is_equal(tp, RTYPE_UNKNOWN))
+        if (is_equal(tp, RTYPE_STRING) && strlen(v->string) > CACHE_STRING_MAX_LENGTH)
+        {
+            Value_free(v);
+        }
+        else if (is_equal(tp, RTYPE_BOX) || is_equal(tp, RTYPE_UNKNOWN))
         {
             Value_free(v);
         }

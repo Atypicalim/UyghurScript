@@ -41,6 +41,15 @@ static int hash(char *key) {
     return hashcode(key) % CAPACITY;
 }
 
+Entry *_hashmap_new_entry(char *key, char *value)
+{
+    Entry *pnode = (Entry *)malloc(sizeof(Entry));
+    pnode->key = key;
+    pnode->value = value;
+    pnode->next = NULL;
+    return pnode;
+}
+
 Hashmap* Hashmap_new() {
     Hashmap *map = (Hashmap *)malloc(sizeof(Hashmap) * CAPACITY);
     map->size = CAPACITY;
@@ -64,16 +73,12 @@ void Hashmap_free(Hashmap *this) {
     free(this);
 }
 
-void Hashmap_set(Hashmap *this, char *key, void *value) {
+void Hashmap_setWithHash(Hashmap *this, char *key, void *value, int hashValue) {
     assert(this != NULL);
-    int pos = hash(key);
+    int pos = hashValue;
     Entry *ptr = this[pos].position;
-    Entry *pnode = (Entry *)malloc(sizeof(Entry));
-    pnode->key = key;
-    pnode->value = value;
-    pnode->next = NULL;
     if (ptr == NULL) {
-        this[pos].position = pnode;
+        this[pos].position = _hashmap_new_entry(key, value);
     } else {
         while (ptr != NULL) {
             if (!strcmp(key, ptr->key)) {
@@ -82,18 +87,24 @@ void Hashmap_set(Hashmap *this, char *key, void *value) {
             }
             ptr = ptr->next;
         }
+        Entry *pnode = _hashmap_new_entry(key, value);
         pnode->next = this[pos].position;
         this[pos].position = pnode;
     }
+}
+
+void Hashmap_set(Hashmap *this, char *key, void *value) {
+    int hashValue = hash(key);
+    return Hashmap_setWithHash(this, key, value, hashValue);
 }
 
 void Hashmap_fill(Hashmap *this, char *content) {
     Hashmap_set(this, content, content);
 }
 
-void *Hashmap_get(Hashmap *this, char *key) {
+void *Hashmap_getWithHash(Hashmap *this, char *key, int hashValue) {
     assert(this != NULL);
-    int pos = hash(key);
+    int pos = hashValue;
     Entry *ptr = this[pos].position;
     while (ptr != NULL) {
         if (!strcmp(key, ptr->key)) {
@@ -102,6 +113,11 @@ void *Hashmap_get(Hashmap *this, char *key) {
         ptr = ptr->next;
     }
     return NULL;
+}
+
+void *Hashmap_get(Hashmap *this, char *key) {
+    int hashValue = hash(key);
+    return Hashmap_getWithHash(this, key, hashValue);
 }
 
 void Hashmap_del(Hashmap *this, char *key) {
