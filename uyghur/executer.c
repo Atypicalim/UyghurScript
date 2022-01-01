@@ -274,7 +274,6 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     {
         Value *v = Executer_getTRValue(this, name, false);
         Executer_assert(this, v != NULL, name, LANG_ERR_VARIABLE_NOT_FOUND);
-        Value_free(v);
         Executer_setTRValue(this, name, Value_newEmpty(NULL), false);
     }
     else if (is_equal(action->value, TVALUE_REMOVE))

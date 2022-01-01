@@ -252,7 +252,7 @@ char *str_cut(char *origin, int from, int to)
     to = to > 0 ? to : (len + to + 1);
     from = from >= 1 ? from : 1;
     to = to <= len ? to : len;
-    if (from > to) return "";
+    if (from > to) return str_new("");
     int size = to - from + 1;
     char* new = malloc(size);
     strncpy(new, origin + from - 1, size);
