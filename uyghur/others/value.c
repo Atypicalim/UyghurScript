@@ -14,6 +14,7 @@ typedef struct ValueNode {
     char *string;
     void *object;
     void *extra;
+    int reference;
 } Value;
 
 char *_get_cache_tag(char *type, bool boolean, double number, char *string)
@@ -45,6 +46,16 @@ char *_get_cache_tag(char *type, bool boolean, double number, char *string)
         if (v != NULL)
         {
             free(tag);
+            // if (string != NULL)
+            // {
+            //     free(string);
+            //     string = NULL;
+            // }
+            // if (object != NULL)
+            // {
+            //     free(object);
+            //     object = NULL;
+            // }
             return v;
         }
     }
@@ -56,6 +67,7 @@ char *_get_cache_tag(char *type, bool boolean, double number, char *string)
     value->string = string;
     value->object = object;
     value->extra = extra;
+    value->reference = 0;
     // save
     if (canCache)
     {
@@ -211,16 +223,35 @@ Value *Value_toNumber(Value *this)
     }
 }
 
+void Value_increaseReference(Value *this)
+{
+    this->reference++;  
+}
+
+void Value_decreaseReference(Value *this)
+{
+    if (this->reference == 0) return;
+    this->reference--;
+}
+
 void Value_free(Value *this)
 {
-    
+    Value_decreaseReference(this);
     char *tag = _get_cache_tag(this->type, this->boolean, this->number, this->string);
     if (tag != NULL)
     {
         free(tag);
     }
-    else
+    else if (this->reference == 0)
     {
+        if (is_equal(this->type, RTYPE_STRING))
+        {
+            free(this->string);
+        }
+        if (is_equal(this->type, RTYPE_BOX))
+        {
+            Container_free(this->object);
+        }
         free(this);
     }
     // TODO: ug free pointers

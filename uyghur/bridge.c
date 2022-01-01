@@ -41,14 +41,14 @@ Bridge *Bridge_new(Uyghur *uyghur)
 void Bridge_startBox(Bridge *this, char *name)
 {
     Bridge_reset(this);
-    this->name = name;
+    this->name = name == NULL ? NULL : str_new(name);
     this->type = BRIDGE_STACK_TP_BOX;
 }
 
 void Bridge_startFunc(Bridge *this, char *name)
 {
     Bridge_reset(this);
-    this->name = name;
+    this->name = name == NULL ? NULL : str_new(name);
     this->type = BRIDGE_STACK_TP_FUN;
 }
 
@@ -68,7 +68,7 @@ void Bridge_pushKey(Bridge *this, char *key)
 {
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, key available for only box");
     tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key neceessary for last value");
-    Stack_push(this->stack, Value_newString(key, NULL));
+    Stack_push(this->stack, Value_newString(str_new(key), NULL));
     this->last = BRIDGE_ITEM_TP_KEY;
 }
 
@@ -136,7 +136,7 @@ double Bridge_popNumber(Bridge *this)
 
 void Bridge_pushString(Bridge *this, char *value)
 {
-    Bridge_pushValue(this, Value_newString(value, NULL));
+    Bridge_pushValue(this, Value_newString(str_new(value), NULL));
 }
 
 char *Bridge_popString(Bridge *this)
@@ -160,6 +160,7 @@ void Bridge_register(Bridge *this)
     {
         Value *value = item;
         Value *key = Stack_next(this->stack, cursor);
+        // Value_print(key);
         Container_set(container, key->string, value);
         item = Stack_next(this->stack, cursor);
     }
@@ -201,6 +202,7 @@ void Bridge_call(Bridge *this)
         tools_warning("function not found for func name: %s", funcName->value);
         r = Value_newEmpty(NULL);
     }
+    if (this->name != NULL) free(this->name);
     Token_free(funcName);
     // result
     Bridge_startResult(this);

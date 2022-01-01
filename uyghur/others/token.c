@@ -58,6 +58,14 @@ Token *Token_key(char *key, char *scope, char *kind)
     return token;
 }
 
+bool Token_isStatic(Token *this)
+{
+    return is_equal(this->type, TTYPE_STRING)
+    || is_equal(this->type, TTYPE_NUMBER)
+    || is_equal(this->type, TTYPE_BOOL)
+    || is_equal(this->type, TTYPE_EMPTY);
+}
+
 void Token_print(Token *this)
 {
     char *scope = this->scope != NULL ? this->scope : "NULL";

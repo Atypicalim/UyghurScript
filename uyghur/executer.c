@@ -272,7 +272,8 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     }
     else if (is_equal(action->value, TVALUE_FREE))
     {
-        Value *v = Executer_getTRValue(this, name, false);
+        Value *v = Executer_getTRValue(this, name, true);
+        Value_free(v);
         Executer_assert(this, v != NULL, name, LANG_ERR_VARIABLE_NOT_FOUND);
         Executer_setTRValue(this, name, Value_newEmpty(NULL), false);
     }
@@ -478,6 +479,8 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
             r = Value_newBoolean(boolean, NULL);
         }
     }
+    if (Token_isStatic(first)) Value_free(firstV);
+    if (Token_isStatic(second)) Value_free(secondV);
     tools_assert(r != NULL, "not supported action for expression:%s", act);
     Executer_setTRValue(this, target, r, false);
 }
