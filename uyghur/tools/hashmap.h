@@ -22,7 +22,7 @@ typedef struct _Hashmap {
 } Hashmap;
 
 Hashmap *Hashmap_new();
-void Hashmap_set(Hashmap *, char *, void *);
+void* Hashmap_set(Hashmap *, char *, void *);
 void* Hashmap_get(Hashmap *, char *);
 void Hashmap_del(Hashmap *, char *);
 void Hashmap_print(Hashmap *);
@@ -73,33 +73,37 @@ void Hashmap_free(Hashmap *this) {
     free(this);
 }
 
-void Hashmap_setWithHash(Hashmap *this, char *key, void *value, int hashValue) {
+void *Hashmap_setWithHash(Hashmap *this, char *key, void *value, int hashValue) {
     assert(this != NULL);
     int pos = hashValue;
+    void *tmp = NULL;
     Entry *ptr = this[pos].position;
     if (ptr == NULL) {
         this[pos].position = _hashmap_new_entry(key, value);
+        return NULL;
     } else {
         while (ptr != NULL) {
             if (!strcmp(key, ptr->key)) {
+                tmp = ptr->value;
                 ptr->value = value;
-                return;
+                return tmp;
             }
             ptr = ptr->next;
         }
         Entry *pnode = _hashmap_new_entry(key, value);
         pnode->next = this[pos].position;
         this[pos].position = pnode;
+        return NULL;
     }
 }
 
-void Hashmap_set(Hashmap *this, char *key, void *value) {
+void *Hashmap_set(Hashmap *this, char *key, void *value) {
     int hashValue = hash(key);
     return Hashmap_setWithHash(this, key, value, hashValue);
 }
 
-void Hashmap_fill(Hashmap *this, char *content) {
-    Hashmap_set(this, content, content);
+void *Hashmap_fill(Hashmap *this, char *content) {
+    return Hashmap_set(this, content, content);
 }
 
 void *Hashmap_getWithHash(Hashmap *this, char *key, int hashValue) {

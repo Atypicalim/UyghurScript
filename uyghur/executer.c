@@ -248,7 +248,8 @@ void Executer_setTRValue(Executer *this, Token *key, Value *value, bool canDecla
 {
     Container *container = Executer_getScope(this, key, canDeclare);
     Executer_assert(this, container != NULL, key, LANG_ERR_VARIABLE_NOT_FOUND);
-    Container_set(container, key->value, value);
+    Value *replacedValue = Container_set(container, key->value, value);
+    if (replacedValue != NULL) Value_free(replacedValue);
 }
 
 void Executer_delTRValue(Executer *this, Token *key)
@@ -273,15 +274,7 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     {
         Value *v = Executer_getTRValue(this, name, false);
         Executer_assert(this, v != NULL, name, LANG_ERR_VARIABLE_NOT_FOUND);
-        char *tp = v->type;
-        if (is_equal(tp, RTYPE_STRING) && strlen(v->string) > CACHE_STRING_MAX_LENGTH)
-        {
-            Value_free(v);
-        }
-        else if (is_equal(tp, RTYPE_BOX) || is_equal(tp, RTYPE_UNKNOWN))
-        {
-            Value_free(v);
-        }
+        Value_free(v);
         Executer_setTRValue(this, name, Value_newEmpty(NULL), false);
     }
     else if (is_equal(action->value, TVALUE_REMOVE))

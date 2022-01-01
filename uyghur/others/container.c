@@ -34,9 +34,9 @@ Container *Container_newScope()
     return container;
 }
 
-void Container_set(Container *this, char *key, void *value)
+void *Container_set(Container *this, char *key, void *value)
 {
-    Hashmap_set(this->map, key, value);
+    return Hashmap_set(this->map, key, value);
 }
 
 void *Container_get(Container *this, char *key)

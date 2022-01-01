@@ -16,7 +16,7 @@ typedef struct ValueNode {
     void *extra;
 } Value;
 
-char *_get_value_tag(char *type, bool boolean, double number, char *string)
+char *_get_cache_tag(char *type, bool boolean, double number, char *string)
 {
     if (is_equal(type, RTYPE_EMPTY)) return tools_format("<R-VALUE:%s>", type);
     if (is_equal(type, RTYPE_BOOLEAN)) return tools_format("<R-VALUE:%s:%s>", type, b2s(boolean));
@@ -35,7 +35,7 @@ char *_get_value_tag(char *type, bool boolean, double number, char *string)
 {
     // cache
     if (valueCache == NULL) valueCache = Hashmap_new(NULL);
-    char *tag = _get_value_tag(type, boolean, number, string);
+    char *tag = _get_cache_tag(type, boolean, number, string);
     bool canCache = tag != NULL;
     int hashValue = 0;
     // get
@@ -213,7 +213,16 @@ Value *Value_toNumber(Value *this)
 
 void Value_free(Value *this)
 {
-    free(this);
+    
+    char *tag = _get_cache_tag(this->type, this->boolean, this->number, this->string);
+    if (tag != NULL)
+    {
+        free(tag);
+    }
+    else
+    {
+        free(this);
+    }
     // TODO: ug free pointers
 }
 
