@@ -7,7 +7,7 @@
 
 Color color_from_bridge(Bridge *bridge)
 {
-    char *str = Bridge_nexString(bridge);
+    char *str = Bridge_nextString(bridge);
     int len = strlen(str);
     if (len != 6 && len != 8) return BLACK;
     int r = char_to_int(str[0]) * 16 + char_to_int(str[1]);
@@ -19,17 +19,17 @@ Color color_from_bridge(Bridge *bridge)
 
 Vector2 vector_from_bridge(Bridge *bridge)
 {
-    float x = Bridge_nexNumber(bridge);
-    float y = Bridge_nexNumber(bridge);
+    float x = Bridge_nextNumber(bridge);
+    float y = Bridge_nextNumber(bridge);
     return (Vector2){x, y};
 }
 
 Rectangle rectangle_from_bridge(Bridge *bridge)
 {
-    float x = Bridge_nexNumber(bridge);
-    float y = Bridge_nexNumber(bridge);
-    float w = Bridge_nexNumber(bridge);
-    float h = Bridge_nexNumber(bridge);
+    float x = Bridge_nextNumber(bridge);
+    float y = Bridge_nextNumber(bridge);
+    float w = Bridge_nextNumber(bridge);
+    float h = Bridge_nextNumber(bridge);
     return (Rectangle){x, y, w, h};
 }
 
@@ -244,7 +244,7 @@ void ug_baord_draw_line_no_controll(Bridge *bridge)
 {
     Vector2 poit1 = vector_from_bridge(bridge);
     Vector2 poit2 = vector_from_bridge(bridge);
-    int thickness = Bridge_nexNumber(bridge);
+    int thickness = Bridge_nextNumber(bridge);
     Color color = color_from_bridge(bridge);
     DrawLineEx(poit1, poit2, thickness, color);
     Bridge_startResult(bridge);
@@ -255,7 +255,7 @@ void ug_baord_draw_line_one_controll(Bridge *bridge)
 {
     Vector2 poit1 = vector_from_bridge(bridge);
     Vector2 poit2 = vector_from_bridge(bridge);
-    int thickness = Bridge_nexNumber(bridge);
+    int thickness = Bridge_nextNumber(bridge);
     Color color = color_from_bridge(bridge);
     Vector2 controll1 = vector_from_bridge(bridge);
     DrawLineEx(poit1, poit2, thickness, color);
@@ -268,7 +268,7 @@ void ug_baord_draw_line_two_controll(Bridge *bridge)
 {
     Vector2 poit1 = vector_from_bridge(bridge);
     Vector2 poit2 = vector_from_bridge(bridge);
-    int thickness = Bridge_nexNumber(bridge);
+    int thickness = Bridge_nextNumber(bridge);
     Color color = color_from_bridge(bridge);
     Vector2 controll1 = vector_from_bridge(bridge);
     Vector2 controll2 = vector_from_bridge(bridge);
@@ -285,7 +285,7 @@ void ug_baord_draw_rectangle_fill_transformed(Bridge *bridge)
     Vector2 anchor = vector_from_bridge(bridge);
     anchor.x = anchor.x * rectangle.width;
     anchor.y = anchor.y * rectangle.height;
-    float rotation = Bridge_nexNumber(bridge);
+    float rotation = Bridge_nextNumber(bridge);
     DrawRectanglePro(rectangle, anchor, rotation, color);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -307,7 +307,7 @@ void ug_baord_draw_rectangle_fill_round(Bridge *bridge)
 {
     Rectangle rectangle = rectangle_from_bridge(bridge);
     Color color = color_from_bridge(bridge);
-    int roundness = Bridge_nexNumber(bridge);
+    int roundness = Bridge_nextNumber(bridge);
     DrawRectangleRounded(rectangle, roundness, 0, color);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -317,8 +317,8 @@ void ug_baord_draw_rectangle_stroke(Bridge *bridge)
 {
     Rectangle rectangle = rectangle_from_bridge(bridge);
     Color color = color_from_bridge(bridge);
-    double roundness = Bridge_nexNumber(bridge);
-    double thickness = Bridge_nexNumber(bridge);
+    double roundness = Bridge_nextNumber(bridge);
+    double thickness = Bridge_nextNumber(bridge);
     DrawRectangleRoundedLines(rectangle, roundness, 0, thickness, color);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -326,10 +326,10 @@ void ug_baord_draw_rectangle_stroke(Bridge *bridge)
 
 void ug_baord_draw_circle_fill(Bridge *bridge)
 {
-    int centerX = Bridge_nexNumber(bridge);
-    int centerY = Bridge_nexNumber(bridge);
-    int radiusH = Bridge_nexNumber(bridge);
-    int radiusV = Bridge_nexNumber(bridge);
+    int centerX = Bridge_nextNumber(bridge);
+    int centerY = Bridge_nextNumber(bridge);
+    int radiusH = Bridge_nextNumber(bridge);
+    int radiusV = Bridge_nextNumber(bridge);
     Color color = color_from_bridge(bridge);
     DrawEllipse(centerX, centerY, radiusH, radiusV, color);
     Bridge_startResult(bridge);
@@ -338,10 +338,10 @@ void ug_baord_draw_circle_fill(Bridge *bridge)
 
 void ug_baord_draw_circle_stroke(Bridge *bridge)
 {
-    int centerX = Bridge_nexNumber(bridge);
-    int centerY = Bridge_nexNumber(bridge);
-    int radiusH = Bridge_nexNumber(bridge);
-    int radiusV = Bridge_nexNumber(bridge);
+    int centerX = Bridge_nextNumber(bridge);
+    int centerY = Bridge_nextNumber(bridge);
+    int radiusH = Bridge_nextNumber(bridge);
+    int radiusV = Bridge_nextNumber(bridge);
     Color color = color_from_bridge(bridge);
     DrawEllipseLines(centerX, centerY, radiusH, radiusV, color);
     Bridge_startResult(bridge);
@@ -351,11 +351,11 @@ void ug_baord_draw_circle_stroke(Bridge *bridge)
 void ug_baord_draw_ring_fill(Bridge *bridge)
 {
     Vector2 center = vector_from_bridge(bridge);
-    double innerRadius = Bridge_nexNumber(bridge);
-    double outerRadius = Bridge_nexNumber(bridge);
+    double innerRadius = Bridge_nextNumber(bridge);
+    double outerRadius = Bridge_nextNumber(bridge);
     Color color = color_from_bridge(bridge);
-    double startAngle = Bridge_nexNumber(bridge);
-    double endAngle = Bridge_nexNumber(bridge);
+    double startAngle = Bridge_nextNumber(bridge);
+    double endAngle = Bridge_nextNumber(bridge);
     DrawRing(center, innerRadius, outerRadius, startAngle, endAngle, 0, color);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -364,11 +364,11 @@ void ug_baord_draw_ring_fill(Bridge *bridge)
 void ug_baord_draw_ring_stroke(Bridge *bridge)
 {
     Vector2 center = vector_from_bridge(bridge);
-    double innerRadius = Bridge_nexNumber(bridge);
-    double outerRadius = Bridge_nexNumber(bridge);
+    double innerRadius = Bridge_nextNumber(bridge);
+    double outerRadius = Bridge_nextNumber(bridge);
     Color color = color_from_bridge(bridge);
-    double startAngle = Bridge_nexNumber(bridge);
-    double endAngle = Bridge_nexNumber(bridge);
+    double startAngle = Bridge_nextNumber(bridge);
+    double endAngle = Bridge_nextNumber(bridge);
     DrawRingLines(center, innerRadius, outerRadius, startAngle, endAngle, 0, color);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -399,9 +399,9 @@ void ug_baord_draw_triangle_stroke(Bridge *bridge)
 void ug_baord_draw_polygon_fill(Bridge *bridge)
 {
     Vector2 center = vector_from_bridge(bridge);
-    int sides = Bridge_nexNumber(bridge);
-    double radius = Bridge_nexNumber(bridge);
-    double rotation = Bridge_nexNumber(bridge);
+    int sides = Bridge_nextNumber(bridge);
+    double radius = Bridge_nextNumber(bridge);
+    double rotation = Bridge_nextNumber(bridge);
     Color color = color_from_bridge(bridge);
     DrawPoly(center, sides, radius, rotation, color);
     Bridge_startResult(bridge);
@@ -411,10 +411,10 @@ void ug_baord_draw_polygon_fill(Bridge *bridge)
 void ug_baord_draw_polygon_stroke(Bridge *bridge)
 {
     Vector2 center = vector_from_bridge(bridge);
-    int sides = Bridge_nexNumber(bridge);
-    double radius = Bridge_nexNumber(bridge);
-    double rotation = Bridge_nexNumber(bridge);
-    double thickness = Bridge_nexNumber(bridge);
+    int sides = Bridge_nextNumber(bridge);
+    double radius = Bridge_nextNumber(bridge);
+    double rotation = Bridge_nextNumber(bridge);
+    double thickness = Bridge_nextNumber(bridge);
     Color color = color_from_bridge(bridge);
     DrawPolyLinesEx(center, sides, radius, rotation, thickness, color);
     Bridge_startResult(bridge);
@@ -425,10 +425,10 @@ void ug_baord_draw_polygon_stroke(Bridge *bridge)
 
 void ug_baord_draw_text(Bridge *bridge)
 {
-    char *font = Bridge_nexString(bridge);
-    char *text = Bridge_nexString(bridge);
-    float size = Bridge_nexNumber(bridge);
-    float spacing = Bridge_nexNumber(bridge);
+    char *font = Bridge_nextString(bridge);
+    char *text = Bridge_nextString(bridge);
+    float size = Bridge_nextNumber(bridge);
+    float spacing = Bridge_nextNumber(bridge);
     Color color = color_from_bridge(bridge);
     Vector2 position = vector_from_bridge(bridge);
     Font fnt = raylib_load_font(font);
@@ -439,10 +439,10 @@ void ug_baord_draw_text(Bridge *bridge)
 
 void ug_baord_measure_text(Bridge *bridge)
 {
-    char *font = Bridge_nexString(bridge);
-    char *text = Bridge_nexString(bridge);
-    float size = Bridge_nexNumber(bridge);
-    float spacing = Bridge_nexNumber(bridge);
+    char *font = Bridge_nextString(bridge);
+    char *text = Bridge_nextString(bridge);
+    float size = Bridge_nextNumber(bridge);
+    float spacing = Bridge_nextNumber(bridge);
     Font fnt = raylib_load_font(font);
     Vector2 space = MeasureTextEx(fnt, text, size, spacing);
     Bridge_startResult(bridge);
@@ -454,13 +454,13 @@ void ug_baord_measure_text(Bridge *bridge)
 
 void ug_baord_create_texture_from_image(Bridge *bridge)
 {
-    char *image = Bridge_nexString(bridge);
-    int x = Bridge_nexNumber(bridge);
-    int y = Bridge_nexNumber(bridge);
-    int w = Bridge_nexNumber(bridge);
-    int h = Bridge_nexNumber(bridge);
-    bool flipX = Bridge_nexBoolean(bridge);
-    bool flipY = Bridge_nexBoolean(bridge);
+    char *image = Bridge_nextString(bridge);
+    int x = Bridge_nextNumber(bridge);
+    int y = Bridge_nextNumber(bridge);
+    int w = Bridge_nextNumber(bridge);
+    int h = Bridge_nextNumber(bridge);
+    bool flipX = Bridge_nextBoolean(bridge);
+    bool flipY = Bridge_nextBoolean(bridge);
     ImgInfo info = (ImgInfo) {image, x, y, w, h, flipX, flipY};
     char *tag = get_texture_tag_for_image(info);
     Texture texture = raylib_create_texture_from_image(info, tag);
@@ -474,10 +474,10 @@ void ug_baord_create_texture_from_image(Bridge *bridge)
 
 void ug_baord_create_texture_from_text(Bridge *bridge)
 {
-    char *font = Bridge_nexString(bridge);
-    char *text = Bridge_nexString(bridge);
-    float size = Bridge_nexNumber(bridge);
-    float spacing = Bridge_nexNumber(bridge);
+    char *font = Bridge_nextString(bridge);
+    char *text = Bridge_nextString(bridge);
+    float size = Bridge_nextNumber(bridge);
+    float spacing = Bridge_nextNumber(bridge);
     TxtInfo info = (TxtInfo) {font, text, size, spacing};
     char *tag = get_texture_tag_for_text(info);
     Texture texture = raylib_create_texture_from_text(info, tag);
@@ -491,18 +491,18 @@ void ug_baord_create_texture_from_text(Bridge *bridge)
 
 void ug_baord_draw_texture_by_tag(Bridge *bridge)
 {
-    char *tag = Bridge_nexString(bridge);
-    int x = Bridge_nexNumber(bridge);
-    int y = Bridge_nexNumber(bridge);
-    float anchorX = Bridge_nexNumber(bridge);
-    float anchorY = Bridge_nexNumber(bridge);
+    char *tag = Bridge_nextString(bridge);
+    int x = Bridge_nextNumber(bridge);
+    int y = Bridge_nextNumber(bridge);
+    float anchorX = Bridge_nextNumber(bridge);
+    float anchorY = Bridge_nextNumber(bridge);
     Color color = color_from_bridge(bridge);
-    int fromX = Bridge_nexNumber(bridge);
-    int fromY = Bridge_nexNumber(bridge);
-    int width = Bridge_nexNumber(bridge);
-    int height = Bridge_nexNumber(bridge);
-    float rotation = Bridge_nexNumber(bridge);
-    float scale = Bridge_nexNumber(bridge);
+    int fromX = Bridge_nextNumber(bridge);
+    int fromY = Bridge_nextNumber(bridge);
+    int width = Bridge_nextNumber(bridge);
+    int height = Bridge_nextNumber(bridge);
+    float rotation = Bridge_nextNumber(bridge);
+    float scale = Bridge_nextNumber(bridge);
     //
     Texture texture = ralib_get_texture_by_tag(tag);
     raylib_draw_texture_by_texture(texture, x, y, anchorX, anchorY, color, fromX, fromY, width, height, rotation, scale);
@@ -515,8 +515,6 @@ void ug_baord_draw_texture_by_tag(Bridge *bridge)
 
 void lib_raylib_painter_register(Bridge *bridge)
 {
-    uyghurBridge = bridge;
-    resourcesMap = Hashmap_new(NULL);
     //
     Bridge_startBox(bridge, "ressam");
     // draw

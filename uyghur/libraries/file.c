@@ -4,8 +4,8 @@
 
 void ug_write_file(Bridge *bridge)
 {
-    char *path = Bridge_nexString(bridge);
-    char *content = Bridge_nexString(bridge);
+    char *path = Bridge_nextString(bridge);
+    char *content = Bridge_nextString(bridge);
     bool r = file_write(path, content);
     Bridge_startResult(bridge);
     Bridge_pushBoolean(bridge, r);
@@ -14,7 +14,7 @@ void ug_write_file(Bridge *bridge)
 
 void ug_read_file(Bridge *bridge)
 {
-    char *path = Bridge_nexString(bridge);
+    char *path = Bridge_nextString(bridge);
     char *r = file_read(path);
     Bridge_startResult(bridge);
     if (r != NULL) Bridge_pushString(bridge, r);
@@ -23,8 +23,8 @@ void ug_read_file(Bridge *bridge)
 
 void ug_file_copy(Bridge *bridge)
 {
-    char *from = Bridge_nexString(bridge);
-    char *to = Bridge_nexString(bridge);
+    char *from = Bridge_nextString(bridge);
+    char *to = Bridge_nextString(bridge);
     bool r = file_copy(from, to);
     Bridge_startResult(bridge);
     Bridge_pushBoolean(bridge, r);
@@ -33,8 +33,8 @@ void ug_file_copy(Bridge *bridge)
 
 void ug_file_rename(Bridge *bridge)
 {
-    char *from = Bridge_nexString(bridge);
-    char *to = Bridge_nexString(bridge);
+    char *from = Bridge_nextString(bridge);
+    char *to = Bridge_nextString(bridge);
     double r = file_rename(from, to);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -43,7 +43,7 @@ void ug_file_rename(Bridge *bridge)
 
 void ug_file_remove(Bridge *bridge)
 {
-    char *path = Bridge_nexString(bridge);
+    char *path = Bridge_nextString(bridge);
     double r = file_remove(path);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -52,7 +52,7 @@ void ug_file_remove(Bridge *bridge)
 
 void ug_file_exist(Bridge *bridge)
 {
-    char *path = Bridge_nexString(bridge);
+    char *path = Bridge_nextString(bridge);
     bool r = file_exist(path);
     Bridge_startResult(bridge);
     Bridge_pushBoolean(bridge, r);
@@ -61,7 +61,7 @@ void ug_file_exist(Bridge *bridge)
 
 void ug_file_is_file(Bridge *bridge)
 {
-    char *path = Bridge_nexString(bridge);
+    char *path = Bridge_nextString(bridge);
     bool r = file_is_file(path);
     Bridge_startResult(bridge);
     Bridge_pushBoolean(bridge, r);
@@ -70,7 +70,7 @@ void ug_file_is_file(Bridge *bridge)
 
 void ug_file_is_directory(Bridge *bridge)
 {
-    char *path = Bridge_nexString(bridge);
+    char *path = Bridge_nextString(bridge);
     bool r = file_is_directory(path);
     Bridge_startResult(bridge);
     Bridge_pushBoolean(bridge, r);
@@ -79,7 +79,7 @@ void ug_file_is_directory(Bridge *bridge)
 
 void ug_file_create_directory(Bridge *bridge)
 {
-    char *path = Bridge_nexString(bridge);
+    char *path = Bridge_nextString(bridge);
     int r = file_create_directory(path);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);

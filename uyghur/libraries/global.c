@@ -23,7 +23,7 @@ void yezish(Bridge *bridge)
 
 void ekirish(Bridge *bridge)
 {
-    char *path = Bridge_nexString(bridge);
+    char *path = Bridge_nextString(bridge);
     Uyghur *uyghur = bridge->uyghur;
     Value *box = Container_get(uyghur->executer->globalContainer, path);
     if (box == NULL) box = Uyghur_execute(uyghur, path, false);
@@ -35,7 +35,7 @@ void ekirish(Bridge *bridge)
 
 void tazilash(Bridge *bridge)
 {
-    char *path = Bridge_nexString(bridge);
+    char *path = Bridge_nextString(bridge);
     Container_del(bridge->uyghur->executer->globalContainer, path);
     Bridge_startResult(bridge);
     Bridge_return(bridge);

@@ -41,7 +41,7 @@ void raylib_unload_sound_by_tag(char *tag)
 
 void ug_board_sound_load(Bridge *bridge)
 {
-    char *path = Bridge_nexString(bridge);
+    char *path = Bridge_nextString(bridge);
     char *tag = get_audio_tag_for_sound(path);
     raylib_load_sound_by_tag(tag, path);
     Bridge_startResult(bridge);
@@ -51,7 +51,7 @@ void ug_board_sound_load(Bridge *bridge)
 
 void ug_board_sound_unload(Bridge *bridge)
 {
-    char *tag = Bridge_nexString(bridge);
+    char *tag = Bridge_nextString(bridge);
     raylib_unload_sound_by_tag(tag);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -59,7 +59,7 @@ void ug_board_sound_unload(Bridge *bridge)
 
 void ug_board_sound_play(Bridge *bridge)
 {
-    char *tag = Bridge_nexString(bridge);
+    char *tag = Bridge_nextString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     PlaySound(sound);
     Bridge_startResult(bridge);
@@ -68,7 +68,7 @@ void ug_board_sound_play(Bridge *bridge)
 
 void ug_board_sound_stop(Bridge *bridge)
 {
-    char *tag = Bridge_nexString(bridge);
+    char *tag = Bridge_nextString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     StopSound(sound);
     Bridge_startResult(bridge);
@@ -77,7 +77,7 @@ void ug_board_sound_stop(Bridge *bridge)
 
 void ug_board_sound_resume(Bridge *bridge)
 {
-    char *tag = Bridge_nexString(bridge);
+    char *tag = Bridge_nextString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     ResumeSound(sound);
     Bridge_startResult(bridge);
@@ -86,7 +86,7 @@ void ug_board_sound_resume(Bridge *bridge)
 
 void ug_board_sound_pause(Bridge *bridge)
 {
-    char *tag = Bridge_nexString(bridge);
+    char *tag = Bridge_nextString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     PauseSound(sound);
     Bridge_startResult(bridge);
@@ -95,7 +95,7 @@ void ug_board_sound_pause(Bridge *bridge)
 
 void ug_board_sound_is_playing(Bridge *bridge)
 {
-    char *tag = Bridge_nexString(bridge);
+    char *tag = Bridge_nextString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     bool r = IsSoundPlaying(sound);
     Bridge_startResult(bridge);
@@ -105,9 +105,9 @@ void ug_board_sound_is_playing(Bridge *bridge)
 
 void ug_board_sound_set_volume(Bridge *bridge)
 {
-    char *tag = Bridge_nexString(bridge);
+    char *tag = Bridge_nextString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
-    float volume = Bridge_nexNumber(bridge);
+    float volume = Bridge_nextNumber(bridge);
     SetSoundVolume(sound, volume);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -117,8 +117,6 @@ void ug_board_sound_set_volume(Bridge *bridge)
 
 void lib_raylib_sound_register(Bridge *bridge)
 {
-    uyghurBridge = bridge;
-    resourcesMap = Hashmap_new(NULL);
     //
     Bridge_startBox(bridge, "awaz");
     //

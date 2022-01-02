@@ -7,6 +7,7 @@
 #include "music.c"
 #include "sound.c"
 #include "painter.c"
+#include "control.c"
 #include "test.c"
 
 void register_external_libraries(Bridge *bridge)
@@ -16,6 +17,7 @@ void register_external_libraries(Bridge *bridge)
     lib_raylib_music_register(bridge);
     lib_raylib_sound_register(bridge);
     lib_raylib_painter_register(bridge);
+    lib_raylib_control_register(bridge);
     //
     lib_test_register(bridge);
 }

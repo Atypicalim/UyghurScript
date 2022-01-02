@@ -11,6 +11,9 @@ FOLDER_RAYLIB = ./external/raylib-4.0.0_win64_mingw-w64
 LFLAGS_RAYLIB = -I $(FOLDER_RAYLIB)/include -L $(FOLDER_RAYLIB)/lib
 CFLAGS_RAYLIB = -lraylib -lopengl32 -lgdi32 -lwinmm
 
+# raygui
+FLAGS_RAYGUI = -I ./external/raygui-3.0/src
+
 # console
 LFLAGS_EXTRA = # -O2 -mwindows
 CFLAGS_EXTRA = # -O2 -mwindows
@@ -18,6 +21,7 @@ CFLAGS_EXTRA = # -O2 -mwindows
 # flags
 LFLAGS = $(LFLAGS_RAYLIB) $(LFLAGS_EXTRA)
 CFLAGS = $(CFLAGS_RAYLIB) $(CFLAGS_CONSOLE)
+OFLAGS = $(FLAGS_RAYGUI)
 
 # compiler
 CC = gcc
@@ -25,5 +29,5 @@ CC = gcc
 # commands
 run: $(SRC)
 	@rm -rf $(DST_DIR)*
-	@$(CC) $(SRC) $(LFLAGS) $(CFLAGS) -o $(DST)
+	@$(CC) $(SRC) $(LFLAGS) $(CFLAGS) $(OFLAGS) -o $(DST)
 	@cd $(DST_DIR) && ./$(DST_NAME) $(SCRIPT)

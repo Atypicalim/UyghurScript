@@ -120,7 +120,7 @@ void Bridge_pushBoolean(Bridge *this, bool value)
     Bridge_pushValue(this, Value_newBoolean(value, NULL));
 }
 
-bool Bridge_nexBoolean(Bridge *this)
+bool Bridge_nextBoolean(Bridge *this)
 {
     return _bridge_next_value_for_type(this, RTYPE_BOOLEAN)->boolean;
 }
@@ -130,7 +130,7 @@ void Bridge_pushNumber(Bridge *this, double value)
     Bridge_pushValue(this, Value_newNumber(value, NULL));
 }
 
-double Bridge_nexNumber(Bridge *this)
+double Bridge_nextNumber(Bridge *this)
 {
     return _bridge_next_value_for_type(this, RTYPE_NUMBER)->number;
 }
@@ -140,7 +140,7 @@ void Bridge_pushString(Bridge *this, char *value)
     Bridge_pushValue(this, Value_newString(str_new(value), NULL));
 }
 
-char *Bridge_nexString(Bridge *this)
+char *Bridge_nextString(Bridge *this)
 {
     return _bridge_next_value_for_type(this, RTYPE_STRING)->string;
 }

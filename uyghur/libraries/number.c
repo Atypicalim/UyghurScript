@@ -4,7 +4,7 @@
 
 void ug_number_ceil(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     int r = ceil(num);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -13,7 +13,7 @@ void ug_number_ceil(Bridge *bridge)
 
 void ug_number_floor(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     int r = floor(num);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -22,7 +22,7 @@ void ug_number_floor(Bridge *bridge)
 
 void ug_number_round(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     int r = round(num);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -31,7 +31,7 @@ void ug_number_round(Bridge *bridge)
 
 void ug_number_seed(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     srand(num >= 0 ? num : time(NULL));
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -39,8 +39,8 @@ void ug_number_seed(Bridge *bridge)
 
 void ug_number_random(Bridge *bridge)
 {
-    double from = Bridge_nexNumber(bridge);
-    double to = Bridge_nexNumber(bridge);
+    double from = Bridge_nextNumber(bridge);
+    double to = Bridge_nextNumber(bridge);
     double r = num_random(from, to);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -49,7 +49,7 @@ void ug_number_random(Bridge *bridge)
 
 void ug_number_radian(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     double r = num * M_PI / 180.0;
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -58,7 +58,7 @@ void ug_number_radian(Bridge *bridge)
 
 void ug_number_degree(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     double r = num * 180.0 / M_PI;
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -67,7 +67,7 @@ void ug_number_degree(Bridge *bridge)
 
 void ug_number_sin(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     double r = sin(num);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -76,7 +76,7 @@ void ug_number_sin(Bridge *bridge)
 
 void ug_number_cos(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     double r = cos(num);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -85,7 +85,7 @@ void ug_number_cos(Bridge *bridge)
 
 void ug_number_tan(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     double r = tan(num);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -94,7 +94,7 @@ void ug_number_tan(Bridge *bridge)
 
 void ug_number_asin(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     double r = asin(num);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -103,7 +103,7 @@ void ug_number_asin(Bridge *bridge)
 
 void ug_number_acos(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     double r = acos(num);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -112,7 +112,7 @@ void ug_number_acos(Bridge *bridge)
 
 void ug_number_atan(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     double r = atan(num);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -121,8 +121,8 @@ void ug_number_atan(Bridge *bridge)
 
 void ug_number_power(Bridge *bridge)
 {
-    double x = Bridge_nexNumber(bridge);
-    double y = Bridge_nexNumber(bridge);
+    double x = Bridge_nextNumber(bridge);
+    double y = Bridge_nextNumber(bridge);
     double r = pow(x, y);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -131,8 +131,8 @@ void ug_number_power(Bridge *bridge)
 
 void ug_number_square(Bridge *bridge)
 {
-    double x = Bridge_nexNumber(bridge);
-    double y = Bridge_nexNumber(bridge);
+    double x = Bridge_nextNumber(bridge);
+    double y = Bridge_nextNumber(bridge);
     double r = pow(x, 1 / y);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -141,7 +141,7 @@ void ug_number_square(Bridge *bridge)
 
 void ug_number_log_e(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     double r = log(num);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -150,7 +150,7 @@ void ug_number_log_e(Bridge *bridge)
 
 void ug_number_log_10(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     double r = log10(num);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -159,8 +159,8 @@ void ug_number_log_10(Bridge *bridge)
 
 void ug_number_quotient(Bridge *bridge)
 {
-    double x = Bridge_nexNumber(bridge);
-    double y = Bridge_nexNumber(bridge);
+    double x = Bridge_nextNumber(bridge);
+    double y = Bridge_nextNumber(bridge);
     double r = (x - fmod(x, y)) / y;
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -169,8 +169,8 @@ void ug_number_quotient(Bridge *bridge)
 
 void ug_number_reminder(Bridge *bridge)
 {
-    double x = Bridge_nexNumber(bridge);
-    double y = Bridge_nexNumber(bridge);
+    double x = Bridge_nextNumber(bridge);
+    double y = Bridge_nextNumber(bridge);
     double r = fmod(x, y);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -179,7 +179,7 @@ void ug_number_reminder(Bridge *bridge)
 
 void ug_number_int_part(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     double r = num - modf(num, 0);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);
@@ -189,7 +189,7 @@ void ug_number_int_part(Bridge *bridge)
 
 void ug_number_dec_part(Bridge *bridge)
 {
-    double num = Bridge_nexNumber(bridge);
+    double num = Bridge_nextNumber(bridge);
     double r = modf(num, 0);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, r);

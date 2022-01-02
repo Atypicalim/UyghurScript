@@ -114,6 +114,10 @@ fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
     # fonkisiye @ressam{[tamghaBesish]} bilen r 250 250 0.5 0.5 [ffaaaaff] 0 0 -1 -1 0 1 ishlitilsun
     # miqdar r azad bolsun
     
+    fonkisiye @zapchas{[kunupkaKorsitish]} bilen 100 100 100 50 [SINAQ] ishlitilsun we netije rr bolsun
+    eger rr qimmiti rast bolsa
+        ikrangha [chikildi--] yezilsun
+    tamamlansun
  
 tamamlansun
 
