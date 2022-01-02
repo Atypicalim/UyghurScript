@@ -209,7 +209,7 @@ Bridge_startFunc(bridge, "functionName");
 Bridge_pushValue(bridge, NULL);
 Bridge_call(bridge);
 char *resultType = Bridge_topType(bridge);
-void *resultValue = Bridge_popValue(bridge);
+void *resultValue = Bridge_nextValue(bridge);
 ```
 
 ## 11. import

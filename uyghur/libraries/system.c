@@ -12,7 +12,7 @@ void ug_system_get_name(Bridge *bridge)
 void ug_system_exit_program(Bridge *bridge)
 {
     int code = 0;
-    if (Bridge_topType(bridge) != RTYPE_EMPTY) code = Bridge_popNumber(bridge);
+    if (Bridge_topType(bridge) != RTYPE_EMPTY) code = Bridge_nexNumber(bridge);
     system_exit_program(code);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -20,7 +20,7 @@ void ug_system_exit_program(Bridge *bridge)
 
 void ug_system_execute_command(Bridge *bridge)
 {
-    char *command = Bridge_popString(bridge);
+    char *command = Bridge_nexString(bridge);
     Bridge_startResult(bridge);
     Bridge_pushString(bridge, system_execute_command(command));
     Bridge_return(bridge);
@@ -28,8 +28,8 @@ void ug_system_execute_command(Bridge *bridge)
 
 void ug_system_set_env(Bridge *bridge)
 {
-    char *name = Bridge_popString(bridge);
-    char *value = Bridge_popString(bridge);
+    char *name = Bridge_nexString(bridge);
+    char *value = Bridge_nexString(bridge);
     system_set_env(name, value);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -37,7 +37,7 @@ void ug_system_set_env(Bridge *bridge)
 
 void ug_system_get_env(Bridge *bridge)
 {
-    char *name = Bridge_popString(bridge);
+    char *name = Bridge_nexString(bridge);
     char *value = system_get_env(name);
     Bridge_startResult(bridge);
     if (value != NULL) Bridge_pushString(bridge, value);;
@@ -53,11 +53,11 @@ void ug_system_read_terminal(Bridge *bridge)
 
 void ug_system_write_terminal(Bridge *bridge)
 {
-    Value *v = Bridge_popValue(bridge);
+    Value *v = Bridge_nextValue(bridge);
     while (v->type != RTYPE_EMPTY)
     {
         system_write_terminal(Value_toString(v));
-        v = Bridge_popValue(bridge);
+        v = Bridge_nextValue(bridge);
     }
     Bridge_startResult(bridge);
     Bridge_return(bridge);

@@ -79,30 +79,40 @@ t2 qimmiti quruq bolsun
 d qimmiti 0.1 bolsun
 rotation qimmiti 0 bolsun
 
+miqdar color tewellut bolsun
+color qimmiti [aaffffff] bolsun
+
 fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
 
     #
-    t1 qimmiti x chong 400 bolsun
-    t2 qimmiti x kichik 100 bolsun
-    eger t1 qimmiti rast bolsa
-        d qimmiti -0.1 bolsun
-    egerde t2 qimmiti rast bolsa
-        d qimmiti 0.1 bolsun
-    tamamlansun
-    x qimmiti x qushulghan d bolsun
-    y qimmiti y qushulghan d bolsun
-    fonkisiye @ressam{[chemberSizish]} bilen x y 100 100 [55aaff] ishlitilsun
+    # t1 qimmiti x chong 400 bolsun
+    # t2 qimmiti x kichik 100 bolsun
+    # eger t1 qimmiti rast bolsa
+    #     d qimmiti -0.1 bolsun
+    # egerde t2 qimmiti rast bolsa
+    #     d qimmiti 0.1 bolsun
+    # tamamlansun
+    # x qimmiti x qushulghan d bolsun
+    # y qimmiti y qushulghan d bolsun
+    # fonkisiye @ressam{[chemberSizish]} bilen x y 100 100 [55aaff] ishlitilsun
 
-    # 
-    rotation qimmiti rotation qushulghan 0.05 bolsun
+    # # 
+    # rotation qimmiti rotation qushulghan 0.05 bolsun
 
     # 
     fonkisiye @ressam{[resimEkirish]} bilen [../resources/rose.png] 100 0 200 200 yalghan yalghan ishlitilsun we netije r bolsun
-    fonkisiye @ressam{[tamghaBesish]} bilen r 250 250 0.5 0.5 [aaffffff] 0 0 -1 -1 rotation 0.5 ishlitilsun
+    fonkisiye @ressam{[tamghaBesish]} bilen r 250 250 0.5 0.5 color 0 0 -1 -1 rotation 0.5 ishlitilsun
+    # fonkisiye @doska{[fpsElish]} bilen 0.5 0.5 ishlitilsun
+    # fonkisiye @doska{[fpsElish]} bilen 0.5 0.5 ishlitilsun
+    # fonkisiye @doska{[fpsElish]} bilen 0.5 0.5 ishlitilsun
+    # fonkisiye @doska{[fpsElish]} bilen 0.5 0.5 ishlitilsun
+    # fonkisiye @doska{[fpsElish]} bilen 0.5 0.5 ishlitilsun
+    # miqdar r azad bolsun
 
-    # 
-    fonkisiye @ressam{[xetEkirish]} bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we netije r bolsun
-    fonkisiye @ressam{[tamghaBesish]} bilen r 250 250 0.5 0.5 [ffaaaaff] 0 0 -1 -1 0 1 ishlitilsun
+    # # 
+    # fonkisiye @ressam{[xetEkirish]} bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we netije r bolsun
+    # fonkisiye @ressam{[tamghaBesish]} bilen r 250 250 0.5 0.5 [ffaaaaff] 0 0 -1 -1 0 1 ishlitilsun
+    # miqdar r azad bolsun
     
  
 tamamlansun
@@ -113,11 +123,11 @@ tamamlansun
 
 fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
 
-miqdar a tewellut bolsun
-a qimmiti 1 qushulghan 2 bolsun
-ikrangha a yezilsun
-miqdar a azad bolsun
-miqdar a wapat bolsun
+# miqdar a tewellut bolsun
+# a qimmiti 1 qushulghan 2 bolsun
+# ikrangha a yezilsun
+# miqdar a azad bolsun
+# miqdar a wapat bolsun
 
 
 # TOOD ################################################################################

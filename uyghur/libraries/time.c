@@ -18,7 +18,7 @@ void ug_time_get_seconds(Bridge *bridge)
 
 void ug_time_create_seconds(Bridge *bridge)
 {
-    char *str = Bridge_popString(bridge);
+    char *str = Bridge_nexString(bridge);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, time_create_seconds(str));
     Bridge_return(bridge);
@@ -26,8 +26,8 @@ void ug_time_create_seconds(Bridge *bridge)
 
 void ug_time_format_seconds(Bridge *bridge)
 {
-    int seconds = Bridge_popNumber(bridge);
-    char *str = Bridge_popString(bridge);
+    int seconds = Bridge_nexNumber(bridge);
+    char *str = Bridge_nexString(bridge);
     Bridge_startResult(bridge);
     Bridge_pushString(bridge, time_format_seconds(seconds, str));
     Bridge_return(bridge);
@@ -49,7 +49,7 @@ void ug_time_get_clock(Bridge *bridge)
 
 void ug_time_sleep_seconds(Bridge *bridge)
 {
-    time_sleep_seconds(Bridge_popNumber(bridge));
+    time_sleep_seconds(Bridge_nexNumber(bridge));
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }

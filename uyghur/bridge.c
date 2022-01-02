@@ -19,16 +19,31 @@ void _bridge_release_stack(Bridge* this)
     }
 }
 
+void _bridge_reset_stack(Bridge* this)
+{
+    if (this->cursor != NULL)
+    {
+        free(this->cursor);
+        this->cursor = NULL;
+    }
+    this->cursor = Stack_reset(this->stack);
+}
+
 void Bridge_reset(Bridge *this)
 {
     // TODO: ug free unused poiters
     Stack_free(this->stack);
     this->stack = Stack_new(); // make a call stack containing stack: call cFunc in ugCallback
+    if (this->cursor != NULL)
+    {
+        free(this->cursor);
+        this->cursor = NULL;
+    }
     if (this->name != NULL)
     {
         free(this->name);
+        this->name = NULL;
     }
-    this->name = NULL;
     this->type = 0;
     this->last = NULL;
 }
@@ -38,49 +53,14 @@ Bridge *Bridge_new(Uyghur *uyghur)
     Bridge *bridge = malloc(sizeof(Bridge));
     bridge->uyghur = uyghur;
     bridge->stack = Stack_new();
+    bridge->cursor = NULL;
     bridge->name = NULL;
     bridge->type = 0;
     bridge->last = NULL;
     return bridge;
 }
 
-void Bridge_startBox(Bridge *this, char *name)
-{
-    _bridge_release_stack(this);
-    Bridge_reset(this);
-    this->name = name == NULL ? NULL : str_new(name);
-    this->type = BRIDGE_STACK_TP_BOX;
-}
-
-void Bridge_startFunc(Bridge *this, char *name)
-{
-    _bridge_release_stack(this);
-    Bridge_reset(this);
-    this->name = name == NULL ? NULL : str_new(name);
-    this->type = BRIDGE_STACK_TP_FUN;
-}
-
-void Bridge_startArgument(Bridge *this)
-{
-    _bridge_release_stack(this);
-    Bridge_reset(this);
-    this->type = BRIDGE_STACK_TP_ARG;
-}
-
-void Bridge_startResult(Bridge *this)
-{
-    _bridge_release_stack(this);
-    Bridge_reset(this);
-    this->type = BRIDGE_STACK_TP_RES;
-}
-
-void Bridge_pushKey(Bridge *this, char *key)
-{
-    tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, key available for only box");
-    tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key neceessary for last value");
-    Stack_push(this->stack, Value_newString(str_new(key), NULL));
-    this->last = BRIDGE_ITEM_TP_KEY;
-}
+// get top type of the stack
 
 char *Bridge_topType(Bridge *this)
 {
@@ -108,6 +88,7 @@ void Bridge_pushValue(Bridge *this, Value *value)
     this->last = BRIDGE_ITEM_TP_VAL;
 }
 
+// pop next value, you should release the value object manually
 Value *Bridge_popValue(Bridge *this)
 {
     Value *v = Stack_pop(this->stack);
@@ -115,23 +96,33 @@ Value *Bridge_popValue(Bridge *this)
     return v;
 }
 
-Value *Bridge_popValueForRType(Bridge *this, char *tp)
+// get next value, value object auto released when reset the stack
+Value *Bridge_nextValue(Bridge *this)
 {
+    if (this->cursor == NULL) return Value_newEmpty(NULL);
+    Value *v = Stack_next(this->stack, this->cursor);
+    if (v == NULL) return Value_newEmpty(NULL);
+    return v;
+}
 
-    Value *v = Bridge_popValue(this);
+Value *_bridge_next_value_for_type(Bridge *this, char *tp)
+{
+    Value *v = Bridge_nextValue(this);
     tools_assert(v != NULL, "invalid bridge arguments, next argument not found");
     tools_assert(is_equal(v->type, tp), "invalid bridge arguments, %s argument not found", tp);
     return v;
 }
+
+// push varibales
 
 void Bridge_pushBoolean(Bridge *this, bool value)
 {
     Bridge_pushValue(this, Value_newBoolean(value, NULL));
 }
 
-bool Bridge_popBoolean(Bridge *this)
+bool Bridge_nexBoolean(Bridge *this)
 {
-    return Bridge_popValueForRType(this, RTYPE_BOOLEAN)->boolean;
+    return _bridge_next_value_for_type(this, RTYPE_BOOLEAN)->boolean;
 }
 
 void Bridge_pushNumber(Bridge *this, double value)
@@ -139,9 +130,9 @@ void Bridge_pushNumber(Bridge *this, double value)
     Bridge_pushValue(this, Value_newNumber(value, NULL));
 }
 
-double Bridge_popNumber(Bridge *this)
+double Bridge_nexNumber(Bridge *this)
 {
-    return Bridge_popValueForRType(this, RTYPE_NUMBER)->number;
+    return _bridge_next_value_for_type(this, RTYPE_NUMBER)->number;
 }
 
 void Bridge_pushString(Bridge *this, char *value)
@@ -149,14 +140,34 @@ void Bridge_pushString(Bridge *this, char *value)
     Bridge_pushValue(this, Value_newString(str_new(value), NULL));
 }
 
-char *Bridge_popString(Bridge *this)
+char *Bridge_nexString(Bridge *this)
 {
-    return Bridge_popValueForRType(this, RTYPE_STRING)->string;
+    return _bridge_next_value_for_type(this, RTYPE_STRING)->string;
+}
+
+// push key & func to stack
+
+void Bridge_pushKey(Bridge *this, char *key)
+{
+    tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, key available for only box");
+    tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key neceessary for last value");
+    Stack_push(this->stack, Value_newString(str_new(key), NULL));
+    this->last = BRIDGE_ITEM_TP_KEY;
 }
 
 void Bridge_pushFunction(Bridge *this, void (*value)(Bridge *))
 {
     Bridge_pushValue(this, Value_newCFunction(value, NULL));
+}
+
+// rgister box or globals to script
+
+void Bridge_startBox(Bridge *this, char *name)
+{
+    _bridge_release_stack(this);
+    Bridge_reset(this);
+    this->name = name == NULL ? NULL : str_new(name);
+    this->type = BRIDGE_STACK_TP_BOX;
 }
 
 void Bridge_register(Bridge *this)
@@ -181,6 +192,58 @@ void Bridge_register(Bridge *this)
     }
     this->name = NULL;
     Bridge_reset(this);
+}
+
+// send arguments to c from script
+
+void Bridge_startArgument(Bridge *this)
+{
+    _bridge_release_stack(this);
+    Bridge_reset(this);
+    this->type = BRIDGE_STACK_TP_ARG;
+}
+
+void *Bridge_send(Bridge *this)
+{
+    tools_assert(this->type == BRIDGE_STACK_TP_ARG, "invalid bridge status, argument expected for send");
+    Cursor *cursor = Stack_reset(this->stack);
+    Value *v = Stack_next(this->stack, cursor);
+    while(v != NULL)
+    {
+        if (!is_values(v->type, RTYPE_GROUP_BASE))
+        {
+            tools_error("invalid bridge status, type %s not available in c", v->type);
+        }
+        v = Stack_next(this->stack, cursor);
+    }
+    Cursor_free(cursor);
+    _bridge_reset_stack(this);
+}
+
+// return result to script from c
+
+void Bridge_startResult(Bridge *this)
+{
+    _bridge_release_stack(this);
+    Bridge_reset(this);
+    this->type = BRIDGE_STACK_TP_RES;
+}
+
+void *Bridge_return(Bridge *this)
+{
+    tools_assert(this->type == BRIDGE_STACK_TP_RES, "invalid bridge status, result expected for return");
+    if (this->stack->head == NULL) Bridge_pushValue(this, Value_newEmpty(NULL));
+    tools_assert(this->stack->head == this->stack->tail, "invalid bridge status, can return only one value");
+}
+
+// call script func fom c
+
+void Bridge_startFunc(Bridge *this, char *name)
+{
+    _bridge_release_stack(this);
+    Bridge_reset(this);
+    this->name = name == NULL ? NULL : str_new(name);
+    this->type = BRIDGE_STACK_TP_FUN;
 }
 
 void Bridge_call(Bridge *this)
@@ -224,27 +287,4 @@ void Bridge_call(Bridge *this)
     Bridge_pushValue(this, r);
     Bridge_return(this);
     // // TODO: ug free result when call
-}
-
-void *Bridge_send(Bridge *this)
-{
-    tools_assert(this->type == BRIDGE_STACK_TP_ARG, "invalid bridge status, argument expected for send");
-    Cursor *cursor = Stack_reset(this->stack);
-    Value *v = Stack_next(this->stack, cursor);
-    while(v != NULL)
-    {
-        if (!is_values(v->type, RTYPE_GROUP_BASE))
-        {
-            tools_error("invalid bridge status, type %s not available in c", v->type);
-        }
-        v = Stack_next(this->stack, cursor);
-    }
-    Cursor_free(cursor);
-}
-
-void *Bridge_return(Bridge *this)
-{
-    tools_assert(this->type == BRIDGE_STACK_TP_RES, "invalid bridge status, result expected for return");
-    if (this->stack->head == NULL) Bridge_pushValue(this, Value_newEmpty(NULL));
-    tools_assert(this->stack->head == this->stack->tail, "invalid bridge status, can return only one value");
 }

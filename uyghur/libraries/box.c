@@ -4,7 +4,7 @@
 
 void test_box(Bridge *bridge)
 {
-    Value *value = Bridge_popValue(bridge);
+    Value *value = Bridge_nextValue(bridge);
     // todo
     Bridge_startResult(bridge);
     Bridge_pushValue(bridge, NULL);

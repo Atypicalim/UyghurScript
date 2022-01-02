@@ -8,9 +8,9 @@ void cFuncTest(Bridge *bridge)
     // // get arguments
     // printf("\n\n--c func arguments--\n");
     // printf("%s\n", Bridge_topType(bridge));
-    // printf("%s\n", Bridge_popString(bridge));
-    // printf("%f\n", Bridge_popNumber(bridge));
-    // printf("%s\n", Bridge_popBoolean(bridge) ? "yes" : "no");
+    // printf("%s\n", Bridge_nexString(bridge));
+    // printf("%f\n", Bridge_nexNumber(bridge));
+    // printf("%s\n", Bridge_nexBoolean(bridge) ? "yes" : "no");
     // printf("%s\n", Bridge_topType(bridge));
     // // do something
     // printf("\nc function body from bridge\n");
@@ -48,5 +48,5 @@ void lib_test_call(Bridge *bridge)
     // // get result
     // printf("\n\n--uyghur func result--\n");
     // printf("%s\n", Bridge_topType(bridge));
-    // printf("%f\n", Bridge_popNumber(bridge));
+    // printf("%f\n", Bridge_nexNumber(bridge));
 }

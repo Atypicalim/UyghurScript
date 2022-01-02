@@ -41,7 +41,7 @@ void raylib_unload_music_by_tag(char *tag)
 
 void ug_board_music_load(Bridge *bridge)
 {
-    char *path = Bridge_popString(bridge);
+    char *path = Bridge_nexString(bridge);
     char *tag = get_audio_tag_for_music(path);
     raylib_load_music_by_tag(tag, path);
     Bridge_startResult(bridge);
@@ -51,7 +51,7 @@ void ug_board_music_load(Bridge *bridge)
 
 void ug_board_music_unload(Bridge *bridge)
 {
-    char *tag = Bridge_popString(bridge);
+    char *tag = Bridge_nexString(bridge);
     raylib_unload_music_by_tag(tag);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -59,7 +59,7 @@ void ug_board_music_unload(Bridge *bridge)
 
 void ug_board_music_play(Bridge *bridge)
 {
-    char *tag = Bridge_popString(bridge);
+    char *tag = Bridge_nexString(bridge);
     Music music = raylib_get_music_by_tag(tag);
     PlayMusicStream(music);
     Bridge_startResult(bridge);
@@ -68,7 +68,7 @@ void ug_board_music_play(Bridge *bridge)
 
 void ug_board_music_stop(Bridge *bridge)
 {
-    char *tag = Bridge_popString(bridge);
+    char *tag = Bridge_nexString(bridge);
     Music music = raylib_get_music_by_tag(tag);
     StopMusicStream(music);
     Bridge_startResult(bridge);
@@ -77,7 +77,7 @@ void ug_board_music_stop(Bridge *bridge)
 
 void ug_board_music_resume(Bridge *bridge)
 {
-    char *tag = Bridge_popString(bridge);
+    char *tag = Bridge_nexString(bridge);
     Music music = raylib_get_music_by_tag(tag);
     ResumeMusicStream(music);
     Bridge_startResult(bridge);
@@ -86,7 +86,7 @@ void ug_board_music_resume(Bridge *bridge)
 
 void ug_board_music_pause(Bridge *bridge)
 {
-    char *tag = Bridge_popString(bridge);
+    char *tag = Bridge_nexString(bridge);
     Music music = raylib_get_music_by_tag(tag);
     PauseMusicStream(music);
     Bridge_startResult(bridge);
@@ -95,7 +95,7 @@ void ug_board_music_pause(Bridge *bridge)
 
 void ug_board_music_is_playing(Bridge *bridge)
 {
-    char *tag = Bridge_popString(bridge);
+    char *tag = Bridge_nexString(bridge);
     Music music = raylib_get_music_by_tag(tag);
     bool r = IsMusicStreamPlaying(music);
     Bridge_startResult(bridge);
@@ -105,9 +105,9 @@ void ug_board_music_is_playing(Bridge *bridge)
 
 void ug_board_music_set_volume(Bridge *bridge)
 {
-    char *tag = Bridge_popString(bridge);
+    char *tag = Bridge_nexString(bridge);
     Music music = raylib_get_music_by_tag(tag);
-    float volume = Bridge_popNumber(bridge);
+    float volume = Bridge_nexNumber(bridge);
     SetMusicVolume(music, volume);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -115,7 +115,7 @@ void ug_board_music_set_volume(Bridge *bridge)
 
 void ug_board_music_update(Bridge *bridge)
 {
-    char *tag = Bridge_popString(bridge);
+    char *tag = Bridge_nexString(bridge);
     Music music = raylib_get_music_by_tag(tag);
     UpdateMusicStream(music);
     Bridge_startResult(bridge);
@@ -124,7 +124,7 @@ void ug_board_music_update(Bridge *bridge)
 
 void ug_board_music_get_length(Bridge *bridge)
 {
-    char *tag = Bridge_popString(bridge);
+    char *tag = Bridge_nexString(bridge);
     Music music = raylib_get_music_by_tag(tag);
     float r = GetMusicTimeLength(music);
     Bridge_startResult(bridge);
@@ -134,7 +134,7 @@ void ug_board_music_get_length(Bridge *bridge)
 
 void ug_board_music_get_position(Bridge *bridge)
 {
-    char *tag = Bridge_popString(bridge);
+    char *tag = Bridge_nexString(bridge);
     Music music = raylib_get_music_by_tag(tag);
     float r = GetMusicTimePlayed(music);
     Bridge_startResult(bridge);
@@ -144,9 +144,9 @@ void ug_board_music_get_position(Bridge *bridge)
 
 void ug_board_music_set_position(Bridge *bridge)
 {
-    char *tag = Bridge_popString(bridge);
+    char *tag = Bridge_nexString(bridge);
     Music music = raylib_get_music_by_tag(tag);
-    float position = Bridge_popNumber(bridge);
+    float position = Bridge_nexNumber(bridge);
     SeekMusicStream(music, position);
     Bridge_startResult(bridge);
     Bridge_return(bridge);

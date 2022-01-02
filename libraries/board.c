@@ -101,7 +101,7 @@ void raylib_run_program(int width, int height, char *title, int mode)
 
 void ug_baord_set_log(Bridge *bridge)
 {
-    int level = Bridge_popNumber(bridge);
+    int level = Bridge_nexNumber(bridge);
     SetTraceLogLevel(level);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -109,7 +109,7 @@ void ug_baord_set_log(Bridge *bridge)
 
 void ug_baord_set_fps(Bridge *bridge)
 {
-    SetTargetFPS(Bridge_popNumber(bridge));
+    SetTargetFPS(Bridge_nexNumber(bridge));
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }
@@ -123,8 +123,8 @@ void ug_baord_get_fps(Bridge *bridge)
 
 void ug_baord_draw_fps(Bridge *bridge)
 {
-    int x = Bridge_popNumber(bridge);
-    int y = Bridge_popNumber(bridge);
+    int x = Bridge_nexNumber(bridge);
+    int y = Bridge_nexNumber(bridge);
     DrawFPS(x, y);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -132,10 +132,10 @@ void ug_baord_draw_fps(Bridge *bridge)
 
 void ug_board_show_window(Bridge *bridge)
 {
-    int w = Bridge_popNumber(bridge);
-    int h = Bridge_popNumber(bridge);
-    char *title = Bridge_popString(bridge);
-    int mode = Bridge_popNumber(bridge);
+    int w = Bridge_nexNumber(bridge);
+    int h = Bridge_nexNumber(bridge);
+    char *title = Bridge_nexString(bridge);
+    int mode = Bridge_nexNumber(bridge);
     raylib_run_program(w, h, title, mode);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -206,14 +206,14 @@ void ug_baord_set_normalize(Bridge *bridge)
 
 void ug_baord_set_title(Bridge *bridge)
 {
-    SetWindowTitle(Bridge_popString(bridge));
+    SetWindowTitle(Bridge_nexString(bridge));
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }
 
 void ug_baord_set_icon(Bridge *bridge)
 {
-    char *path = Bridge_popString(bridge);
+    char *path = Bridge_nexString(bridge);
     Image image = LoadImage(path);
     SetWindowIcon(image);
     Bridge_startResult(bridge);
@@ -222,8 +222,8 @@ void ug_baord_set_icon(Bridge *bridge)
 
 void ug_baord_set_position(Bridge *bridge)
 {
-    int x = Bridge_popNumber(bridge);
-    int y = Bridge_popNumber(bridge);
+    int x = Bridge_nexNumber(bridge);
+    int y = Bridge_nexNumber(bridge);
     SetWindowPosition(x, y); 
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -240,8 +240,8 @@ void ug_baord_get_position(Bridge *bridge)
 
 void ug_baord_set_size(Bridge *bridge)
 {
-    int w = Bridge_popNumber(bridge);
-    int h = Bridge_popNumber(bridge);
+    int w = Bridge_nexNumber(bridge);
+    int h = Bridge_nexNumber(bridge);
     SetWindowSize(w, h); 
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -267,8 +267,8 @@ void ug_baord_get_screen_size(Bridge *bridge)
 
 void ug_baord_set_min_size(Bridge *bridge)
 {
-    int w = Bridge_popNumber(bridge);
-    int h = Bridge_popNumber(bridge);
+    int w = Bridge_nexNumber(bridge);
+    int h = Bridge_nexNumber(bridge);
     SetWindowMinSize(w, h); 
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -276,7 +276,7 @@ void ug_baord_set_min_size(Bridge *bridge)
 
 void ug_baord_show_cursor(Bridge *bridge)
 {
-    bool b = Bridge_popBoolean(bridge);
+    bool b = Bridge_nexBoolean(bridge);
     if (b) ShowCursor();
     if (!b) HideCursor();
     Bridge_startResult(bridge);
@@ -285,7 +285,7 @@ void ug_baord_show_cursor(Bridge *bridge)
 
 void ug_baord_enable_cursor(Bridge *bridge)
 {
-    bool b = Bridge_popBoolean(bridge);
+    bool b = Bridge_nexBoolean(bridge);
     if (b) EnableCursor();
     if (!b) DisableCursor();
     Bridge_startResult(bridge);
@@ -301,7 +301,7 @@ void ug_baord_have_cursor(Bridge *bridge)
 
 void ug_baord_set_clipboard(Bridge *bridge)
 {
-    char *c = Bridge_popString(bridge);
+    char *c = Bridge_nexString(bridge);
     SetClipboardText(c);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -317,7 +317,7 @@ void ug_baord_get_clipboard(Bridge *bridge)
 
 void ug_baord_set_mourse_cursor(Bridge *bridge)
 {
-    SetMouseCursor(Bridge_popNumber(bridge));
+    SetMouseCursor(Bridge_nexNumber(bridge));
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }
@@ -339,7 +339,7 @@ void ug_baord_get_mouse_wheel(Bridge *bridge)
 
 void ug_baord_get_mouse_key_action(Bridge *bridge)
 {
-    int keyCode = Bridge_popNumber(bridge);
+    int keyCode = Bridge_nexNumber(bridge);
     int action = 0;
     if (IsMouseButtonPressed(keyCode)) action = 1;
     if (IsMouseButtonReleased(keyCode)) action = -1;
@@ -350,7 +350,7 @@ void ug_baord_get_mouse_key_action(Bridge *bridge)
 
 void ug_baord_get_mouse_key_state(Bridge *bridge)
 {
-    int keyCode = Bridge_popNumber(bridge);
+    int keyCode = Bridge_nexNumber(bridge);
     int action = 0;
     if (IsMouseButtonDown(keyCode)) action = 1;
     if (IsMouseButtonUp(keyCode)) action = -1;
@@ -361,7 +361,7 @@ void ug_baord_get_mouse_key_state(Bridge *bridge)
 
 void ug_baord_get_keyboard_key_action(Bridge *bridge)
 {
-    int keyCode = Bridge_popNumber(bridge);
+    int keyCode = Bridge_nexNumber(bridge);
     int action = 0;
     if (IsKeyPressed(keyCode)) action = 1;
     if (IsKeyReleased(keyCode)) action = -1;
@@ -372,7 +372,7 @@ void ug_baord_get_keyboard_key_action(Bridge *bridge)
 
 void ug_baord_get_keybaord_key_state(Bridge *bridge)
 {
-    int keyCode = Bridge_popNumber(bridge);
+    int keyCode = Bridge_nexNumber(bridge);
     int action = 0;
     if (IsKeyDown(keyCode)) action = 1;
     if (IsKeyUp(keyCode)) action = -1;
@@ -383,7 +383,7 @@ void ug_baord_get_keybaord_key_state(Bridge *bridge)
 
 void ug_baord_save_screenshot(Bridge *bridge)
 {
-    char *path = Bridge_popString(bridge);
+    char *path = Bridge_nexString(bridge);
     TakeScreenshot(path);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -391,7 +391,7 @@ void ug_baord_save_screenshot(Bridge *bridge)
 
 void ug_board_audio_set_volume(Bridge *bridge)
 {
-    float v = Bridge_popNumber(bridge);
+    float v = Bridge_nexNumber(bridge);
     SetMasterVolume(v);
     Bridge_startResult(bridge);
     Bridge_return(bridge);

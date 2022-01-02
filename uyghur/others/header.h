@@ -61,12 +61,14 @@ struct Bridge
 {
     Uyghur *uyghur;
     Stack *stack;
+    Cursor *cursor;
     char *name;
     int type;
     char *last;
 };
 void Bridge_pushValue(Bridge *, Value *);
 Value *Bridge_popValue(Bridge *);
+Value *Bridge_nextValue(Bridge *);
 void Bridge_startArgument(Bridge *);
 void *Bridge_send(Bridge *);
 void *Bridge_return(Bridge *);

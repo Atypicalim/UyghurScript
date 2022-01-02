@@ -11,11 +11,11 @@ void oqush(Bridge *bridge)
 
 void yezish(Bridge *bridge)
 {
-    Value *v = Bridge_popValue(bridge);
+    Value *v = Bridge_nextValue(bridge);
     while (v->type != RTYPE_EMPTY)
     {
         system_write_terminal(Value_toString(v));
-        v = Bridge_popValue(bridge);
+        v = Bridge_nextValue(bridge);
     }
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -23,7 +23,7 @@ void yezish(Bridge *bridge)
 
 void ekirish(Bridge *bridge)
 {
-    char *path = Bridge_popString(bridge);
+    char *path = Bridge_nexString(bridge);
     Uyghur *uyghur = bridge->uyghur;
     Value *box = Container_get(uyghur->executer->globalContainer, path);
     if (box == NULL) box = Uyghur_execute(uyghur, path, false);
@@ -35,7 +35,7 @@ void ekirish(Bridge *bridge)
 
 void tazilash(Bridge *bridge)
 {
-    char *path = Bridge_popString(bridge);
+    char *path = Bridge_nexString(bridge);
     Container_del(bridge->uyghur->executer->globalContainer, path);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
