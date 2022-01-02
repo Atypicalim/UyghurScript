@@ -6,13 +6,18 @@
 
 ## 1. usage
 
-* jsut double cick the `./release/uyghur.exe` file to execute integrated script
+* jsut double cick `./release/uyghur.exe` to execute integrated script
 
 * run the command `./release/uyghur.exe ./examples/hello.ug` to execute hello world
+
+* double cick `./release/uyghur.exe` to run calculator program
+
+![example](./resources/calculator.png) 
 
 * run `./release/uyghur.exe ./examples/ressam.ug` to run the [raylib](https://github.com/raysan5/raylib) binding example
 
 ![example](./resources/example.png)
+
 
 ## 2. data types and variable declaration
 
