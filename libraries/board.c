@@ -22,28 +22,7 @@ void raylib_on_frame()
 {
     Bridge_startFunc(uyghurBridge, "doska_sizish_qayturmisi");
     Bridge_call(uyghurBridge);
-    //
-    // Vector2 center = (Vector2){250, 250};
-    // Color color = (Color){50, 100, 200, 255};
-    Rectangle rectangle = (Rectangle){250, 250, 200, 200};
-    Vector2 anchor = (Vector2){100, 100};
-    //
-    DrawFPS(400, 450);
-
-
-    // Image img = LoadImage("../resources/rose.png");             // Load image in CPU memory (RAM)
-    // Image img = raylib_load_image("../resources/rose.png");
-    // // // Image img = raylib_load_image("../resources/gift.png");
-    // img = ImageFromImage(img, (Rectangle){0, 0, 300, 300});
-    // int w = img.width;
-    // int h = img.height;
-
-
-    
-    // Texture texture = LoadTextureFromImage(img);
-    // DrawTextureEx(texture, (Vector2){100, 100}, 0, 1, WHITE);
-    // DrawTextureRec(texture, (Rectangle){0, 150, 300, 150}, (Vector2){0, 0}, WHITE);
-    // DrawRectangle(100, 100, 200, 200, GREEN); 
+    // DrawFPS(400, 450);
 }
 
 void raylib_on_focus()

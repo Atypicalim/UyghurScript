@@ -19,17 +19,17 @@ Color color_from_bridge(Bridge *bridge)
 
 Vector2 vector_from_bridge(Bridge *bridge)
 {
-    int x = Bridge_nexNumber(bridge);
-    int y = Bridge_nexNumber(bridge);
+    float x = Bridge_nexNumber(bridge);
+    float y = Bridge_nexNumber(bridge);
     return (Vector2){x, y};
 }
 
 Rectangle rectangle_from_bridge(Bridge *bridge)
 {
-    int x = Bridge_nexNumber(bridge);
-    int y = Bridge_nexNumber(bridge);
-    int w = Bridge_nexNumber(bridge);
-    int h = Bridge_nexNumber(bridge);
+    float x = Bridge_nexNumber(bridge);
+    float y = Bridge_nexNumber(bridge);
+    float w = Bridge_nexNumber(bridge);
+    float h = Bridge_nexNumber(bridge);
     return (Rectangle){x, y, w, h};
 }
 
@@ -285,7 +285,8 @@ void ug_baord_draw_rectangle_fill_transformed(Bridge *bridge)
     Vector2 anchor = vector_from_bridge(bridge);
     anchor.x = anchor.x * rectangle.width;
     anchor.y = anchor.y * rectangle.height;
-    DrawRectanglePro(rectangle, anchor, 0, color);
+    float rotation = Bridge_nexNumber(bridge);
+    DrawRectanglePro(rectangle, anchor, rotation, color);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
 }
@@ -531,8 +532,8 @@ void lib_raylib_painter_register(Bridge *bridge)
     Bridge_pushKey(bridge, "siziqSizishBirKontrolluq");
     Bridge_pushFunction(bridge, ug_baord_draw_line_one_controll);
     Bridge_pushKey(bridge, "siziqSizishIkkiKontirolluq");
-    // draw rectangle
     Bridge_pushFunction(bridge, ug_baord_draw_line_two_controll);
+    // draw rectangle
     Bridge_pushKey(bridge, "rayunToldurushAylandurulghan");
     Bridge_pushFunction(bridge, ug_baord_draw_rectangle_fill_transformed);
     Bridge_pushKey(bridge, "rayunToldurushRenggareng");

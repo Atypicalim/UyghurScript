@@ -6,7 +6,11 @@
 
 ## 1. usage
 
-* jsut run the command `./release/uyghur.exe ./examples/hello.ug` in root directory and you will see the result
+* jsut run the command `./release/uyghur.exe ./examples/hello.ug` in root directory to run hello world
+
+* run `./release/uyghur.exe ./examples/ressam.ug` to run the [raylib](https://github.com/raysan5/raylib) binding example
+
+![example](./resources/example.png)
 
 ## 2. data types and variable declaration
 
