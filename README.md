@@ -10,7 +10,7 @@
 
 * run the command `./release/uyghur.exe ./examples/hello.ug` to execute hello world
 
-* double cick `./release/uyghur.exe` to run calculator program
+* double cick `./release/calculator.exe` to run calculator program
 
 ![example](./resources/calculator.png) 
 
