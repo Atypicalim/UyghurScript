@@ -7,8 +7,9 @@ ENG_CHONG_HISABLIGHILI_BULDIGHAN_QIMMET qimmiti 999999 bolsun
 
 miqdar netijeQimmet tewellut bolsun
 miqdar hazirqiQimmet tewellut bolsun
-miqdar netijeXeti tewellut bolsun
-miqdar hazirqiXet tewellut bolsun
+miqdar aldinqiQimmet tewellut bolsun
+miqdar herketQimmet tewellut bolsun
+miqdar sinaqXet tewellut bolsun
 
 miqdar kunupkaSani tewellut bolsun
 miqdar kunupkaNumuri tewellut bolsun
@@ -21,16 +22,29 @@ miqdar kordinatY tewellut bolsun
 miqdar kunupkaXeti tewellut bolsun
 
 netijeQimmet qimmiti 0 bolsun
-hazirqiQimmet qimmiti 15 bolsun
-netijeXeti qimmiti [0] bolsun
-hazirqiXet qimmiti [] bolsun
+hazirqiQimmet qimmiti 0 bolsun
+aldinqiQimmet qimmiti 15 bolsun
 
 kunupkaSani qimmiti 16 bolsun
 tekshuruldighanQimmet qimmiti yalghan bolsun
 
+miqdar test1 tewellut bolsun
+miqdar test2 tewellut bolsun
+miqdar aldinqisiSanmu tewellut bolsun
+miqdar aldinqisiHerketmu tewellut bolsun
+miqdar aldinqisiTengmu tewellut bolsun
+miqdar buSanmu tewellut bolsun
+miqdar buHerketmu tewellut bolsun
+miqdar buTengmu tewellut bolsun
+
+miqdar sinaqQimmet tewellut bolsun
+
+# get sign
 fonkisiye belgilerniElish miqdar x mezmuni
     miqdar r tewellut bolsun
-    eger x qimmiti 1 bolsa
+    eger x qimmiti quruq bolsa
+        r qimmiti [] bolsun
+    egerde x qimmiti 1 bolsa
         r qimmiti [1] bolsun
     egerde x qimmiti 2 bolsa
         r qimmiti [2] bolsun
@@ -66,36 +80,42 @@ fonkisiye belgilerniElish miqdar x mezmuni
     netije r qayturulsun
 tamamlansun
 
+# reset button
 fonkisiye tazilashQayturmisi mezmuni
     ikrangha [tazilandi] yezilsun
     netijeQimmet qimmiti 0 bolsun
-    hazirqiQimmet qimmiti 15 bolsun
-    netijeXeti qimmiti [0] bolsun
-    hazirqiXet qimmiti [] bolsun
+    hazirqiQimmet qimmiti 0 bolsun
+    aldinqiQimmet qimmiti 15 bolsun
+    herketQimmet qimmiti quruq bolsun
 tamamlansun
 
-miqdar test1 tewellut bolsun
-miqdar test2 tewellut bolsun
-miqdar aldinqisiSanmu tewellut bolsun
-miqdar aldinqisiHerketmu tewellut bolsun
-miqdar aldinqisiTengmu tewellut bolsun
-miqdar buSanmu tewellut bolsun
-miqdar buHerketmu tewellut bolsun
-miqdar buTengmu tewellut bolsun
+# calculate result
+fonkisiye netijiniHisablash mezmuni
+    eger herketQimmet qimmiti quruq bolsa
+        netijeQimmet qimmiti hazirqiQimmet bolsun
+    egerde herketQimmet qimmiti 11 bolsa
+        netijeQimmet qimmiti netijeQimmet qushulghan hazirqiQimmet bolsun
+    egerde herketQimmet qimmiti 12 bolsa
+        netijeQimmet qimmiti netijeQimmet elinghan hazirqiQimmet bolsun
+    egerde herketQimmet qimmiti 13 bolsa
+        netijeQimmet qimmiti netijeQimmet kupeytilgen hazirqiQimmet bolsun
+    egerde herketQimmet qimmiti 14 bolsa
+        netijeQimmet qimmiti netijeQimmet bulungen hazirqiQimmet bolsun
+    tamamlansun
+    herketQimmet qimmiti quruq bolsun
+    hazirqiQimmet qimmiti 0 bolsun
+tamamlansun
 
-miqdar inawetsizmu tewellut bolsun
-
-
+# buttons callback
 fonkisiye kunupkaQauturmisi miqdar id mezmuni
-    ikrangha id yezilsun
     # check
-    test1 qimmiti hazirqiQimmet chong 0 bolsun
-    test2 qimmiti hazirqiQimmet kichik 11 bolsun
+    test1 qimmiti aldinqiQimmet chong 0 bolsun
+    test2 qimmiti aldinqiQimmet kichik 11 bolsun
     aldinqisiSanmu qimmiti test1 hemde test2 bolsun
-    test1 qimmiti hazirqiQimmet chong 10 bolsun
-    test2 qimmiti hazirqiQimmet kichik 15 bolsun
+    test1 qimmiti aldinqiQimmet chong 10 bolsun
+    test2 qimmiti aldinqiQimmet kichik 15 bolsun
     aldinqisiHerketmu qimmiti test1 hemde test2 bolsun
-    aldinqisiTengmu qimmiti hazirqiQimmet teng 15 bolsun
+    aldinqisiTengmu qimmiti aldinqiQimmet teng 15 bolsun
     # check
     test1 qimmiti id chong 0 bolsun
     test2 qimmiti id kichik 11 bolsun
@@ -105,39 +125,56 @@ fonkisiye kunupkaQauturmisi miqdar id mezmuni
     buHerketmu qimmiti test1 hemde test2 bolsun
     buTengmu qimmiti id teng 15 bolsun
     # invalid
-    inawetsizmu qimmiti buTengmu hemde aldinqisiTengmu bolsun
-    eger inawetsizmu qimmiti rast bolsa
+    sinaqQimmet qimmiti buTengmu hemde aldinqisiTengmu bolsun
+    eger sinaqQimmet qimmiti rast bolsa
         netije quruq qayturulsun
     tamamlansun
-    inawetsizmu qimmiti buTengmu hemde aldinqisiHerketmu bolsun
-    eger inawetsizmu qimmiti rast bolsa
+    sinaqQimmet qimmiti buTengmu hemde aldinqisiHerketmu bolsun
+    eger sinaqQimmet qimmiti rast bolsa
         netije quruq qayturulsun
     tamamlansun
-    inawetsizmu qimmiti buHerketmu hemde aldinqisiHerketmu bolsun
-    eger inawetsizmu qimmiti rast bolsa
+    sinaqQimmet qimmiti buHerketmu hemde aldinqisiHerketmu bolsun
+    eger sinaqQimmet qimmiti rast bolsa
         netije quruq qayturulsun
     tamamlansun
-    inawetsizmu qimmiti buHerketmu hemde aldinqisiTengmu bolsun
-    eger inawetsizmu qimmiti rast bolsa
+    sinaqQimmet qimmiti buHerketmu hemde aldinqisiTengmu bolsun
+    eger sinaqQimmet qimmiti rast bolsa
         netije quruq qayturulsun
     tamamlansun
-    inawetsizmu qimmiti hazirqiQimmet chong ENG_CHONG_KIRGUZGILI_BULDIGHAN_QIMMET bolsun
-    eger inawetsizmu qimmiti rast bolsa
+    sinaqQimmet qimmiti aldinqiQimmet chong ENG_CHONG_KIRGUZGILI_BULDIGHAN_QIMMET bolsun
+    eger sinaqQimmet qimmiti rast bolsa
         netije quruq qayturulsun
     tamamlansun
-    inawetsizmu qimmiti netijeQimmet chong ENG_CHONG_HISABLIGHILI_BULDIGHAN_QIMMET bolsun
-    eger inawetsizmu qimmiti rast bolsa
+    sinaqQimmet qimmiti netijeQimmet chong ENG_CHONG_HISABLIGHILI_BULDIGHAN_QIMMET bolsun
+    eger sinaqQimmet qimmiti rast bolsa
         netije quruq qayturulsun
     tamamlansun
-
-    # TODO need return and exit current code process when return a result
-    ikrangha [---] yezilsun
-    ikrangha hazirqiQimmet yezilsun
-    ikrangha [---] yezilsun
-    ikrangha id yezilsun
-    # 
-    hazirqiQimmet qimmiti id bolsun
-    fonkisiye belgilerniElish bilen id ishlitilsun we netije hazirqiXet bolsun
+    # record
+    aldinqiQimmet qimmiti id bolsun
+    # input number
+    eger buSanmu qimmiti rast bolsa
+        hazirqiQimmet qimmiti hazirqiQimmet kupeytilgen 10 bolsun
+        hazirqiQimmet qimmiti hazirqiQimmet qushulghan id bolsun
+        eger id qimmiti 10 bolsa
+            hazirqiQimmet qimmiti hazirqiQimmet elinghan 10 bolsun
+        tamamlansun
+        eger aldinqisiTengmu qimmiti rast bolsa
+            netijeQimmet qimmiti 0 bolsun
+        tamamlansun
+        netije quruq qayturulsun
+    tamamlansun
+    # input action
+    eger buHerketmu qimmiti rast bolsa
+        fonkisiye netijiniHisablash ishlitilsun
+        hazirqiQimmet qimmiti 0 bolsun
+        herketQimmet qimmiti id bolsun
+    tamamlansun
+    # equal button
+    eger buTengmu qimmiti rast bolsa
+        fonkisiye netijiniHisablash ishlitilsun
+        hazirqiQimmet qimmiti 0 bolsun
+        herketQimmet qimmiti quruq bolsun
+    tamamlansun
 tamamlansun
 
 # draw button
@@ -185,9 +222,14 @@ fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
         fonkisiye tazilashQayturmisi ishlitilsun
     tamamlansun
     # input
-    fonkisiye @ressam{[xetYezish]} bilen [] hazirqiXet 36 2 [111111] 377 21 ishlitilsun
+    fonkisiye belgilerniElish bilen herketQimmet ishlitilsun we netije sinaqXet bolsun
+    fonkisiye @ressam{[xetYezish]} bilen [] sinaqXet 36 2 [111111] 377 21 ishlitilsun
     # result
-    fonkisiye @ressam{[xetYezish]} bilen [] netijeXeti 36 2 [aaaaaa] 25 16 ishlitilsun
+    fonkisiye @xet{[formatlash]} bilen [%f] netijeQimmet ishlitilsun we netije sinaqXet bolsun
+    fonkisiye @ressam{[xetYezish]} bilen [] sinaqXet 24 2 [aaaaaa] 25 15 ishlitilsun
+    # # action
+    fonkisiye @xet{[formatlash]} bilen [%f] hazirqiQimmet ishlitilsun we netije sinaqXet bolsun
+    fonkisiye @ressam{[xetYezish]} bilen [] sinaqXet 16 2 [aaaaaa] 25 38 ishlitilsun
 tamamlansun
 
 fonkisiye @doska{[korsitish]} bilen 515 225 [Xisabliguch] 4096 ishlitilsun

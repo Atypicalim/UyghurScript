@@ -1,7 +1,6 @@
 
 # names
-BUILD_DIR = ./build/
-DST_DIR = ./release/
+DST_DIR = ./build/
 DST_NAME = uyghur.exe
 SRC = ./main.c
 DST = $(DST_DIR)$(DST_NAME)
@@ -28,9 +27,9 @@ CC = gcc
 
 # commands
 run: $(SRC)
-	@rm -rf $(BUILD_DIR)*
 	@rm -rf $(DST_DIR)*
-	@cp $(SCRIPT) $(BUILD_DIR)script.ug
-	@xxd -i $(BUILD_DIR)script.ug > ./build/script.h
+	@cp $(SCRIPT) $(DST_DIR)script.ug
+	@echo "# uyghur script!" >> $(DST_DIR)script.ug
+	@xxd -i $(DST_DIR)script.ug > ./build/script.h
 	@$(CC) $(SRC) $(LFLAGS) $(CFLAGS) -o $(DST)
 	@cd $(DST_DIR) && ./$(DST_NAME) ../$(SCRIPT)

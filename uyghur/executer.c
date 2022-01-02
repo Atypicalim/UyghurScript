@@ -11,6 +11,7 @@ struct Executer {
     Container *currentContainer;
     Container *rootContainer;
     Container *globalContainer;
+    bool isReturn;
 };
 
 void Executer_consumeLeaf(Executer *, Leaf *);
@@ -25,7 +26,8 @@ void Executer_reset(Executer *this)
     this->containerStack = Stack_new();
     this->currentContainer = NULL;
     this->rootContainer = NULL;
-    this->globalContainer = Container_newScope();;
+    this->globalContainer = Container_newScope();
+    this->isReturn = false;
 }
 
 void Executer_pushContainer(Executer *this, bool isBox)
@@ -652,6 +654,7 @@ Value *Executer_runFunc(Executer *this, Token *funcName)
     Executer_pushContainer(this, false);
     Executer_consumeLeaf(this, codeNode);
     Executer_popContainer(this, false);
+    this->isReturn = false;
     // return result
     Value *r = Stack_pop(this->callStack);
     if (r == NULL)
@@ -738,6 +741,7 @@ void Executer_consumeResult(Executer *this, Leaf *leaf)
     Value *value = Executer_getTRValue(this, result, true);
     Stack_clear(this->callStack);
     Stack_push(this->callStack, value);
+    this->isReturn = true;
 }
 
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
@@ -824,6 +828,7 @@ bool Executer_consumeTree(Executer *this, Leaf *tree)
     while (leaf != NULL)
     {
         Executer_consumeLeaf(this, leaf);
+        if (this->isReturn) break;
         leaf = Queue_next(tree->leafs, cursor);
     }
     Cursor_free(cursor);
