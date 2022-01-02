@@ -49,7 +49,7 @@ b qimmiti yalghan bolsun
 s qimmiti [hi! ] ulanghan [boy ...] bolsun
 
 # number expressions (teng, qushulghan, elinghan, kupeytilgen, bulungen)
-n qimmiti n kupeytilghen 10 bolsun
+n qimmiti n kupeytilgen 10 bolsun
 
 # logic expressions (teng, kichik, chong)
 b qimmiti a kichik 5 bolsun
