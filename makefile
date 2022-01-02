@@ -1,10 +1,11 @@
 
 # names
+BUILD_DIR = ./build/
 DST_DIR = ./release/
 DST_NAME = uyghur.exe
 SRC = ./main.c
 DST = $(DST_DIR)$(DST_NAME)
-SCRIPT = ../examples/test.ug
+SCRIPT = ./examples/test.ug
 
 # raylib
 FOLDER_RAYLIB = ./external/raylib-4.0.0_win64_mingw-w64
@@ -15,19 +16,21 @@ CFLAGS_RAYLIB = -lraylib -lopengl32 -lgdi32 -lwinmm
 FLAGS_RAYGUI = -I ./external/raygui-master
 
 # console
-LFLAGS_EXTRA = # -O2 -mwindows
-CFLAGS_EXTRA = # -O2 -mwindows
+LFLAGS_EXTRA = $(FLAGS_RAYGUI)
+CFLAGS_CONSOLE = # -O2 -mwindows
 
 # flags
 LFLAGS = $(LFLAGS_RAYLIB) $(LFLAGS_EXTRA)
 CFLAGS = $(CFLAGS_RAYLIB) $(CFLAGS_CONSOLE)
-OFLAGS = $(FLAGS_RAYGUI)
 
 # compiler
 CC = gcc
 
 # commands
 run: $(SRC)
+	@rm -rf $(BUILD_DIR)*
 	@rm -rf $(DST_DIR)*
-	@$(CC) $(SRC) $(LFLAGS) $(CFLAGS) $(OFLAGS) -o $(DST)
-	@cd $(DST_DIR) && ./$(DST_NAME) $(SCRIPT)
+	@cp $(SCRIPT) $(BUILD_DIR)script.ug
+	@xxd -i $(BUILD_DIR)script.ug > ./build/script.h
+	@$(CC) $(SRC) $(LFLAGS) $(CFLAGS) -o $(DST)
+	@cd $(DST_DIR) && ./$(DST_NAME) ../$(SCRIPT)

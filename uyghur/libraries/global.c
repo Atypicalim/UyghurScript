@@ -26,7 +26,7 @@ void ekirish(Bridge *bridge)
     char *path = Bridge_nextString(bridge);
     Uyghur *uyghur = bridge->uyghur;
     Value *box = Container_get(uyghur->executer->globalContainer, path);
-    if (box == NULL) box = Uyghur_execute(uyghur, path, false);
+    if (box == NULL) box = Uyghur_execute(uyghur, path);
     if (box == NULL) box = Value_newEmpty(NULL);
     Bridge_startResult(bridge);
     Bridge_pushValue(bridge, box);

@@ -50,7 +50,7 @@ typedef struct Uyghur {
     Bridge *bridge;
 } Uyghur;
 
-Value *Uyghur_execute(Uyghur *, char *, bool);
+Value *Uyghur_execute(Uyghur *, char *);
 
 #define BRIDGE_STACK_TP_BOX 1
 #define BRIDGE_STACK_TP_FUN 2

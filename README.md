@@ -6,7 +6,9 @@
 
 ## 1. usage
 
-* jsut run the command `./release/uyghur.exe ./examples/hello.ug` in root directory to run hello world
+* jsut double cick the `./release/uyghur.exe` file to execute integrated script
+
+* run the command `./release/uyghur.exe ./examples/hello.ug` to execute hello world
 
 * run `./release/uyghur.exe ./examples/ressam.ug` to run the [raylib](https://github.com/raysan5/raylib) binding example
 
