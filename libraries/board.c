@@ -2,7 +2,8 @@
 
 #include "raylib.h"
 #define RAYGUI_IMPLEMENTATION
-#include "raygui.h"  
+#include "src/raygui.h"  
+#include "styles/ashes/ashes.h"  
 #include "../uyghur/uyghur.c"
 
 // data
@@ -62,6 +63,7 @@ void raylib_run_program(int width, int height, char *title, int mode)
     SetConfigFlags(mode);
     InitWindow(width, height, title);
     InitAudioDevice();
+    GuiLoadStyleAshes();
     defaultFont = GetFontDefault();
     defaultImage = GenImageGradientRadial(300, 300, 0, (Color){255, 255, 255, 50}, (Color){0, 0, 0, 50});
     defaultTexture = LoadTextureFromImage(defaultImage);

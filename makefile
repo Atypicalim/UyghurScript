@@ -12,7 +12,7 @@ LFLAGS_RAYLIB = -I $(FOLDER_RAYLIB)/include -L $(FOLDER_RAYLIB)/lib
 CFLAGS_RAYLIB = -lraylib -lopengl32 -lgdi32 -lwinmm
 
 # raygui
-FLAGS_RAYGUI = -I ./external/raygui-3.0/src
+FLAGS_RAYGUI = -I ./external/raygui-master
 
 # console
 LFLAGS_EXTRA = # -O2 -mwindows
