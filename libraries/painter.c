@@ -480,10 +480,10 @@ void ug_baord_create_texture_from_text(Bridge *bridge)
     TxtInfo info = (TxtInfo) {font, text, size, spacing};
     char *tag = get_texture_tag_for_text(info);
     Texture texture = raylib_create_texture_from_text(info, tag);
-    // free(tag);
     Bridge_startResult(bridge);
     Bridge_pushString(bridge, tag);
     Bridge_return(bridge);
+    free(tag);
 }
 
 // texture

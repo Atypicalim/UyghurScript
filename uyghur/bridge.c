@@ -9,17 +9,19 @@
 #define BRIDGE_ITEM_TP_KEY "BRIDGE_ITEM_TP_KEY"
 #define BRIDGE_ITEM_TP_VAL "BRIDGE_ITEM_TP_VAL"
 
+void _bridge_release_stack(Bridge* this)
+{
+    Value *value = Stack_pop(this->stack);
+    while(value != NULL)
+    {
+        Value_free(value);
+        value = Stack_pop(this->stack);
+    }
+}
+
 void Bridge_reset(Bridge *this)
 {
     // TODO: ug free unused poiters
-    // Cursor *cursor = Stack_reset(this->stack);
-    // Value *value = Stack_next(this->stack, cursor);
-    // while(value != NULL)
-    // {
-    //     Value_free(value);
-    //     value = Stack_next(this->stack, cursor);
-    // }
-    // Cursor_free(cursor);
     Stack_free(this->stack);
     this->stack = Stack_new(); // make a call stack containing stack: call cFunc in ugCallback
     if (this->name != NULL)
@@ -44,6 +46,7 @@ Bridge *Bridge_new(Uyghur *uyghur)
 
 void Bridge_startBox(Bridge *this, char *name)
 {
+    _bridge_release_stack(this);
     Bridge_reset(this);
     this->name = name == NULL ? NULL : str_new(name);
     this->type = BRIDGE_STACK_TP_BOX;
@@ -51,6 +54,7 @@ void Bridge_startBox(Bridge *this, char *name)
 
 void Bridge_startFunc(Bridge *this, char *name)
 {
+    _bridge_release_stack(this);
     Bridge_reset(this);
     this->name = name == NULL ? NULL : str_new(name);
     this->type = BRIDGE_STACK_TP_FUN;
@@ -58,12 +62,14 @@ void Bridge_startFunc(Bridge *this, char *name)
 
 void Bridge_startArgument(Bridge *this)
 {
+    _bridge_release_stack(this);
     Bridge_reset(this);
     this->type = BRIDGE_STACK_TP_ARG;
 }
 
 void Bridge_startResult(Bridge *this)
 {
+    _bridge_release_stack(this);
     Bridge_reset(this);
     this->type = BRIDGE_STACK_TP_RES;
 }
