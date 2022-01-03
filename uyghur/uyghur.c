@@ -32,9 +32,11 @@ Uyghur *Uyghur_new()
 Value *Uyghur_run(Uyghur *this, char *path, char *content)
 {
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, content);
-    Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
-    Value *moduleBox = Executer_executeTree(this->executer, path, headLeaf);
-    return moduleBox;
+    helper_print_tokens(headToken);
+    // Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
+    // Value *moduleBox = Executer_executeTree(this->executer, path, headLeaf);
+    // return moduleBox;
+    return NULL;
 }
 
 Value *Uyghur_execute(Uyghur *this, char *path)

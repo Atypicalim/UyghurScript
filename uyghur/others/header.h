@@ -24,6 +24,7 @@
 
 #include "../tools/cursor.h"
 #include "../tools/hashmap.h"
+#include "../tools/foliage.h"
 #include "../tools/block.h"
 #include "../tools/queue.h"
 #include "../tools/stack.h"

@@ -1,140 +1,6 @@
 # example
 
-################################
-
-# ikrangha [salam uyghur script!] yezilsun
-
-# miqdar dunyaghaSalam tewellut bolsun
-# dunyaghaSalam qimmiti [SalamDunya!] bolsun
-# ikrandin dunyaghaSalam oqulsun
-# ikrangha dunyaghaSalam yezilsun
-
-# box init
-# miqdar xxx tewellut bolsun
-# miqdar yyy tewellut bolsun
-# miqdar zzz tewellut bolsun
-# xxx qimmiti sanduq bolsun
-# yyy qimmiti sanduq bolsun
-# zzz qimmiti quruq bolsun
-# zzz qimmiti xxx teng yyy bolsun
-# ikrangha xxx yezilsun
-# ikrangha yyy yezilsun
-# ikrangha zzz yezilsun
-
-# box and variable
-# miqdar keyVariable tewellut bolsun
-# keyVariable qimmiti [key5] bolsun
-# @xxx{[key1]} qimmiti 11 bolsun
-# @xxx{[key2]} qimmiti 22 bolsun
-# @xxx{[key3]} qimmiti [xyz] bolsun
-# @xxx{[key3]} qimmiti 1 qushulghan 2 bolsun
-
-# box and function
-# fonkisiye @xxx{[key4]} miqdar x y mezmuni
-#     @{[key3]} qimmiti x qushulghan y bolsun
-#     ikrangha @{[key3]} yezilsun
-#     netije @{[key3]} qayturulsun
-# tamamlansun
-# fonkisiye @xxx{[key4]} bilen @xxx{[key1]} @xxx{[key2]} ishlitilsun we netije @xxx{[key5]} bolsun
-
-# box and variable
-# ikrangha @xxx{[key1]} yezilsun
-# ikrangha @xxx{[key2]} yezilsun
-# ikrangha @xxx{[key3]} yezilsun
-# ikrangha @xxx{[key4]} yezilsun
-# ikrangha @xxx{keyVariable} yezilsun
-
-# box alias
-# ikrangha _ yezilsun # global
-# ikrangha $ yezilsun # closest
-
-# box as variable
-# @_{[key1]} qimmiti 11 bolsun
-# @${[key2]} qimmiti 22 bolsun
-# fonkisiye boxTest miqdar boxValue1 boxValue2 mezmuni
-#     ikrangha @boxValue1{[key1]} yezilsun
-#     ikrangha @boxValue2{[key2]} yezilsun
-# tamamlansun
-# fonkisiye boxTest bilen _ $ ishlitilsun
-
-# 
-# ikrangha @cBox{[cString]} yezilsun
-
-# TOOD ################################################################################
-
-# fonkisiye @box{[sinaq]} bilen 0 ishlitilsun we netije r bolsun
-# ikrangha r yezilsun
-
-miqdar x tewellut bolsun
-miqdar y tewellut bolsun
-miqdar t1 tewellut bolsun
-miqdar t2 tewellut bolsun
-miqdar d tewellut bolsun
-miqdar rotation tewellut bolsun
-
-x qimmiti 0 bolsun
-y qimmiti 0 bolsun
-t1 qimmiti quruq bolsun
-t2 qimmiti quruq bolsun
-d qimmiti 0.1 bolsun
-rotation qimmiti 0 bolsun
-
-miqdar color tewellut bolsun
-color qimmiti [aaffffff] bolsun
-
-fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
-
-    #
-    # t1 qimmiti x chong 400 bolsun
-    # t2 qimmiti x kichik 100 bolsun
-    # eger t1 qimmiti rast bolsa
-    #     d qimmiti -0.1 bolsun
-    # egerde t2 qimmiti rast bolsa
-    #     d qimmiti 0.1 bolsun
-    # tamamlansun
-    # x qimmiti x qushulghan d bolsun
-    # y qimmiti y qushulghan d bolsun
-    # fonkisiye @ressam{[chemberSizish]} bilen x y 100 100 [55aaff] ishlitilsun
-
-    # # 
-    # rotation qimmiti rotation qushulghan 0.05 bolsun
-
-    # 
-    fonkisiye @ressam{[resimEkirish]} bilen [../resources/rose.png] 100 0 200 200 yalghan yalghan ishlitilsun we netije r bolsun
-    fonkisiye @ressam{[tamghaBesish]} bilen r 250 250 0.5 0.5 color 0 0 -1 -1 rotation 0.5 ishlitilsun
-    # fonkisiye @doska{[fpsElish]} bilen 0.5 0.5 ishlitilsun
-    # fonkisiye @doska{[fpsElish]} bilen 0.5 0.5 ishlitilsun
-    # fonkisiye @doska{[fpsElish]} bilen 0.5 0.5 ishlitilsun
-    # fonkisiye @doska{[fpsElish]} bilen 0.5 0.5 ishlitilsun
-    # fonkisiye @doska{[fpsElish]} bilen 0.5 0.5 ishlitilsun
-    # miqdar r azad bolsun
-
-    # # 
-    # fonkisiye @ressam{[xetEkirish]} bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we netije r bolsun
-    # fonkisiye @ressam{[tamghaBesish]} bilen r 250 250 0.5 0.5 [ffaaaaff] 0 0 -1 -1 0 1 ishlitilsun
-    # miqdar r azad bolsun
-    
-    fonkisiye @zapchas{[kunupkaKorsitish]} bilen 100 100 100 50 [SINAQ] ishlitilsun we netije rr bolsun
-    eger rr qimmiti rast bolsa
-        ikrangha [chikildi--] yezilsun
-    tamamlansun
- 
-tamamlansun
-
-
-# fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
-# tamamlansun
-
-fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
-
-# miqdar a tewellut bolsun
-# a qimmiti 1 qushulghan 2 bolsun
-# ikrangha a yezilsun
-# miqdar a azad bolsun
-# miqdar a wapat bolsun
-
-
-# TOOD ################################################################################
+# ################################################################################
 
 # box variable type
 # s qimmiti sanduq bolsun
@@ -148,41 +14,13 @@ fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
 # @{key} declare in current, search in current
 # @scope{key} declare in target, serarch in target
 
-
-# import a file to execute and return root scope as a box
-# fonkisiye @ug{ekirish} bilen test.ug ishlitilsun we netije testBox bolsun
-# fonkisiye @testBox{testFunc} bilen testVariable ishlitilsun we netije testResult bolsun
-
-# locate a variable to current scope
-# r orni yerlik bolsun
-# r orni erkin bolsun
-
-# declare a dynamic type and give any value for the first time
-# r qimmiti quruq bolsun
-
-# declate a static type and convert to another type when necessary
-# s qimmiti sanduq bolsun
-# miqdar s tipi quruq bolsun
-# s qimmiti [text] bolsun
-
-# should i change the Value object or create a new one
-# a qimmiti quruq bolsun
-# a qimmiti 1 bolsun
-# a qimmiti 2 bolsun
-
 # operations
 # orders: ( )
 # numbers: + - * / ^ %
 # strings: ~
 # logics: ! & |
 
-# scope
-# scope in interpreter equals to box, and box variable is a pointer of socpe hashmap.
-
-# import
-# importing a script file will execute the file in root scope and return the the root scope of new script file as a new box.
-
-#change
+# change
 # variable value function made => @{variable} == get a key from root scope
 
 # variable
@@ -192,3 +30,17 @@ fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
 # _ global
 # $ this
 
+# ################################################################################
+
+# fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+# tamamlansun
+
+# fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
+
+# ################################################################################
+
+# miqdar x tewellut bolsun
+x qimmiti 1 bolsun
+
+x =2 * 345 - 4
+# x = 2 + 3 - 4 * 5 ^ 4 % 4 / 4 + 1

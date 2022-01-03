@@ -78,6 +78,15 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     Hashmap_set(map, TVALUE_FALSE, TTYPE_BOOL);
     Hashmap_set(map, TVALUE_EMPTY, TTYPE_EMPTY);
     Hashmap_set(map, TVALUE_BOX, TTYPE_BOX);
+    Hashmap_fill(map, TVALUE_CALCULATOR);
+    Hashmap_set(map, TVALUE_SIGN_ADD, TTYPE_CALCULATION);
+    Hashmap_set(map, TVALUE_SIGN_SUB, TTYPE_CALCULATION);
+    Hashmap_set(map, TVALUE_SIGN_MUL, TTYPE_CALCULATION);
+    Hashmap_set(map, TVALUE_SIGN_DIV, TTYPE_CALCULATION);
+    Hashmap_set(map, TVALUE_SIGN_POW, TTYPE_CALCULATION);
+    Hashmap_set(map, TVALUE_SIGN_PER, TTYPE_CALCULATION);
+    Hashmap_fill(map, TVALUE_OPEN);
+    Hashmap_fill(map, TVALUE_CLOSE);
     tokenizer->keywordsMap = map;
     return tokenizer;
 }
@@ -138,6 +147,64 @@ void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
     }
 }
 
+void Tokenizer_addNumber(Tokenizer *this, char currentChar)
+{
+    char* str = tools_str_apent(tools_str_new("", 0), currentChar, false);
+    int i = 1;
+    char c;
+    bool b = false;
+    while (true)
+    {
+        c = Tokenizer_getchar(this, i);
+        if (!isdigit(c) && !(c == '.' && !b)) break;
+        if (c == '.') b = true;
+        str = tools_str_apent(str, c, false);
+        i++;
+    }
+    Tokenizer_addToken(this, TTYPE_NUMBER, str); // strtod(str, NULL)
+    Tokenizer_skipN(this, i);
+}
+
+// TODO: calculator
+void Tokenizer_addCalculator(Tokenizer *this, char currentChar)
+{
+    char c;
+    bool isFirst = true;
+    while (true)
+    {
+        c = Tokenizer_getchar(this, 0);
+        if (isspace(c))
+        {
+            Tokenizer_skipN(this, 1);
+            continue;
+        } 
+        if (c == '(')
+        {
+            Tokenizer_addToken(this, TTYPE_NAME, TVALUE_OPEN);
+            isFirst = true;
+        }
+        else if (c == ')')
+        {
+            Tokenizer_addToken(this, TTYPE_NAME, TVALUE_CLOSE);
+            isFirst = false;
+        }
+        else if (isdigit(c) || (c == '-' && isFirst) || (c == '+' && isFirst))
+        {
+            Tokenizer_addNumber(this, c);
+            isFirst = false;
+        }
+        else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%')
+        {
+            char *str = tools_str_apent(str_new(""), c, false);
+            Tokenizer_addToken(this, TTYPE_NAME, str);
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+
 Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
 {
     Tokenizer_reset(this);
@@ -195,23 +262,18 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             Tokenizer_skipN(this, i + 1);
             continue;
         }
+        // calculate
+        if (currentChar == '=')
+        {
+            Tokenizer_addToken(this, TTYPE_NAME, TVALUE_CALCULATOR);
+            Tokenizer_skipN(this, 1);
+            Tokenizer_addCalculator(this, currentChar);
+            continue;
+        }
         // number
         if (isdigit(currentChar) || currentChar == '-' || currentChar == '+')
         {
-            char* str = tools_str_apent(tools_str_new("", 0), currentChar, false);
-            int i = 1;
-            char c;
-            bool b = false;
-            while (true)
-            {
-                c = Tokenizer_getchar(this, i);
-                if (!isdigit(c) && !(c == '.' && !b)) break;
-                if (c == '.') b = true;
-                str = tools_str_apent(str, c, false);
-                i++;
-            }
-            Tokenizer_addToken(this, TTYPE_NUMBER, str); // strtod(str, NULL)
-            Tokenizer_skipN(this, i);
+            Tokenizer_addNumber(this, currentChar);
             continue; 
         }
         // letter

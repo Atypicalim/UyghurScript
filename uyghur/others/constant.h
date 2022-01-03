@@ -13,6 +13,7 @@
 #define TTYPE_EMPTY "TTYPE_EMPTY"
 #define TTYPE_BOX "TTYPE_BOX"
 #define TTYPE_SCOPE "TTYPE_SCOPE"
+#define TTYPE_CALCULATION "TTYPE_CALCULATION"
 
 // token value of keywords
 //
@@ -41,6 +42,16 @@
 #define TVALUE_AND "hemde"
 #define TVALUE_OR "yaki"
 #define TVALUE_NOT "ekische"
+//
+#define TVALUE_CALCULATOR "="
+#define TVALUE_SIGN_ADD "+"
+#define TVALUE_SIGN_SUB "-"
+#define TVALUE_SIGN_MUL "*"
+#define TVALUE_SIGN_DIV "/"
+#define TVALUE_SIGN_POW "^"
+#define TVALUE_SIGN_PER "%"
+#define TVALUE_OPEN "("
+#define TVALUE_CLOSE ")"
 //
 #define TVALUE_ADD "qushulghan"
 #define TVALUE_SUB "elinghan"
