@@ -141,7 +141,7 @@ bool Parser_isType(Parser *this, int indent, char *tp)
     {
         token = indent > 0 ? token->next : token->last;
     }
-    return is_equal(token->type, tp);
+    return token != NULL && is_equal(token->type, tp);
 }
 
 bool Parser_isValue(Parser *this, int indent, char *value)
@@ -163,7 +163,7 @@ bool Parser_isWord(Parser *this, int indent, char *value)
     {
         token = indent > 0 ? token->next : token->last;
     }
-    return is_equal(token->type, TTYPE_WORD) && is_equal(token->value, value);
+    return token != NULL && is_equal(token->type, TTYPE_WORD) && is_equal(token->value, value);
 }
 
 Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
@@ -459,6 +459,56 @@ void Parser_consumeAstCall(Parser *this)
     Leaf_pushLeaf(this->leaf, leaf);
 }
 
+void Parser_consumeAstCalculator(Parser *this)
+{
+    Token *target = Parser_checkType(this, 0, 2, TTYPE_NAME, TTYPE_KEY);
+    Parser_checkWord(this, 1, 1, TVALUE_CALCULATOR);
+    Token *tempT = NULL;
+    Foliage *tempF = NULL;
+    Foliage *root = Foliage_new(NULL);
+    Stack *currents = Stack_new();
+    Foliage *current = root;
+    while (true)
+    {
+        if (Parser_isType(this, 1, TTYPE_NUMBER))
+        {
+            tempT = Parser_checkType(this, 1, 1, TTYPE_NUMBER);
+            tempF = Foliage_new(tempT);
+            current->left = tempF;
+            current = tempF;
+            continue;
+        }
+        if (Parser_isType(this, 1, TTYPE_CALCULATION))
+        {
+            tempT = Parser_checkType(this, 1, 1, TTYPE_CALCULATION);
+            tempF = Foliage_new(tempT);
+            current->left = tempF;
+            current = tempF;
+            continue;
+        }
+        if (Parser_isWord(this, 1, TVALUE_OPEN))
+        {
+            Parser_checkWord(this, 1, 1, TVALUE_OPEN);
+            Stack_push(currents, current);
+            tempF = Foliage_new(NULL);
+            current->right = tempF;
+            current = tempF;
+            continue;
+        }
+        if (Parser_isWord(this, 1, TVALUE_CLOSE))
+        {
+            Parser_checkWord(this, 1, 1, TVALUE_CLOSE);
+            current = Stack_pop(currents);
+            continue;
+        }
+        break;
+    }
+    // helper_print_btree(root, " ");
+    Parser_assert(this, root != current, "invalid calculator");
+    Token *body = Token_new(TTYPE_CALCULATION, root);
+    Parser_pushLeaf(this, ASTTYPE_CALCULATOR, 2, target, body);
+}
+
 void Parser_consumeToken(Parser *this, Token *token)
 {
     //
@@ -522,6 +572,12 @@ void Parser_consumeToken(Parser *this, Token *token)
     if ((is_equal(t, TTYPE_NAME) || is_equal(t, TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_VALUE))
     {
         Parser_consumeAstExpression(this);
+        return;
+    }
+    // calculate
+    if ((is_equal(t, TTYPE_NAME) || is_equal(t, TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_CALCULATOR))
+    {
+        Parser_consumeAstCalculator(this);
         return;
     }
     // OPERATE

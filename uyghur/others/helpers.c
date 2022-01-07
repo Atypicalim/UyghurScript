@@ -81,6 +81,34 @@ void helper_print_tokens(Token *head)
     printf("[TOKENS]\n", head);
 }
 
+void helper_print_btree(Foliage *, char *);
+void helper_print_btree(Foliage *root, char *_space)
+{
+    char *space = str_concat(_space, " | ");
+    printf("%s[BTREE => addr:%d]\n", space, root);
+    Foliage *foliage = root;
+    Token *token = NULL;
+    while(foliage != NULL)
+    {
+        printf("%s", space);
+        token = foliage->data;
+        if (token != NULL)
+        {
+            Token_print(token);
+        }
+        else
+        {
+            printf("[BLANK]\n");
+        }
+        if (foliage->right != NULL)
+        { 
+            helper_print_btree(foliage->right, space);
+        }
+        foliage = foliage->left;
+    }
+    printf("%s[BTREE]\n", space);
+}
+
 bool is_values(char *target, int num, char *s, ...)
 {
     va_list valist;

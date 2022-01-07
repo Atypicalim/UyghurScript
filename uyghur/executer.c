@@ -744,6 +744,21 @@ void Executer_consumeResult(Executer *this, Leaf *leaf)
     this->isReturn = true;
 }
 
+void Executer_consumeCalculator(Executer *this, Leaf *leaf)
+{
+    Cursor *cursor = Stack_reset(leaf->tokens);
+    Token *body = Stack_next(leaf->tokens, cursor);
+    Token *target = Stack_next(leaf->tokens, cursor);
+    Cursor_free(cursor);
+    Foliage *root = (Foliage *)body->value;
+    Value *r = NULL;
+    // TODO
+    //
+    // if (Token_isStatic(token)) Value_free(value);
+    // tools_assert(r != NULL, "not supported action for expression:%s", act);
+    // Executer_setTRValue(this, target, r, false);
+}
+
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
     char *tp = leaf->type;
@@ -805,6 +820,12 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     if(is_equal(tp, ASTTYPE_RESULT))
     {
         Executer_consumeResult(this, leaf);
+        return;
+    }
+    // calculator
+    if (is_equal(tp, ASTTYPE_CALCULATOR))
+    {
+        Executer_consumeCalculator(this, leaf);
         return;
     }
     // end
