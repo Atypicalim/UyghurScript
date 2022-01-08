@@ -61,6 +61,21 @@ b qimmiti a kichik 5 bolsun
 
 # logic expressions (teng, hemde, yaki)
 b qimmiti b hemde yalghan bolsun
+
+# calculator (no operator precedence)
+
+x = 1 + 2
+# 3
+
+x = 1 + 2 * 3
+# 9
+
+x = 1 + (2 * 3)
+# 7
+
+x = 64 ^ (1 / 3)
+# 4
+
 ```
 
 ## 4. operations

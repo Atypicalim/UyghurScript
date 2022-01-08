@@ -4,7 +4,7 @@ DST_DIR = ./build/
 DST_NAME = uyghur.exe
 SRC = ./main.c
 DST = $(DST_DIR)$(DST_NAME)
-SCRIPT = ./examples/test.ug
+SCRIPT = ./examples/hisabliguch.ug
 
 # raylib
 FOLDER_RAYLIB = ./external/raylib-4.0.0_win64_mingw-w64

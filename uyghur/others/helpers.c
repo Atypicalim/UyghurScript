@@ -131,4 +131,9 @@ bool is_values(char *target, int num, char *s, ...)
     return false;
 }
 
+bool is_calculation(char c)
+{
+    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%';
+}
+
 #endif

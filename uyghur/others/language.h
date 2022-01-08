@@ -21,3 +21,4 @@
 
 #define LANG_ERR_EXECUTER_EXCEPTION "ijra xataliqi kuruldi: "
 #define LANG_ERR_EXECUTER_EXP_INVALID_TYPE "oxshashmighan miqdar tipi arisida xisablash elip barghili bolmaydu: "
+#define LANG_ERR_EXECUTER_INVALID_DEVICE "bolguchi san qimmiti nol bolsa bolmaydu: "

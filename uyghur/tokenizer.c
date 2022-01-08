@@ -164,56 +164,6 @@ void Tokenizer_addNumber(Tokenizer *this, char currentChar)
     Tokenizer_skipN(this, i);
 }
 
-// TODO: calculator
-void Tokenizer_addCalculator(Tokenizer *this)
-{
-    char c;
-    bool isFirst = true;
-    while (true)
-    {
-        c = Tokenizer_getchar(this, 0);
-        if (isspace(c))
-        {
-            Tokenizer_skipN(this, 1);
-            continue;
-        } 
-        if (c == '(')
-        {
-            Tokenizer_addToken(this, TTYPE_NAME, TVALUE_OPEN);
-            Tokenizer_skipN(this, 1);
-            isFirst = true;
-        }
-        else if (c == ')')
-        {
-            Tokenizer_addToken(this, TTYPE_NAME, TVALUE_CLOSE);
-            Tokenizer_skipN(this, 1);
-            isFirst = false;
-        }
-        else if ((c == '-' && isFirst) || (c == '+' && isFirst))
-        {
-            Tokenizer_skipN(this, 1);
-            Tokenizer_addNumber(this, c);
-            isFirst = false;
-
-        }
-        else if (isdigit(c))
-        {
-            Tokenizer_addNumber(this, '+');
-            isFirst = false;
-        }
-        else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%')
-        {
-            char *str = tools_str_apent(str_new(""), c, false);
-            Tokenizer_addToken(this, TTYPE_NAME, str);
-            Tokenizer_skipN(this, 1);
-        }
-        else
-        {
-            break;
-        }
-    }
-}
-
 Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
 {
     Tokenizer_reset(this);
@@ -276,11 +226,34 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         {
             Tokenizer_addToken(this, TTYPE_NAME, TVALUE_CALCULATOR);
             Tokenizer_skipN(this, 1);
-            Tokenizer_addCalculator(this);
+            continue;
+        }
+        if (is_calculation(currentChar))
+        {
+            if (!is_calculation(Tokenizer_getchar(this, 1)))
+            {
+                char *str = tools_str_apent(str_new(""), currentChar, false);
+                Tokenizer_addToken(this, TTYPE_NAME, str);
+                Tokenizer_skipN(this, 1);
+                continue;
+            }
+        }
+        // open
+        if (currentChar == '(')
+        {
+            Tokenizer_addToken(this, TTYPE_NAME, TVALUE_OPEN);
+            Tokenizer_skipN(this, 1);
+            continue;
+        }
+        // close
+        if (currentChar == ')')
+        {
+            Tokenizer_addToken(this, TTYPE_NAME, TVALUE_CLOSE);
+            Tokenizer_skipN(this, 1);
             continue;
         }
         // number
-        if (currentChar == '-' || currentChar == '+')
+        if ((currentChar == '-' || currentChar == '+') && isdigit(Tokenizer_getchar(this, 1)))
         {
             Tokenizer_skipN(this, 1);
             Tokenizer_addNumber(this, currentChar);

@@ -469,22 +469,29 @@ void Parser_consumeAstCalculator(Parser *this)
     Foliage *root = Foliage_new(NULL);
     Stack *currents = Stack_new();
     Foliage *current = root;
+    char *lastType = NULL;
     while (true)
     {
-        if (Parser_isType(this, 1, TTYPE_NUMBER))
+        if (Parser_isType(this, 1, TTYPE_NAME) || Parser_isType(this, 1, TTYPE_KEY) || Parser_isType(this, 1, TTYPE_NUMBER))
         {
-            tempT = Parser_checkType(this, 1, 1, TTYPE_NUMBER);
-            tempF = Foliage_new(tempT);
-            current->left = tempF;
-            current = tempF;
-            continue;
+            if (lastType == NULL || !is_values(lastType, TTYPES_GROUP_NUMBER))
+            {
+                tempT = Parser_checkType(this, 1, TTYPES_GROUP_NUMBER);
+                tempF = Foliage_new(tempT);
+                current->left = tempF;
+                current = tempF;
+                lastType = tempT->type;
+                continue;
+            }
         }
         if (Parser_isType(this, 1, TTYPE_CALCULATION))
         {
+            Parser_assert(this, lastType == NULL || is_values(lastType, TTYPES_GROUP_NUMBER), "invalid calculator order in parser: ");
             tempT = Parser_checkType(this, 1, 1, TTYPE_CALCULATION);
             tempF = Foliage_new(tempT);
             current->left = tempF;
             current = tempF;
+            lastType = tempT->type;
             continue;
         }
         if (Parser_isWord(this, 1, TVALUE_OPEN))
@@ -497,18 +504,20 @@ void Parser_consumeAstCalculator(Parser *this)
             tempF = Foliage_new(NULL);
             current->right = tempF;
             current = tempF;
+            lastType = NULL;
             continue;
         }
         if (Parser_isWord(this, 1, TVALUE_CLOSE))
         {
             Parser_checkWord(this, 1, 1, TVALUE_CLOSE);
             current = Stack_pop(currents);
+            lastType = NULL;
             continue;
         }
         break;
     }
     // helper_print_btree(root, " ");
-    Parser_assert(this, root != current, "invalid calculator");
+    Parser_assert(this, root != current, NULL);
     Token *body = Token_new(TTYPE_CALCULATION, root);
     Parser_pushLeaf(this, ASTTYPE_CALCULATOR, 2, target, body);
 }
