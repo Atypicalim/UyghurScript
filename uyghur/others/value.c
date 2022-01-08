@@ -32,8 +32,6 @@ char *_get_cache_tag(char *type, bool boolean, double number, char *string)
     return NULL;
 }
 
-int objN = 0;
-
  Value *Value_new(char *type, bool boolean, double number, char *string, void *object, void *extra)
 {
     // cache
@@ -57,8 +55,6 @@ int objN = 0;
         }
     }
     // create
-    objN++;
-    // printf("\n+++>%d\n", objN);
     Value *value = malloc(sizeof(Value));
     value->type = type;
     value->boolean = boolean;
@@ -252,9 +248,6 @@ void Value_free(Value *this)
         {
             Container_free(this->object);
         }
-        objN--;
-        // printf("\n--->%d\n", objN);
-        // time_sleep_seconds(1);
         free(this);
     }
     // TODO: ug free pointers

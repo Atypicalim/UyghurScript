@@ -38,11 +38,3 @@
 # fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
 
 # ################################################################################
-
-miqdar x tewellut bolsun
-x qimmiti 1 qushulghan 2 bolsun
-
-x = x * 3
-x = x ^ (1 / 2)
-
-ikrangha x yezilsun

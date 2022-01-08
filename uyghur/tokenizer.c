@@ -101,6 +101,17 @@ char Tokenizer_getchar(Tokenizer *this, int indent)
     return this->code[this->position + indent];
 }
 
+// char Tokenizer_getValidChar(Tokenizer *, int)
+char Tokenizer_getValidChar(Tokenizer *this, int indent)
+{
+    char c = this->code[this->position + indent];
+    if (isspace(c))
+    {
+        return Tokenizer_getValidChar(this, indent + (indent < 0 ? -1 : 1));
+    }
+    return c;
+}
+
 char Tokenizer_skipN(Tokenizer *this, int n)
 {
     this->column = this->column + n;
@@ -171,6 +182,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
     this->code = code;
     this->length = strlen(code);
     int currentChar;
+    bool isCalculator = false;
 
     while (this->position < this->length)
     {
@@ -181,6 +193,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             this->line++;
             this->column = 1;
             this->position++;
+            isCalculator = false;
             continue;
         }
         // empty
@@ -226,11 +239,14 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         {
             Tokenizer_addToken(this, TTYPE_NAME, TVALUE_CALCULATOR);
             Tokenizer_skipN(this, 1);
+            isCalculator = true;
             continue;
         }
-        if (is_calculation(currentChar))
+        if (isCalculator && is_calculation(currentChar))
         {
-            if (!is_calculation(Tokenizer_getchar(this, 1)))
+            char lastC = Tokenizer_getValidChar(this, -1);
+            char nextC = Tokenizer_getValidChar(this, 1);
+            if (!is_calculation(lastC) && lastC != '=' && lastC != '(' && !is_calculation(nextC))
             {
                 char *str = tools_str_apent(str_new(""), currentChar, false);
                 Tokenizer_addToken(this, TTYPE_NAME, str);
