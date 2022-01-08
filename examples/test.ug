@@ -39,8 +39,14 @@
 
 # ################################################################################
 
-# miqdar x tewellut bolsun
-# x qimmiti 1 + 2 bolsun
+miqdar x tewellut bolsun
+x qimmiti 1 qushulghan 2 bolsun
 
+# x = 2
+# x = 1 + 2
+# x = 1 + 2 * 3
+# x = 1 + (2 * 3)
 # x =2 * ((345 - 4) + 1)
-x = 2 + 3 - ((4 * 5) ^ 4) % (4 / (4 + 1))
+x = 20 + 30 - ((4 * 5 + 5) ^ 1) % (4 * (4 + 1))
+
+ikrangha x yezilsun

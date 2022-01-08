@@ -465,6 +465,7 @@ void Parser_consumeAstCalculator(Parser *this)
     Parser_checkWord(this, 1, 1, TVALUE_CALCULATOR);
     Token *tempT = NULL;
     Foliage *tempF = NULL;
+    Foliage *holder = NULL;
     Foliage *root = Foliage_new(NULL);
     Stack *currents = Stack_new();
     Foliage *current = root;
@@ -489,6 +490,9 @@ void Parser_consumeAstCalculator(Parser *this)
         if (Parser_isWord(this, 1, TVALUE_OPEN))
         {
             Parser_checkWord(this, 1, 1, TVALUE_OPEN);
+            holder = Foliage_new(NULL);
+            current->left = holder;
+            current = holder;
             Stack_push(currents, current);
             tempF = Foliage_new(NULL);
             current->right = tempF;

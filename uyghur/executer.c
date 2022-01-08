@@ -744,6 +744,81 @@ void Executer_consumeResult(Executer *this, Leaf *leaf)
     this->isReturn = true;
 }
 
+double calculate(double left, char *sign, double right)
+{
+    printf("=> %f %s %f \n", left, sign, right);
+    if (is_equal(sign, TVALUE_SIGN_ADD))
+    {
+        return left + right;
+    }
+    else if (is_equal(sign, TVALUE_SIGN_SUB))
+    {
+        return left - right;
+    }
+    else if (is_equal(sign, TVALUE_SIGN_MUL))
+    {
+        return left * right;
+    }
+    else if (is_equal(sign, TVALUE_SIGN_DIV))
+    {
+        return left / right;
+    }
+    else if (is_equal(sign, TVALUE_SIGN_POW))
+    {
+        return pow(left, right);
+    }
+    else if (is_equal(sign, TVALUE_SIGN_PER))
+    {
+        return fmod(left, right);
+    }
+}
+
+double Executer_calculateBTree(Executer *this, Foliage *);
+double Executer_calculateBTree(Executer *this, Foliage *root)
+{
+    double result = 0;
+    Token *sign = NULL;
+    Foliage *foliage = root->left;
+    Token *token = NULL;
+    while(foliage != NULL)
+    {
+        double r = 0;
+        token = foliage->data;
+        if (token != NULL && is_equal(token->type, TTYPE_CALCULATION))
+        {
+            tools_assert(sign == NULL, "%s", "invalid calculator in executor");
+            sign = token;
+        }
+        else
+        {
+            if (token == NULL)
+            {
+                tools_assert(foliage->right != NULL, "invalid calculate holder in executor");
+                r = Executer_calculateBTree(this, foliage->right);
+            }
+            else
+            {
+                tools_assert(is_equal(token->type, TTYPE_NUMBER), "invalid calculate argument in executor");
+                Value *v = Executer_getTRValue(this, token, false);
+                r = v->number;
+                if (Token_isStatic(token)) Value_free(v);
+            }
+            if (sign == NULL)
+            {
+                result = r;
+            }
+            else
+            {
+                result = calculate(result, sign->value, r);
+                sign = NULL;
+            }
+        }
+        foliage = foliage->left;
+    }
+    printf("===> r = %f\n", result);
+    return result;
+}
+
 void Executer_consumeCalculator(Executer *this, Leaf *leaf)
 {
     Cursor *cursor = Stack_reset(leaf->tokens);
@@ -751,12 +826,13 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
     Token *target = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
     Foliage *root = (Foliage *)body->value;
-    Value *r = NULL;
     // TODO
+    double n = Executer_calculateBTree(this, root);
+    Value *r = Value_newNumber(n, NULL);
     //
-    // if (Token_isStatic(token)) Value_free(value);
-    // tools_assert(r != NULL, "not supported action for expression:%s", act);
-    // Executer_setTRValue(this, target, r, false);
+    tools_assert(r != NULL, "invalid calculate state in executor");
+    Executer_setTRValue(this, target, r, false);
+    // helper_print_btree(root, " ");
 }
 
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)

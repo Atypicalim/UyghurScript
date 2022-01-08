@@ -85,7 +85,7 @@ void helper_print_btree(Foliage *, char *);
 void helper_print_btree(Foliage *root, char *_space)
 {
     char *space = str_concat(_space, " | ");
-    printf("%s[BTREE => addr:%d]\n", space, root);
+    bool isRoot = true;
     Foliage *foliage = root;
     Token *token = NULL;
     while(foliage != NULL)
@@ -98,7 +98,15 @@ void helper_print_btree(Foliage *root, char *_space)
         }
         else
         {
-            printf("[BLANK]\n");
+            if (isRoot)
+            {
+                printf("[BTREE => addr:%d]\n", root);
+                isRoot = false;
+            }
+            else
+            {
+                printf("[HOLDER]\n");
+            }
         }
         if (foliage->right != NULL)
         { 
