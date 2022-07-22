@@ -35,6 +35,7 @@
 #include "leaf.c"
 #include "container.c"
 #include "value.c"
+#include "vm.c"
 
 #include "helpers.c"
 
