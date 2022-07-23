@@ -687,12 +687,7 @@ Value *Executer_runCFunc(Executer *this, Token *funcName)
     funcBody(bridge);
     //
     tools_assert(bridge->type == BRIDGE_STACK_TP_RES, "invalid bridge status, func should return result at the end");
-    Value *r = Bridge_popValue(bridge);
-    if (r == NULL)
-    {
-        r = Value_newEmpty(NULL);
-    }
-    return r;
+    return Bridge_popValue(bridge);
 }
 
 void Executer_consumeCall(Executer *this, Leaf *leaf)

@@ -105,47 +105,7 @@ Value *Bridge_nextValue(Bridge *this)
     return v;
 }
 
-Value *_bridge_next_value_for_type(Bridge *this, char *tp)
-{
-    Value *v = Bridge_nextValue(this);
-    tools_assert(v != NULL, "invalid bridge arguments, next argument not found");
-    tools_assert(is_equal(v->type, tp), "invalid bridge arguments, %s argument not found", tp);
-    return v;
-}
-
-// push varibales
-
-void Bridge_pushBoolean(Bridge *this, bool value)
-{
-    Bridge_pushValue(this, Value_newBoolean(value, NULL));
-}
-
-bool Bridge_nextBoolean(Bridge *this)
-{
-    return _bridge_next_value_for_type(this, RTYPE_BOOLEAN)->boolean;
-}
-
-void Bridge_pushNumber(Bridge *this, double value)
-{
-    Bridge_pushValue(this, Value_newNumber(value, NULL));
-}
-
-double Bridge_nextNumber(Bridge *this)
-{
-    return _bridge_next_value_for_type(this, RTYPE_NUMBER)->number;
-}
-
-void Bridge_pushString(Bridge *this, char *value)
-{
-    Bridge_pushValue(this, Value_newString(str_new(value), NULL));
-}
-
-char *Bridge_nextString(Bridge *this)
-{
-    return _bridge_next_value_for_type(this, RTYPE_STRING)->string;
-}
-
-// push key & func to stack
+// push key
 
 void Bridge_pushKey(Bridge *this, char *key)
 {
@@ -155,9 +115,49 @@ void Bridge_pushKey(Bridge *this, char *key)
     this->last = BRIDGE_ITEM_TP_KEY;
 }
 
+// push value
+
+void Bridge_pushBoolean(Bridge *this, bool value)
+{
+    Bridge_pushValue(this, Value_newBoolean(value, NULL));
+}
+
+void Bridge_pushNumber(Bridge *this, double value)
+{
+    Bridge_pushValue(this, Value_newNumber(value, NULL));
+}
+
+void Bridge_pushString(Bridge *this, char *value)
+{
+    Bridge_pushValue(this, Value_newString(str_new(value), NULL));
+}
+
 void Bridge_pushFunction(Bridge *this, void (*value)(Bridge *))
 {
     Bridge_pushValue(this, Value_newCFunction(value, NULL));
+}
+
+// read variables
+
+bool Bridge_nextBoolean(Bridge *this)
+{
+    Value *v = Bridge_nextValue(this);
+    tools_assert(is_equal(v->type, RTYPE_BOOLEAN), "invalid bridge arguments, %s argument not found", RTYPE_BOOLEAN);
+    return v->boolean;
+}
+
+double Bridge_nextNumber(Bridge *this)
+{
+    Value *v = Bridge_nextValue(this);
+    tools_assert(is_equal(v->type, RTYPE_NUMBER), "invalid bridge arguments, %s argument not found", RTYPE_NUMBER);
+    return v->number;
+}
+
+char *Bridge_nextString(Bridge *this)
+{
+    Value *v = Bridge_nextValue(this);
+    tools_assert(is_equal(v->type, RTYPE_STRING), "invalid bridge arguments, %s argument not found", RTYPE_STRING);
+    return v->string;
 }
 
 // rgister box or globals to script
