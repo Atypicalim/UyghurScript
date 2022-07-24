@@ -38,3 +38,36 @@
 # fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
 
 # ################################################################################
+
+# delte: tipi, @_{}, @${}, turaqliq, turaqsiz
+
+# @*{key} searchFromGlobal
+# @+{key} searchFromModule
+# @-{key} searchFromBox
+# @?{key} searchRecursive
+
+# @box{123} -- use num as key
+# @box[str] -- use str as key
+# @box<val> -- use val as key
+
+# miqdar a qimmiti quruq bolsun
+
+# a qimmiti xet bolsun
+# a qimmiti [] bolsun
+
+# quruq
+# san -- 0
+# xet -- []
+# sanduq
+# logika -- yalghan
+
+# try / catch
+# sinaq: 
+# ...
+# hataqiq e:
+# ...
+# bolsun
+
+# pointer
+# a = &b
+# b = *a
