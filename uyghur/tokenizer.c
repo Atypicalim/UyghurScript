@@ -14,7 +14,7 @@ struct Tokenizer{
     Token *tail;
     Hashmap *keywordsMap;
     char *scope;
-    bool isRecordingScope;
+    char keyBorder;
 };
 
 void Tokenizer_reset(Tokenizer *this)
@@ -28,7 +28,7 @@ void Tokenizer_reset(Tokenizer *this)
     this->path = NULL;
     this->code = NULL;
     this->scope = NULL;
-    this->isRecordingScope = false;
+    this->keyBorder = ' ';
 }
 
 Tokenizer *Tokenizer_new(Uyghur *uyghur)
@@ -91,11 +91,6 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     return tokenizer;
 }
 
-void Tokenizer_parseCharacter(Tokenizer *this, char character)
-{
-    printf("%d %d %c\n", this->line, this->column, character);
-}
-
 char Tokenizer_getchar(Tokenizer *this, int indent)
 {
     return this->code[this->position + indent];
@@ -131,7 +126,7 @@ void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
     //
     Token *token = NULL;
     char *s = tools_format(LANG_ERR_TOKEN_PLACE, value, this->line, this->column, this->path);
-    if (this->isRecordingScope)
+    if (this->keyBorder != ' ')
     {
         tools_assert(is_values(type, TTYPES_GROUP_KEYS), "%s%s", LANG_ERR_NO_VALID_TOKEN, s);
         tools_assert(this->scope != NULL, "%s%s", LANG_ERR_NO_VALID_TOKEN, s);
@@ -144,6 +139,7 @@ void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
     }
     Token_bindInfo(token, this->path, this->line, this->column);
     this->scope = NULL;
+    this->keyBorder = ' ';
     //
     if (this->head == NULL)
     {
@@ -154,6 +150,13 @@ void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
     {
         Block_append(this->tail, token);
         this->tail = token;
+    }
+}
+
+void Tokenizer_skipBorder(Tokenizer *this)
+{
+    if (this->scope != NULL && this->keyBorder != ' ') {
+        if (Tokenizer_getchar(this, 0) == '}') Tokenizer_skipN(this, 1);
     }
 }
 
@@ -171,8 +174,9 @@ void Tokenizer_addNumber(Tokenizer *this, char currentChar)
         str = tools_str_apent(str, c, false);
         i++;
     }
-    Tokenizer_addToken(this, TTYPE_NUMBER, str); // strtod(str, NULL)
     Tokenizer_skipN(this, i);
+    Tokenizer_skipBorder(this);
+    Tokenizer_addToken(this, TTYPE_NUMBER, str); // strtod(str, NULL)
 }
 
 Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
@@ -210,13 +214,32 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             Tokenizer_skipN(this, 1 + i - 1);
             continue;
         }
+        // scope
+        if (currentChar == '@')
+        {
+            char* scope = tools_str_new("", 0);
+            int i = 1;
+            char c = Tokenizer_getchar(this, i);
+            while (c != '{' && c != '[')
+            {
+                scope = tools_str_apent(scope, c, false);
+                c = Tokenizer_getchar(this, ++i);
+            }
+            tools_assert(i > 1, "invalid box name in %s %d %d %c", this->path, this->line, this->column, currentChar);
+            this->scope = scope;
+            this->keyBorder = c;
+            if (c != '[') i++;
+            Tokenizer_skipN(this, i);
+            continue;
+        }
+
         // string
         if (currentChar == '[')
         {
             char* str = tools_str_new("", 0);
             int i = 1;
-            char c;
-            while ((c = Tokenizer_getchar(this, i)) != ']')
+            char c = Tokenizer_getchar(this, i);
+            while (c != ']')
             {
                 if (c == '\\')
                 {
@@ -228,10 +251,11 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                     }
                 }
                 str = tools_str_apent(str, c, false);
-                i++;
+                c = Tokenizer_getchar(this, ++i);
             }
+            Tokenizer_skipN(this, ++i);
+            Tokenizer_skipBorder(this);
             Tokenizer_addToken(this, TTYPE_STRING, str);
-            Tokenizer_skipN(this, i + 1);
             continue;
         }
         // calculate
@@ -293,39 +317,10 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                 str = tools_str_apent(str, c, false);
                 i++;
             }
+            Tokenizer_skipN(this, i);
+            Tokenizer_skipBorder(this);
             Tokenizer_addToken(this, TTYPE_NAME, str);
-            Tokenizer_skipN(this, i);
             continue; 
-        }
-        // scope
-        if (currentChar == '@')
-        {
-            char* scope = tools_str_new("", 0);
-            int i;
-            char c;
-            //
-            i = 1;
-            while ((c = Tokenizer_getchar(this, i)) != '{')
-            {
-                scope = tools_str_apent(scope, c, false);
-                i++;
-            }
-            this->scope = scope;
-            Tokenizer_skipN(this, i);
-            continue;
-        }
-        if (currentChar == '{' && this->scope != NULL)
-        {
-            this->isRecordingScope = true;
-            Tokenizer_skipN(this, 1);
-            continue;
-        }
-
-        if (currentChar == '}' && this->scope == NULL)
-        { 
-            this->isRecordingScope = false;
-            Tokenizer_skipN(this, 1);
-            continue;
         }
         // unsupported
         char s[1024];
