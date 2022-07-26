@@ -15,7 +15,7 @@
 #define LANG_ERR_NO_IF_FIRST "eger jumlisi inawetsiz: "
 
 #define LANG_ERR_INVALID_BOX_NAME "sanduq ismi inawetsiz: "
-#define LANG_ERR_INVALID_KEY_NAME "sanduq korsetkuchi inawetsiz: "
+#define LANG_ERR_INVALID_KEY_NAME "achquch ismi inawetsiz: "
 #define LANG_ERR_VARIABLE_NOT_FOUND "miqdar texi iniqlanmighan: "
 #define LANG_ERR_VARIABLE_IS_FOUND "miqdar alliburun iniqlanghan: "
 

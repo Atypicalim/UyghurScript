@@ -27,6 +27,7 @@ CC = gcc
 
 # commands
 run: $(SRC)
+	@mkdir -p $(DST_DIR)
 	@rm -rf $(DST_DIR)*
 	@cp $(SCRIPT) $(DST_DIR)script.ug
 	@echo "# uyghur script!" >> $(DST_DIR)script.ug
