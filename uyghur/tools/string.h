@@ -138,8 +138,48 @@ int String_findLast(String *this, int from, char *target)
     from = _string_validate_index(this, from);
     size_t len = strlen(target);
     if (len <= 0) return -1;
-    // TODO:
+    // 
+    // int foundIndex = -1;
+    // int tempIndex = -1;
+    // int nextIndex = 0;
+    // while ((tempIndex = String_findNext(this, nextIndex, target)) >= 0) {
+    //     if (tempIndex + len - 1 > from) break;
+    //     foundIndex = tempIndex;
+    //     nextIndex++;
+    // }
+    // return foundIndex;
+    // 
+    int containIndex = from - len + 1;
+    int nextIndex = this->length - 1;
+    int foundIndex = -1;
+    char *ptr = NULL;
+    while (nextIndex >= 0) {
+        if ((ptr = strstr(this->data + nextIndex, target)) != NULL && (foundIndex = ptr - this->data) <= containIndex) {
+            return foundIndex;
+        }
+        nextIndex--;
+    }
     return -1;
+}
+
+void String_findAll(String *this, char *target)
+{
+    // int *result = (int *)malloc(sizeof(int) * 128);
+    // result[0] = 0;
+    // int foundIndex = -1;
+    // int nextIndex = 0;
+    // int lastRecorded = -1;
+    // while ((foundIndex = String_findNext(this, nextIndex, target)) >= 0) {
+    //     printf("--------[%d]\n", foundIndex);
+    //         nextIndex++;
+    //     if (foundIndex != lastRecorded) {
+    //         result[result[0] + 1] = foundIndex;
+    //         result[0]++;
+    //         lastRecorded = foundIndex;
+    //     }
+    // }
+    
+    // printf("==>[%d]\n", result[0]);
 }
 
 size_t String_length(String *this)
