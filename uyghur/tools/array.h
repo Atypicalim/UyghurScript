@@ -10,6 +10,7 @@ typedef int (* ArraySortFunction)(void const*, void const*);
 typedef bool (* ArrayFindFunction)(void const*);
 
 typedef struct _Array {
+    struct _Object;
     void **elements;
     int size;
     int capacity;
@@ -23,6 +24,7 @@ void _array_clear(Array *this)
 Array *Array_new()
 {
     Array *array = (Array *)malloc(sizeof(Array));
+    Object_init(array, UG_OBJECT_ARRAY);
     array->capacity = ARRAY_DEFAULT_CAPACITY;
     array->size = 0;
     array->elements = (void *)malloc(sizeof(void *) * array->capacity);
@@ -201,7 +203,7 @@ void Array_free(Array *this)
 {
     free(this->elements);
     this->elements = NULL;
-    free(this);
+    Object_free(this);
 }
 
 #endif

@@ -22,6 +22,9 @@
 #include "constant.h"
 #include "tools.c"
 
+#include "../tools/object.h"
+
+#include "../tools/string.h"
 #include "../tools/cursor.h"
 #include "../tools/hashmap.h"
 #include "../tools/foliage.h"

@@ -4,12 +4,14 @@
 #define H_CURSOR
 
 typedef struct _Cursor {
+    struct _Object;
     void *cursor;
 } Cursor;
 
 Cursor *Cursor_new(void *cursor)
 {
     Cursor *queue = (Cursor *)malloc(sizeof(Cursor));
+    Object_init(queue, UG_OBJECT_CURSOR);
     queue->cursor = cursor;
     return queue;
 }
@@ -32,7 +34,7 @@ void Cursor_print(Cursor *this)
 void Cursor_free(Cursor *this)
 {
     this->cursor = NULL;
-    free(this);
+    Object_free(this);
 }
 
 #endif

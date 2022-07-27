@@ -21,6 +21,17 @@ int main(int argc, char const *argv[])
     if (argc >= 2) Uyghur_execute(uyghur, (char *)argv[1]);
     if (argc == 1) Uyghur_run(uyghur, "script.ug", __build_script_ug);
     Uyghur_free(uyghur);
+    // 
+    String *string = String_new();
+    String_append(string, "abcde");
+    // String *s = String_clone(string);
+    String_append(string, "123...");
+    // String_delete(string, -5, -2);
+    // String_deleteBeginning(string, -6);
+    // String_deleteEnding(string, -1);
+    String_print(string);
+    String_findNext(string, -5, "12");
+    // String_print(s);
     //
     return 0;
 }

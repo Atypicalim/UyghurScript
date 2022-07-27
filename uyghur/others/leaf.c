@@ -7,7 +7,7 @@
 #include "token.c"
 
 typedef struct LeafNode {
-    struct _Block;
+    struct _Object;
     char *type; // ast type
     struct LeafNode *parent; // parent leaf
     Stack *tokens; // tokens of this ast leaf (params of expression, statement or func)
@@ -17,6 +17,7 @@ typedef struct LeafNode {
 Leaf *Leaf_new(char *type)
 {
     Leaf *leaf = malloc(sizeof(Leaf));
+    Object_init(leaf, UG_OBJECT_LEAF);
     leaf->type = type;
     leaf->parent = NULL;
     leaf->tokens = Stack_new();
@@ -57,7 +58,7 @@ void Leaf_free(Leaf *this)
 {
     Stack_free(this->tokens);
     Queue_free(this->leafs);
-    free(this);
+    Object_free(this);
 }
 
 #endif

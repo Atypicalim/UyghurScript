@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 typedef struct _Block {
+    struct _Object;
     void *data;
     void *next;
     void *last;
@@ -25,6 +26,7 @@ void Block_init(void *_block, void *data)
 Block *Block_new(void *data)
 {
     Block *block = (Block *)malloc(sizeof(Block));
+    Object_init(block, UG_OBJECT_BLOCK);
     Block_init(block, data);
     return block;
 }
@@ -110,7 +112,7 @@ void Block_free(void *_this)
         free(this->data);
         this->data = NULL;
     }
-    free(this);
+    Object_free(this);
 }
 
 #endif

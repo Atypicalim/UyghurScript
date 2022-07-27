@@ -6,6 +6,7 @@
 #include "block.h"
 
 typedef struct _Stack {
+    struct _Object;
     Block *head;
     Block *tail;
     Block *cursor;
@@ -14,6 +15,7 @@ typedef struct _Stack {
 Stack *Stack_new()
 {
     Stack *stack = (Stack *)malloc(sizeof(Stack));
+    Object_init(stack, UG_OBJECT_STACK);
     stack->head = NULL;
     stack->tail = NULL;
     stack->cursor = NULL;
@@ -91,7 +93,7 @@ void Stack_free(Stack *this)
         Block_free(tail);
         tail = this->tail;
     }
-    free(this);
+    Object_free(this);
 }
 
 Cursor *Stack_reset(Stack *this)

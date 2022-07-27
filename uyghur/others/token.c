@@ -6,7 +6,7 @@
 #include "header.h"
 
 typedef struct _Token {
-    struct _Block;
+    struct _Object;
     const char *file;
     int line;
     int column;
@@ -15,12 +15,14 @@ typedef struct _Token {
     bool isKey;
     char *scope;
     char *kind;
+    void *next;
+    void *last;
 } Token;
 
 Token *Token_new(char *type, void *value)
 {
     Token *token = (Token *)malloc(sizeof(Token));
-    Block_init(token, NULL);
+    Object_init(token, UG_OBJECT_TOKEN);
     token->file = "";
     token->line = 0;
     token->column = 0;
@@ -29,6 +31,8 @@ Token *Token_new(char *type, void *value)
     token->isKey = false;
     token->scope = NULL;
     token->kind = NULL;
+    token->next = NULL;
+    token->last = NULL;
     return token;
 }
 
@@ -74,7 +78,7 @@ void Token_print(Token *this)
 
 void Token_free(Token *this)
 {
-    Block_free(this);
+    Object_free(this);
     // TODO: ug free pointers
 }
 

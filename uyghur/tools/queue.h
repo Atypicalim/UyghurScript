@@ -6,6 +6,7 @@
 #include "block.h"
 
 typedef struct _Queue {
+    struct _Object;
     Block *head;
     Block *tail;
     Block *cursor;
@@ -14,6 +15,7 @@ typedef struct _Queue {
 Queue *Queue_new()
 {
     Queue *queue = (Queue *)malloc(sizeof(Queue));
+    Object_init(queue, UG_OBJECT_QUEUE);
     queue->head = NULL;
     queue->tail = NULL;
     queue->cursor = NULL;
@@ -91,7 +93,7 @@ void Queue_free(Queue *this)
         Block_free(head);
         head = this->head;
     }
-    free(this);
+    Object_free(this);
 }
 
 Cursor *Queue_reset(Queue *this)

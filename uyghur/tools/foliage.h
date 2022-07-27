@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 typedef struct _Foliage {
+    struct _Object;
     void *data;
     void *left;
     void *right;
@@ -25,6 +26,7 @@ void Foliage_init(void *_foliage, void *data)
 Foliage *Foliage_new(void *data)
 {
     Foliage *foliage = (Foliage *)malloc(sizeof(Foliage));
+    Object_init(foliage, UG_OBJECT_FOLIAGE);
     Foliage_init(foliage, data);
     return foliage;
 }
@@ -51,7 +53,7 @@ void Foliage_free(Foliage *this)
         free(this->data);
         this->data = NULL;
     }
-    free(this);
+    Object_free(this);
 }
 
 #endif

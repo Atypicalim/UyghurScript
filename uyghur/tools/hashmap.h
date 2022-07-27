@@ -17,6 +17,7 @@ typedef struct EntryNode{
 } Entry;
 
 typedef struct _Hashmap {
+    struct _Object;
     int size;
     Entry *position;
 } Hashmap;
@@ -52,6 +53,7 @@ Entry *_hashmap_new_entry(char *key, char *value)
 
 Hashmap* Hashmap_new() {
     Hashmap *map = (Hashmap *)malloc(sizeof(Hashmap) * CAPACITY);
+    Object_init(map, UG_OBJECT_HASHMAP);
     map->size = CAPACITY;
     for (int i = 0; i < CAPACITY; ++i ) {
          map[i].position = NULL;
@@ -70,7 +72,7 @@ void Hashmap_free(Hashmap *this) {
             free(head);
         }
     }
-    free(this);
+    Object_free(this);
 }
 
 void *Hashmap_setWithHash(Hashmap *this, char *key, void *value, int hashValue) {

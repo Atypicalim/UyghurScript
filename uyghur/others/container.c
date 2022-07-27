@@ -6,6 +6,7 @@
 #include "header.h"
 
 typedef struct _Container {
+    struct _Object;
     Hashmap *map;
     bool isBox;
     bool isScope;
@@ -14,6 +15,7 @@ typedef struct _Container {
 Container *Container_new()
 {
     Container *container = malloc(sizeof(Container));
+    Object_init(container, UG_OBJECT_CONTAINER);
     container->map = Hashmap_new();
     container->isBox = false;
     container->isScope = false;
@@ -63,7 +65,7 @@ void Container_print(Container *this)
 void Container_free(Container *this)
 {
     Hashmap_free(this->map);
-    free(this);
+    Object_free(this);
 }
 
 #endif

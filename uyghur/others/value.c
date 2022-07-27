@@ -8,6 +8,7 @@
 Hashmap *valueCache = NULL;
 
 typedef struct ValueNode {
+    struct _Object;
     char *type;
     bool boolean;
     double number;
@@ -56,6 +57,7 @@ char *_get_cache_tag(char *type, bool boolean, double number, char *string)
     }
     // create
     Value *value = malloc(sizeof(Value));
+    Object_init(value, UG_OBJECT_VALUE);
     value->type = type;
     value->boolean = boolean;
     value->number = number;
@@ -248,7 +250,7 @@ void Value_free(Value *this)
         {
             Container_free(this->object);
         }
-        free(this);
+        Object_free(this);
     }
     // TODO: ug free pointers
 }

@@ -148,7 +148,8 @@ void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
     }
     else
     {
-        Block_append(this->tail, token);
+        this->tail->next = token;
+        token->last = this->tail;
         this->tail = token;
     }
 }
