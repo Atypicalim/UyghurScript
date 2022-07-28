@@ -1,7 +1,7 @@
 // string
 
-#ifndef H_UG_STRING
-#define H_UG_STRING
+#ifndef H_PCT_UG_STRING
+#define H_PCT_UG_STRING
 
 #define STRING_MIN_CAPACITY 128
 
@@ -15,7 +15,7 @@ typedef struct _String {
 String *String_new()
 {
     String *string = (String *)malloc(sizeof(String));
-    Object_init(string, UG_OBJECT_STRING);
+    Object_init(string, PCT_OBJ_STRING);
     string->length = 0;
     string->capacity = STRING_MIN_CAPACITY + 1;
     string->data = malloc(string->capacity);

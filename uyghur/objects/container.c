@@ -1,9 +1,11 @@
 // container
 
-#ifndef H_BOX
-#define H_BOX
+#ifndef H_UG_HEADER
+#include "../others/header.h"
+#endif
 
-#include "header.h"
+#ifndef H_UG_BOX
+#define H_UG_BOX
 
 typedef struct _Container {
     struct _Object;
@@ -15,7 +17,7 @@ typedef struct _Container {
 Container *Container_new()
 {
     Container *container = malloc(sizeof(Container));
-    Object_init(container, UG_OBJECT_CONTAINER);
+    Object_init(container, PCT_OBJ_CONTAINER);
     container->map = Hashmap_new();
     container->isBox = false;
     container->isScope = false;

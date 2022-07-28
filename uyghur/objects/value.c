@@ -1,9 +1,11 @@
 // value
 
-#ifndef H_VALUE
-#define H_VALUE
+#ifndef H_UG_HEADER
+#include "../others/header.h"
+#endif
 
-#include "header.h"
+#ifndef H_UG_VALUE
+#define H_UG_VALUE
 
 Hashmap *valueCache = NULL;
 
@@ -57,7 +59,7 @@ char *_get_cache_tag(char *type, bool boolean, double number, char *string)
     }
     // create
     Value *value = malloc(sizeof(Value));
-    Object_init(value, UG_OBJECT_VALUE);
+    Object_init(value, PCT_OBJ_VALUE);
     value->type = type;
     value->boolean = boolean;
     value->number = number;

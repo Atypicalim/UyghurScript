@@ -1,7 +1,7 @@
 // array
 
-#ifndef H_ARRAY
-#define H_ARRAY
+#ifndef H_PCT_ARRAY
+#define H_PCT_ARRAY
 
 #define ARRAY_DEFAULT_CAPACITY 1024
 #define ARRAY_INVALID_INDEX 0
@@ -24,7 +24,7 @@ void _array_clear(Array *this)
 Array *Array_new()
 {
     Array *array = (Array *)malloc(sizeof(Array));
-    Object_init(array, UG_OBJECT_ARRAY);
+    Object_init(array, PCT_OBJ_ARRAY);
     array->capacity = ARRAY_DEFAULT_CAPACITY;
     array->size = 0;
     array->elements = (void *)malloc(sizeof(void *) * array->capacity);

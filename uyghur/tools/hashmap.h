@@ -1,14 +1,9 @@
 // hashmap
 
-#ifndef H_HASHMAP
-#define H_HASHMAP
+#ifndef H_PCT_HASHMAP
+#define H_PCT_HASHMAP
 
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-#include <stdio.h>
-
-#define CAPACITY 4097
+#define HASHMAP_DEFAULT_CAPACITY 4097
 
 typedef struct EntryNode{
     char *key;
@@ -39,7 +34,7 @@ static unsigned long hashcode(char *key) {
 }
 
 static int hash(char *key) {
-    return hashcode(key) % CAPACITY;
+    return hashcode(key) % HASHMAP_DEFAULT_CAPACITY;
 }
 
 Entry *_hashmap_new_entry(char *key, char *value)
@@ -52,10 +47,10 @@ Entry *_hashmap_new_entry(char *key, char *value)
 }
 
 Hashmap* Hashmap_new() {
-    Hashmap *map = (Hashmap *)malloc(sizeof(Hashmap) * CAPACITY);
-    Object_init(map, UG_OBJECT_HASHMAP);
-    map->size = CAPACITY;
-    for (int i = 0; i < CAPACITY; ++i ) {
+    Hashmap *map = (Hashmap *)malloc(sizeof(Hashmap) * HASHMAP_DEFAULT_CAPACITY);
+    Object_init(map, PCT_OBJ_HASHMAP);
+    map->size = HASHMAP_DEFAULT_CAPACITY;
+    for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i ) {
          map[i].position = NULL;
     }
     return map;
@@ -64,7 +59,7 @@ Hashmap* Hashmap_new() {
 void Hashmap_free(Hashmap *this) {
     Entry *ptr;
     Entry *head;
-    for (int i = 0; i < CAPACITY; ++i) {
+    for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
         ptr = this[i].position;
         while (ptr != NULL) {
             head = ptr;
@@ -158,7 +153,7 @@ char *Hashmap_next(Hashmap *this, Cursor *cursor)
     bool emptyCursor = checkItem == NULL;
     bool returnNext = emptyCursor == true;
     if (checkItem) returnNext = true;
-    for (int i = 0; i < CAPACITY; i++) {
+    for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; i++) {
         if (this[i].position != NULL) {
             Entry *ptr = this[i].position;
             while (ptr != NULL) {
@@ -184,7 +179,7 @@ char *Hashmap_next(Hashmap *this, Cursor *cursor)
 void Hashmap_foreach(Hashmap *this, void *bindObj, void (*func)(void *, char *, void *))
 {
     int i;
-    for (i = 0; i < CAPACITY; i++) {
+    for (i = 0; i < HASHMAP_DEFAULT_CAPACITY; i++) {
         if (this[i].position != NULL) {
             Entry *ptr = this[i].position;
             while (ptr != NULL) {
@@ -202,7 +197,7 @@ void print_map_item(void *obj, char *key, void *data)
 
 void Hashmap_print(Hashmap *this) {
     int i;
-    printf("[Hashmap_start] address:%p capacity:%d\n", (void*)&this, CAPACITY);
+    printf("[Hashmap_start] address:%p capacity:%d\n", (void*)&this, HASHMAP_DEFAULT_CAPACITY);
     Hashmap_foreach(this, NULL, print_map_item);
     printf("[Hashmap_end] address:%p", (void*)&this);
 }

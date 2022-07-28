@@ -1,9 +1,11 @@
 // token
 
-#ifndef H_TOKEN
-#define H_TOKEN
+#ifndef H_UG_HEADER
+#include "../others/header.h"
+#endif
 
-#include "header.h"
+#ifndef H_UG_TOKEN
+#define H_UG_TOKEN
 
 typedef struct _Token {
     struct _Object;
@@ -22,7 +24,7 @@ typedef struct _Token {
 Token *Token_new(char *type, void *value)
 {
     Token *token = (Token *)malloc(sizeof(Token));
-    Object_init(token, UG_OBJECT_TOKEN);
+    Object_init(token, PCT_OBJ_TOKEN);
     token->file = "";
     token->line = 0;
     token->column = 0;

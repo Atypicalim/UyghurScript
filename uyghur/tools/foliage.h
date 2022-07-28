@@ -1,12 +1,7 @@
 // token
 
-#ifndef H_FOLIAGE
-#define H_FOLIAGE
-
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-#include <stdio.h>
+#ifndef H_PCT_FOLIAGE
+#define H_PCT_FOLIAGE
 
 typedef struct _Foliage {
     struct _Object;
@@ -26,7 +21,7 @@ void Foliage_init(void *_foliage, void *data)
 Foliage *Foliage_new(void *data)
 {
     Foliage *foliage = (Foliage *)malloc(sizeof(Foliage));
-    Object_init(foliage, UG_OBJECT_FOLIAGE);
+    Object_init(foliage, PCT_OBJ_FOLIAGE);
     Foliage_init(foliage, data);
     return foliage;
 }

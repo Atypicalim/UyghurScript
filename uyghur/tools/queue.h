@@ -1,7 +1,7 @@
 // queue
 
-#ifndef H_QUEUE
-#define H_QUEUE
+#ifndef H_PCT_QUEUE
+#define H_PCT_QUEUE
 
 #include "block.h"
 
@@ -15,7 +15,7 @@ typedef struct _Queue {
 Queue *Queue_new()
 {
     Queue *queue = (Queue *)malloc(sizeof(Queue));
-    Object_init(queue, UG_OBJECT_QUEUE);
+    Object_init(queue, PCT_OBJ_QUEUE);
     queue->head = NULL;
     queue->tail = NULL;
     queue->cursor = NULL;

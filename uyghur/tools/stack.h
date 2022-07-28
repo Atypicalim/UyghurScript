@@ -1,7 +1,7 @@
 // stack
 
-#ifndef H_STACK
-#define H_STACK
+#ifndef H_PCT_STACK
+#define H_PCT_STACK
 
 #include "block.h"
 
@@ -15,7 +15,7 @@ typedef struct _Stack {
 Stack *Stack_new()
 {
     Stack *stack = (Stack *)malloc(sizeof(Stack));
-    Object_init(stack, UG_OBJECT_STACK);
+    Object_init(stack, PCT_OBJ_STACK);
     stack->head = NULL;
     stack->tail = NULL;
     stack->cursor = NULL;

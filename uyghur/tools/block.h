@@ -1,12 +1,7 @@
 // token
 
-#ifndef H_BLOCK
-#define H_BLOCK
-
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-#include <stdio.h>
+#ifndef H_PCT_BLOCK
+#define H_PCT_BLOCK
 
 typedef struct _Block {
     struct _Object;
@@ -26,7 +21,7 @@ void Block_init(void *_block, void *data)
 Block *Block_new(void *data)
 {
     Block *block = (Block *)malloc(sizeof(Block));
-    Object_init(block, UG_OBJECT_BLOCK);
+    Object_init(block, PCT_OBJ_BLOCK);
     Block_init(block, data);
     return block;
 }

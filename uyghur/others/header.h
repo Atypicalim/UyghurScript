@@ -1,14 +1,13 @@
 // header
 
-#ifndef H_HEADER
-#define H_HEADER
+#ifndef H_UG_HEADER
+#define H_UG_HEADER
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <ctype.h>
 #include <string.h>
-#include <direct.h>
 #include <stdlib.h>
 #include <math.h>
 #include <ctype.h>
@@ -16,29 +15,18 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 
 #include "language.h"
 #include "constant.h"
 #include "tools.c"
 
-#include "../tools/object.h"
+#include "../tools/header.h"
 
-#include "../tools/string.h"
-#include "../tools/cursor.h"
-#include "../tools/hashmap.h"
-#include "../tools/foliage.h"
-#include "../tools/block.h"
-#include "../tools/queue.h"
-#include "../tools/stack.h"
-#include "../tools/array.h"
-
-
-#include "token.c"
-#include "leaf.c"
-#include "container.c"
-#include "value.c"
-#include "vm.c"
+#include "../objects/token.c"
+#include "../objects/leaf.c"
+#include "../objects/container.c"
+#include "../objects/value.c"
+#include "../objects/vm.c"
 
 #include "helpers.c"
 

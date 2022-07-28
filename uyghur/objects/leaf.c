@@ -1,9 +1,12 @@
 // leaf
 
-#ifndef H_LEAF
-#define H_LEAF
+#ifndef H_UG_HEADER
+#include "../others/header.h"
+#endif
 
-#include "header.h"
+#ifndef H_UG_LEAF
+#define H_UG_LEAF
+
 #include "token.c"
 
 typedef struct LeafNode {
@@ -17,7 +20,7 @@ typedef struct LeafNode {
 Leaf *Leaf_new(char *type)
 {
     Leaf *leaf = malloc(sizeof(Leaf));
-    Object_init(leaf, UG_OBJECT_LEAF);
+    Object_init(leaf, PCT_OBJ_LEAF);
     leaf->type = type;
     leaf->parent = NULL;
     leaf->tokens = Stack_new();

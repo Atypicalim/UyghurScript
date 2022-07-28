@@ -1,7 +1,7 @@
 // cursor
 
-#ifndef H_CURSOR
-#define H_CURSOR
+#ifndef H_PCT_CURSOR
+#define H_PCT_CURSOR
 
 typedef struct _Cursor {
     struct _Object;
@@ -11,7 +11,7 @@ typedef struct _Cursor {
 Cursor *Cursor_new(void *cursor)
 {
     Cursor *queue = (Cursor *)malloc(sizeof(Cursor));
-    Object_init(queue, UG_OBJECT_CURSOR);
+    Object_init(queue, PCT_OBJ_CURSOR);
     queue->cursor = cursor;
     return queue;
 }
