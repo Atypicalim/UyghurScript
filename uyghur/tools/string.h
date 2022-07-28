@@ -3,12 +3,12 @@
 #ifndef H_UG_STRING
 #define H_UG_STRING
 
-#define STRING_MIN_SIZE 128
+#define STRING_MIN_CAPACITY 128
 
 typedef struct _String {
     struct _Object;
     int length;
-    int size;
+    int capacity;
     char *data;
 } String;
 
@@ -17,8 +17,8 @@ String *String_new()
     String *string = (String *)malloc(sizeof(String));
     Object_init(string, UG_OBJECT_STRING);
     string->length = 0;
-    string->size = STRING_MIN_SIZE + 1;
-    string->data = malloc(string->size);
+    string->capacity = STRING_MIN_CAPACITY + 1;
+    string->data = malloc(string->capacity);
     string->data[string->length] = '\0';
     return string;
 }
@@ -29,37 +29,19 @@ void String_free(String *this)
     Object_free(this);
 }
 
-void _string_check_size(String *this, int length)
+void _string_check_capacity(String *this, int length)
 {
-    if (this->size >= length + 1) return;
-    while (this->size < length + 1 && this->size * 2 < INT_MAX) {
-        this->size *= 2;
-        if (this->size <= 0) this->size--;
+    if (this->capacity >= length + 1) return;
+    while (this->capacity < length + 1 && this->capacity * 2 < INT_MAX) {
+        this->capacity *= 2;
+        if (this->capacity <= 0) this->capacity--;
     }
-    this->data = realloc(this->data, this->size);
-}
-
-void _string_validate_index(String *this, int *from, int *to)
-{
-    if (*from < 0) *from = this->length + *from;
-    if (*to < 0) *to = this->length + *to;
-    // invalid
-    if ((*from < 0 && *to < 0) || (*from >= this->length && *to >= this->length) && *from > *to) {
-        *from = -1;
-        *to = -1;
-        return;
-    } else if (*from < 0) {
-        *from = 0;
-        return;
-    } else if (*to >= this->length) {
-        *to = this->length - 1;
-        return;
-    }
+    this->data = realloc(this->data, this->capacity);
 }
 
 String *String_appendChar(String *this, char c)
 {
-    _string_check_size(this, this->length + 1);
+    _string_check_capacity(this, this->length + 1);
     this->data[this->length] = c;
     this->length++;
     this->data[this->length] = '\0';
@@ -68,7 +50,7 @@ String *String_appendChar(String *this, char c)
 
 String *String_prependChar(String *this, char c)
 {
-    _string_check_size(this, this->length + 1);
+    _string_check_capacity(this, this->length + 1);
     memmove(this->data + 1, this->data, this->length);
     this->data[0] = c;
     this->length++;
@@ -81,7 +63,7 @@ String *String_appendArr(String *this, char arr[])
     if (arr == NULL) return this;
     int len = strlen(arr);
     if (len == 0) return this;
-    _string_check_size(this, this->length + len);
+    _string_check_capacity(this, this->length + len);
     memmove(this->data + this->length, arr, len);
     this->length += len;
     this->data[this->length] = '\0';
@@ -105,7 +87,7 @@ String *String_appendStr(String *this, char *str)
     if (str == NULL || *str == '\0') return this;
     int len = strlen(str);
     if (len == 0) return this;
-    _string_check_size(this, this->length + len);
+    _string_check_capacity(this, this->length + len);
     memmove(this->data + this->length, str, len);
     this->length += len;
     this->data[this->length] = '\0';
@@ -117,39 +99,10 @@ String *String_prependStr(String *this, char *str)
     if (str == NULL || *str == '\0') return this;
     int len = strlen(str);
     if (len == 0) return this;
-    _string_check_size(this, this->length + len);
+    _string_check_capacity(this, this->length + len);
     memmove(this->data + len, this->data, this->length);
     memmove(this->data, str, len);
     this->length += len;
-    this->data[this->length] = '\0';
-    return this;
-}
-
-String *String_delete(String *this, int _from, int _to)
-{
-    int from = _from;
-    int to = _to;
-    _string_validate_index(this, &from, &to);
-    if (from < 0) return this;
-    memmove(this->data + from, this->data + to + 1, this->length - to - 1);
-    this->length -= (to - from + 1);
-    this->data[this->length] = '\0';
-    return this;
-}
-
-String *String_deleteStarting(String *this, int position)
-{
-    return String_delete(this, 0, position);
-}
-
-String *String_deleteEnding(String *this, int position)
-{
-    return String_delete(this, position, -1);
-}
-
-String *String_clear(String *this)
-{
-    this->length = 0;
     this->data[this->length] = '\0';
     return this;
 }
@@ -164,6 +117,46 @@ String *String_prepend(String *this, char *str)
     return String_prependStr(this, str);
 }
 
+String *String_insert(String *this, int at, String *that)
+{
+    if (at < 0 || at > this->length || that == NULL || that->length <= 0) return this;
+    _string_check_capacity(this, this->length + that->length);
+    char *temp = malloc(this->length - at);
+    memmove(temp, this->data + at, this->length - at);
+    memmove(this->data + at, that->data, that->length);
+    memmove(this->data + at + that->length, temp, this->length - at);
+    free(temp);
+    this->length += that->length;
+    this->data[this->length] = '\0';
+    return this;
+}
+
+String *String_delete(String *this, int from, int to)
+{
+    if (from < 0 || to > this->length || from >= to) return this;
+    memmove(this->data + from, this->data + to, this->length - to);
+    this->length -= (to - from);
+    this->data[this->length] = '\0';
+    return this;
+}
+
+String *String_deleteStarting(String *this, int to)
+{
+    return String_delete(this, 0, to);
+}
+
+String *String_deleteEnding(String *this, int from)
+{
+    return String_delete(this, from, this->length);
+}
+
+String *String_clear(String *this)
+{
+    this->length = 0;
+    this->data[this->length] = '\0';
+    return this;
+}
+
 unsigned long String_hash(String *this)
 {
     char *str = this->data;
@@ -175,36 +168,26 @@ unsigned long String_hash(String *this)
     return hash;
 }
 
-int String_findNext(String *this, int _from, char *target)
+int String_findNext(String *this, int from, char *target)
 {
-    int from = _from;
-    int to = this->length;
-    _string_validate_index(this, &from, &to);
-    if (from < 0) return -1;
     int len = strlen(target);
-    if (len <= 0) return -1;
+    if (this->length <= 0 || from < 0 || len <= 0) return -1;
     char *ptr = strstr(this->data + from, target);
     if (ptr == NULL) return -1;
     int pos = ptr - this->data;
     return pos;
 }
 
-int String_findLast(String *this, int _to, char *target)
+int String_findLast(String *this, int to, char *target)
 {
-    int from = 0;
-    int to = _to;
-    _string_validate_index(this, &from, &to);
-    if (from < 0) return -1;
     int len = strlen(target);
-    if (len <= 0) return -1;
-    int containIndex = to - len + 1;
+    if (this->length <= 0 || to > this->length || len <= 0) return -1;
+    int containIndex = to - len;
     int nextIndex = this->length - 1;
     int foundIndex = -1;
     char *ptr = NULL;
     while (nextIndex >= 0) {
-        if ((ptr = strstr(this->data + nextIndex, target)) != NULL && (foundIndex = ptr - this->data) <= containIndex) {
-            return foundIndex;
-        }
+        if ((ptr = strstr(this->data + nextIndex, target)) != NULL && (foundIndex = ptr - this->data) <= containIndex) return foundIndex;
         nextIndex--;
     }
     return -1;
@@ -234,6 +217,11 @@ int *String_findAll(String *this, char *target)
     return result;
 }
 
+int String_capacity(String *this)
+{
+    return this->capacity;
+}
+
 int String_length(String *this)
 {
     return this->length;
@@ -247,7 +235,7 @@ char *String_get(String *this)
 String *String_set(String *this, char *str)
 {
     String_delete(this, 0, -1);
-    String_append(this, str);
+    String_appendStr(this, str);
     return this;
 }
 
@@ -266,7 +254,7 @@ char *String_dump(String *this)
 String *String_clone(String *this)
 {
     String *s = String_new();
-    String_append(s, String_get(this));
+    String_appendStr(s, String_get(this));
     return s;
 }
 
@@ -279,9 +267,19 @@ String *String_format(char *template, ...)
     vsnprintf(t, bufsz + 1, template, lst);
     va_end(lst);
     String *s = String_new();
-    String_append(s, t);
+    String_appendStr(s, t);
     free(t);
     return s;
+}
+
+String* String_repeat(String *this, int count)
+{
+    if (count <= 0 || this->length <= 1) return this;
+    char *data = String_dump(this);
+    while (--count > 0) {
+        String_appendStr(this, data);
+    }
+    free(data);
 }
 
 String *String_subString(String *this, int from, int to)
@@ -308,13 +306,43 @@ bool String_equal(String *this, String *that)
     return String_compare(this, that) == 0;
 }
 
-char String_charAt(String *this, int _index)
+char String_getChar(String *this, int index)
 {
-    int index = _index;
-    int temp = _index;
-    _string_validate_index(this, &index, &temp);
-    if (index < 0) return '\0';
+    if (index < 0 || index >= this->length) return '\0';
     return this->data[index];
+}
+
+String *String_setChar(String *this, int index, char c)
+{
+    if (index < 0 || index >= this->length || c == '\0') return this;
+    this->data[index] = c;
+    return this;
+}
+
+String *String_reverse(String *this)
+{
+    int left = 0;
+    int right = this->length - 1;
+    char temp;
+    while(left < right) {
+        temp = this->data[left];
+        this->data[left] = this->data[right];
+        this->data[right] = temp;
+        left++;
+        right--;
+    }
+}
+
+String *String_upper(String *this)
+{
+    int index = 0;
+    while(index < this->length) this->data[index++] = toupper(this->data[index]);
+}
+
+String *String_lower(String *this)
+{
+    int index = 0;
+    while(index < this->length) this->data[index++] = tolower(this->data[index]);
 }
 
 bool String_startsWith(String *this, char *target)
@@ -360,7 +388,6 @@ String *String_replace(String *this, char *target, char *relacement, int from, i
     String_set(this, String_get(result));
     String_free(result);
     return this;
-
 }
 
 String *_string_trim_both(String *this, bool isLeft, bool isRight)
@@ -369,12 +396,12 @@ String *_string_trim_both(String *this, bool isLeft, bool isRight)
     if (isLeft) {
         int start = 0;
         while(start < this->length && isspace(this->data[start])) start++;
-        if (start > 0)  String_deleteStarting(this, start - 1);
+        if (start > 0)  String_deleteStarting(this, start);
     }
     if (isRight) {
         int end = this->length - 1;
         while(end >= 0 && isspace(this->data[end])) end--;
-        if (end < this->length) String_deleteEnding(this, end + 1);
+        if (end < this->length - 1) String_deleteEnding(this, end + 1);
     }
     return this;
 }
