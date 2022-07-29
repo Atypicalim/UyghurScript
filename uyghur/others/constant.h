@@ -18,7 +18,6 @@
 #define TTYPE_BOOL "TTYPE_BOOL"
 #define TTYPE_EMPTY "TTYPE_EMPTY"
 #define TTYPE_BOX "TTYPE_BOX"
-#define TTYPE_SCOPE "TTYPE_SCOPE"
 #define TTYPE_CALCULATION "TTYPE_CALCULATION"
 
 // token value of keywords
@@ -73,9 +72,6 @@
 #define TVALUE_TARGET_TO "ikrangha" // TODO implement with standart library -> box+func (screen, file, etc)
 //
 #define TVALUE_VARIABLE "miqdar"
-#define TVALUE_CREATE "tewellut"
-#define TVALUE_FREE "azad"
-#define TVALUE_REMOVE "wapat"
 #define TVALUE_VALUE "qimmiti"
 #define TVALUE_MADE "bolsun"
 
@@ -136,3 +132,11 @@
 #define RTYPE_GROUP_BASE 3, RTYPE_STRING, RTYPE_NUMBER, RTYPE_BOOLEAN
 
 #define CACHE_STRING_MAX_LENGTH 128
+
+#define CONTAINER_TYPE_BOX "CONTAINER_TYPE_BOX"
+#define CONTAINER_TYPE_SCOPE "CONTAINER_TYPE_SCOPE"
+#define CONTAINER_TYPE_MODULE "CONTAINER_TYPE_MODULE"
+
+#define SCOPE_ALIAS_PROGRAM "*"
+#define SCOPE_ALIAS_MODULE "+"
+#define SCOPE_ALIAS_BOX "+"

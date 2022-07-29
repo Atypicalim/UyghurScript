@@ -47,7 +47,7 @@ void Token_bindInfo(Token *this, const char *file, int line, int column)
 
 Token *Token_empty()
 {
-    return Token_new(TTYPE_WORD, TVALUE_EMPTY);
+    return Token_new(TTYPE_EMPTY, TVALUE_EMPTY);
 }
 
 Token *Token_name(char *name)
@@ -64,12 +64,54 @@ Token *Token_key(char *key, char *scope, char *kind)
     return token;
 }
 
+bool Token_isName(Token *this)
+{
+    return is_equal(this->type, TTYPE_NAME);
+}
+
+bool Token_isKey(Token *this)
+{
+    return is_equal(this->type, TTYPE_KEY);
+}
+
+bool Token_isWord(Token *this)
+{
+    return is_equal(this->type, TTYPE_WORD);
+}
+
+bool Token_isString(Token *this)
+{
+    return is_equal(this->type, TTYPE_STRING);
+}
+
+bool Token_isNumber(Token *this)
+{
+    return is_equal(this->type, TTYPE_NUMBER);
+}
+
+bool Token_isBool(Token *this)
+{
+    return is_equal(this->type, TTYPE_BOOL);
+}
+
+bool Token_isEmpty(Token *this)
+{
+    return is_equal(this->type, TTYPE_EMPTY);
+}
+
+bool Token_isBox(Token *this)
+{
+    return is_equal(this->type, TTYPE_BOX);
+}
+
+bool Token_isCalculation(Token *this)
+{
+    return is_equal(this->type, TTYPE_CALCULATION);
+}
+
 bool Token_isStatic(Token *this)
 {
-    return is_equal(this->type, TTYPE_STRING)
-    || is_equal(this->type, TTYPE_NUMBER)
-    || is_equal(this->type, TTYPE_BOOL)
-    || is_equal(this->type, TTYPE_EMPTY);
+    return Token_isString(this) || Token_isNumber(this) || Token_isBool(this) || Token_isEmpty(this);
 }
 
 void Token_print(Token *this)

@@ -62,9 +62,6 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     Hashmap_fill(map, TVALUE_TARGET_FROM);
     Hashmap_fill(map, TVALUE_TARGET_TO);
     Hashmap_fill(map, TVALUE_VARIABLE);
-    Hashmap_fill(map, TVALUE_CREATE);
-    Hashmap_fill(map, TVALUE_FREE);
-    Hashmap_fill(map, TVALUE_REMOVE);
     Hashmap_fill(map, TVALUE_VALUE);
     Hashmap_fill(map, TVALUE_MADE);
     Hashmap_fill(map, TVALUE_FUNCTION);

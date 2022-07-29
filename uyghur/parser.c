@@ -192,8 +192,9 @@ Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
 void Parser_consumeAstVariable(Parser *this)
 {
     Parser_checkWord(this, 0, 1, TVALUE_VARIABLE);
-    Token *name = Parser_checkType(this, 1, 2, TTYPE_NAME, TTYPE_KEY);
-    Token *action = Parser_checkWord(this, 1, 3, TVALUE_CREATE, TVALUE_FREE, TVALUE_REMOVE);
+    Token *name = Parser_checkType(this, 1, 1, TTYPE_NAME);
+    Parser_checkWord(this, 0, 1, TVALUE_VALUE);
+    Token *action = Parser_checkWord(this, 1, TTYPES_GROUP_DEFINE);
     Parser_checkWord(this, 1, 1, TVALUE_MADE);
     Parser_pushLeaf(this, ASTTYPE_VARIABLE, 2, name, action);
 }

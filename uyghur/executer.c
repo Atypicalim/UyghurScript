@@ -30,21 +30,21 @@ void Executer_reset(Executer *this)
     this->isReturn = false;
 }
 
-void Executer_pushContainer(Executer *this, bool isBox)
+void Executer_pushContainer(Executer *this, char *type)
 {
-    Container *container = isBox ? Container_newBox() : Container_newScope();
+    Container *container = Container_new(type);
     Stack_push(this->containerStack, container);
     this->currentContainer = (Container *)this->containerStack->tail->data;
     this->rootContainer = (Container *)this->containerStack->head->data;
 }
 
-Container *Executer_popContainer(Executer *this, bool isBox)
+Container *Executer_popContainer(Executer *this, char *type)
 {
     Container *container = Stack_pop(this->containerStack);
     this->currentContainer = (Container *)this->containerStack->tail->data;
-    tools_assert(container != NULL && container->isBox == isBox, LANG_ERR_NO_VALID_STATE);
+    tools_assert(container != NULL && is_equal(container->type, type), LANG_ERR_NO_VALID_STATE);
     //
-    if (!isBox)
+    if (is_equal(type, CONTAINER_TYPE_BOX))
     {
         // Cursor *cursor = Hashmap_reset(container->map);
         // char *item = Hashmap_next(container->map, cursor);
@@ -134,6 +134,84 @@ Value *Executer_getNameRValue(Executer *this, char *name)
     Container *container = Executer_getNameScope(this, name);
     if (container == NULL) return NULL;
     return Container_get(container, name);
+}
+
+// 
+Container *Executer_getContainerByName(Executer *this, char *name) {
+
+}
+
+// search from current running scope(scope)
+Value *Executer_searchFromCurrentScope(Executer *this, char *name)
+{
+    return Container_get(this->currentContainer, name);
+}
+
+// search from current wrapping box(box)
+Value *Executer_searchFromCurrentBox(Executer *this, char *name)
+{
+    Cursor *cursor = Stack_reset(this->containerStack);
+    Container *container = NULL;
+    while ((container =  Stack_next(this->containerStack, cursor)) != NULL)
+    {
+        if (Container_isBox(container)) break;
+    }
+    Cursor_free(cursor);
+    return Container_get(container, name);
+}
+
+// search from current module box(file)
+Value *Executer_searchFromCurrentModule(Executer *this, char *name)
+{
+    Cursor *cursor = Stack_reset(this->containerStack);
+    Container *container = NULL;
+    while ((container =  Stack_next(this->containerStack, cursor)) != NULL)
+    {
+        if (Container_isModule(container)) break;
+    }
+    Cursor_free(cursor);
+    return Container_get(container, name);
+}
+
+// search from current program box(global)
+Value *Executer_searchFromCurrentProgram(Executer *this, char *name)
+{
+    return Container_get(this->globalContainer, name);
+}
+
+Value *Executer_searchFromAllContainer(Executer *this, char *name)
+{
+    Cursor *cursor = Stack_reset(this->containerStack);
+    Container *container = NULL;
+    Value *value = NULL;
+    while ((container =  Stack_next(this->containerStack, cursor)) != NULL)
+    {
+        value = Container_get(container, name);
+        if (value != NULL) break;
+    }
+    Cursor_free(cursor);
+    return value;
+}
+
+Value *Executer_searchFromTargetContainer(Executer *this, Token *token)
+{
+    if (Token_isName(token)) {
+        
+    } else if (Token_isKey(token)) {
+        if (is_equal(token->scope, SCOPE_ALIAS_PROGRAM)) {
+            return Executer_searchFromCurrentProgram(this, token->value);
+        } else if (is_equal(token->scope, SCOPE_ALIAS_MODULE)) {
+            return Executer_searchFromCurrentModule(this, token->value);
+        } else if (is_equal(token->scope, SCOPE_ALIAS_BOX)) {
+            return Executer_searchFromCurrentBox(this, token);
+        } else {
+            Value *container = Executer_searchFromAllContainer(this, token->scope);
+            Executer_assert(this, container != NULL, token, "scope is not a container");
+            return Container_get(container, token->value);
+        }
+    } else {
+        Executer_error(this, token, NULL);
+    }
 }
 
 /**
@@ -263,26 +341,30 @@ void Executer_delTRValue(Executer *this, Token *key)
 void Executer_consumeVariable(Executer *this, Leaf *leaf)
 {
     Cursor *cursor = Stack_reset(leaf->tokens);
-    Token *action = Stack_next(leaf->tokens, cursor);
+    Token *token = Stack_next(leaf->tokens, cursor);
     Token *name = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
-    if (is_equal(action->value, TVALUE_CREATE))
-    {
-        Value *v = Executer_getTRValue(this, name, false);
-        Executer_assert(this, v == NULL, name, LANG_ERR_VARIABLE_IS_FOUND);
-        Executer_setTRValue(this, name, Value_newEmpty(NULL), true);
-    }
-    else if (is_equal(action->value, TVALUE_FREE))
-    {
-        Value *v = Executer_getTRValue(this, name, false);
-        Executer_assert(this, v != NULL, name, LANG_ERR_VARIABLE_NOT_FOUND);
-        Value_free(v);
-        Executer_setTRValue(this, name, Value_newEmpty(NULL), false);
-    }
-    else if (is_equal(action->value, TVALUE_REMOVE))
-    {
-        Executer_delTRValue(this, name);
-    }
+    Value *v = Executer_getTRValue(this, name, false);
+    Executer_assert(this, v == NULL, name, LANG_ERR_VARIABLE_IS_FOUND);
+
+
+    // if (is_equal(action->value, TVALUE_CREATE))
+    // {
+    //     Value *v = Executer_getTRValue(this, name, false);
+    //     Executer_assert(this, v == NULL, name, LANG_ERR_VARIABLE_IS_FOUND);
+    //     Executer_setTRValue(this, name, Value_newEmpty(NULL), true);
+    // }
+    // else if (is_equal(action->value, TVALUE_FREE))
+    // {
+    //     Value *v = Executer_getTRValue(this, name, false);
+    //     Executer_assert(this, v != NULL, name, LANG_ERR_VARIABLE_NOT_FOUND);
+    //     Value_free(v);
+    //     Executer_setTRValue(this, name, Value_newEmpty(NULL), false);
+    // }
+    // else if (is_equal(action->value, TVALUE_REMOVE))
+    // {
+    //     Executer_delTRValue(this, name);
+    // }
 }
 
 void Executer_consumeOperate(Executer *this, Leaf *leaf)
@@ -551,9 +633,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     Cursor_free(cursor2);
     if (!isFinish && Executer_checkJudge(this, left, right, judge))
     {
-        Executer_pushContainer(this, false);
+        Executer_pushContainer(this, CONTAINER_TYPE_SCOPE);
         Executer_consumeTree(this, ifNode);
-        Executer_popContainer(this, false);
+        Executer_popContainer(this, CONTAINER_TYPE_SCOPE);
         isFinish = true;
     }
     // elseif
@@ -567,9 +649,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         Cursor_free(cursor2);
         if (!isFinish && Executer_checkJudge(this, left, right, judge))
         {
-            Executer_pushContainer(this, false);
+            Executer_pushContainer(this, CONTAINER_TYPE_SCOPE);
             Executer_consumeTree(this, ifNode);
-            Executer_popContainer(this, false);
+            Executer_popContainer(this, CONTAINER_TYPE_SCOPE);
             isFinish = true;
         }
         ifNode = Queue_next(leaf->leafs, cursor1);
@@ -584,9 +666,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         tools_assert(is_equal(judge->value, TVALUE_IF_NO), "invalid if");
         if (!isFinish)
         {
-            Executer_pushContainer(this, false);
+            Executer_pushContainer(this, CONTAINER_TYPE_SCOPE);
             Executer_consumeTree(this, ifNode);
-            Executer_popContainer(this, false);
+            Executer_popContainer(this, CONTAINER_TYPE_SCOPE);
             isFinish = true;
         }
         ifNode = Queue_next(leaf->leafs, cursor1);
@@ -608,9 +690,9 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
     Cursor_free(cursor);
     while (Executer_checkJudge(this, left, right, judge))
     {
-        Executer_pushContainer(this, false);
+        Executer_pushContainer(this, CONTAINER_TYPE_SCOPE);
         Executer_consumeTree(this, leaf);
-        Executer_popContainer(this, false);
+        Executer_popContainer(this, CONTAINER_TYPE_SCOPE);
     }
 }
 
@@ -652,9 +734,9 @@ Value *Executer_runFunc(Executer *this, Token *funcName)
     tools_assert(is_equal(funcValue->type, RTYPE_FUNCTION), "function not valid for name: %s", funcName->value);
     // execute func
     Leaf *codeNode = funcValue->object;
-    Executer_pushContainer(this, false);
+    Executer_pushContainer(this, CONTAINER_TYPE_SCOPE);
     Executer_consumeLeaf(this, codeNode);
-    Executer_popContainer(this, false);
+    Executer_popContainer(this, CONTAINER_TYPE_SCOPE);
     this->isReturn = false;
     // return result
     Value *r = Stack_pop(this->callStack);
@@ -931,10 +1013,10 @@ bool Executer_consumeTree(Executer *this, Leaf *tree)
 
 Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
 {
-    Executer_pushContainer(this, true);
+    Executer_pushContainer(this, CONTAINER_TYPE_BOX);
     Executer_consumeTree(this, tree);
     if (this->containerStack->head == this->containerStack->tail) return NULL;
-    Container *container = Executer_popContainer(this, true);
+    Container *container = Executer_popContainer(this, CONTAINER_TYPE_BOX);
     Value *module = Value_newBox(container, NULL);
     Container_set(this->globalContainer, path, module);
     return module;
