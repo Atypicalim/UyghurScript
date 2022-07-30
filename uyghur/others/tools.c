@@ -48,27 +48,6 @@ char *tools_format(char *msg, ...)
     return t;
 }
 
-char *tools_str_new(char *str, int extraLen)
-{
-    size_t len = strlen(str);
-    char *dest = malloc(len + 1 + extraLen);
-    dest[len + extraLen] = '\0';
-    return dest;
-}
-
-char *tools_str_apent(char *str, char c, bool notFree)
-{
-    size_t len = strlen(str);
-     char *dest = tools_str_new(str, 1);
-    strcpy(dest, str);
-    dest[len] = c;
-    if (!notFree)
-    {
-        free(str);
-    }
-    return dest;
-}
-
 char *tools_char_arr_to_pointer(char arr[])
 {
     int length = strlen(arr);
