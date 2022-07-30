@@ -81,9 +81,9 @@ Value *Value_newEmpty(void *extra)
     return Value_new(RTYPE_EMPTY, NULL, 0, NULL, NULL, extra);
 }
 
-Value *Value_newBox(Container *box, void *extra)
+Value *Value_newContainer(Container *box, void *extra)
 {
-    return Value_new(RTYPE_BOX, NULL, 0, NULL, box, extra);
+    return Value_new(RTYPE_CONTAINER, NULL, 0, NULL, box, extra);
 }
 
 Value *Value_newBoolean(bool boolean, void *extra)
@@ -110,12 +110,6 @@ Value *Value_newCFunction(void *function, void *extra)
 {
     return Value_new(RTYPE_CFUNCTION ,NULL, 0, NULL, function, extra);
 }
-
-Value *Value_newObject(void *object, void *extra)
-{
-    return Value_new(RTYPE_UNKNOWN ,NULL, 0, NULL, object, extra);
-}
-
 
 void Value_print(Value *this)
 {
@@ -248,7 +242,7 @@ void Value_free(Value *this)
         {
             free(this->string);
         }
-        if (is_equal(this->type, RTYPE_BOX))
+        if (is_equal(this->type, RTYPE_CONTAINER))
         {
             Container_free(this->object);
         }

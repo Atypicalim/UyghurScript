@@ -188,7 +188,7 @@ void Bridge_register(Bridge *this)
     Cursor_free(cursor);
     if (this->name != NULL)
     {
-        Container_set(this->uyghur->executer->globalContainer, this->name, Value_newBox(container, NULL));
+        Container_set(this->uyghur->executer->globalContainer, this->name, Value_newContainer(container, NULL));
     }
     this->name = NULL;
     Bridge_reset(this);
@@ -264,8 +264,8 @@ void Bridge_call(Bridge *this)
     }
     Cursor_free(cursor);
     // execute
-    Token *funcName = Token_key(this->name, "_", TTYPE_STRING);
-    Value *funcValue = Executer_getTRValue(executer, funcName, true);
+    Token *funcName = Token_key("*", TTYPE_STRING, this->name);
+    Value *funcValue = Executer_getValueByToken(executer, funcName, true);
     Value *r = NULL;
     if (is_equal(funcValue->type, RTYPE_FUNCTION))
     {

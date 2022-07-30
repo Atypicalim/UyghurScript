@@ -43,22 +43,12 @@ Container *Executer_popContainer(Executer *this, char *type)
     Container *container = Stack_pop(this->containerStack);
     this->currentContainer = (Container *)this->containerStack->tail->data;
     tools_assert(container != NULL && is_equal(container->type, type), LANG_ERR_NO_VALID_STATE);
-    //
-    if (is_equal(type, CONTAINER_TYPE_BOX))
-    {
-        // Cursor *cursor = Hashmap_reset(container->map);
-        // char *item = Hashmap_next(container->map, cursor);
-        // while(item != NULL)
-        // {
-        //     Value *v = Hashmap_get(container->map, item);
-        //     Hashmap_del(container->map, item);
-        //     item = Hashmap_next(container->map, cursor);
-        // }
-        // Cursor_free(cursor);
+    if (is_equal(type, CONTAINER_TYPE_SCOPE)) {
         Container_free(container);
-    };
-    // 
-    return isBox ? container : NULL;
+        return NULL;
+    } else {
+        return container;
+    }
 }
 
 Executer *Executer_new(Uyghur *uyghur)
@@ -82,86 +72,12 @@ void Executer_assert(Executer *this, bool value, Token *token, char *msg)
     Executer_error(this, token, msg);
 }
 
-Container *Executer_getClosestBox(Executer *this)
+Container *Executer_getCurrentProgram(Executer *this)
 {
-    Block *block = this->containerStack->tail;
-    while (block->data != NULL)
-    {
-        Container *container = block->data;
-        if (container->isBox) break;
-        block = block->last;
-    }
-    Container *container = block->data;
-    tools_assert(container->isBox, "box search error");
-    return container;
+    return this->globalContainer;
 }
 
-/**
- * @brief get the scope containing name, search order : scope -> closest box -> global scope
- * 
- * @param this 
- * @param token 
- * @return Value* 
- */
-Container *Executer_getNameScope(Executer *this, char *name)
-{
-    Block *block = this->containerStack->tail;
-    Value *value = NULL;
-    while (value == NULL && block != NULL)
-    {
-        Container *container = block->data;
-        Value *v = Container_get(container, name);
-        if (v != NULL) value = v;
-        if (v != NULL) break;
-        if (container->isBox) break;
-        block = block->last;
-    }
-    if (value != NULL) return block->data;
-    value = Container_get(this->globalContainer, name);
-    if (value != NULL) return this->globalContainer;
-    return NULL;
-}
-
-/**
- * @brief get name runtime value, search order : context -> closest box -> global scope
- * 
- * @param this 
- * @param token 
- * @return Value* 
- */
-Value *Executer_getNameRValue(Executer *this, char *name)
-{
-    Container *container = Executer_getNameScope(this, name);
-    if (container == NULL) return NULL;
-    return Container_get(container, name);
-}
-
-// 
-Container *Executer_getContainerByName(Executer *this, char *name) {
-
-}
-
-// search from current running scope(scope)
-Value *Executer_searchFromCurrentScope(Executer *this, char *name)
-{
-    return Container_get(this->currentContainer, name);
-}
-
-// search from current wrapping box(box)
-Value *Executer_searchFromCurrentBox(Executer *this, char *name)
-{
-    Cursor *cursor = Stack_reset(this->containerStack);
-    Container *container = NULL;
-    while ((container =  Stack_next(this->containerStack, cursor)) != NULL)
-    {
-        if (Container_isBox(container)) break;
-    }
-    Cursor_free(cursor);
-    return Container_get(container, name);
-}
-
-// search from current module box(file)
-Value *Executer_searchFromCurrentModule(Executer *this, char *name)
+Container *Executer_getCurrentModule(Executer *this)
 {
     Cursor *cursor = Stack_reset(this->containerStack);
     Container *container = NULL;
@@ -170,172 +86,101 @@ Value *Executer_searchFromCurrentModule(Executer *this, char *name)
         if (Container_isModule(container)) break;
     }
     Cursor_free(cursor);
-    return Container_get(container, name);
+    return container;
 }
 
-// search from current program box(global)
-Value *Executer_searchFromCurrentProgram(Executer *this, char *name)
-{
-    return Container_get(this->globalContainer, name);
-}
-
-Value *Executer_searchFromAllContainer(Executer *this, char *name)
+Container *Executer_getCurrentBox(Executer *this)
 {
     Cursor *cursor = Stack_reset(this->containerStack);
     Container *container = NULL;
-    Value *value = NULL;
     while ((container =  Stack_next(this->containerStack, cursor)) != NULL)
     {
-        value = Container_get(container, name);
-        if (value != NULL) break;
+        if (Container_isBox(container) || Container_isModule(container)) break;
     }
     Cursor_free(cursor);
-    return value;
+    Executer_assert(this, Container_isBox(container), NULL, "current box not found");
+    return container;
 }
 
-Value *Executer_searchFromTargetContainer(Executer *this, Token *token)
+Container *Executer_getCurrentScope(Executer *this)
 {
-    if (Token_isName(token)) {
-        
-    } else if (Token_isKey(token)) {
-        if (is_equal(token->scope, SCOPE_ALIAS_PROGRAM)) {
-            return Executer_searchFromCurrentProgram(this, token->value);
-        } else if (is_equal(token->scope, SCOPE_ALIAS_MODULE)) {
-            return Executer_searchFromCurrentModule(this, token->value);
-        } else if (is_equal(token->scope, SCOPE_ALIAS_BOX)) {
-            return Executer_searchFromCurrentBox(this, token);
-        } else {
-            Value *container = Executer_searchFromAllContainer(this, token->scope);
-            Executer_assert(this, container != NULL, token, "scope is not a container");
-            return Container_get(container, token->value);
-        }
-    } else {
-        Executer_error(this, token, NULL);
-    }
+    return this->currentContainer;
 }
 
-/**
- * @brief get scope for a token, check scope attiribute of token
- * no_scope:
- *  write: closest container, read: container -> closest box
- * _ global: socpe
- * empty_string: closest box
- * some_string: target box
- * 
- * @param this 
- * @param token 
- * @param isWrite 
- * @return Container* 
- */
-Container *Executer_getScope(Executer *this, Token *token, bool isLoose)
+Container *Executer_getContainerByKey(Executer *this, char *key)
+{
+    Value *value = NULL;
+    Block *block = this->containerStack->tail;
+    while (value == NULL && block != NULL)
+    {
+        Container *container = block->data;
+        Value *v = Container_get(container, key);
+        if (v != NULL) value = v;
+        if (v != NULL) break;
+        if (Container_isModule(container)) break;
+        block = block->last;
+    }
+    if (value != NULL) return block->data;
+    value = Container_get(this->globalContainer, key);
+    if (value != NULL) return this->globalContainer;
+    return NULL;
+}
+
+Container *Executer_getContainerByToken(Executer *this, Token *token)
 {
     // name
-    if (!token->isKey)
-    {
-        Container *container = Executer_getNameScope(this, token->value);
-        if (container != NULL) return container;
-        return isLoose ? this->currentContainer : NULL;
-    }
-    else if (is_equal(token->scope, "_"))
-    {
-        return this->globalContainer;
-    }
-    else if (is_equal(token->scope, "$"))
-    {
-        return Executer_getClosestBox(this);
-    }
-    else if (is_equal(token->scope, ""))
-    {
-        return Executer_getClosestBox(this);
-    }
-    else
-    {
-        if (is_equal(token->scope, "$")) return Executer_getClosestBox(this);
-        if (is_equal(token->scope, "_")) return this->globalContainer;
-        Value *value = Executer_getNameRValue(this, token->scope);
-        if (value == NULL) return NULL;
-        Executer_assert(this, value->type == RTYPE_BOX, token, LANG_ERR_INVALID_BOX_NAME);
-        return value->object;
-    }
+    if (Token_isName(token)) return Executer_getContainerByKey(this, token->value);
+    Executer_assert(this, Token_isKey(token), token, "invalid token to get container");
+    if (is_equal(token->value, SCOPE_ALIAS_PROGRAM)) return this->globalContainer;
+    if (is_equal(token->value, SCOPE_ALIAS_MODULE)) return Executer_getCurrentModule(this);
+    if (is_equal(token->value, SCOPE_ALIAS_BOX)) return Executer_getCurrentBox(this);
+    Container *container = Executer_getContainerByKey(this, token->value);
+    if (container == NULL) return NULL;
+    Value *value = Container_get(container, token->value);
+    if (value == NULL) return NULL;
+    Executer_assert(this, value->type == RTYPE_CONTAINER, token, LANG_ERR_INVALID_BOX_NAME);
+    return value->object;
 }
 
-// TODO return different key according to the kind & value
-char *Executer_getKey(Executer *this, Token *token)
+char *Executer_getKeyByToken(Executer *this, Token *token)
 {
     char *key = token->value;
-    if (token->isKey && is_equal(token->kind, TTYPE_NAME))
+    if (Token_isKey(token))
     {
-        Value *value = Executer_getNameRValue(this, token->value);
+        Token *extra = (Token *)token->extra;
+        Container *container = Executer_getContainerByKey(this, extra->value);
+        Executer_assert(this, container!= NULL, token, LANG_ERR_INVALID_KEY_NAME);
+        Value *value = Container_get(container, extra->value);
         Executer_assert(this, value!= NULL, token, LANG_ERR_INVALID_KEY_NAME);
         key = Value_toString(value);
     }
     return key;
 }
 
-// get token runtime value
-Value *Executer_getTRValue(Executer *this, Token *token, bool withEmpty)
+Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
 {
-    if (is_equal(token->type, TTYPE_EMPTY))
-    {
-        return Value_newEmpty(token);
-    }
-    else if (is_equal(token->type, TTYPE_BOX))
-    {
-        return Value_newBox(Container_newBox(), token);
-    }
-    else if (is_equal(token->type, TTYPE_KEY))
-    {
-        Container *container = Executer_getScope(this, token, false);
-        char *key = Executer_getKey(this, token);
-        if (container == NULL || key == NULL) return Value_newEmpty(token);
+    if (Token_isEmpty(token)) return Value_newEmpty(token);
+    if (Token_isBool(token)) return Value_newBoolean(is_equal(token->value, TVALUE_TRUE), token);
+    if (Token_isNumber(token)) return Value_newNumber(atof(token->value), token);
+    if (is_equal(token->type, TTYPE_STRING)) return Value_newString(str_new(token->value), token);
+    if (Token_isBox(token)) return Value_newContainer(Container_newBox(), token);
+    Container *container = Executer_getContainerByToken(this, token);
+    char *key = Executer_getKeyByToken(this, token);
+    if (container != NULL && key != NULL) {
         Value *value = Container_get(container, key);
         if (value != NULL) return value;
     }
-    else if (is_equal(token->type, TTYPE_BOOL))
-    {
-        bool boolean = is_equal(token->value, TVALUE_TRUE) ? true : false;
-        return Value_newBoolean(boolean, token);
-    }
-    else if (is_equal(token->type, TTYPE_NUMBER))
-    {
-        double val = atof(token->value);
-        return Value_newNumber(val, token);
-    }
-    else if (is_equal(token->type, TTYPE_STRING))
-    {
-        return Value_newString(str_new(token->value), token);
-    }
-    else if (is_equal(token->type, TTYPE_NAME))
-    {
-        Value *value = Executer_getNameRValue(this, token->value);
-        if (value != NULL) return value;
-    }
-    else
-    {
-        return Value_newObject(token->value, token);
-    }
-    if (withEmpty)
-    {
-        return Value_newEmpty(token);
-    }
-    else
-    {
-        return NULL;
-    }
+    if (withEmpty) return Value_newEmpty(token);
+    return NULL;
 }
 
-void Executer_setTRValue(Executer *this, Token *key, Value *value, bool canDeclare)
+void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool withDeclare)
 {
-    Container *container = Executer_getScope(this, key, canDeclare);
-    Executer_assert(this, container != NULL, key, LANG_ERR_VARIABLE_NOT_FOUND);
-    Value *replacedValue = Container_set(container, key->value, value);
+    Container *container = Executer_getContainerByToken(this, token);
+    if (withDeclare && container == NULL) container = this->currentContainer;
+    Executer_assert(this, container != NULL, token, LANG_ERR_VARIABLE_NOT_FOUND);
+    Value *replacedValue = Container_set(container, token->value, value);
     if (replacedValue != NULL) Value_free(replacedValue);
-}
-
-void Executer_delTRValue(Executer *this, Token *key)
-{
-    Container *container = Executer_getScope(this, key, false);
-    if (container != NULL) Container_del(container, key->value);
 }
 
 void Executer_consumeVariable(Executer *this, Leaf *leaf)
@@ -344,27 +189,11 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     Token *token = Stack_next(leaf->tokens, cursor);
     Token *name = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
-    Value *v = Executer_getTRValue(this, name, false);
-    Executer_assert(this, v == NULL, name, LANG_ERR_VARIABLE_IS_FOUND);
-
-
-    // if (is_equal(action->value, TVALUE_CREATE))
-    // {
-    //     Value *v = Executer_getTRValue(this, name, false);
-    //     Executer_assert(this, v == NULL, name, LANG_ERR_VARIABLE_IS_FOUND);
-    //     Executer_setTRValue(this, name, Value_newEmpty(NULL), true);
-    // }
-    // else if (is_equal(action->value, TVALUE_FREE))
-    // {
-    //     Value *v = Executer_getTRValue(this, name, false);
-    //     Executer_assert(this, v != NULL, name, LANG_ERR_VARIABLE_NOT_FOUND);
-    //     Value_free(v);
-    //     Executer_setTRValue(this, name, Value_newEmpty(NULL), false);
-    // }
-    // else if (is_equal(action->value, TVALUE_REMOVE))
-    // {
-    //     Executer_delTRValue(this, name);
-    // }
+    Container *container = Executer_getCurrentScope(this);
+    Value *old = Container_get(container, name->value);
+    Value *new = Executer_getValueByToken(this, token, true);
+    Executer_assert(this, old == NULL, name, LANG_ERR_VARIABLE_IS_FOUND);
+    Container_set(container, name->value, new);
 }
 
 void Executer_consumeOperate(Executer *this, Leaf *leaf)
@@ -376,7 +205,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     Cursor_free(cursor);
     if (is_equal(target->value, TVALUE_TARGET_TO) && is_equal(action->value, TVALUE_OUTPUT))
     {
-        Value *value = Executer_getTRValue(this, name, true);
+        Value *value = Executer_getValueByToken(this, name, true);
         printf("%s", Value_toString(value));
     }
     else if (is_equal(target->value, TVALUE_TARGET_FROM) && is_equal(action->value, TVALUE_INPUT))
@@ -384,7 +213,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
         char line[1024];
         scanf(" %[^\n]", line);
         char *l = tools_format("%s", line);
-        Executer_setTRValue(this, name, Value_newString(l, NULL), false);
+        Executer_setValueByToken(this, name, Value_newString(l, NULL), false);
     }
 }
 
@@ -394,7 +223,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
     Token *action = Stack_next(leaf->tokens, cursor);
     Token *target = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
-    Value *value = Executer_getTRValue(this, target, true);
+    Value *value = Executer_getValueByToken(this, target, true);
     Value *r = NULL;
     char *act = action->value;
     //
@@ -445,7 +274,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
         {
             char *funcName = value->string;
             Token *funcToken = Token_name(funcName);
-            Value *funcValue = Executer_getTRValue(this, funcToken, true);
+            Value *funcValue = Executer_getValueByToken(this, funcToken, true);
             if(is_equal(funcValue->type, RTYPE_FUNCTION) || is_equal(funcValue->type, RTYPE_CFUNCTION))
             {
                 r = funcValue;
@@ -458,10 +287,10 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
     }
     else
     {
-        r = Executer_getTRValue(this, action, true);
+        r = Executer_getValueByToken(this, action, true);
     }
     tools_assert(r != NULL, "not supported action for expression:%s", act);
-    Executer_setTRValue(this, target, r, false);
+    Executer_setValueByToken(this, target, r, false);
 }
 
 void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
@@ -472,8 +301,8 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
     Token *first = Stack_next(leaf->tokens, cursor);
     Token *target = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
-    Value *secondV = Executer_getTRValue(this, second, true);
-    Value *firstV = Executer_getTRValue(this, first, true);
+    Value *secondV = Executer_getValueByToken(this, second, true);
+    Value *firstV = Executer_getValueByToken(this, first, true);
     char *firstType = firstV->type;
     char *secondType = secondV->type;
     Value *r = NULL;
@@ -554,7 +383,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
             r = Value_newBoolean(firstB == true || secondB == true, NULL);
         }
     }
-    else if (is_values(act, TVALUE_GROUP_EXP_BOX) && is_equal(firstType, RTYPE_BOX))
+    else if (is_values(act, TVALUE_GROUP_EXP_CONTAINER) && is_equal(firstType, RTYPE_CONTAINER))
     {
         char *firstS = Value_toString(firstV);
         char *secondS = Value_toString(secondV);
@@ -567,13 +396,13 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
     if (Token_isStatic(first)) Value_free(firstV);
     if (Token_isStatic(second)) Value_free(secondV);
     tools_assert(r != NULL, "not supported action for expression:%s", act);
-    Executer_setTRValue(this, target, r, false);
+    Executer_setValueByToken(this, target, r, false);
 }
 
 bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge)
 {
-    Value *leftV = Executer_getTRValue(this, left, true);
-    Value *rightV = Executer_getTRValue(this, right, true);
+    Value *leftV = Executer_getValueByToken(this, left, true);
+    Value *rightV = Executer_getValueByToken(this, right, true);
     char *judgeValue = judge->value;
     char *leftType = leftV->type;
     char *rightType = rightV->type;
@@ -605,7 +434,7 @@ bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge
     {
         return true;
     }
-    else if (is_equal(leftType, RTYPE_BOX) && is_equal(rightType, RTYPE_BOX))
+    else if (is_equal(leftType, RTYPE_CONTAINER) && is_equal(rightType, RTYPE_CONTAINER))
     {
         char *leftS = Value_toString(leftV);
         char *rightS = Value_toString(rightV);
@@ -704,7 +533,7 @@ void Executer_consumeFunction(Executer *this, Leaf *leaf)
     Cursor *cursor2 = Queue_reset(leaf->leafs);
     Leaf *code = Queue_next(leaf->leafs, cursor2);
     Cursor_free(cursor2);
-    Executer_setTRValue(this, function, Value_newFunction(code, NULL), true);
+    Executer_setValueByToken(this, function, Value_newFunction(code, NULL), true);
 }
 
 void Executer_consumeCode(Executer *this, Leaf *leaf)
@@ -730,7 +559,7 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
 
 Value *Executer_runFunc(Executer *this, Token *funcName)
 {
-    Value *funcValue = Executer_getTRValue(this, funcName, true);
+    Value *funcValue = Executer_getValueByToken(this, funcName, true);
     tools_assert(is_equal(funcValue->type, RTYPE_FUNCTION), "function not valid for name: %s", funcName->value);
     // execute func
     Leaf *codeNode = funcValue->object;
@@ -749,7 +578,7 @@ Value *Executer_runFunc(Executer *this, Token *funcName)
 
 Value *Executer_runCFunc(Executer *this, Token *funcName)
 {
-    Value *funcValue = Executer_getTRValue(this, funcName, true);
+    Value *funcValue = Executer_getValueByToken(this, funcName, true);
     tools_assert(is_equal(funcValue->type, RTYPE_CFUNCTION), "cfunction not valid");
     void (*funcBody)(Bridge *) = funcValue->object;
     //
@@ -783,14 +612,14 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     Token *arg = Stack_next(leaf->tokens, cursor);
     while(arg != NULL)
     {
-        Value *value = Executer_getTRValue(this, arg, true);
+        Value *value = Executer_getValueByToken(this, arg, true);
         Stack_push(this->callStack, value);
         arg = Stack_next(leaf->tokens, cursor);
     }
     Cursor_free(cursor);
     // get func
     Value *r = NULL;
-    Value *funcValue = Executer_getTRValue(this, funcName, true);
+    Value *funcValue = Executer_getValueByToken(this, funcName, true);
     if (is_equal(funcValue->type, RTYPE_FUNCTION))
     {
         r = Executer_runFunc(this, funcName);
@@ -806,7 +635,7 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     //
     if (!is_equal(resultName->type, TTYPE_EMPTY) && !is_equal(resultName->value, TVALUE_EMPTY))
     {
-        Executer_setTRValue(this, resultName, r, true);
+        Executer_setValueByToken(this, resultName, r, true);
     }
     Stack_clear(this->callStack);
 }
@@ -816,7 +645,7 @@ void Executer_consumeResult(Executer *this, Leaf *leaf)
     Cursor *cursor = Stack_reset(leaf->tokens);
     Token *result = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
-    Value *value = Executer_getTRValue(this, result, true);
+    Value *value = Executer_getValueByToken(this, result, true);
     Stack_clear(this->callStack);
     Stack_push(this->callStack, value);
     this->isReturn = true;
@@ -878,7 +707,7 @@ double Executer_calculateBTree(Executer *this, Foliage *root)
             else
             {
                 tools_assert(is_values(token->type, TTYPES_GROUP_NUMBER), "invalid calculate argument in executor");
-                Value *v = Executer_getTRValue(this, token, true);
+                Value *v = Executer_getValueByToken(this, token, true);
                 v = Value_toNumber(v);
                 r = v->number;
                 if (Token_isStatic(token)) Value_free(v);
@@ -911,7 +740,7 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
     Value *r = Value_newNumber(n, NULL);
     //
     tools_assert(r != NULL, "invalid calculate state in executor");
-    Executer_setTRValue(this, target, r, false);
+    Executer_setValueByToken(this, target, r, false);
 }
 
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
@@ -1017,7 +846,7 @@ Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
     Executer_consumeTree(this, tree);
     if (this->containerStack->head == this->containerStack->tail) return NULL;
     Container *container = Executer_popContainer(this, CONTAINER_TYPE_BOX);
-    Value *module = Value_newBox(container, NULL);
+    Value *module = Value_newContainer(container, NULL);
     Container_set(this->globalContainer, path, module);
     return module;
 }

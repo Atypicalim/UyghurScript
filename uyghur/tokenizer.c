@@ -127,7 +127,7 @@ void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
     {
         tools_assert(is_values(type, TTYPES_GROUP_KEYS), "%s%s", LANG_ERR_NO_VALID_TOKEN, s);
         tools_assert(this->scope != NULL, "%s%s", LANG_ERR_NO_VALID_TOKEN, s);
-        token = Token_key(value, this->scope, type);
+        token = Token_key(this->scope, type, value);
     }
     else
     {

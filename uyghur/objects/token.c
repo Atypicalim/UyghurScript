@@ -14,9 +14,7 @@ typedef struct _Token {
     int column;
     char *type;
     char *value;
-    bool isKey;
-    char *scope;
-    char *kind;
+    void *extra;
     void *next;
     void *last;
 } Token;
@@ -30,9 +28,7 @@ Token *Token_new(char *type, void *value)
     token->column = 0;
     token->type = type;
     token->value = value;
-    token->isKey = false;
-    token->scope = NULL;
-    token->kind = NULL;
+    token->extra = NULL;
     token->next = NULL;
     token->last = NULL;
     return token;
@@ -55,12 +51,10 @@ Token *Token_name(char *name)
     return Token_new(TTYPE_NAME, name);
 }
 
-Token *Token_key(char *key, char *scope, char *kind)
+Token *Token_key(char *scope, char *keyType, char *keyValue)
 {
-    Token *token = Token_new(TTYPE_KEY, key);
-    token->isKey = true;
-    token->scope = scope;
-    token->kind = kind;
+    Token *token = Token_new(TTYPE_KEY, scope);
+    token->extra = Token_new(keyValue, keyValue);
     return token;
 }
 
@@ -116,8 +110,7 @@ bool Token_isStatic(Token *this)
 
 void Token_print(Token *this)
 {
-    char *scope = this->scope != NULL ? this->scope : "NULL";
-    printf("[(TOKEN) => type:%s, value:(%s), scope:(%s) in (%d, %d %s)]\n", this->type, this->value, scope, this->line, this->column, this->file);
+    printf("[(TOKEN) => type:%s, value:(%s) in (%d, %d %s)]\n", this->type, this->value, this->line, this->column, this->file);
 }
 
 void Token_free(Token *this)

@@ -26,4 +26,4 @@ fonkisiye tazilash bilen [../examples/hello.ug] ishlitilsun
 
 ```python
 ikrangha hello yezilsun
-# [RV => t:RTYPE_BOX p:-613914656]
+# [RV => t:RTYPE_CONTAINER p:-613914656]
