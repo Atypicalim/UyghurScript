@@ -23,13 +23,10 @@
 
 ```python
 # declare
-miqdar m tewellut bolsun
+miqdar m qimmiti quruq bolsun
 
 # free
-miqdar m azad bolsun
-
-# delete
-miqdar m wapat bolsun
+m qimmiti quruq bolsun
 
 # string
 s qimmiti [Salam Uyghur Script!] bolsun
@@ -205,11 +202,11 @@ fonkisiye @s{[sinaqFonkisiye]} bilen 11 22 ishlitilsun we netije @s{[sinaqNetije
 # print the resultType
 ikrangha @s{[sinaqNetije]} yezilsun
 
-# this box pointer: $, find in closest box
-@${[keyName]}
+# this box pointer: -, find in closest box
+@-{[keyName]}
 
-# global box pointer: _, find in global scope
-@_{[keyName]}
+# global box pointer: *, find in global scope
+@*{[keyName]}
 
 # supported key types: variable, string, number
 @s{sinaqMiqdar}

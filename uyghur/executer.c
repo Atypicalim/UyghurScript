@@ -144,13 +144,22 @@ Container *Executer_getContainerByToken(Executer *this, Token *token)
 char *Executer_getKeyByToken(Executer *this, Token *token)
 {
     char *key = token->value;
-    if (Token_isKey(token))
-    {
-        Token *extra = (Token *)token->extra;
+    if (!Token_isKey(token)) return key;
+    Token *extra = (Token *)token->extra;
+
+    if (Token_isNumber(extra)) {
+        String *s = String_format("%f", atof(extra->value));
+        key = String_dump(s);
+        String_free(s);
+    } else if (Token_isString(extra)) {
+        String *s = String_format("%s", extra->value);
+        key = String_dump(s);
+        String_free(s);
+    } else if (Token_isName(extra)) {
         Container *container = Executer_getContainerByKey(this, extra->value);
-        Executer_assert(this, container!= NULL, token, LANG_ERR_INVALID_KEY_NAME);
+        Executer_assert(this, container!= NULL, extra, LANG_ERR_INVALID_KEY_NAME);
         Value *value = Container_get(container, extra->value);
-        Executer_assert(this, value!= NULL, token, LANG_ERR_INVALID_KEY_NAME);
+        Executer_assert(this, value!= NULL, extra, LANG_ERR_INVALID_KEY_NAME);
         key = Value_toString(value);
     }
     return key;
@@ -178,7 +187,8 @@ void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool 
     Container *container = Executer_getContainerByToken(this, token);
     if (withDeclare && container == NULL) container = this->currentContainer;
     Executer_assert(this, container != NULL, token, LANG_ERR_VARIABLE_NOT_FOUND);
-    Value *replacedValue = Container_set(container, token->value, value);
+    char *key = Executer_getKeyByToken(this, token);
+    Value *replacedValue = Container_set(container, key, value);
     if (replacedValue != NULL) Object_release(replacedValue);
 }
 
@@ -192,7 +202,8 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     Value *old = Container_get(container, name->value);
     Value *new = Executer_getValueByToken(this, token, true);
     Executer_assert(this, old == NULL, name, LANG_ERR_VARIABLE_IS_FOUND);
-    Container_set(container, name->value, new);
+    char *key = Executer_getKeyByToken(this, name);
+    Container_set(container, key, new);
 }
 
 void Executer_consumeOperate(Executer *this, Leaf *leaf)
@@ -253,7 +264,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
             }
             else if (is_equal(value->type, RTYPE_FUNCTION))
             {
-                r = Value_newNumber(true, NULL);
+                r = Value_newBoolean(false, NULL);
             }
         }
         else if (is_equal(act, TVALUE_NUM))
@@ -546,7 +557,8 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     while(arg != NULL)
     {
         Value *value = Stack_next(this->callStack, cursor1);
-        Container_set(this->currentContainer, arg->value, value);
+        char *key = Executer_getKeyByToken(this, arg);
+        Container_set(this->currentContainer, key, value);
         arg = Stack_next(leaf->tokens, cursor2);
     }
     Cursor_free(cursor1);

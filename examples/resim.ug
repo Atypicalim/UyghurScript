@@ -1,9 +1,8 @@
 # rotating image
 
-miqdar rotation tewellut bolsun
-rotation qimmiti 0 bolsun
+miqdar rotation qimmiti 0 bolsun
 
-fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
 
     rotation qimmiti rotation qushulghan 0.05 bolsun
     fonkisiye @ressam{[resimEkirish]} bilen [../resources/rose.png] 100 0 200 200 yalghan yalghan ishlitilsun we netije r bolsun

@@ -31,59 +31,69 @@ void Tokenizer_reset(Tokenizer *this)
     this->keyBorder = ' ';
 }
 
+void _set_keyword(Hashmap *map, char *tvalue, char *ttype)
+{
+    Hashmap_set(map, tvalue, String_format(ttype));
+}
+
+void _fill_keyword(Hashmap *map, char *tvalue)
+{
+    _set_keyword(map, tvalue, tvalue);
+}
+
 Tokenizer *Tokenizer_new(Uyghur *uyghur)
 {
     Tokenizer *tokenizer = malloc(sizeof(Tokenizer));
     tokenizer->uyghur = uyghur;
     Hashmap *map = Hashmap_new();
-    Hashmap_fill(map, TVALUE_WHILE);
-    Hashmap_fill(map, TVALUE_IF);
-    Hashmap_fill(map, TVALUE_IF_ELSE);
-    Hashmap_fill(map, TVALUE_IF_OK);
-    Hashmap_fill(map, TVALUE_IF_NO);
-    Hashmap_fill(map, TVALUE_CODE_END);
-    Hashmap_fill(map, TVALUE_OUTPUT);
-    Hashmap_fill(map, TVALUE_INPUT);
-    Hashmap_fill(map, TVALUE_DOT);
-    Hashmap_fill(map, TVALUE_STR);
-    Hashmap_fill(map, TVALUE_NUM);
-    Hashmap_fill(map, TVALUE_BOOLEAN);
-    Hashmap_fill(map, TVALUE_AND);
-    Hashmap_fill(map, TVALUE_OR);
-    Hashmap_fill(map, TVALUE_NOT);
-    Hashmap_fill(map, TVALUE_ADD);
-    Hashmap_fill(map, TVALUE_SUB);
-    Hashmap_fill(map, TVALUE_MUL);
-    Hashmap_fill(map, TVALUE_DIV);
-    Hashmap_fill(map, TVALUE_LESS);
-    Hashmap_fill(map, TVALUE_MORE);
-    Hashmap_fill(map, TVALUE_CONCAT);
-    Hashmap_fill(map, TVALUE_EQUAL);
-    Hashmap_fill(map, TVALUE_TARGET_FROM);
-    Hashmap_fill(map, TVALUE_TARGET_TO);
-    Hashmap_fill(map, TVALUE_VARIABLE);
-    Hashmap_fill(map, TVALUE_VALUE);
-    Hashmap_fill(map, TVALUE_MADE);
-    Hashmap_fill(map, TVALUE_FUNCTION);
-    Hashmap_fill(map, TVALUE_CONTENT);
-    Hashmap_fill(map, TVALUE_WITH);
-    Hashmap_fill(map, TVALUE_CALL);
-    Hashmap_fill(map, TVALUE_RETURN);
-    Hashmap_fill(map, TVALUE_FURTHER);
-    Hashmap_fill(map, TVALUE_RESULT);
-    Hashmap_set(map, TVALUE_TRUE, TTYPE_BOOL);
-    Hashmap_set(map, TVALUE_FALSE, TTYPE_BOOL);
-    Hashmap_set(map, TVALUE_EMPTY, TTYPE_EMPTY);
-    Hashmap_set(map, TVALUE_BOX, TTYPE_BOX);
-    Hashmap_fill(map, TVALUE_CALCULATOR);
-    Hashmap_set(map, TVALUE_SIGN_ADD, TTYPE_CALCULATION);
-    Hashmap_set(map, TVALUE_SIGN_SUB, TTYPE_CALCULATION);
-    Hashmap_set(map, TVALUE_SIGN_MUL, TTYPE_CALCULATION);
-    Hashmap_set(map, TVALUE_SIGN_DIV, TTYPE_CALCULATION);
-    Hashmap_set(map, TVALUE_SIGN_POW, TTYPE_CALCULATION);
-    Hashmap_set(map, TVALUE_SIGN_PER, TTYPE_CALCULATION);
-    Hashmap_fill(map, TVALUE_OPEN);
-    Hashmap_fill(map, TVALUE_CLOSE);
+    _fill_keyword(map, TVALUE_WHILE);
+    _fill_keyword(map, TVALUE_IF);
+    _fill_keyword(map, TVALUE_IF_ELSE);
+    _fill_keyword(map, TVALUE_IF_OK);
+    _fill_keyword(map, TVALUE_IF_NO);
+    _fill_keyword(map, TVALUE_CODE_END);
+    _fill_keyword(map, TVALUE_OUTPUT);
+    _fill_keyword(map, TVALUE_INPUT);
+    _fill_keyword(map, TVALUE_DOT);
+    _fill_keyword(map, TVALUE_STR);
+    _fill_keyword(map, TVALUE_NUM);
+    _fill_keyword(map, TVALUE_BOOLEAN);
+    _fill_keyword(map, TVALUE_AND);
+    _fill_keyword(map, TVALUE_OR);
+    _fill_keyword(map, TVALUE_NOT);
+    _fill_keyword(map, TVALUE_ADD);
+    _fill_keyword(map, TVALUE_SUB);
+    _fill_keyword(map, TVALUE_MUL);
+    _fill_keyword(map, TVALUE_DIV);
+    _fill_keyword(map, TVALUE_LESS);
+    _fill_keyword(map, TVALUE_MORE);
+    _fill_keyword(map, TVALUE_CONCAT);
+    _fill_keyword(map, TVALUE_EQUAL);
+    _fill_keyword(map, TVALUE_TARGET_FROM);
+    _fill_keyword(map, TVALUE_TARGET_TO);
+    _fill_keyword(map, TVALUE_VARIABLE);
+    _fill_keyword(map, TVALUE_VALUE);
+    _fill_keyword(map, TVALUE_MADE);
+    _fill_keyword(map, TVALUE_FUNCTION);
+    _fill_keyword(map, TVALUE_CONTENT);
+    _fill_keyword(map, TVALUE_WITH);
+    _fill_keyword(map, TVALUE_CALL);
+    _fill_keyword(map, TVALUE_RETURN);
+    _fill_keyword(map, TVALUE_FURTHER);
+    _fill_keyword(map, TVALUE_RESULT);
+    _set_keyword(map, TVALUE_TRUE, TTYPE_BOOL);
+    _set_keyword(map, TVALUE_FALSE, TTYPE_BOOL);
+    _set_keyword(map, TVALUE_EMPTY, TTYPE_EMPTY);
+    _set_keyword(map, TVALUE_BOX, TTYPE_BOX);
+    _fill_keyword(map, TVALUE_CALCULATOR);
+    _set_keyword(map, TVALUE_SIGN_ADD, TTYPE_CALCULATION);
+    _set_keyword(map, TVALUE_SIGN_SUB, TTYPE_CALCULATION);
+    _set_keyword(map, TVALUE_SIGN_MUL, TTYPE_CALCULATION);
+    _set_keyword(map, TVALUE_SIGN_DIV, TTYPE_CALCULATION);
+    _set_keyword(map, TVALUE_SIGN_POW, TTYPE_CALCULATION);
+    _set_keyword(map, TVALUE_SIGN_PER, TTYPE_CALCULATION);
+    _fill_keyword(map, TVALUE_OPEN);
+    _fill_keyword(map, TVALUE_CLOSE);
     tokenizer->keywordsMap = map;
     return tokenizer;
 }
@@ -114,10 +124,10 @@ void Tokenizer_addToken(Tokenizer *this, char *type, char *value)
 {
     if (type == TTYPE_NAME)
     {
-        char *v = Hashmap_get(this->keywordsMap, value);
+        String *v = Hashmap_get(this->keywordsMap, value);
         if (v != NULL)
         {
-            type = is_equal(v, value) ? TTYPE_WORD : v;
+            type = is_equal(String_get(v), value) ? TTYPE_WORD : String_get(v);
         }
     }
     //

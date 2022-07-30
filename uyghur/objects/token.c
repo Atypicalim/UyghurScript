@@ -54,7 +54,7 @@ Token *Token_name(char *name)
 Token *Token_key(char *scope, char *keyType, char *keyValue)
 {
     Token *token = Token_new(TTYPE_KEY, scope);
-    token->extra = Token_new(keyValue, keyValue);
+    token->extra = Token_new(keyType, keyValue);
     return token;
 }
 

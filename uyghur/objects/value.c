@@ -43,7 +43,7 @@ char *_get_cache_tag(char *type, bool boolean, double number, char *string)
     // int hashValue = 0;
     // get
     // if (canCache) {
-    //     hashValue =hashValue = hash(tag);
+    //     hashValue =hashValue = _hashmap_hash_code(tag);
     //     Value *v = Hashmap_getWithHash(valueCache, tag, hashValue);
     //     if (v != NULL)
     //     {
@@ -155,8 +155,7 @@ char *Value_toString(Value *this)
     }
     if (is_equal(this->type, RTYPE_STRING))
     {
-        char *value = this->string;
-        return value;
+        return tools_format("%s", this->string);
     }
     else
     {

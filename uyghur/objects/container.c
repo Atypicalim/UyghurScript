@@ -10,8 +10,6 @@
 typedef struct _Container {
     struct _Object;
     Hashmap *map;
-    bool isBox;
-    bool isScope;
     char *type;
 } Container;
 
@@ -60,12 +58,13 @@ void Container_del(Container *this, char *key)
 
 char *Container_toString(Container *this)
 {
-    return tools_format("[Container => t:%d, box:%s, scope:%s]", this, b2s(this->isBox), b2s(this->isScope));
+    return tools_format("[Container => type:%s]", this->type);
 }
 
 void Container_print(Container *this)
 {
     printf(Container_toString(this));
+    Hashmap_print(this->map);
 }
 
 bool Container_isScope(Container *this)
@@ -85,7 +84,7 @@ bool Container_isModule(Container *this)
 
 void Container_free(Container *this)
 {
-    Hashmap_free(this->map);
+    Object_release(this->map);
     Object_free(this);
 }
 

@@ -1,47 +1,40 @@
 # calculator
 
-miqdar ENG_CHONG_KIRGUZGILI_BULDIGHAN_QIMMET tewellut bolsun
-miqdar ENG_CHONG_HISABLIGHILI_BULDIGHAN_QIMMET tewellut bolsun
-ENG_CHONG_KIRGUZGILI_BULDIGHAN_QIMMET qimmiti 999 bolsun
-ENG_CHONG_HISABLIGHILI_BULDIGHAN_QIMMET qimmiti 999999 bolsun
+miqdar ENG_CHONG_KIRGUZGILI_BULDIGHAN_QIMMET qimmiti 999 bolsun
+miqdar ENG_CHONG_HISABLIGHILI_BULDIGHAN_QIMMET qimmiti 999999 bolsun
 
-miqdar netijeQimmet tewellut bolsun
-miqdar hazirqiQimmet tewellut bolsun
-miqdar aldinqiQimmet tewellut bolsun
-miqdar herketQimmet tewellut bolsun
-miqdar sinaqXet tewellut bolsun
+miqdar herketQimmet qimmiti quruq bolsun
+miqdar sinaqXet qimmiti quruq bolsun
 
-miqdar kunupkaSani tewellut bolsun
-miqdar kunupkaNumuri tewellut bolsun
-miqdar tekshuruldighanQimmet tewellut bolsun
+miqdar kunupkaNumuri qimmiti quruq bolsun
 
-miqdar kunupkaOrniX tewellut bolsun
-miqdar kunupkaOrniY tewellut bolsun
-miqdar kordinatX tewellut bolsun
-miqdar kordinatY tewellut bolsun
-miqdar kunupkaXeti tewellut bolsun
+miqdar kunupkaOrniX qimmiti quruq bolsun
+miqdar kunupkaOrniY qimmiti quruq bolsun
+miqdar kordinatX qimmiti quruq bolsun
+miqdar kordinatY qimmiti quruq bolsun
+miqdar kunupkaXeti qimmiti quruq bolsun
 
-netijeQimmet qimmiti 0 bolsun
-hazirqiQimmet qimmiti 0 bolsun
-aldinqiQimmet qimmiti 15 bolsun
+miqdar netijeQimmet qimmiti 0 bolsun
+miqdar hazirqiQimmet qimmiti 0 bolsun
+miqdar aldinqiQimmet qimmiti 15 bolsun
 
-kunupkaSani qimmiti 16 bolsun
-tekshuruldighanQimmet qimmiti yalghan bolsun
+miqdar kunupkaSani qimmiti 16 bolsun
+miqdar tekshuruldighanQimmet qimmiti yalghan bolsun
 
-miqdar test1 tewellut bolsun
-miqdar test2 tewellut bolsun
-miqdar aldinqisiSanmu tewellut bolsun
-miqdar aldinqisiHerketmu tewellut bolsun
-miqdar aldinqisiTengmu tewellut bolsun
-miqdar buSanmu tewellut bolsun
-miqdar buHerketmu tewellut bolsun
-miqdar buTengmu tewellut bolsun
+miqdar test1 qimmiti quruq bolsun
+miqdar test2 qimmiti quruq bolsun
+miqdar aldinqisiSanmu qimmiti quruq bolsun
+miqdar aldinqisiHerketmu qimmiti quruq bolsun
+miqdar aldinqisiTengmu qimmiti quruq bolsun
+miqdar buSanmu qimmiti quruq bolsun
+miqdar buHerketmu qimmiti quruq bolsun
+miqdar buTengmu qimmiti quruq bolsun
 
-miqdar sinaqQimmet tewellut bolsun
+miqdar sinaqQimmet qimmiti quruq bolsun
 
 # get sign
 fonkisiye belgilerniElish miqdar x mezmuni
-    miqdar r tewellut bolsun
+    miqdar r qimmiti quruq bolsun
     eger x qimmiti quruq bolsa
         r qimmiti [] bolsun
     egerde x qimmiti 1 bolsa
@@ -202,7 +195,7 @@ fonkisiye kunupkaSizish miqdar id mezmuni
 
 tamamlansun
 
-fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
 
     # buttons
     kunupkaNumuri qimmiti 1 bolsun

@@ -1,28 +1,27 @@
 # running men
 
-miqdar r tewellut bolsun
-miqdar w tewellut bolsun
-miqdar n tewellut bolsun
-miqdar m tewellut bolsun
-miqdar x tewellut bolsun
-miqdar y tewellut bolsun
-miqdar t tewellut bolsun
-miqdar s tewellut bolsun
-n qimmiti 1 bolsun
-m qimmiti 1 bolsun
-s qimmiti [Bir Ikki Bir, Bir Ikki Bir ...] bolsun
+miqdar r qimmiti quruq bolsun
+miqdar w qimmiti quruq bolsun
 
-fonkisiye @_{[doska_korsitish_qayturmisi]} mezmuni
+miqdar x qimmiti quruq bolsun
+miqdar y qimmiti quruq bolsun
+miqdar t qimmiti quruq bolsun
+
+miqdar n qimmiti 1 bolsun
+miqdar m qimmiti 1 bolsun
+miqdar s qimmiti [Bir Ikki Bir, Bir Ikki Bir ...] bolsun
+
+fonkisiye @*{[doska_korsitish_qayturmisi]} mezmuni
 tamamlansun
 
-fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
 
     m = m + 1
     t qimmiti m chong 400 bolsun
     eger t qimmiti rast bolsa
         n = n % 8
         n = n + 1
-        m = 0
+        m = 0 + 0
     tamamlansun
 
     t qimmiti n kichik 5 bolsun

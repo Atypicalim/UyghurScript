@@ -84,6 +84,8 @@ void Bridge_pushValue(Bridge *this, Value *value)
     {
         tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key unnecessary for value");
     }
+    // TODO: dont rlease the values registering by stack and remove this retain
+    Object_retain(value);
     Stack_push(this->stack, value);
     this->last = BRIDGE_ITEM_TP_VAL;
 }
@@ -111,7 +113,10 @@ void Bridge_pushKey(Bridge *this, char *key)
 {
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, key available for only box");
     tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key neceessary for last value");
-    Stack_push(this->stack, Value_newString(str_new(key), NULL));
+    Value *keyValue = Value_newString(str_new(key), NULL);
+    // TODO: user string obj as  char* and remove this retain
+    Object_retain(keyValue);
+    Stack_push(this->stack, keyValue);
     this->last = BRIDGE_ITEM_TP_KEY;
 }
 

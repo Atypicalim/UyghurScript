@@ -1,16 +1,15 @@
 # double sound
 
-miqdar tag tewellut bolsun
-tag qimmiti quruq bolsun
+miqdar tag qimmiti quruq bolsun
 
-fonkisiye @_{[doska_korsitish_qayturmisi]} mezmuni
+fonkisiye @*{[doska_korsitish_qayturmisi]} mezmuni
     fonkisiye @awaz{[ekirish]} bilen [../resources/road.wav] ishlitilsun we netije tag bolsun
     fonkisiye @awaz{[quyush]} bilen tag ishlitilsun
     fonkisiye @awaz{[ekirish]} bilen [../resources/door.wav] ishlitilsun we netije tag bolsun
     fonkisiye @awaz{[quyush]} bilen tag ishlitilsun
 tamamlansun
 
-fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
 tamamlansun
 
 fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun

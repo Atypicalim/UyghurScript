@@ -25,7 +25,7 @@ Uyghur *Uyghur_new()
     uyghur->parser = Parser_new(uyghur);
     uyghur->executer = Executer_new(uyghur);
     uyghur->bridge = Bridge_new(uyghur);
-    // register_internal_libraries(uyghur->bridge);
+    register_internal_libraries(uyghur->bridge);
     return uyghur;
 }
 

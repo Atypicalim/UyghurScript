@@ -1,15 +1,15 @@
 # playing music
 
-miqdar tag tewellut bolsun
+miqdar tag qimmiti quruq bolsun
 
-fonkisiye @_{[doska_korsitish_qayturmisi]} mezmuni
+fonkisiye @*{[doska_korsitish_qayturmisi]} mezmuni
     fonkisiye @muzika{[ekirish]} bilen [../resources/bahar.mp3] ishlitilsun we netije tag bolsun
     fonkisiye @muzika{[quyush]} bilen tag ishlitilsun
     fonkisiye @muzika{[yuqiriliqiniBikitish]} bilen tag 1 ishlitilsun
     fonkisiye @muzika{[orniniBikitish]} bilen tag 25 ishlitilsun
 tamamlansun
 
-fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
     fonkisiye @muzika{[yingilash]} bilen tag ishlitilsun
 tamamlansun
 

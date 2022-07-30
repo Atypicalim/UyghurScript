@@ -1,14 +1,9 @@
 # test
 
-# miqdar yighinda qimmiti quruq bolsun
-# miqdar abcd qimmiti quruq bolsun
-# abcd qimmiti sanduq bolsun
-# yighinda qimmiti [abc] bolsun
+# miqdar yighinda qimmiti [abc] bolsun
+miqdar abcd qimmiti sanduq bolsun
 
-# @abcd{yighinda} qimmiti 1 qushulghan 2 bolsun
-# ikrangha @abcd{yighinda} yezilsun
+@abcd{77} qimmiti 1 qushulghan 2 bolsun
+ikrangha @abcd{77} yezilsun
 
-fonkisiye sinaq miqdar a mezmuni
-tamamlansun
-fonkisiye sinaq bilen 1 ishlitilsun
 # ikrangha [tamam!] yezilsun

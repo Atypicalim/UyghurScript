@@ -1,9 +1,8 @@
 # clock
 
-miqdar o tewellut bolsun
-o qimmiti 0 bolsun
+miqdar o qimmiti 0 bolsun
 
-fonkisiye @_{[doska_sizish_qayturmisi]} mezmuni
+fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
 
     fonkisiye @waqit{[sikuntElish]} ishlitilsun we netije tt bolsun
     fonkisiye @waqit{[sikuntniAylandurush]} bilen tt [%Y-%m-%d %H:%M:%S] ishlitilsun we netije tt bolsun

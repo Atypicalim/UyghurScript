@@ -138,18 +138,8 @@ bool is_calculation(char c)
 
 void Object_initByType(char *type, void *object)
 {
-    if (is_equal(type, PCT_OBJ_VALUE)) {
-        printf("Object_initByType:[%s]\n", type);
-        Value_print(object);
-    }
+    //
 }
-
-
-#define PCT_OBJ_VALUE "PCT_OBJ_VALUE"
-#define PCT_OBJ_CONTAINER "PCT_OBJ_CONTAINER"
-#define PCT_OBJ_TOKEN "PCT_OBJ_TOKEN"
-#define PCT_OBJ_LEAF "PCT_OBJ_LEAF"
-
 
 void Object_freeByType(char *type, void *object)
 {
@@ -162,11 +152,7 @@ void Object_freeByType(char *type, void *object)
     if (is_equal(type, PCT_OBJ_HASHMAP)) return Hashmap_free(object);
     if (is_equal(type, PCT_OBJ_FOLIAGE)) return Foliage_free(object);
     if (is_equal(type, PCT_OBJ_BLOCK)) return Block_free(object);
-    if (is_equal(type, PCT_OBJ_VALUE)) {
-        printf("Object_freeByType:[%s]\n", type);
-        Value_print(object);
-        return Value_free(object);
-    }
+    if (is_equal(type, PCT_OBJ_VALUE)) return Value_free(object);
     if (is_equal(type, PCT_OBJ_CONTAINER)) return Container_free(object);
     if (is_equal(type, PCT_OBJ_TOKEN)) return Token_free(object);
     if (is_equal(type, PCT_OBJ_LEAF)) return Leaf_free(object);

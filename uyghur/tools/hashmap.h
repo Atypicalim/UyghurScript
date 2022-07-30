@@ -24,23 +24,21 @@ void Hashmap_del(Hashmap *, char *);
 void Hashmap_print(Hashmap *);
 void Hashmap_free(Hashmap *);
 
-static unsigned long hashcode(char *key) {
+
+static int _hashmap_hash_code(char *key) {
     register unsigned long hash = 0;
     unsigned long ch;
     while (ch = (unsigned long)*key++) {
         hash = hash * 131 + ch;
     }
-    return hash;
-}
-
-static int hash(char *key) {
-    return hashcode(key) % HASHMAP_DEFAULT_CAPACITY;
+    return hash % HASHMAP_DEFAULT_CAPACITY;
 }
 
 Entry *_hashmap_new_entry(char *key, char *value)
 {
     Entry *pnode = (Entry *)malloc(sizeof(Entry));
     pnode->key = key;
+    Object_retain(value);
     pnode->value = value;
     pnode->next = NULL;
     return pnode;
@@ -64,6 +62,7 @@ void Hashmap_free(Hashmap *this) {
         while (ptr != NULL) {
             head = ptr;
             ptr = ptr->next;
+            if (head->value != NULL) Object_release(head->value);
             free(head);
         }
     }
@@ -82,6 +81,7 @@ void *Hashmap_setWithHash(Hashmap *this, char *key, void *value, int hashValue) 
         while (ptr != NULL) {
             if (!strcmp(key, ptr->key)) {
                 tmp = ptr->value;
+                Object_retain(value);
                 ptr->value = value;
                 return tmp;
             }
@@ -95,12 +95,8 @@ void *Hashmap_setWithHash(Hashmap *this, char *key, void *value, int hashValue) 
 }
 
 void *Hashmap_set(Hashmap *this, char *key, void *value) {
-    int hashValue = hash(key);
+    int hashValue = _hashmap_hash_code(key);
     return Hashmap_setWithHash(this, key, value, hashValue);
-}
-
-void *Hashmap_fill(Hashmap *this, char *content) {
-    return Hashmap_set(this, content, content);
 }
 
 void *Hashmap_getWithHash(Hashmap *this, char *key, int hashValue) {
@@ -117,16 +113,17 @@ void *Hashmap_getWithHash(Hashmap *this, char *key, int hashValue) {
 }
 
 void *Hashmap_get(Hashmap *this, char *key) {
-    int hashValue = hash(key);
+    int hashValue = _hashmap_hash_code(key);
     return Hashmap_getWithHash(this, key, hashValue);
 }
 
 void Hashmap_del(Hashmap *this, char *key) {
     assert(this != NULL);
-    int pos = hash(key);
+    int pos = _hashmap_hash_code(key);
     Entry *ptr = this[pos].position;
     Entry *pre = ptr;
     if (ptr->next == NULL) {
+        if (ptr->value != NULL) Object_release(ptr->value);
         free(ptr);
         this[pos].position = NULL;
         return;
@@ -134,6 +131,7 @@ void Hashmap_del(Hashmap *this, char *key) {
     while (ptr != NULL) {
         if (!strcmp(key, ptr->key)) {
             pre->next = ptr->next;
+            if (ptr->value != NULL) Object_release(ptr->value);
             free(ptr);
             return;
         }
