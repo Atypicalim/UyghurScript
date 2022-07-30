@@ -23,6 +23,21 @@
 #define PCT_OBJ_FOLIAGE "PCT_OBJ_FOLIAGE"
 #define PCT_OBJ_BLOCK "PCT_OBJ_BLOCK"
 
+void *pct_mallloc(size_t size)
+{
+    return malloc(size);
+}
+
+void *pct_realloc(void *object, size_t size)
+{
+    return realloc(object, size);
+}
+
+void pct_free(void *object)
+{
+    free(object);
+}
+
 #include "../tools/object.h"
 #include "../tools/string.h"
 #include "../tools/cursor.h"

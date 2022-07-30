@@ -10,7 +10,7 @@ typedef struct _Cursor {
 
 Cursor *Cursor_new(void *cursor)
 {
-    Cursor *queue = (Cursor *)malloc(sizeof(Cursor));
+    Cursor *queue = (Cursor *)pct_mallloc(sizeof(Cursor));
     Object_init(queue, PCT_OBJ_CURSOR);
     queue->cursor = cursor;
     return queue;

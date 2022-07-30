@@ -9,7 +9,7 @@ void ug_string_replace(Bridge *bridge)
     char *to =Bridge_nextString(bridge);
     double direction = Bridge_nextNumber(bridge);
     double num = Bridge_nextNumber(bridge);
-    char *result = str_replace(origin, from, to, direction, num);
+    char *result = NULL; // TODO: replace(origin, from, to, direction, num);
     Bridge_startResult(bridge);
     Bridge_pushString(bridge, result);
     Bridge_return(bridge);
@@ -20,7 +20,7 @@ void ug_string_replace_first(Bridge *bridge)
     char *origin = Bridge_nextString(bridge);
     char *from =Bridge_nextString(bridge);
     char *to =Bridge_nextString(bridge);
-    char *result = str_replace(origin, from, to, 1, 1);
+    char *result = NULL; // TODO: replace(origin, from, to, 1, 1);
     Bridge_startResult(bridge);
     Bridge_pushString(bridge, result);
     Bridge_return(bridge);
@@ -31,7 +31,7 @@ void ug_string_replace_last(Bridge *bridge)
     char *origin = Bridge_nextString(bridge);
     char *from =Bridge_nextString(bridge);
     char *to =Bridge_nextString(bridge);
-    char *result = str_replace(origin, from, to, -1, 1);
+    char *result = NULL; // TODO: replace(origin, from, to, -1, 1);
     Bridge_startResult(bridge);
     Bridge_pushString(bridge, result);
     Bridge_return(bridge);
@@ -42,7 +42,7 @@ void ug_string_replace_all(Bridge *bridge)
     char *origin = Bridge_nextString(bridge);
     char *from =Bridge_nextString(bridge);
     char *to =Bridge_nextString(bridge);
-    char *result = str_replace(origin, from, to, 1, -1);
+    char *result = NULL; // TODO: replace(origin, from, to, 1, -1);
     Bridge_startResult(bridge);
     Bridge_pushString(bridge, result);
     Bridge_return(bridge);
@@ -55,7 +55,7 @@ void ug_string_find(Bridge *bridge)
     double from = Bridge_nextNumber(bridge);
     double to = Bridge_nextNumber(bridge);
     double index = Bridge_nextNumber(bridge);
-    int result = str_find(origin, find, from, to, index);
+    int result = 0; // TODO: find(origin, find, from, to, index);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, result);
     Bridge_return(bridge);
@@ -65,7 +65,7 @@ void ug_string_find_first(Bridge *bridge)
 {
     char *origin = Bridge_nextString(bridge);
     char *find =Bridge_nextString(bridge);
-    int result = str_find(origin, find, 1, -1, 1);
+    int result = 0; // TODO: find(origin, find, 1, -1, 1);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, result);
     Bridge_return(bridge);
@@ -75,7 +75,7 @@ void ug_string_find_last(Bridge *bridge)
 {
     char *origin = Bridge_nextString(bridge);
     char *find =Bridge_nextString(bridge);
-    int result = str_find(origin, find, 1, -1, -1);
+    int result = 0; // TODO: find(origin, find, 1, -1, -1);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, result);
     Bridge_return(bridge);
@@ -86,7 +86,7 @@ void ug_string_cut(Bridge *bridge)
     char *origin = Bridge_nextString(bridge);
     double from = Bridge_nextNumber(bridge);
     double to = Bridge_nextNumber(bridge);
-    char *result = str_cut(origin, from, to);
+    char *result = NULL; // TODO: cut(origin, from, to);
     Bridge_startResult(bridge);
     Bridge_pushString(bridge, result);
     Bridge_return(bridge);
@@ -95,7 +95,7 @@ void ug_string_cut(Bridge *bridge)
 void ug_string_count(Bridge *bridge)
 {
     char *origin = Bridge_nextString(bridge);
-    int result = str_count(origin);
+    int result = strlen(origin);
     Bridge_startResult(bridge);
     Bridge_pushNumber(bridge, result);
     Bridge_return(bridge);
@@ -105,7 +105,7 @@ void ug_string_link(Bridge *bridge)
 {
     char *origin = Bridge_nextString(bridge);
     char *other = Bridge_nextString(bridge);
-    char *result = str_link(origin, other);
+    char *result = NULL; // TODO: link(origin, other);
     Bridge_startResult(bridge);
     Bridge_pushString(bridge, result);
     Bridge_return(bridge);
@@ -115,13 +115,15 @@ void ug_str_format(Bridge *bridge)
 {
     char *f = Bridge_nextString(bridge);
     Value *v = Bridge_nextValue(bridge);
-    char *r = Value_toString(v);
-    if (v->type == RTYPE_NUMBER) r = str_format(f, v->number);
-    if (v->type == RTYPE_STRING) r = str_format(f, v->string);
-    if (v->type == RTYPE_BOOLEAN) r = str_format(f, v->boolean);
+    String *r = NULL;
+    if (v->type == RTYPE_NUMBER) r = String_format(f, v->number);
+    if (v->type == RTYPE_STRING) r = String_format(f, v->string);
+    if (v->type == RTYPE_BOOLEAN) r = String_format(f, v->boolean);
+    if (r == NULL) r = String_format("%s");
     Bridge_startResult(bridge);
-    Bridge_pushString(bridge, r);
+    Bridge_pushString(bridge, String_dump(r));
     Bridge_return(bridge);
+    Object_release(r);
 }
 
 void lib_string_register(Bridge *bridge)

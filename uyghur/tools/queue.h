@@ -14,7 +14,7 @@ typedef struct _Queue {
 
 Queue *Queue_new()
 {
-    Queue *queue = (Queue *)malloc(sizeof(Queue));
+    Queue *queue = (Queue *)pct_mallloc(sizeof(Queue));
     Object_init(queue, PCT_OBJ_QUEUE);
     queue->head = NULL;
     queue->tail = NULL;

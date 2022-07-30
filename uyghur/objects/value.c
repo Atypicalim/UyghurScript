@@ -14,7 +14,7 @@ typedef struct ValueNode {
     char *type;
     bool boolean;
     double number;
-    char *string;
+    String *string;
     void *object;
     void *extra;
 } Value;
@@ -34,11 +34,11 @@ char *_get_cache_tag(char *type, bool boolean, double number, char *string)
     return NULL;
 }
 
- Value *Value_new(char *type, bool boolean, double number, char *string, void *object, void *extra)
+ Value *Value_new(char *type, bool boolean, double number, String *string, void *object, void *extra)
 {
     // cache
     // if (valueCache == NULL) valueCache = Hashmap_new(NULL);
-    // char *tag = _get_cache_tag(type, boolean, number, string);
+    // char *tag = _get_cache_tag(type, boolean, number, String_get(string));
     // bool canCache = tag != NULL;
     // int hashValue = 0;
     // get
@@ -94,7 +94,7 @@ Value *Value_newNumber(double number, void *extra)
     return Value_new(RTYPE_NUMBER, NULL, number, NULL, NULL, extra);
 }
 
-Value *Value_newString(char *string, void *extra)
+Value *Value_newString(String *string, void *extra)
 {
     return Value_new(RTYPE_STRING, NULL, 0, string, NULL, extra);
 }
@@ -127,7 +127,7 @@ void Value_print(Value *this)
     }
     else if (is_equal(this->type, RTYPE_STRING))
     {
-        char *value = this->string;
+        char *value = String_get(this->string);
         printf("[RV => t:%s v:%s]\n", this->type, value);
     }
     else
@@ -155,7 +155,7 @@ char *Value_toString(Value *this)
     }
     if (is_equal(this->type, RTYPE_STRING))
     {
-        return tools_format("%s", this->string);
+        return String_dump(this->string);
     }
     else
     {
@@ -172,7 +172,7 @@ Value *Value_toBoolean(Value *this)
     }
     else if (is_equal(this->type, RTYPE_STRING))
     {
-        return Value_newBoolean(is_equal(this->string, TVALUE_TRUE), NULL);
+        return Value_newBoolean(is_equal(String_get(this->string), TVALUE_TRUE), NULL);
     }
     else if (is_equal(this->type, RTYPE_EMPTY))
     {
@@ -197,7 +197,7 @@ Value *Value_toNumber(Value *this)
     }
     else if (is_equal(this->type, RTYPE_STRING))
     {
-        return Value_newNumber(atof(this->string), NULL);
+        return Value_newNumber(atof(String_get(this->string)), NULL);
     }
     else if (is_equal(this->type, RTYPE_EMPTY))
     {
@@ -215,7 +215,7 @@ Value *Value_toNumber(Value *this)
 
 void Value_free(Value *this)
 {
-    // char *tag = _get_cache_tag(this->type, this->boolean, this->number, this->string);
+    // char *tag = _get_cache_tag(this->type, this->boolean, this->number, String_get(this->string));
     // // printf("%s\n", tag);
     // if (tag != NULL)
     // {
@@ -224,7 +224,7 @@ void Value_free(Value *this)
     
     if (is_equal(this->type, RTYPE_STRING))
     {
-        free(this->string);
+        Object_release(this->string);
     }
     if (is_equal(this->type, RTYPE_CONTAINER))
     {

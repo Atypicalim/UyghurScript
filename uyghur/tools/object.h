@@ -19,7 +19,7 @@ void Object_init(void *_this, void *_objType)
 
 Object *Object_new()
 {
-    Object *object = (Object *)malloc(sizeof(Object));
+    Object *object = (Object *)pct_mallloc(sizeof(Object));
     Object_init(object, PCT_OBJ_OBJECT);
     return object;
 }
@@ -34,7 +34,7 @@ void Object_print(void *_this)
 void Object_free(void *_this)
 {
     Object *this = _this;
-    free(this);
+    pct_free(this);
 }
 
 void Object_retain(void *_this)

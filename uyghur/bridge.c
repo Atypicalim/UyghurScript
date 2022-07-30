@@ -113,7 +113,7 @@ void Bridge_pushKey(Bridge *this, char *key)
 {
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, key available for only box");
     tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key neceessary for last value");
-    Value *keyValue = Value_newString(str_new(key), NULL);
+    Value *keyValue = Value_newString(String_format(key), NULL);
     // TODO: user string obj as  char* and remove this retain
     Object_retain(keyValue);
     Stack_push(this->stack, keyValue);
@@ -134,7 +134,7 @@ void Bridge_pushNumber(Bridge *this, double value)
 
 void Bridge_pushString(Bridge *this, char *value)
 {
-    Bridge_pushValue(this, Value_newString(str_new(value), NULL));
+    Bridge_pushValue(this, Value_newString(String_format(value), NULL));
 }
 
 void Bridge_pushFunction(Bridge *this, void (*value)(Bridge *))
@@ -162,7 +162,7 @@ char *Bridge_nextString(Bridge *this)
 {
     Value *v = Bridge_nextValue(this);
     tools_assert(is_equal(v->type, RTYPE_STRING), "invalid bridge arguments, %s argument not found", RTYPE_STRING);
-    return v->string;
+    return String_get(v->string);
 }
 
 // rgister box or globals to script
@@ -171,7 +171,7 @@ void Bridge_startBox(Bridge *this, char *name)
 {
     _bridge_release_stack(this);
     Bridge_reset(this);
-    this->name = name == NULL ? NULL : str_new(name);
+    this->name = name;
     this->type = BRIDGE_STACK_TP_BOX;
 }
 
@@ -187,7 +187,7 @@ void Bridge_register(Bridge *this)
         Value *value = item;
         Value *key = Stack_next(this->stack, cursor);
         // Value_print(key);
-        Container_set(container, key->string, value);
+        Container_set(container, String_get(key->string), value);
         item = Stack_next(this->stack, cursor);
     }
     Cursor_free(cursor);
@@ -247,7 +247,7 @@ void Bridge_startFunc(Bridge *this, char *name)
 {
     _bridge_release_stack(this);
     Bridge_reset(this);
-    this->name = name == NULL ? NULL : str_new(name);
+    this->name = name;
     this->type = BRIDGE_STACK_TP_FUN;
 }
 

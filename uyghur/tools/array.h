@@ -23,11 +23,11 @@ void _array_clear(Array *this)
 
 Array *Array_new()
 {
-    Array *array = (Array *)malloc(sizeof(Array));
+    Array *array = (Array *)pct_mallloc(sizeof(Array));
     Object_init(array, PCT_OBJ_ARRAY);
     array->capacity = ARRAY_DEFAULT_CAPACITY;
     array->size = 0;
-    array->elements = (void *)malloc(sizeof(void *) * array->capacity);
+    array->elements = (void *)pct_mallloc(sizeof(void *) * array->capacity);
     _array_clear(array);
     return array;
 }
@@ -36,7 +36,7 @@ bool _array_resize(Array *this, int minSize)
 {
     int capacity = ARRAY_DEFAULT_CAPACITY;
     while (minSize > capacity) capacity = capacity + ARRAY_DEFAULT_CAPACITY;
-    void **elements = realloc(this->elements, sizeof(void *) * capacity);
+    void **elements = pct_realloc(this->elements, sizeof(void *) * capacity);
     if (elements == NULL) return false;
     this->capacity = capacity;
     this->elements = elements;
@@ -201,7 +201,7 @@ void Array_print(Array *this)
 
 void Array_free(Array *this)
 {
-    free(this->elements);
+    pct_free(this->elements);
     this->elements = NULL;
     Object_free(this);
 }

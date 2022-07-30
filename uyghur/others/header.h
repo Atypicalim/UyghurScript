@@ -26,6 +26,8 @@ void Object_initByType(char *, void *);
 void Object_freeByType(char *, void *);
 #include "../tools/header.h"
 
+#include "utils.c"
+
 #include "../objects/token.c"
 #include "../objects/leaf.c"
 #include "../objects/container.c"

@@ -20,7 +20,7 @@ void Foliage_init(void *_foliage, void *data)
 
 Foliage *Foliage_new(void *data)
 {
-    Foliage *foliage = (Foliage *)malloc(sizeof(Foliage));
+    Foliage *foliage = (Foliage *)pct_mallloc(sizeof(Foliage));
     Object_init(foliage, PCT_OBJ_FOLIAGE);
     Foliage_init(foliage, data);
     return foliage;
@@ -45,7 +45,7 @@ void Foliage_free(Foliage *this)
     this->right = NULL;
     if (this->data != NULL)
     {
-        free(this->data);
+        pct_free(this->data);
         this->data = NULL;
     }
     Object_free(this);

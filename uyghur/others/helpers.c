@@ -42,7 +42,9 @@ char **S2A(int num, char *s, ...)
 void helper_print_leaf(Leaf *, char *);
 void helper_print_leaf(Leaf *this, char *_space)
 {
-    char *space = str_concat(_space, " | ");
+    String *str = String_format("%s | ", _space);
+    char *space =  String_dump(str);
+    Object_release(space);
     // TODO
     printf("%s[LEAF => type:%s]\n", space, this->type);
     //
@@ -84,7 +86,9 @@ void helper_print_tokens(Token *head)
 void helper_print_btree(Foliage *, char *);
 void helper_print_btree(Foliage *root, char *_space)
 {
-    char *space = str_concat(_space, " | ");
+    String *str = String_format("%s | ", _space);
+    char *space =  String_dump(str);
+    Object_release(space);
     bool isRoot = true;
     Foliage *foliage = root;
     Token *token = NULL;

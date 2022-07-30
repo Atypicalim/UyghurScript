@@ -170,7 +170,7 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
     if (Token_isEmpty(token)) return Value_newEmpty(token);
     if (Token_isBool(token)) return Value_newBoolean(is_equal(token->value, TVALUE_TRUE), token);
     if (Token_isNumber(token)) return Value_newNumber(atof(token->value), token);
-    if (is_equal(token->type, TTYPE_STRING)) return Value_newString(str_new(token->value), token);
+    if (is_equal(token->type, TTYPE_STRING)) return Value_newString(String_format(token->value), token);
     if (Token_isBox(token)) return Value_newContainer(Container_newBox(), token);
     Container *container = Executer_getContainerByToken(this, token);
     char *key = Executer_getKeyByToken(this, token);
@@ -222,8 +222,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     {
         char line[1024];
         scanf(" %[^\n]", line);
-        char *l = tools_format("%s", line);
-        Executer_setValueByToken(this, name, Value_newString(l, NULL), false);
+        Executer_setValueByToken(this, name, Value_newString(String_format("%s", line), NULL), false);
     }
 }
 
@@ -252,7 +251,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
             }
             else if (is_equal(value->type, RTYPE_STRING))
             {
-                r = Value_newBoolean(!is_equal(value->string, TVALUE_TRUE), NULL);
+                r = Value_newBoolean(!is_equal(String_get(value->string), TVALUE_TRUE), NULL);
             }
             else if (is_equal(value->type, RTYPE_EMPTY))
             {
@@ -273,8 +272,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
         }
         else if (is_equal(act, TVALUE_STR))
         {
-            char *s = Value_toString(value);
-            r = Value_newString(s, NULL);
+            r = Value_newString(String_format("%s", Value_toString(value)), NULL);
         }
         else if (is_equal(act, TVALUE_BOOLEAN))
         {
@@ -282,7 +280,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
         }
         else if (is_equal(act, TVALUE_FUNCTION))
         {
-            char *funcName = value->string;
+            char *funcName = String_get(value->string);
             Token *funcToken = Token_name(funcName);
             Value *funcValue = Executer_getValueByToken(this, funcToken, true);
             if(is_equal(funcValue->type, RTYPE_FUNCTION) || is_equal(funcValue->type, RTYPE_CFUNCTION))
@@ -338,8 +336,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
         }
         else if (is_equal(act, TVALUE_CONCAT))
         {
-            char *ch = str_concat(firstS, secondS);
-            r = Value_newString(ch, NULL);
+            r = Value_newString(String_format("%s%s", firstS, secondS), NULL);
         }
     }
     else if (is_values(act, TVALUE_GROUP_EXP_NUMBER) && is_equal(firstType, RTYPE_NUMBER))

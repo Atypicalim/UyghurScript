@@ -21,7 +21,7 @@ void Block_init(void *_block, void *data)
 
 Block *Block_new(void *data)
 {
-    Block *block = (Block *)malloc(sizeof(Block));
+    Block *block = (Block *)pct_mallloc(sizeof(Block));
     Object_init(block, PCT_OBJ_BLOCK);
     Block_init(block, data);
     return block;

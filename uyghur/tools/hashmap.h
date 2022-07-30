@@ -36,7 +36,7 @@ static int _hashmap_hash_code(char *key) {
 
 Entry *_hashmap_new_entry(char *key, char *value)
 {
-    Entry *pnode = (Entry *)malloc(sizeof(Entry));
+    Entry *pnode = (Entry *)pct_mallloc(sizeof(Entry));
     pnode->key = key;
     Object_retain(value);
     pnode->value = value;
@@ -45,7 +45,7 @@ Entry *_hashmap_new_entry(char *key, char *value)
 }
 
 Hashmap* Hashmap_new() {
-    Hashmap *map = (Hashmap *)malloc(sizeof(Hashmap) * HASHMAP_DEFAULT_CAPACITY);
+    Hashmap *map = (Hashmap *)pct_mallloc(sizeof(Hashmap) * HASHMAP_DEFAULT_CAPACITY);
     Object_init(map, PCT_OBJ_HASHMAP);
     map->size = HASHMAP_DEFAULT_CAPACITY;
     for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i ) {
@@ -63,7 +63,7 @@ void Hashmap_free(Hashmap *this) {
             head = ptr;
             ptr = ptr->next;
             if (head->value != NULL) Object_release(head->value);
-            free(head);
+            pct_free(head);
         }
     }
     Object_free(this);
@@ -124,7 +124,7 @@ void Hashmap_del(Hashmap *this, char *key) {
     Entry *pre = ptr;
     if (ptr->next == NULL) {
         if (ptr->value != NULL) Object_release(ptr->value);
-        free(ptr);
+        pct_free(ptr);
         this[pos].position = NULL;
         return;
     }
@@ -132,7 +132,7 @@ void Hashmap_del(Hashmap *this, char *key) {
         if (!strcmp(key, ptr->key)) {
             pre->next = ptr->next;
             if (ptr->value != NULL) Object_release(ptr->value);
-            free(ptr);
+            pct_free(ptr);
             return;
         }
         pre = ptr;

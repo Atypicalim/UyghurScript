@@ -14,7 +14,7 @@ typedef struct _Stack {
 
 Stack *Stack_new()
 {
-    Stack *stack = (Stack *)malloc(sizeof(Stack));
+    Stack *stack = (Stack *)pct_mallloc(sizeof(Stack));
     Object_init(stack, PCT_OBJ_STACK);
     stack->head = NULL;
     stack->tail = NULL;

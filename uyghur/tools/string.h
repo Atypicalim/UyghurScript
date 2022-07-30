@@ -14,18 +14,18 @@ typedef struct _String {
 
 String *String_new()
 {
-    String *string = (String *)malloc(sizeof(String));
+    String *string = (String *)pct_mallloc(sizeof(String));
     Object_init(string, PCT_OBJ_STRING);
     string->length = 0;
     string->capacity = STRING_MIN_CAPACITY + 1;
-    string->data = malloc(string->capacity);
+    string->data = pct_mallloc(string->capacity);
     string->data[string->length] = '\0';
     return string;
 }
 
 void String_free(String *this)
 {
-    free(this->data);
+    pct_free(this->data);
     Object_free(this);
 }
 
@@ -36,7 +36,7 @@ void _string_check_capacity(String *this, int length)
         this->capacity *= 2;
         if (this->capacity <= 0) this->capacity--;
     }
-    this->data = realloc(this->data, this->capacity);
+    this->data = pct_realloc(this->data, this->capacity);
 }
 
 String *String_appendChar(String *this, char c)
@@ -121,11 +121,11 @@ String *String_insert(String *this, int at, String *that)
 {
     if (at < 0 || at > this->length || that == NULL || that->length <= 0) return this;
     _string_check_capacity(this, this->length + that->length);
-    char *temp = malloc(this->length - at);
+    char *temp = pct_mallloc(this->length - at);
     memmove(temp, this->data + at, this->length - at);
     memmove(this->data + at, that->data, that->length);
     memmove(this->data + at + that->length, temp, this->length - at);
-    free(temp);
+    pct_free(temp);
     this->length += that->length;
     this->data[this->length] = '\0';
     return this;
@@ -197,7 +197,7 @@ int String_findLast(String *this, int to, char *target)
 int *String_findAll(String *this, char *target)
 {
     int size = 128;
-    int *result = (int *)malloc(sizeof(int) * size);
+    int *result = (int *)pct_mallloc(sizeof(int) * size);
     result[0] = 0;
     int foundIndex = -1;
     int nextIndex = 0;
@@ -208,7 +208,7 @@ int *String_findAll(String *this, char *target)
             result[0]++;
             if (result[0] > size - 1) {
                 size <<= 2;
-                result = (int *)realloc(result, size);
+                result = (int *)pct_realloc(result, size);
             }
             result[result[0]] = foundIndex;
             lastRecorded = foundIndex;
@@ -246,7 +246,7 @@ void String_print(String *this)
 
 char *String_dump(String *this)
 {
-    char *s = malloc(this->length + 1);
+    char *s = pct_mallloc(this->length + 1);
     memcpy(s, this->data, this->length + 1);
     return s;
 }
@@ -263,12 +263,12 @@ String *String_format(char *template, ...)
     va_list lst;
     va_start(lst, template);
     int bufsz = vsnprintf(NULL, 0, template, lst);
-    char* t = malloc(bufsz + 1);
+    char *t = pct_mallloc(bufsz + 1);
     vsnprintf(t, bufsz + 1, template, lst);
     va_end(lst);
     String *s = String_new();
     String_appendStr(s, t);
-    free(t);
+    pct_free(t);
     return s;
 }
 
@@ -279,7 +279,7 @@ String* String_repeat(String *this, int count)
     while (--count > 0) {
         String_appendStr(this, data);
     }
-    free(data);
+    pct_free(data);
 }
 
 String *String_subString(String *this, int from, int to)
@@ -288,11 +288,11 @@ String *String_subString(String *this, int from, int to)
     int length = this->length;
     if (to <= 0 || from >= length || from >= to) return s;
     int len = to - from;
-    char *temp = malloc(len + 1);
+    char *temp = pct_mallloc(len + 1);
     memmove(temp, this->data + from, len);
     temp[len] = '\0';
     String_appendStr(s, temp);
-    free(temp);
+    pct_free(temp);
     return s; 
 }
 
