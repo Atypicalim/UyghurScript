@@ -44,7 +44,6 @@ Container *Executer_popContainer(Executer *this, char *type)
     this->currentContainer = (Container *)this->containerStack->tail->data;
     tools_assert(container != NULL && is_equal(container->type, type), LANG_ERR_NO_VALID_STATE);
     if (is_equal(type, CONTAINER_TYPE_SCOPE)) {
-        Container_free(container);
         return NULL;
     } else {
         return container;
@@ -180,7 +179,7 @@ void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool 
     if (withDeclare && container == NULL) container = this->currentContainer;
     Executer_assert(this, container != NULL, token, LANG_ERR_VARIABLE_NOT_FOUND);
     Value *replacedValue = Container_set(container, token->value, value);
-    if (replacedValue != NULL) Value_free(replacedValue);
+    if (replacedValue != NULL) Object_release(replacedValue);
 }
 
 void Executer_consumeVariable(Executer *this, Leaf *leaf)
@@ -620,21 +619,15 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     // get func
     Value *r = NULL;
     Value *funcValue = Executer_getValueByToken(this, funcName, true);
-    if (is_equal(funcValue->type, RTYPE_FUNCTION))
-    {
+    if (is_equal(funcValue->type, RTYPE_FUNCTION)) {
         r = Executer_runFunc(this, funcName);
-    }
-    else if (is_equal(funcValue->type, RTYPE_CFUNCTION))
-    {
+    } else if (is_equal(funcValue->type, RTYPE_CFUNCTION)) {
         r = Executer_runCFunc(this, funcName);
-    }
-    else
-    {
+    } else {
         tools_error("function not found for func name: %s", funcName->value);
     }
     //
-    if (!is_equal(resultName->type, TTYPE_EMPTY) && !is_equal(resultName->value, TVALUE_EMPTY))
-    {
+    if (!is_equal(resultName->type, TTYPE_EMPTY) && !is_equal(resultName->value, TVALUE_EMPTY)) {
         Executer_setValueByToken(this, resultName, r, true);
     }
     Stack_clear(this->callStack);

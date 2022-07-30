@@ -37,6 +37,7 @@ void Queue_print(Queue *this)
 void Queue_push(Queue *this, void *data)
 {
     Block *block = Block_new(data);
+    Object_retain(block);
     if (this->head == NULL)
     {
         this->head = block;
@@ -68,8 +69,7 @@ void *Queue_pop(Queue *this)
             this->head = this->head->next;
             this->head->last = NULL;
         }
-        head->data = NULL;
-        Block_free(head);
+        Object_release(head);
         return data;
     }
 }
@@ -89,8 +89,7 @@ void Queue_free(Queue *this)
     while (head != NULL)
     {
         this->head = head->next;
-        head->data = NULL;
-        Block_free(head);
+        Object_release(head);
         head = this->head;
     }
     Object_free(this);

@@ -17,7 +17,6 @@ typedef struct ValueNode {
     char *string;
     void *object;
     void *extra;
-    int reference;
 } Value;
 
 char *_get_cache_tag(char *type, bool boolean, double number, char *string)
@@ -38,41 +37,40 @@ char *_get_cache_tag(char *type, bool boolean, double number, char *string)
  Value *Value_new(char *type, bool boolean, double number, char *string, void *object, void *extra)
 {
     // cache
-    if (valueCache == NULL) valueCache = Hashmap_new(NULL);
-    char *tag = _get_cache_tag(type, boolean, number, string);
-    bool canCache = tag != NULL;
-    int hashValue = 0;
+    // if (valueCache == NULL) valueCache = Hashmap_new(NULL);
+    // char *tag = _get_cache_tag(type, boolean, number, string);
+    // bool canCache = tag != NULL;
+    // int hashValue = 0;
     // get
-    if (canCache) {
-        hashValue =hashValue = hash(tag);
-        Value *v = Hashmap_getWithHash(valueCache, tag, hashValue);
-        if (v != NULL)
-        {
-            free(tag);
-            if (string != NULL)
-            {
-                free(string);
-                string = NULL;
-            }
-            return v;
-        }
-    }
+    // if (canCache) {
+    //     hashValue =hashValue = hash(tag);
+    //     Value *v = Hashmap_getWithHash(valueCache, tag, hashValue);
+    //     if (v != NULL)
+    //     {
+    //         free(tag);
+    //         if (string != NULL)
+    //         {
+    //             free(string);
+    //             string = NULL;
+    //         }
+    //         return v;
+    //     }
+    // }
     // create
     Value *value = malloc(sizeof(Value));
-    Object_init(value, PCT_OBJ_VALUE);
     value->type = type;
     value->boolean = boolean;
     value->number = number;
     value->string = string;
     value->object = object;
     value->extra = extra;
-    value->reference = 0;
     // save
-    if (canCache)
-    {
-        Hashmap_setWithHash(valueCache, tag, value, hashValue);
-    }
+    // if (canCache)
+    // {
+    //     Hashmap_setWithHash(valueCache, tag, value, hashValue);
+    // }
     // return
+    Object_init(value, PCT_OBJ_VALUE);
     return value;
 }
 
@@ -216,39 +214,24 @@ Value *Value_toNumber(Value *this)
     }
 }
 
-void Value_increaseReference(Value *this)
-{
-    this->reference++;  
-}
-
-void Value_decreaseReference(Value *this)
-{
-    if (this->reference == 0) return;
-    this->reference--;
-}
-
 void Value_free(Value *this)
 {
-    Value_decreaseReference(this);
-    char *tag = _get_cache_tag(this->type, this->boolean, this->number, this->string);
-    // printf("%s\n", tag);
-    if (tag != NULL)
+    // char *tag = _get_cache_tag(this->type, this->boolean, this->number, this->string);
+    // // printf("%s\n", tag);
+    // if (tag != NULL)
+    // {
+    //     free(tag);
+    // }
+    
+    if (is_equal(this->type, RTYPE_STRING))
     {
-        free(tag);
+        free(this->string);
     }
-    else if (this->reference == 0)
+    if (is_equal(this->type, RTYPE_CONTAINER))
     {
-        if (is_equal(this->type, RTYPE_STRING))
-        {
-            free(this->string);
-        }
-        if (is_equal(this->type, RTYPE_CONTAINER))
-        {
-            Container_free(this->object);
-        }
-        Object_free(this);
+        Object_release(this->object);
     }
-    // TODO: ug free pointers
+    Object_free(this);
 }
 
 #endif

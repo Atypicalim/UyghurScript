@@ -7,7 +7,6 @@
 #define PCT_OBJ_CONTAINER "PCT_OBJ_CONTAINER"
 #define PCT_OBJ_TOKEN "PCT_OBJ_TOKEN"
 #define PCT_OBJ_LEAF "PCT_OBJ_LEAF"
-#define PCT_OBJ_VM "PCT_OBJ_VM"
 
 // token types
 #define TTYPE_NAME "TTYPE_NAME"

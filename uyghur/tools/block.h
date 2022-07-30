@@ -13,6 +13,7 @@ typedef struct _Block {
 void Block_init(void *_block, void *data)
 {
     Block *block = _block;
+    Object_retain(data);
     block->data = data;
     block->next = NULL;
     block->last = NULL;
@@ -104,7 +105,7 @@ void Block_free(void *_this)
     tmpLast = NULL;
     if (this->data != NULL)
     {
-        free(this->data);
+        Object_release(this->data);
         this->data = NULL;
     }
     Object_free(this);

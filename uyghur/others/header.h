@@ -20,13 +20,16 @@
 #include "constant.h"
 #include "tools.c"
 
+#define H_PCT_INIT_CALLBACK
+void Object_initByType(char *, void *);
+#define H_PCT_FREE_CALLBACK
+void Object_freeByType(char *, void *);
 #include "../tools/header.h"
 
 #include "../objects/token.c"
 #include "../objects/leaf.c"
 #include "../objects/container.c"
 #include "../objects/value.c"
-#include "../objects/vm.c"
 
 #include "helpers.c"
 

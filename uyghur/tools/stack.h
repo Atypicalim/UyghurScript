@@ -37,6 +37,7 @@ void Stack_print(Stack *this)
 void Stack_push(Stack *this, void *data)
 {
     Block *block = Block_new(data);
+    Object_retain(block);
     if (this->head == NULL)
     {
         this->head = block;
@@ -68,8 +69,7 @@ void *Stack_pop(Stack *this)
             this->tail = this->tail->last;
             this->tail->next = NULL;
         }
-        tail->data = NULL;
-        Block_free(tail);
+        Object_release(tail);
         return data;
     }
 }
@@ -89,8 +89,7 @@ void Stack_free(Stack *this)
     while (tail != NULL)
     {
         this->tail = tail->last;
-        tail->data = NULL;
-        Block_free(tail);
+        Object_release(tail);
         tail = this->tail;
     }
     Object_free(this);
