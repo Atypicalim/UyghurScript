@@ -14,7 +14,6 @@ void _bridge_release_stack(Bridge* this)
     Value *value = Stack_pop(this->stack);
     while(value != NULL)
     {
-        Value_free(value);
         value = Stack_pop(this->stack);
     }
 }
@@ -41,7 +40,6 @@ void Bridge_reset(Bridge *this)
     }
     if (this->name != NULL)
     {
-        free(this->name);
         this->name = NULL;
     }
     this->type = 0;
@@ -278,12 +276,11 @@ void Bridge_call(Bridge *this)
     }
     else
     {
-        tools_warning("function not found for func name: %s", funcName->value);
+        tools_warning("function not found for func name: %s", this->name);
         r = Value_newEmpty(NULL);
     }
     if (this->name != NULL)
     {
-        free(this->name);
         this->name = NULL;
     }
     Token_free(funcName);
