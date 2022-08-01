@@ -488,6 +488,7 @@ void Parser_consumeAstCalculator(Parser *this)
         } else if (Parser_isType(this, 1, TTYPE_CALCULATION)) {
             Parser_assert(this, lastType == NULL || is_values(lastType, TTYPES_GROUP_NUMBER), "invalid calculator order in parser: ");
             tempT = Parser_checkType(this, 1, 1, TTYPE_CALCULATION);
+            Parser_assert(this, current->data == NULL, "brackets expected for multiple calculation:");
             current->data = tempT;
             lastType = tempT->type;
             continue;
