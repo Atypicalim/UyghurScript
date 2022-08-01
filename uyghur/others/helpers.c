@@ -44,7 +44,7 @@ void helper_print_leaf(Leaf *this, char *_space)
 {
     String *str = String_format("%s | ", _space);
     char *space =  String_dump(str);
-    Object_release(space);
+    Object_release(str);
     // TODO
     printf("%s[LEAF => type:%s]\n", space, this->type);
     //
@@ -88,7 +88,7 @@ void helper_print_btree(Foliage *root, char *_space)
 {
     String *str = String_format("%s | ", _space);
     char *space =  String_dump(str);
-    Object_release(space);
+    Object_release(str);
     bool isRoot = true;
     Foliage *foliage = root;
     Token *token = NULL;
@@ -123,6 +123,7 @@ void helper_print_btree(Foliage *root, char *_space)
 
 bool is_values(char *target, int num, char *s, ...)
 {
+    tools_assert(target != NULL, "invalid target in in values");
     va_list valist;
     int i;
     va_start(valist, s);

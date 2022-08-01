@@ -471,45 +471,42 @@ void Parser_consumeAstCalculator(Parser *this)
     Stack *currents = Stack_new();
     Foliage *current = root;
     char *lastType = NULL;
-    while (true)
-    {
-        if (Parser_isType(this, 1, TTYPE_NAME) || Parser_isType(this, 1, TTYPE_KEY) || Parser_isType(this, 1, TTYPE_NUMBER))
-        {
-            if (lastType == NULL || !is_values(lastType, TTYPES_GROUP_NUMBER))
-            {
-                tempT = Parser_checkType(this, 1, TTYPES_GROUP_NUMBER);
-                tempF = Foliage_new(tempT);
-                current->left = tempF;
-                current = tempF;
-                lastType = tempT->type;
-                continue;
-            }
-        }
-        if (Parser_isType(this, 1, TTYPE_CALCULATION))
-        {
-            Parser_assert(this, lastType == NULL || is_values(lastType, TTYPES_GROUP_NUMBER), "invalid calculator order in parser: ");
-            tempT = Parser_checkType(this, 1, 1, TTYPE_CALCULATION);
+    while (true) {
+        if (Parser_isType(this, 1, TTYPE_NAME) || Parser_isType(this, 1, TTYPE_KEY) || Parser_isType(this, 1, TTYPE_NUMBER)) {
+            tempT = Parser_checkType(this, 1, TTYPES_GROUP_NUMBER);
             tempF = Foliage_new(tempT);
-            current->left = tempF;
-            current = tempF;
+            if (lastType == NULL) {
+                current->left = tempF;
+            } else if (is_values(lastType, 1, TTYPE_CALCULATION))
+            {
+                current->right = tempF;
+            } else {
+                Parser_error(this, "invalid argument for calculator in parser");
+            }
             lastType = tempT->type;
             continue;
-        }
-        if (Parser_isWord(this, 1, TVALUE_OPEN))
-        {
+        } else if (Parser_isType(this, 1, TTYPE_CALCULATION)) {
+            Parser_assert(this, lastType == NULL || is_values(lastType, TTYPES_GROUP_NUMBER), "invalid calculator order in parser: ");
+            tempT = Parser_checkType(this, 1, 1, TTYPE_CALCULATION);
+            current->data = tempT;
+            lastType = tempT->type;
+            continue;
+        } else if (Parser_isWord(this, 1, TVALUE_OPEN)) {
             Parser_checkWord(this, 1, 1, TVALUE_OPEN);
-            holder = Foliage_new(NULL);
-            current->left = holder;
-            current = holder;
-            Stack_push(currents, current);
             tempF = Foliage_new(NULL);
-            current->right = tempF;
+            if (lastType == NULL) {
+                current->left = tempF;
+            } else if (is_values(lastType, 1, TTYPE_CALCULATION)) {
+                current->right = tempF;
+            } else {
+                Parser_error(this, "invalid open for calculator in parser");
+            }
             current = tempF;
+            Stack_push(currents, current);
             lastType = NULL;
             continue;
-        }
-        if (Parser_isWord(this, 1, TVALUE_CLOSE))
-        {
+        } else if (Parser_isWord(this, 1, TVALUE_CLOSE)) {
+            Parser_assert(this, lastType == NULL || is_values(lastType, TTYPES_GROUP_NUMBER), "invalid calculator order in parser: ");
             Parser_checkWord(this, 1, 1, TVALUE_CLOSE);
             current = Stack_pop(currents);
             lastType = NULL;
