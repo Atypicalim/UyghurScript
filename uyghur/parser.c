@@ -466,22 +466,22 @@ void Parser_consumeAstCalculator(Parser *this)
     Parser_checkWord(this, 1, 1, TVALUE_CALCULATOR);
     Token *tempT = NULL;
     Foliage *tempF = NULL;
-    Foliage *holder = NULL;
+    Foliage *current = NULL;
     Foliage *root = Foliage_new(NULL);
     Stack *currents = Stack_new();
-    Foliage *current = root;
+    Stack_push(currents, root);
     char *lastType = NULL;
     while (true) {
+        current = (Foliage*)currents->tail->data;
         if (Parser_isType(this, 1, TTYPE_NAME) || Parser_isType(this, 1, TTYPE_KEY) || Parser_isType(this, 1, TTYPE_NUMBER)) {
             tempT = Parser_checkType(this, 1, TTYPES_GROUP_NUMBER);
             tempF = Foliage_new(tempT);
             if (lastType == NULL) {
                 current->left = tempF;
-            } else if (is_values(lastType, 1, TTYPE_CALCULATION))
-            {
+            } else if (is_values(lastType, 1, TTYPE_CALCULATION)) {
                 current->right = tempF;
             } else {
-                Parser_error(this, "invalid argument for calculator in parser");
+                Parser_error(this, "invalid argument for calculator in parser:");
             }
             lastType = tempT->type;
             continue;
@@ -499,23 +499,22 @@ void Parser_consumeAstCalculator(Parser *this)
             } else if (is_values(lastType, 1, TTYPE_CALCULATION)) {
                 current->right = tempF;
             } else {
-                Parser_error(this, "invalid open for calculator in parser");
+                Parser_error(this, "invalid open for calculator in parser:");
             }
-            current = tempF;
-            Stack_push(currents, current);
+            Stack_push(currents, tempF);
             lastType = NULL;
             continue;
         } else if (Parser_isWord(this, 1, TVALUE_CLOSE)) {
             Parser_assert(this, lastType == NULL || is_values(lastType, TTYPES_GROUP_NUMBER), "invalid calculator order in parser: ");
             Parser_checkWord(this, 1, 1, TVALUE_CLOSE);
-            current = Stack_pop(currents);
+            Stack_pop(currents);
             lastType = NULL;
             continue;
         }
         break;
     }
-    // helper_print_btree(root, " ");
-    Parser_assert(this, root != current, NULL);
+    current = (Foliage*)currents->tail->data;
+    Parser_assert(this, root == current, "invalid calculator tree status:");
     Token *body = Token_new(TTYPE_CALCULATION, root);
     Parser_pushLeaf(this, ASTTYPE_CALCULATOR, 2, target, body);
 }

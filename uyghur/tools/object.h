@@ -11,7 +11,7 @@ void Object_init(void *_this, void *_objType)
 {
     Object *this = _this;
     this->objType = _objType;
-    this->referenceCount = 0;
+    this->referenceCount = 1;
     #ifdef H_PCT_INIT_CALLBACK
     Object_initByType(this->objType, this);
     #endif

@@ -680,52 +680,32 @@ double Executer_calculateFoliage(Executer *this, double left, char *sign, double
     {
         return fmod(left, right);
     }
-    return 0;
+    Executer_error(this, token, "invalid sign for calculate:");
 }
 
 double Executer_calculateBTree(Executer *this, Foliage *);
-double Executer_calculateBTree(Executer *this, Foliage *root)
+double Executer_calculateBTree(Executer *this, Foliage *foliage)
 {
+    printf("\n-------->\n");
     double result = 0;
     Token *sign = NULL;
-    Foliage *foliage = root->left;
-    Token *token = NULL;
-    while(foliage != NULL)
-    {
-        double r = 0;
-        token = foliage->data;
-        if (token != NULL && is_equal(token->type, TTYPE_CALCULATION))
-        {
-            tools_assert(sign == NULL, "invalid calculator in executor");
-            sign = token;
-        }
-        else
-        {
-            if (token == NULL)
-            {
-                tools_assert(foliage->right != NULL, "invalid calculate holder in executor");
-                r = Executer_calculateBTree(this, foliage->right);
-            }
-            else
-            {
-                tools_assert(is_values(token->type, TTYPES_GROUP_NUMBER), "invalid calculate argument in executor");
-                Value *v = Executer_getValueByToken(this, token, true);
-                v = Value_toNumber(v);
-                r = v->number;
-                if (Token_isStatic(token)) Value_free(v);
-            }
-            if (sign == NULL)
-            {
-                result = r;
-            }
-            else
-            {
-                result = Executer_calculateFoliage(this, result, sign->value, r, token);
-                sign = NULL;
-            }
-        }
-        foliage = foliage->left;
+    Token *token = foliage->data;
+    if (foliage->left != NULL && foliage->right != NULL) {
+        double leftR = Executer_calculateBTree(this, foliage->left);
+        double rightR = Executer_calculateBTree(this, foliage->right);
+        result = Executer_calculateFoliage(this, leftR, token->value, rightR, token);
+    } else if (foliage->left != NULL) {
+        result = Executer_calculateBTree(this, foliage->left);
+    } else if (foliage->right != NULL) {
+        result = Executer_calculateBTree(this, foliage->right);
+    } else {
+        tools_assert(is_values(token->type, TTYPES_GROUP_NUMBER), "invalid calculate argument in executor");
+        Value *v = Executer_getValueByToken(this, token, true);
+        result = Value_toNumber(v)->number;
+        if (Token_isStatic(token)) Value_free(v);
     }
+    if (token != NULL) Token_print(token);
+    printf("r:[%f]\n", result);
     return result;
 }
 
