@@ -36,26 +36,6 @@ char *_get_cache_tag(char *type, bool boolean, double number, char *string)
 
  Value *Value_new(char *type, bool boolean, double number, String *string, void *object, void *extra)
 {
-    // cache
-    // if (valueCache == NULL) valueCache = Hashmap_new(NULL);
-    // char *tag = _get_cache_tag(type, boolean, number, String_get(string));
-    // bool canCache = tag != NULL;
-    // int hashValue = 0;
-    // get
-    // if (canCache) {
-    //     hashValue =hashValue = _hashmap_hash_code(tag);
-    //     Value *v = Hashmap_getWithHash(valueCache, tag, hashValue);
-    //     if (v != NULL)
-    //     {
-    //         free(tag);
-    //         if (string != NULL)
-    //         {
-    //             free(string);
-    //             string = NULL;
-    //         }
-    //         return v;
-    //     }
-    // }
     // create
     Value *value = malloc(sizeof(Value));
     value->type = type;
@@ -64,11 +44,6 @@ char *_get_cache_tag(char *type, bool boolean, double number, char *string)
     value->string = string;
     value->object = object;
     value->extra = extra;
-    // save
-    // if (canCache)
-    // {
-    //     Hashmap_setWithHash(valueCache, tag, value, hashValue);
-    // }
     // return
     Object_init(value, PCT_OBJ_VALUE);
     return value;
@@ -180,6 +155,7 @@ Value *Value_toBoolean(Value *this)
     }
     else if (is_equal(this->type, RTYPE_BOOLEAN))
     {
+        Object_retain(this);
         return this;
     }
     else
@@ -193,6 +169,7 @@ Value *Value_toNumber(Value *this)
 
     if (is_equal(this->type, RTYPE_NUMBER))
     {
+        Object_retain(this);
         return this;
     }
     else if (is_equal(this->type, RTYPE_STRING))

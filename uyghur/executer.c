@@ -198,6 +198,7 @@ void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool 
     Executer_assert(this, container != NULL, token, LANG_ERR_VARIABLE_NOT_FOUND);
     char *key = Executer_getKeyByToken(this, token);
     Value *replacedValue = Container_set(container, key, value);
+    pct_free(key);
     if (replacedValue != NULL) Object_release(replacedValue);
 }
 
@@ -213,6 +214,7 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     Executer_assert(this, old == NULL, name, LANG_ERR_VARIABLE_IS_FOUND);
     char *key = Executer_getKeyByToken(this, name);
     Container_set(container, key, new);
+    pct_free(key);
 }
 
 void Executer_consumeOperate(Executer *this, Leaf *leaf)
@@ -226,7 +228,10 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     {
         Value *value = Executer_getValueByToken(this, name, true);
         Executer_assert(this, value != NULL, name, "invaliid state in operate:");
-        printf("%s", Value_toString(value));
+        char *content = Value_toString(value);
+        printf("%s", content);
+        Object_release(value);
+        pct_free(content);
     }
     else if (is_equal(target->value, TVALUE_TARGET_FROM) && is_equal(action->value, TVALUE_INPUT))
     {
@@ -282,7 +287,9 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
         }
         else if (is_equal(act, TVALUE_STR))
         {
-            r = Value_newString(String_format("%s", Value_toString(value)), NULL);
+            char *content = Value_toString(value);
+            r = Value_newString(String_format("%s", content), NULL);
+            pct_free(content);
         }
         else if (is_equal(act, TVALUE_BOOLEAN))
         {
@@ -292,6 +299,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
         {
             char *funcName = String_get(value->string);
             Token *funcToken = Token_name(funcName);
+            // TODO: memory leak
             Value *funcValue = Executer_getValueByToken(this, funcToken, true);
             if(is_equal(funcValue->type, RTYPE_FUNCTION) || is_equal(funcValue->type, RTYPE_CFUNCTION))
             {
@@ -309,6 +317,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
     }
     tools_assert(r != NULL, "not supported action for expression:%s", act);
     Executer_setValueByToken(this, target, r, false);
+    Object_release(value);
 }
 
 void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
@@ -348,11 +357,17 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
         {
             r = Value_newString(String_format("%s%s", firstS, secondS), NULL);
         }
+        pct_free(firstS);
+        pct_free(secondS);
     }
     else if (is_values(act, TVALUE_GROUP_EXP_NUMBER) && is_equal(firstType, RTYPE_NUMBER))
     {
-        double firstN = Value_toNumber(firstV)->number;
-        double secondN = Value_toNumber(secondV)->number;
+        Value *vFirst = Value_toNumber(firstV);
+        Value *vSecond = Value_toNumber(secondV);
+        double firstN = vFirst->number;
+        double secondN = vSecond->number;
+        Object_release(vFirst);
+        Object_release(vSecond);
         if (is_equal(act, TVALUE_EQUAL))
         {
             r = Value_newBoolean(firstN == secondN, NULL);
@@ -385,8 +400,12 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
     }
     else if (is_values(act, TVALUE_GROUP_EXP_BOOL) && is_equal(firstType, RTYPE_BOOLEAN))
     {
-        bool firstB = Value_toBoolean(firstV)->boolean;
-        bool secondB = Value_toBoolean(secondV)->boolean;
+        Value *vFirst = Value_toBoolean(firstV);
+        Value *vSecond = Value_toBoolean(secondV);
+        bool firstB = vFirst->boolean;
+        bool secondB = vSecond->boolean;
+        Object_release(vFirst);
+        Object_release(vSecond);
         if (is_equal(act, TVALUE_EQUAL))
         {
             r = Value_newBoolean(firstB == secondB, NULL);
@@ -409,9 +428,11 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
             bool boolean = is_equal(firstS, secondS);
             r = Value_newBoolean(boolean, NULL);
         }
+        pct_free(firstS);
+        pct_free(secondS);
     }
-    if (Token_isStatic(first)) Value_free(firstV);
-    if (Token_isStatic(second)) Value_free(secondV);
+    Object_release(firstV);
+    Object_release(secondV);
     tools_assert(r != NULL, "not supported action for expression:%s", act);
     Executer_setValueByToken(this, target, r, false);
 }
@@ -432,13 +453,23 @@ bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge
         char *leftS = Value_toString(leftV);
         char *rightS = Value_toString(rightV);
         value = shouldYes == is_equal(leftS, rightS);
+        pct_free(leftS);
+        pct_free(rightS);
     } else if (is_equal(leftType, RTYPE_NUMBER) && is_equal(rightType, RTYPE_NUMBER)) {
-        double leftN = Value_toNumber(leftV)->number;
-        double rightN = Value_toNumber(rightV)->number;
+        Value *vFirst = Value_toNumber(leftV);
+        Value *vSecond = Value_toNumber(rightV);
+        double leftN = vFirst->number;
+        double rightN = vSecond->number;
+        Object_release(vFirst);
+        Object_release(vSecond);
         value = shouldYes == (leftN == rightN);
     } else if (is_equal(leftType, RTYPE_BOOLEAN) && is_equal(rightType, RTYPE_BOOLEAN)) {
-        bool leftB = Value_toBoolean(leftV)->boolean;
-        bool rightB = Value_toBoolean(rightV)->boolean;
+        Value *vFirst = Value_toBoolean(leftV);
+        Value *vSecond = Value_toBoolean(rightV);
+        bool leftB = vFirst->boolean;
+        bool rightB = vSecond->boolean;
+        Object_release(vFirst);
+        Object_release(vSecond);
         value = shouldYes == (leftB == rightB);
     } else if (is_equal(leftType, RTYPE_EMPTY) && is_equal(rightType, RTYPE_EMPTY)) {
         value = true;
@@ -446,6 +477,8 @@ bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge
         char *leftS = Value_toString(leftV);
         char *rightS = Value_toString(rightV);
         value = shouldYes == is_equal(leftS, rightS); // check pointer id
+        pct_free(leftS);
+        pct_free(rightS);
     } else {
         value = false;
     }
@@ -568,6 +601,7 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
 
 Value *Executer_runFunc(Executer *this, Token *funcName)
 {
+    // TODO: memory leak
     Value *funcValue = Executer_getValueByToken(this, funcName, true);
     tools_assert(is_equal(funcValue->type, RTYPE_FUNCTION), "function not valid for name: %s", funcName->value);
     // execute func
@@ -587,6 +621,7 @@ Value *Executer_runFunc(Executer *this, Token *funcName)
 
 Value *Executer_runCFunc(Executer *this, Token *funcName)
 {
+    // TODO: memory leak
     Value *funcValue = Executer_getValueByToken(this, funcName, true);
     tools_assert(is_equal(funcValue->type, RTYPE_CFUNCTION), "cfunction not valid");
     void (*funcBody)(Bridge *) = funcValue->object;
@@ -628,6 +663,7 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     Cursor_free(cursor);
     // get func
     Value *r = NULL;
+    // memory leak
     Value *funcValue = Executer_getValueByToken(this, funcName, true);
     if (is_equal(funcValue->type, RTYPE_FUNCTION)) {
         r = Executer_runFunc(this, funcName);
@@ -701,8 +737,10 @@ double Executer_calculateBTree(Executer *this, Foliage *foliage)
     } else {
         tools_assert(is_values(token->type, TTYPES_GROUP_NUMBER), "invalid calculate argument in executor");
         Value *v = Executer_getValueByToken(this, token, true);
-        result = Value_toNumber(v)->number;
-        if (Token_isStatic(token)) Value_free(v);
+        Value *newV = Value_toNumber(v);
+        result = newV->number;
+        Object_release(newV);
+        Object_release(v);
     }
     return result;
 }

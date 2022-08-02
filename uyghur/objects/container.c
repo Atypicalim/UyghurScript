@@ -64,7 +64,6 @@ char *Container_toString(Container *this)
 void Container_print(Container *this)
 {
     printf(Container_toString(this));
-    Hashmap_print(this->map);
 }
 
 bool Container_isScope(Container *this)

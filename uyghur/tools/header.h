@@ -22,6 +22,7 @@
 #define PCT_OBJ_HASHMAP "PCT_OBJ_HASHMAP"
 #define PCT_OBJ_FOLIAGE "PCT_OBJ_FOLIAGE"
 #define PCT_OBJ_BLOCK "PCT_OBJ_BLOCK"
+#define PCT_OBJ_ENTRY "PCT_OBJ_ENTRY"
 
 void *pct_mallloc(size_t size)
 {
@@ -41,6 +42,7 @@ void pct_free(void *object)
 #include "../tools/object.h"
 #include "../tools/string.h"
 #include "../tools/cursor.h"
+#include "../tools/entry.h"
 #include "../tools/hashmap.h"
 #include "../tools/foliage.h"
 #include "../tools/block.h"

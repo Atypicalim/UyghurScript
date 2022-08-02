@@ -165,6 +165,7 @@ void Object_freeByType(char *type, void *object)
     if (is_equal(type, PCT_OBJ_HASHMAP)) return Hashmap_free(object);
     if (is_equal(type, PCT_OBJ_FOLIAGE)) return Foliage_free(object);
     if (is_equal(type, PCT_OBJ_BLOCK)) return Block_free(object);
+    if (is_equal(type, PCT_OBJ_ENTRY)) return Entry_free(object);
     if (is_equal(type, PCT_OBJ_VALUE)) return Value_free(object);
     if (is_equal(type, PCT_OBJ_CONTAINER)) return Container_free(object);
     if (is_equal(type, PCT_OBJ_TOKEN)) return Token_free(object);
