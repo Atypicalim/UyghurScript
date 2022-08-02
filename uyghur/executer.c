@@ -44,6 +44,7 @@ Container *Executer_popContainer(Executer *this, char *type)
     this->currentContainer = (Container *)this->containerStack->tail->data;
     tools_assert(container != NULL && is_equal(container->type, type), LANG_ERR_NO_VALID_STATE);
     if (is_equal(type, CONTAINER_TYPE_SCOPE)) {
+        Object_release(container);
         return NULL;
     } else {
         return container;
@@ -141,12 +142,14 @@ Container *Executer_getContainerByToken(Executer *this, Token *token)
     return value->object;
 }
 
+// TODO: release keys
 char *Executer_getKeyByToken(Executer *this, Token *token)
 {
     char *key = token->value;
-    if (!Token_isKey(token)) return key;
+    if (!Token_isKey(token)) {
+        return tools_format("%s", key);
+    }
     Token *extra = (Token *)token->extra;
-
     if (Token_isNumber(extra)) {
         String *s = String_format("%f", atof(extra->value));
         key = String_dump(s);
@@ -170,16 +173,22 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
     if (Token_isEmpty(token)) return Value_newEmpty(token);
     if (Token_isBool(token)) return Value_newBoolean(is_equal(token->value, TVALUE_TRUE), token);
     if (Token_isNumber(token)) return Value_newNumber(atof(token->value), token);
-    if (is_equal(token->type, TTYPE_STRING)) return Value_newString(String_format(token->value), token);
+    if (Token_isString(token)) return Value_newString(String_format(token->value), token);
     if (Token_isBox(token)) return Value_newContainer(Container_newBox(), token);
-    Container *container = Executer_getContainerByToken(this, token);
+    //
+    Value *result = NULL;
     char *key = Executer_getKeyByToken(this, token);
-    if (container != NULL && key != NULL) {
-        Value *value = Container_get(container, key);
-        if (value != NULL) return value;
+    Container *container = Executer_getContainerByToken(this, token);
+    if (container != NULL) {
+        result = Container_get(container, key);
     }
-    if (withEmpty) return Value_newEmpty(token);
-    return NULL;
+    if (result != NULL) {
+        Object_retain(result);
+    } else if (withEmpty) {
+        result = Value_newEmpty(token);
+    }
+    free(key);
+    return result;
 }
 
 void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool withDeclare)
@@ -216,6 +225,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     if (is_equal(target->value, TVALUE_TARGET_TO) && is_equal(action->value, TVALUE_OUTPUT))
     {
         Value *value = Executer_getValueByToken(this, name, true);
+        Executer_assert(this, value != NULL, name, "invaliid state in operate:");
         printf("%s", Value_toString(value));
     }
     else if (is_equal(target->value, TVALUE_TARGET_FROM) && is_equal(action->value, TVALUE_INPUT))
@@ -408,6 +418,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
 
 bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge)
 {
+    bool value = false;
     Value *leftV = Executer_getValueByToken(this, left, true);
     Value *rightV = Executer_getValueByToken(this, right, true);
     char *judgeValue = judge->value;
@@ -415,42 +426,32 @@ bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge
     char *rightType = rightV->type;
     bool shouldYes = is_equal(judgeValue, TVALUE_IF_OK);
     // different type
-    if (!is_equal(leftType, rightType))
-    {
-        return !shouldYes;
-    }
-    else if (is_equal(leftType, RTYPE_STRING) && is_equal(rightType, RTYPE_STRING))
-    {
+    if (!is_equal(leftType, rightType)) {
+        value = !shouldYes;
+    } else if (is_equal(leftType, RTYPE_STRING) && is_equal(rightType, RTYPE_STRING)) {
         char *leftS = Value_toString(leftV);
         char *rightS = Value_toString(rightV);
-        return shouldYes == is_equal(leftS, rightS);
-    }
-    else if (is_equal(leftType, RTYPE_NUMBER) && is_equal(rightType, RTYPE_NUMBER))
-    {
+        value = shouldYes == is_equal(leftS, rightS);
+    } else if (is_equal(leftType, RTYPE_NUMBER) && is_equal(rightType, RTYPE_NUMBER)) {
         double leftN = Value_toNumber(leftV)->number;
         double rightN = Value_toNumber(rightV)->number;
-        return shouldYes == (leftN == rightN);
-    }
-    else if (is_equal(leftType, RTYPE_BOOLEAN) && is_equal(rightType, RTYPE_BOOLEAN))
-    {
+        value = shouldYes == (leftN == rightN);
+    } else if (is_equal(leftType, RTYPE_BOOLEAN) && is_equal(rightType, RTYPE_BOOLEAN)) {
         bool leftB = Value_toBoolean(leftV)->boolean;
         bool rightB = Value_toBoolean(rightV)->boolean;
-        return shouldYes == (leftB == rightB);
-    }
-    else if (is_equal(leftType, RTYPE_EMPTY) && is_equal(rightType, RTYPE_EMPTY))
-    {
-        return true;
-    }
-    else if (is_equal(leftType, RTYPE_CONTAINER) && is_equal(rightType, RTYPE_CONTAINER))
-    {
+        value = shouldYes == (leftB == rightB);
+    } else if (is_equal(leftType, RTYPE_EMPTY) && is_equal(rightType, RTYPE_EMPTY)) {
+        value = true;
+    } else if (is_equal(leftType, RTYPE_CONTAINER) && is_equal(rightType, RTYPE_CONTAINER)) {
         char *leftS = Value_toString(leftV);
         char *rightS = Value_toString(rightV);
-        return shouldYes == is_equal(leftS, rightS); // check pointer id
+        value = shouldYes == is_equal(leftS, rightS); // check pointer id
+    } else {
+        value = false;
     }
-    else
-    {
-        return false;
-    }
+    Object_release(leftV);
+    Object_release(rightV);
+    return true;
 }
 
 void Executer_consumeIf(Executer *this, Leaf *leaf)
@@ -686,7 +687,6 @@ double Executer_calculateFoliage(Executer *this, double left, char *sign, double
 double Executer_calculateBTree(Executer *this, Foliage *);
 double Executer_calculateBTree(Executer *this, Foliage *foliage)
 {
-    printf("\n-------->\n");
     double result = 0;
     Token *sign = NULL;
     Token *token = foliage->data;
@@ -704,8 +704,6 @@ double Executer_calculateBTree(Executer *this, Foliage *foliage)
         result = Value_toNumber(v)->number;
         if (Token_isStatic(token)) Value_free(v);
     }
-    if (token != NULL) Token_print(token);
-    printf("r:[%f]\n", result);
     return result;
 }
 

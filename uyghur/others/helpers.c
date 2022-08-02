@@ -123,7 +123,7 @@ void helper_print_btree(Foliage *root, char *_space)
 
 bool is_values(char *target, int num, char *s, ...)
 {
-    tools_assert(target != NULL, "invalid target in in values");
+    tools_assert(target != NULL, "invalid target in is values");
     va_list valist;
     int i;
     va_start(valist, s);
@@ -139,6 +139,14 @@ bool is_values(char *target, int num, char *s, ...)
 bool is_calculation(char c)
 {
     return c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%';
+}
+
+bool is_higher_priority_calculation(char *target, char *than)
+{
+    if (is_values(target, TVAUE_GROUP_CALCULATION_3) && is_values(than, TVAUE_GROUP_CALCULATION_2)) return true;
+    if (is_values(target, TVAUE_GROUP_CALCULATION_3) && is_values(than, TVAUE_GROUP_CALCULATION_1)) return true;
+    if (is_values(target, TVAUE_GROUP_CALCULATION_2) && is_values(than, TVAUE_GROUP_CALCULATION_1)) return true;
+    return false;
 }
 
 void Object_initByType(char *type, void *object)

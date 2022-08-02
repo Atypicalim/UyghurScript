@@ -37,7 +37,6 @@ void Stack_print(Stack *this)
 void Stack_push(Stack *this, void *data)
 {
     Block *block = Block_new(data);
-    Object_retain(block);
     if (this->head == NULL)
     {
         this->head = block;
