@@ -9,30 +9,13 @@
 #define BRIDGE_ITEM_TP_KEY "BRIDGE_ITEM_TP_KEY"
 #define BRIDGE_ITEM_TP_VAL "BRIDGE_ITEM_TP_VAL"
 
-void _bridge_release_stack(Bridge* this)
+void Bridge_reset(Bridge *this)
 {
     Value *value = Stack_pop(this->stack);
     while(value != NULL)
     {
         value = Stack_pop(this->stack);
     }
-}
-
-void _bridge_reset_stack(Bridge* this)
-{
-    if (this->cursor != NULL)
-    {
-        free(this->cursor);
-        this->cursor = NULL;
-    }
-    this->cursor = Stack_reset(this->stack);
-}
-
-void Bridge_reset(Bridge *this)
-{
-    // TODO: ug free unused poiters
-    Stack_free(this->stack);
-    this->stack = Stack_new(); // make a call stack containing stack: call cFunc in ugCallback
     if (this->cursor != NULL)
     {
         free(this->cursor);
@@ -63,27 +46,17 @@ Bridge *Bridge_new(Uyghur *uyghur)
 char *Bridge_topType(Bridge *this)
 {
     Block *tail = this->stack->tail;
-    Value *value = Value_newEmpty(NULL);
-    if (tail != NULL)
-    {
-        value = tail->data;
-    }
-    return value->type;
+    return tail != NULL ? ((Value *)tail->data)->type : RTYPE_EMPTY;
 }
 
 void Bridge_pushValue(Bridge *this, Value *value)
 {
     tools_assert(this->type > 0, "invalid bridge status, not started");
-    if (this->type == BRIDGE_STACK_TP_BOX)
-    {
+    if (this->type == BRIDGE_STACK_TP_BOX) {
         tools_assert(this->last != BRIDGE_ITEM_TP_VAL, "invalid bridge status, key neceessary for value");
-    }
-    else
-    {
+    } else {
         tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key unnecessary for value");
     }
-    // TODO: dont rlease the values registering by stack and remove this retain
-    Object_retain(value);
     Stack_push(this->stack, value);
     this->last = BRIDGE_ITEM_TP_VAL;
 }
@@ -112,8 +85,6 @@ void Bridge_pushKey(Bridge *this, char *key)
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, key available for only box");
     tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key neceessary for last value");
     Value *keyValue = Value_newString(String_format(key), NULL);
-    // TODO: user string obj as  char* and remove this retain
-    Object_retain(keyValue);
     Stack_push(this->stack, keyValue);
     this->last = BRIDGE_ITEM_TP_KEY;
 }
@@ -167,7 +138,6 @@ char *Bridge_nextString(Bridge *this)
 
 void Bridge_startBox(Bridge *this, char *name)
 {
-    _bridge_release_stack(this);
     Bridge_reset(this);
     this->name = name;
     this->type = BRIDGE_STACK_TP_BOX;
@@ -194,14 +164,12 @@ void Bridge_register(Bridge *this)
         Container_set(this->uyghur->executer->globalContainer, this->name, Value_newContainer(container, NULL));
     }
     this->name = NULL;
-    Bridge_reset(this);
 }
 
 // send arguments to c from script
 
 void Bridge_startArgument(Bridge *this)
 {
-    _bridge_release_stack(this);
     Bridge_reset(this);
     this->type = BRIDGE_STACK_TP_ARG;
 }
@@ -220,14 +188,14 @@ void *Bridge_send(Bridge *this)
         v = Stack_next(this->stack, cursor);
     }
     Cursor_free(cursor);
-    _bridge_reset_stack(this);
+    if (this->cursor != NULL) free(this->cursor);
+    this->cursor = Stack_reset(this->stack);
 }
 
 // return result to script from c
 
 void Bridge_startResult(Bridge *this)
 {
-    _bridge_release_stack(this);
     Bridge_reset(this);
     this->type = BRIDGE_STACK_TP_RES;
 }
@@ -243,7 +211,6 @@ void *Bridge_return(Bridge *this)
 
 void Bridge_startFunc(Bridge *this, char *name)
 {
-    _bridge_release_stack(this);
     Bridge_reset(this);
     this->name = name;
     this->type = BRIDGE_STACK_TP_FUN;
