@@ -110,26 +110,26 @@ void *Stack_next(Stack *this, Cursor *cursor)
 void Stack_reverse(Stack *this)
 {
     Queue *queue = Queue_new();
-    Cursor *cursor1 = Stack_reset(this);
-    void *data1 = Stack_next(this, cursor1);
+    //
+    Cursor *cursor = Stack_reset(this);
+    void *data1 = Stack_next(this, cursor);
     while (data1 != NULL)
     {
-        // TODO: memory leak
-        Object_retain(data1);
         Queue_push(queue, data1);
-        data1 = Stack_next(this, cursor1);
+        data1 = Stack_next(this, cursor);
     }
+    Cursor_free(cursor);
     Stack_clear(this);
-    Cursor *cursor2 = Queue_reset(queue);
-    void *data = Queue_next(queue, cursor2);
+    //
+    cursor = Queue_reset(queue);
+    void *data = Queue_next(queue, cursor);
     while (data != NULL)
     {
         Stack_push(this, data);
-        data = Queue_next(queue, cursor2);
+        data = Queue_next(queue, cursor);
     }
-    Queue_clear(queue);
-    Cursor_free(cursor1);
-    Cursor_free(cursor2);
+    Cursor_free(cursor);
+    Object_release(queue);
 }
 
 #endif

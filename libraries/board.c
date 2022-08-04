@@ -24,7 +24,6 @@ void raylib_on_show()
 void raylib_on_frame()
 {
     Bridge_startFunc(uyghurBridge, "doska_sizish_qayturmisi");
-    Bridge_pushBoolean(uyghurBridge, true);
     Bridge_call(uyghurBridge);
     // DrawFPS(10, 10);
 }

@@ -15,7 +15,6 @@ void Bridge_reset(Bridge *this)
     while(value != NULL)
     {
         Object *o = (Object *)value;
-        printf("--->RESET:[%d][%d]\n", o->referenceCount, value);
         Object_release(value);
         value = Stack_pop(this->stack);
     }
@@ -96,11 +95,7 @@ void Bridge_pushKey(Bridge *this, char *key)
 
 void Bridge_pushBoolean(Bridge *this, bool value)
 {
-    // TODO: test
-    Value *v = Value_newBoolean(value, NULL);
-    Object *o = (Object *)v;
-    printf("--->PUSH:[%d][%d]\n", o->referenceCount, v);
-    Bridge_pushValue(this, v);
+    Bridge_pushValue(this, Value_newBoolean(value, NULL));
 }
 
 void Bridge_pushNumber(Bridge *this, double value)
@@ -216,7 +211,6 @@ void *Bridge_return(Bridge *this)
 void Bridge_startFunc(Bridge *this, char *name)
 {
     Bridge_reset(this);
-    printf("\n\n===>NEW:\n");
     this->name = name;
     this->type = BRIDGE_STACK_TP_FUN;
 }

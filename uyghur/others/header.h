@@ -20,10 +20,12 @@
 #include "constant.h"
 #include "tools.c"
 
-#define H_PCT_INIT_CALLBACK
+bool isTest = false;
+
+#define H_PCT_OBJECT_CALLBACKS
 void Object_initByType(char *, void *);
-#define H_PCT_FREE_CALLBACK
 void Object_freeByType(char *, void *);
+void Object_printByType(char *, void *);
 #include "../tools/header.h"
 
 #include "utils.c"

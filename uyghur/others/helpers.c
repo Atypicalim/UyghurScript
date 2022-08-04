@@ -172,4 +172,9 @@ void Object_freeByType(char *type, void *object)
     if (is_equal(type, PCT_OBJ_LEAF)) return Leaf_free(object);
 }
 
+void Object_printByType(char *type, void *object)
+{
+    if (is_equal(type, PCT_OBJ_VALUE)) return Value_print(object);
+}
+
 #endif

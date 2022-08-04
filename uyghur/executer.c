@@ -582,7 +582,6 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     Stack_reverse(this->callStack);
     Cursor *cursor1 = Stack_reset(this->callStack);
     Cursor *cursor2 = Stack_reset(leaf->tokens);
-    // 
     Token *funcName = Stack_next(leaf->tokens, cursor2);
     Token *arg = Stack_next(leaf->tokens, cursor2);
     while(arg != NULL)
@@ -622,6 +621,7 @@ Value *Executer_runCFunc(Executer *this, Value *funcValue)
     Value *value = Stack_next(this->callStack, cursor);
     while (value != NULL)
     {
+        Object_retain(value);
         Bridge_pushValue(bridge, value);
         value = Stack_next(this->callStack, cursor);
     }
