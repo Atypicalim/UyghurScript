@@ -662,11 +662,9 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     } else {
         tools_error("function not found for func name: %s", funcName->value);
     }
-    // TODO: TEST
-    // if (!is_equal(resultName->type, TTYPE_EMPTY) && !is_equal(resultName->value, TVALUE_EMPTY)) {
-    //     Executer_setValueByToken(this, resultName, r, true);
-    // }
-    Object_release(r);
+    if (!is_equal(resultName->type, TTYPE_EMPTY) && !is_equal(resultName->value, TVALUE_EMPTY)) {
+        Executer_setValueByToken(this, resultName, r, true);
+    }
     //
     Object_release(funcValue);
     Stack_clear(this->callStack);

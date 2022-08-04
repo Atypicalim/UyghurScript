@@ -250,10 +250,7 @@ void Bridge_call(Bridge *this)
     Object_release(funcValue);
     Stack_clear(stack);
     // result
-    // TODO: TEST
-    // Bridge_startResult(this);
-    // Bridge_pushValue(this, r);
-    // Bridge_return(this);
-    Object_release(r);
-    // // TODO: ug free result when call
+    Bridge_startResult(this);
+    Bridge_pushValue(this, r);
+    Bridge_return(this);
 }
