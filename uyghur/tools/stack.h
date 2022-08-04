@@ -114,6 +114,8 @@ void Stack_reverse(Stack *this)
     void *data1 = Stack_next(this, cursor1);
     while (data1 != NULL)
     {
+        // TODO: memory leak
+        Object_retain(data1);
         Queue_push(queue, data1);
         data1 = Stack_next(this, cursor1);
     }
@@ -125,9 +127,9 @@ void Stack_reverse(Stack *this)
         Stack_push(this, data);
         data = Queue_next(queue, cursor2);
     }
+    Queue_clear(queue);
     Cursor_free(cursor1);
     Cursor_free(cursor2);
-    Queue_free(queue);
 }
 
 #endif

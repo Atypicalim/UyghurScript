@@ -37,7 +37,6 @@ void Queue_print(Queue *this)
 void Queue_push(Queue *this, void *data)
 {
     Block *block = Block_new(data);
-    Object_retain(block);
     if (this->head == NULL)
     {
         this->head = block;

@@ -19,6 +19,7 @@ Hashmap* Hashmap_new() {
     return map;
 }
 
+// TODO: release removed value
 void Hashmap_free(Hashmap *this) {
     Entry *ptr;
     Entry *head;
@@ -78,6 +79,7 @@ void *Hashmap_get(Hashmap *this, char *_key) {
     return NULL;
 }
 
+// TODO: release removed value
 void Hashmap_del(Hashmap *this, char *_key) {
     assert(this != NULL);
     String *key = String_format(_key);

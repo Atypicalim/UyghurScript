@@ -14,6 +14,9 @@ void Bridge_reset(Bridge *this)
     Value *value = Stack_pop(this->stack);
     while(value != NULL)
     {
+        Object *o = (Object *)value;
+        printf("--->RESET:[%d][%d]\n", o->referenceCount, value);
+        Object_release(value);
         value = Stack_pop(this->stack);
     }
     if (this->cursor != NULL)
@@ -93,7 +96,11 @@ void Bridge_pushKey(Bridge *this, char *key)
 
 void Bridge_pushBoolean(Bridge *this, bool value)
 {
-    Bridge_pushValue(this, Value_newBoolean(value, NULL));
+    // TODO: test
+    Value *v = Value_newBoolean(value, NULL);
+    Object *o = (Object *)v;
+    printf("--->PUSH:[%d][%d]\n", o->referenceCount, v);
+    Bridge_pushValue(this, v);
 }
 
 void Bridge_pushNumber(Bridge *this, double value)
@@ -147,18 +154,15 @@ void Bridge_register(Bridge *this)
 {
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, box expected for register");
     tools_assert(this->last == BRIDGE_ITEM_TP_VAL, "invalid bridge status");
-    Cursor *cursor = Stack_reset(this->stack);
     Container *container = this->name == NULL ? this->uyghur->executer->globalContainer : Container_newBox();
-    Value *item = Stack_next(this->stack, cursor);
-    while (item != NULL)
+    Value *value = Stack_pop(this->stack);
+    while (value != NULL)
     {
-        Value *value = item;
-        Value *key = Stack_next(this->stack, cursor);
-        // Value_print(key);
+        Value *key = Stack_pop(this->stack);
         Container_set(container, String_get(key->string), value);
-        item = Stack_next(this->stack, cursor);
+        Object_release(key);
+        value = Stack_pop(this->stack);
     }
-    Cursor_free(cursor);
     if (this->name != NULL)
     {
         Container_set(this->uyghur->executer->globalContainer, this->name, Value_newContainer(container, NULL));
@@ -212,6 +216,7 @@ void *Bridge_return(Bridge *this)
 void Bridge_startFunc(Bridge *this, char *name)
 {
     Bridge_reset(this);
+    printf("\n\n===>NEW:\n");
     this->name = name;
     this->type = BRIDGE_STACK_TP_FUN;
 }
@@ -230,6 +235,7 @@ void Bridge_call(Bridge *this)
     while (item != NULL)
     {
         Stack_push(stack, item);
+        Object *o = (Object *)item;
         item = Stack_next(this->stack, cursor);
     }
     Cursor_free(cursor);
@@ -237,23 +243,23 @@ void Bridge_call(Bridge *this)
     Token *funcName = Token_key("*", TTYPE_STRING, this->name);
     Value *funcValue = Executer_getValueByToken(executer, funcName, true);
     Value *r = NULL;
-    if (is_equal(funcValue->type, RTYPE_FUNCTION))
-    {
-        r = Executer_runFunc(executer, funcName);
-    }
-    else
-    {
+    if (is_equal(funcValue->type, RTYPE_FUNCTION)) {
+        r = Executer_runFunc(executer, funcValue);
+    } else {
         tools_warning("function not found for func name: %s", this->name);
         r = Value_newEmpty(NULL);
     }
-    if (this->name != NULL)
-    {
+    if (this->name != NULL) {
         this->name = NULL;
     }
-    Token_free(funcName);
+    Object_release(funcName);
+    Object_release(funcValue);
+    Stack_clear(stack);
     // result
-    Bridge_startResult(this);
-    Bridge_pushValue(this, r);
-    Bridge_return(this);
+    // TODO: TEST
+    // Bridge_startResult(this);
+    // Bridge_pushValue(this, r);
+    // Bridge_return(this);
+    Object_release(r);
     // // TODO: ug free result when call
 }

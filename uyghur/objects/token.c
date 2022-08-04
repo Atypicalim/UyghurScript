@@ -115,6 +115,9 @@ void Token_print(Token *this)
 
 void Token_free(Token *this)
 {
+    if (Token_isKey(this)) {
+        Object_release(this->extra);
+    }
     Object_free(this);
     // TODO: ug free pointers
 }

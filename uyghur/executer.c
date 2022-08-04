@@ -591,6 +591,7 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
         char *key = Executer_getKeyByToken(this, arg);
         Container_set(this->currentContainer, key, value);
         arg = Stack_next(leaf->tokens, cursor2);
+        pct_free(key);
     }
     Cursor_free(cursor1);
     Cursor_free(cursor2);
@@ -599,33 +600,21 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     Executer_consumeTree(this, leaf);
 }
 
-Value *Executer_runFunc(Executer *this, Token *funcName)
+Value *Executer_runFunc(Executer *this, Value *funcValue)
 {
-    // TODO: memory leak
-    Value *funcValue = Executer_getValueByToken(this, funcName, true);
-    tools_assert(is_equal(funcValue->type, RTYPE_FUNCTION), "function not valid for name: %s", funcName->value);
-    // execute func
     Leaf *codeNode = funcValue->object;
     Executer_pushContainer(this, CONTAINER_TYPE_SCOPE);
     Executer_consumeLeaf(this, codeNode);
     Executer_popContainer(this, CONTAINER_TYPE_SCOPE);
     this->isReturn = false;
-    // return result
     Value *r = Stack_pop(this->callStack);
-    if (r == NULL)
-    {
-        r = Value_newEmpty(NULL);
-    }
+    if (r == NULL) r = Value_newEmpty(NULL);
     return r;
 }
 
-Value *Executer_runCFunc(Executer *this, Token *funcName)
+Value *Executer_runCFunc(Executer *this, Value *funcValue)
 {
-    // TODO: memory leak
-    Value *funcValue = Executer_getValueByToken(this, funcName, true);
-    tools_assert(is_equal(funcValue->type, RTYPE_CFUNCTION), "cfunction not valid");
     void (*funcBody)(Bridge *) = funcValue->object;
-    //
     Bridge *bridge = this->uyghur->bridge;
     Bridge_startArgument(bridge);
     Stack_reverse(this->callStack);
@@ -640,9 +629,10 @@ Value *Executer_runCFunc(Executer *this, Token *funcName)
     Bridge_send(bridge);
     //
     funcBody(bridge);
-    //
     tools_assert(bridge->type == BRIDGE_STACK_TP_RES, "invalid bridge status, func should return result at the end");
-    return Bridge_popValue(bridge);
+    Value *r = Bridge_popValue(bridge);
+    if (r == NULL) r = Value_newEmpty(NULL);
+    return r;
 }
 
 void Executer_consumeCall(Executer *this, Leaf *leaf)
@@ -658,24 +648,27 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     {
         Value *value = Executer_getValueByToken(this, arg, true);
         Stack_push(this->callStack, value);
+        Object_release(value);
         arg = Stack_next(leaf->tokens, cursor);
     }
     Cursor_free(cursor);
     // get func
     Value *r = NULL;
-    // memory leak
     Value *funcValue = Executer_getValueByToken(this, funcName, true);
     if (is_equal(funcValue->type, RTYPE_FUNCTION)) {
-        r = Executer_runFunc(this, funcName);
+        r = Executer_runFunc(this, funcValue);
     } else if (is_equal(funcValue->type, RTYPE_CFUNCTION)) {
-        r = Executer_runCFunc(this, funcName);
+        r = Executer_runCFunc(this, funcValue);
     } else {
         tools_error("function not found for func name: %s", funcName->value);
     }
+    // TODO: TEST
+    // if (!is_equal(resultName->type, TTYPE_EMPTY) && !is_equal(resultName->value, TVALUE_EMPTY)) {
+    //     Executer_setValueByToken(this, resultName, r, true);
+    // }
+    Object_release(r);
     //
-    if (!is_equal(resultName->type, TTYPE_EMPTY) && !is_equal(resultName->value, TVALUE_EMPTY)) {
-        Executer_setValueByToken(this, resultName, r, true);
-    }
+    Object_release(funcValue);
     Stack_clear(this->callStack);
 }
 
