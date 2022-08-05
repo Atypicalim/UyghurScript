@@ -214,8 +214,8 @@ ikrangha @s{[sinaqNetije]} yezilsun
 # supported key types: variable, string, number
 @boxName{variableName}
 @boxName{123}
-@boxName{{stringKey]}
-@boxName{stringKey]
+@boxName{[stringKey]}
+@boxName[stringKey]
 ```
 
 ## 10. bridge
