@@ -4,9 +4,11 @@
 
 void oqush(Bridge *bridge)
 {
+    char *r = system_read_terminal();
     Bridge_startResult(bridge);
-    Bridge_pushString(bridge, system_read_terminal());
+    Bridge_pushString(bridge, r);
     Bridge_return(bridge);
+    pct_free(r);
 }
 
 void yezish(Bridge *bridge)

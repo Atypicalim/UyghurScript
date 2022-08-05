@@ -28,9 +28,11 @@ void ug_time_format_seconds(Bridge *bridge)
 {
     int seconds = Bridge_nextNumber(bridge);
     char *str = Bridge_nextString(bridge);
+    char *time = time_format_seconds(seconds, str);
     Bridge_startResult(bridge);
-    Bridge_pushString(bridge, time_format_seconds(seconds, str));
+    Bridge_pushString(bridge, time);
     Bridge_return(bridge);
+    pct_free(time);
 }
 
 void ug_time_get_date(Bridge *bridge)

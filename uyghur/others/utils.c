@@ -47,7 +47,9 @@ char *system_execute_command(char *cmd)
         String_appendArr(result, buf);
     }
     if(pclose(fp)) return NULL;
-    return String_get(result);
+    char *r = String_dump(result);
+    Object_release(result);
+    return r;
 }
 
 void system_set_env(char *name, char *value)

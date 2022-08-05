@@ -17,7 +17,10 @@ void ug_read_file(Bridge *bridge)
     char *path = Bridge_nextString(bridge);
     char *r = file_read(path);
     Bridge_startResult(bridge);
-    if (r != NULL) Bridge_pushString(bridge, r);
+    if (r != NULL) {
+        Bridge_pushString(bridge, r);
+        pct_free(r);
+    }
     Bridge_return(bridge);
 }
 

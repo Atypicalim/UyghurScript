@@ -173,7 +173,7 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
     if (Token_isEmpty(token)) return Value_newEmpty(token);
     if (Token_isBool(token)) return Value_newBoolean(is_equal(token->value, TVALUE_TRUE), token);
     if (Token_isNumber(token)) return Value_newNumber(atof(token->value), token);
-    if (Token_isString(token)) return Value_newString(String_format(token->value), token);
+    if (Token_isString(token)) return Value_newString(String_format("%s", token->value), token);
     if (Token_isBox(token)) return Value_newContainer(Container_newBox(), token);
     //
     Value *result = NULL;
@@ -485,7 +485,7 @@ bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge
     }
     Object_release(leftV);
     Object_release(rightV);
-    return true;
+    return value;
 }
 
 void Executer_consumeIf(Executer *this, Leaf *leaf)

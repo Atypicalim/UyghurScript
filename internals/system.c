@@ -21,9 +21,11 @@ void ug_system_exit_program(Bridge *bridge)
 void ug_system_execute_command(Bridge *bridge)
 {
     char *command = Bridge_nextString(bridge);
+    char *r = system_execute_command(command);
     Bridge_startResult(bridge);
-    Bridge_pushString(bridge, system_execute_command(command));
+    Bridge_pushString(bridge, r);
     Bridge_return(bridge);
+    pct_free(r);
 }
 
 void ug_system_set_env(Bridge *bridge)
@@ -46,9 +48,11 @@ void ug_system_get_env(Bridge *bridge)
 
 void ug_system_read_terminal(Bridge *bridge)
 {
+    char *r = system_read_terminal();
     Bridge_startResult(bridge);
-    Bridge_pushString(bridge, system_read_terminal());
+    Bridge_pushString(bridge, r);
     Bridge_return(bridge);
+    pct_free(r);
 }
 
 void ug_system_write_terminal(Bridge *bridge)
