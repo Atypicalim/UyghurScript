@@ -6,7 +6,7 @@
 
 ## 1. usage
 
-* jsut double cick `./release/uyghur.exe` to execute integrated script
+* just double cick `./release/uyghur.exe` to execute integrated script
 
 * run the command `./release/uyghur.exe ./examples/hello.ug` to execute hello world
 
@@ -205,13 +205,17 @@ ikrangha @s{[sinaqNetije]} yezilsun
 # this box pointer: -, find in closest box
 @-{[keyName]}
 
+# this module pointer: +, find in closest module
+@-{[keyName]}
+
 # global box pointer: *, find in global scope
 @*{[keyName]}
 
 # supported key types: variable, string, number
-@s{sinaqMiqdar}
-@s{[sinaqKorsetkuch]}
-@s{123}
+@boxName{variableName}
+@boxName{123}
+@boxName{{stringKey]}
+@boxName{stringKey]
 ```
 
 ## 10. bridge

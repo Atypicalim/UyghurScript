@@ -4,15 +4,15 @@ DST_DIR = ./build/
 DST_NAME = uyghur.exe
 SRC = ./main.c
 DST = $(DST_DIR)$(DST_NAME)
-SCRIPT = ./examples/yuguresh.ug
+SCRIPT = ./examples/sinaq.ug
 
 # raylib
-FOLDER_RAYLIB = ./external/raylib-4.0.0_win64_mingw-w64
+FOLDER_RAYLIB = ./third/raylib-4.0.0_win64_mingw-w64
 LFLAGS_RAYLIB = -I $(FOLDER_RAYLIB)/include -L $(FOLDER_RAYLIB)/lib
 CFLAGS_RAYLIB = -lraylib -lopengl32 -lgdi32 -lwinmm
 
 # raygui
-FLAGS_RAYGUI = -I ./external/raygui-master
+FLAGS_RAYGUI = -I ./third/raygui-master
 
 # console
 LFLAGS_EXTRA = $(FLAGS_RAYGUI)

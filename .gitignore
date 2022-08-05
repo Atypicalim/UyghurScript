@@ -1,4 +1,4 @@
 .vscode
 build
-/external/*
-!/external/README.md
+/third/*
+!/third/README.md

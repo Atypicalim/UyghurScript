@@ -1,6 +1,6 @@
 // system
 
-#include "../uyghur.c"
+#include "../uyghur/uyghur.c"
 
 void ug_system_get_name(Bridge *bridge)
 {

@@ -10,8 +10,6 @@
 #include "executer.c"
 #include "bridge.c"
 
-#include "libraries/header.h"
-
 void Uyghur_init(Uyghur *this)
 {
     //
@@ -25,7 +23,6 @@ Uyghur *Uyghur_new()
     uyghur->parser = Parser_new(uyghur);
     uyghur->executer = Executer_new(uyghur);
     uyghur->bridge = Bridge_new(uyghur);
-    register_internal_libraries(uyghur->bridge);
     return uyghur;
 }
 

@@ -43,12 +43,13 @@ void Object_release(void *_this)
     if (_this == NULL) tools_error("null pointer to object release");
     Object *this = _this;
     this->referenceCount--;
-    if (this->referenceCount > 0) return;
-    #ifdef H_PCT_OBJECT_CALLBACKS
-    Object_freeByType(this->objType, this);
-    #elif
-    Object_free(this);
-    #endif
+    if (this->referenceCount <= 0) {
+        #ifdef H_PCT_OBJECT_CALLBACKS
+        Object_freeByType(this->objType, this);
+        #elif
+        Object_free(this);
+        #endif
+    }
 }
 
 void Object_print(void *_this)

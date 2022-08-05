@@ -199,7 +199,8 @@ void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool 
     char *key = Executer_getKeyByToken(this, token);
     Value *replacedValue = Container_set(container, key, value);
     pct_free(key);
-    if (replacedValue != NULL) Object_release(replacedValue);
+    Object_release(value);
+    // if (replacedValue != NULL) Object_release(replacedValue);
 }
 
 void Executer_consumeVariable(Executer *this, Leaf *leaf)
@@ -664,6 +665,8 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     }
     if (!is_equal(resultName->type, TTYPE_EMPTY) && !is_equal(resultName->value, TVALUE_EMPTY)) {
         Executer_setValueByToken(this, resultName, r, true);
+    } else {
+        Object_release(r);
     }
     //
     Object_release(funcValue);

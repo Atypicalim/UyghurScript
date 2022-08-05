@@ -1,6 +1,6 @@
 // file
 
-#include "../uyghur.c"
+#include "../uyghur/uyghur.c"
 
 void ug_write_file(Bridge *bridge)
 {
