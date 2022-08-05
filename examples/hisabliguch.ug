@@ -220,7 +220,7 @@ fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
     # result
     fonkisiye @xet{[formatlash]} bilen [%f] netijeQimmet ishlitilsun we netije sinaqXet bolsun
     fonkisiye @ressam{[xetYezish]} bilen [] sinaqXet 24 2 [aaaaaa] 25 15 ishlitilsun
-    # # action
+    # action
     fonkisiye @xet{[formatlash]} bilen [%f] hazirqiQimmet ishlitilsun we netije sinaqXet bolsun
     fonkisiye @ressam{[xetYezish]} bilen [] sinaqXet 16 2 [aaaaaa] 25 38 ishlitilsun
 tamamlansun

@@ -121,7 +121,7 @@ void ug_str_format(Bridge *bridge)
     if (v->type == RTYPE_BOOLEAN) r = String_format(f, v->boolean);
     if (r == NULL) r = String_format("");
     Bridge_startResult(bridge);
-    Bridge_pushString(bridge, String_dump(r));
+    Bridge_pushString(bridge, String_get(r));
     Bridge_return(bridge);
     Object_release(r);
 }

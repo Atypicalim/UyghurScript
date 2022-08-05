@@ -17,6 +17,7 @@ Texture2D defaultTexture;
 
 void raylib_on_show()
 {
+    // SetTargetFPS(60);
     Bridge_startFunc(uyghurBridge, "doska_korsitish_qayturmisi");
     Bridge_call(uyghurBridge);
 }
@@ -25,7 +26,7 @@ void raylib_on_frame()
 {
     Bridge_startFunc(uyghurBridge, "doska_sizish_qayturmisi");
     Bridge_call(uyghurBridge);
-    DrawFPS(10, 10);
+    // DrawFPS(10, 10);
 }
 
 void raylib_on_focus()
@@ -61,7 +62,6 @@ void raylib_run_program(int width, int height, char *title, int mode)
     if (strlen(title) == 0) title = "Uyghur Script!";
     if (mode < 0) mode = FLAG_WINDOW_RESIZABLE;
     SetConfigFlags(mode);
-    SetTargetFPS(60);
     InitWindow(width, height, title);
     InitAudioDevice();
     GuiLoadStyleAshes();

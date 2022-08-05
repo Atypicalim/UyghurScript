@@ -215,6 +215,7 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     Executer_assert(this, old == NULL, name, LANG_ERR_VARIABLE_IS_FOUND);
     char *key = Executer_getKeyByToken(this, name);
     Container_set(container, key, new);
+    Object_release(new);
     pct_free(key);
 }
 
