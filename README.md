@@ -4,6 +4,8 @@
 
 > a toy script interpreter written in c, u can write & run your script written in uyghur language grammar with it ...
 
+> there is a [vscode extension](https://github.com/kompasim/uyghurscript-vscode-extension) for highlighting and autocompleting.
+
 ## 1. usage
 
 * just double cick `./release/uyghur.exe` to execute integrated script
@@ -206,7 +208,7 @@ ikrangha @s{[sinaqNetije]} yezilsun
 @-{[keyName]}
 
 # this module pointer: +, find in closest module
-@-{[keyName]}
+@+{[keyName]}
 
 # global box pointer: *, find in global scope
 @*{[keyName]}
@@ -264,7 +266,6 @@ bolektiki sinaq qimmet ...
 
 * traceback
 * libraries
-* gc
 * editor support (highlight and autocomplete)
 * ...
 
