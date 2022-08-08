@@ -285,8 +285,7 @@ String* String_repeat(String *this, int count)
 String *String_subString(String *this, int from, int to)
 {
     String *s = String_new();
-    int length = this->length;
-    if (to <= 0 || from >= length || from >= to) return s;
+    if (from < 0 || to > this->length || from >= to) return this;
     int len = to - from;
     char *temp = pct_mallloc(len + 1);
     memmove(temp, this->data + from, len);
@@ -362,8 +361,7 @@ bool String_contains(String *this, char *target)
 
 String *String_replace(String *this, char *target, char *relacement, int from, int to, int count)
 {
-    int length = this->length;
-    if (to <= 0 || from >= length || from >= to) return this;
+    if (from < 0 || to > this->length || from >= to) return this;
     int targetLen = strlen(target);
     int replacementLen = strlen(relacement);
     if (targetLen <= 0 || count == 0) return this;

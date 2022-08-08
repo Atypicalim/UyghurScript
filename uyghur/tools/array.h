@@ -12,195 +12,175 @@ typedef bool (* ArrayFindFunction)(void const*);
 typedef struct _Array {
     struct _Object;
     void **elements;
-    int size;
+    int length;
     int capacity;
+    bool nullable;
 } Array;
-
-void _array_clear(Array *this)
-{
-    for (int i = this->size; i < this->capacity; i++) this->elements[i] = NULL;
-}
 
 Array *Array_new()
 {
     Array *array = (Array *)pct_mallloc(sizeof(Array));
     Object_init(array, PCT_OBJ_ARRAY);
     array->capacity = ARRAY_DEFAULT_CAPACITY;
-    array->size = 0;
+    array->length = 0;
+    array->nullable = false;
     array->elements = (void *)pct_mallloc(sizeof(void *) * array->capacity);
-    _array_clear(array);
+    for (int i = array->length; i < array->capacity; i++) array->elements[i] = NULL;
     return array;
 }
 
-bool _array_resize(Array *this, int minSize)
+bool _array_check_resize(Array *this, int length)
 {
-    int capacity = ARRAY_DEFAULT_CAPACITY;
-    while (minSize > capacity) capacity = capacity + ARRAY_DEFAULT_CAPACITY;
+    if (length <= this->capacity) return true;
+    int capacity = this->capacity;
+    while (length > capacity) capacity = capacity + ARRAY_DEFAULT_CAPACITY;
     void **elements = pct_realloc(this->elements, sizeof(void *) * capacity);
     if (elements == NULL) return false;
     this->capacity = capacity;
     this->elements = elements;
-    _array_clear(this);
+    for (int i = this->length; i < this->capacity; i++) this->elements[i] = NULL;
     return true;
 }
 
 bool Array_set(Array *this, int index, void *element)
 {
-    if (index == 0) return false;
-    if (index < 0) index = this->size + index + 1;
-    if (index < 1 || index > this->size) return NULL;
-    this->elements[index - 1] = element;
+    if (!this->nullable && element == NULL) return false;
+    if (index < 0 || (!this->nullable && index >= this->length)) return false;
+    int length = index < this->length ? this->length : index + 1;
+    bool isOk = _array_check_resize(this, length);
+    if (!isOk) return false;
+    if (this->elements[index] != NULL) {
+        Object_release(this->elements[index]);
+    }
+    Object_retain(element);
+    this->length = length;
+    this->elements[index] = element;
     return true;
 }
 
 void *Array_get(Array *this, int index)
 {
-    if (index == 0 || this->size == 0) return NULL;
-    if (index < 0) index = this->size + index + 1;
-    if (index < 1 || index > this->size) return NULL;
-    return this->elements[index - 1];
+    if (index < 0 || index >= this->length) return NULL;
+    return this->elements[index];
 }
 
-void *Array_delete(Array *this, int index)
+void *Array_del(Array *this, int index)
 {
-    if (index == 0 || this->size == 0) return NULL;
-    if (index < 0) index = this->size + index + 1;
-    if (index < 1 || index > this->size) return NULL;
-    void *item = this->elements[index - 1];
-    for(int i = index; i <= this->size; i++)
+    if (index < 0 || index >= this->length) return NULL;
+    void *item = this->elements[index];
+    for(int i = index; i < this->length; i++)
     {
-        this->elements[i - 1] = i != this->size ? this->elements[i] : NULL;
+        this->elements[i] = i != (this->length - 1) ? this->elements[i + 1] : NULL;
     }
-    this->elements[this->size] = NULL;
-    this->size = this->size - 1;
+    this->elements[this->length] = NULL;
+    this->length = this->length - 1;
+    Object_release(item);
     return item;
 }
 
-bool _array_insert(Array *this, void *element, int index, bool isBefore)
+bool _array_insert(Array *this, int index, void *element, bool isBefore)
 {
-    // first item
-    if (this->size == 0)
+    if (!this->nullable && element == NULL) return false;
+    // validate
+    if (index < 0) {
+        index = 0;
+        isBefore = true;
+    } else if (index >= this->length) {
+        index = this->length - 1;
+        isBefore = false;
+    }
+    if (this->length == 0)
     {
-        if (index > 1 || index < -1) return false;
         this->elements[0] = element;
-        this->size = 1;
+        this->length = 1;
         return true;
     }
-    // validate
-    if (index == 0) return false;
-    if (index < 0) index = this->size + index + 1;
-    if (index < 1 || index > this->size) return false;
     // resize
-    if (this->size + 1 > this->capacity) {
-        bool isOk = _array_resize(this, this->size + ARRAY_DEFAULT_CAPACITY);
-        if (!isOk) return false;
-    }
+    bool isOk = _array_check_resize(this, this->length + 1);
+    if (!isOk) return false;
     // insert
-    int i = this->size;
+    int i = this->length;
     int to = isBefore ? index : index + 1;
-    for (i == this->size; i > to; i--)
+    for (i = this->length - 1; i >= to; i--)
     {
-        this->elements[i + 1 - 1] = this->elements[i - 1];
+        this->elements[i + 1] = this->elements[i];
     }
-    this->elements[to - 1] = element;
-    this->size = this->size + 1;
+    this->elements[to] = element;
+    this->length = this->length + 1;
     return true;
 }
 
-bool Array_insertBefore(Array *this, void *element, int at)
+bool Array_insertBefore(Array *this, int at, void *element)
 {
-    return _array_insert(this, element, at, true);
+    return _array_insert(this, at, element, true);
 }
 
-bool Array_insertAfter(Array *this, void *element, int at)
+bool Array_insertAfter(Array *this, int at, void *element)
 {
-    return _array_insert(this, element, at, false);
+    return _array_insert(this, at, element, false);
 }
 
 bool Array_prepend(Array *this, void *element)
 {
-    return _array_insert(this, element, 1, true);
+    return Array_insertBefore(this, 0, element);
 }
 
 bool Array_append(Array *this, void *element)
 {
-    return _array_insert(this, element, -1, false);
-}
-
-int Array_size(Array *this)
-{
-    return this->size;
+    return Array_insertAfter(this, this->length - 1, element);
 }
 
 // int compare(const void *num1, const void *num2) { return 0; }
 void Array_sort(Array *this, ArraySortFunction func)
 {
-    qsort(this->elements, this->size, sizeof(void *), func);
+    qsort(this->elements, this->length, sizeof(void *), func);
 }
 
 // int search(const void *num2) { return true; }
 int Array_find(Array *this, int from, int to, bool isReverse, ArrayFindFunction func)
 {
-    if (from == 0 || to == 0 || this->size == 0) return 0;
-    if (from < 0) from = this->size + from + 1;
-    if (to < 0) to = this->size + to + 1;
-    if (from < 1 || from > this->size) return 0;
-    if (to < 1 || to > this->size) return 0;
-    if (from > to) return 0;
+    if (from < 0 || to > this->length || from >= to) return -1;
+    int var = isReverse ? -1 : 1;
+    if (isReverse) {
+        int temp = from;
+        from = to - 1;
+        to = temp + 1;
+    }
     void *item;
     bool result;
-    if (isReverse)
-    {
-        for (int i = to; i >= from; i--)
-        {
-            item = Array_get(this, i);
-            result = func(item);
-            if (result) return i;
-        }
+    for (int i = from; i < to; i + var) {
+        item = Array_get(this, i);
+        result = func(item);
+        if (result) return i;
     }
-    else
-    {
-        for (int i = from; i <= to; i++)
-        {
-            item = Array_get(this, i);
-            result = func(item);
-            if (result) return i;
-        }
-    }
-    return 0;
+    return -1;
 }
 
 Array *Array_slice(Array *this, int from, int to)
 {
-    if (from == 0 || to == 0 || this->size == 0) return NULL;
-    if (from < 0) from = this->size + from + 1;
-    if (to < 0) to = this->size + to + 1;
-    if (from < 1 || from > this->size) return NULL;
-    if (to < 1 || to > this->size) return NULL;
-    if (from > to) return NULL;
     Array *other = Array_new();
-    void *item;
-    for (int i = from; i <= to; i++)
-    {
-        item = Array_get(this, i);
-        Array_append(other, item);
-    }
+    if (from < 0 || to > this->length || from >= to) return other;
+    for (int i = from; i < to; i++) Array_append(other, Array_get(this, i));
     return other;
 }
 
 void Array_clear(Array *this)
 {
-    this->size = 0;
-    _array_clear(this);
+    for (int i = 0; i < this->length; i++) {
+        Object_release(this->elements[i]);
+        this->elements[i] = NULL;
+    }
+    this->length = 0;
 }
 
 void Array_print(Array *this)
 {
-    printf("[(ARRAY) => p:%d, s:%d, c:%d]\n", this, this->size, this->capacity);
+    printf("[(ARRAY) => p:%d, s:%d, c:%d]\n", this, this->length, this->capacity);
 }
 
 void Array_free(Array *this)
 {
+    Array_clear(this);
     pct_free(this->elements);
     this->elements = NULL;
     Object_free(this);
