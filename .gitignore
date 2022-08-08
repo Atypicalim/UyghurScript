@@ -1,4 +1,5 @@
 .vscode
 build
-/third/*
-!/third/README.md
+pure-lua-tools/
+my-build-tools/
+/*.exe
