@@ -14,13 +14,14 @@
 
 * run the command `./release/uyghur.exe ./examples/hello.ug` to execute hello world
 
+* run `./release/yuguresh.exe` to run the [raylib](https://github.com/raysan5/raylib) binding example
+
+![example](./resources/running.png)
+
 * double cick `./release/hisabliguch.exe` to run calculator program
 
 ![example](./resources/calculator.png) 
 
-* run `./release/ressam.exe` to run the [raylib](https://github.com/raysan5/raylib) binding example
-
-![example](./resources/example.png)
 
 
 ## 2. data types and variable declaration
