@@ -15,6 +15,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <limits.h>
 
 #include "language.h"
 #include "constant.h"

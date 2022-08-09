@@ -261,11 +261,14 @@ String *String_clone(String *this)
 String *String_format(char *template, ...)
 {
     va_list lst;
+    va_list lstCopy;
     va_start(lst, template);
+    va_copy(lstCopy, lst);
     int bufsz = vsnprintf(NULL, 0, template, lst);
     char *t = pct_mallloc(bufsz + 1);
-    vsnprintf(t, bufsz + 1, template, lst);
+    vsnprintf(t, bufsz + 1, template, lstCopy);
     va_end(lst);
+    va_end(lstCopy);
     String *s = String_new();
     String_appendStr(s, t);
     pct_free(t);

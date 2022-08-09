@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <stdarg.h>
+#include <limits.h>
 
 // object types
 #define PCT_OBJ_OBJECT "PCT_OBJ_OBJECT"

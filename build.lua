@@ -1,6 +1,6 @@
 
 -- pcall(os.execute, "git clone git@github.com:kompasim/my-build-tools.git ./my-build-tools")
-package.path = package.path .. ";./my-build-tools/?.lua"
+package.path = package.path .. ";./../my-build-tools/?.lua"
 local Builder = require("c_builder")
 
 local DST_DIR = "./build/"
@@ -11,6 +11,7 @@ local HEAD_PATH = "./build/script.h"
 local SCRIPT_PATH = "./examples/sinaq.ug"
 local IS_INTEGRATE = true
 
+files.mk_folder(DST_DIR)
 files.delete(TEMP_PATH)
 files.delete(HEAD_PATH)
 if IS_INTEGRATE then

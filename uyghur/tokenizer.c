@@ -95,6 +95,7 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     _fill_keyword(map, TVALUE_OPEN);
     _fill_keyword(map, TVALUE_CLOSE);
     tokenizer->keywordsMap = map;
+    Tokenizer_reset(tokenizer);
     return tokenizer;
 }
 
@@ -352,7 +353,7 @@ void Tokenizer_free(Tokenizer *this)
     }
     if (this->keywordsMap != NULL)
     {
-        Hashmap_free(this->keywordsMap);
+        Object_release(this->keywordsMap);
         this->keywordsMap = NULL;
     }
     this->uyghur = NULL;

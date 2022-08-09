@@ -40,11 +40,14 @@ void tools_warning(const char* msg, ...) {
 char *tools_format(char *msg, ...)
 {
     va_list lst;
+    va_list lstCopy;
     va_start(lst, msg);
+    va_copy(lstCopy, lst);
     int bufsz = vsnprintf(NULL, 0, msg, lst);
     char* t = malloc(bufsz + 1);
-    vsnprintf(t, bufsz + 1, msg, lst);
+    vsnprintf(t, bufsz + 1, msg, lstCopy);
     va_end(lst);
+    va_end(lstCopy);
     return t;
 }
 
@@ -232,10 +235,18 @@ int file_create_directory(char *path)
     {
         if (*p != '/') continue;
         *p = 0;
-        mkdir(tmp);
+        #ifdef IS_WINDOWS
+            mkdir(tmp);
+        #else
+            mkdir(tmp, 777);
+        #endif
         *p = '/';
     }
-    return mkdir(tmp);
+    #ifdef IS_WINDOWS
+        return mkdir(tmp);
+    #else
+        return mkdir(tmp, 777);
+    #endif
 }
 
 #endif

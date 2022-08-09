@@ -12,10 +12,13 @@
 #define PLATFORM_UNKNOWN "PLATFORM_UNKNOWN"
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
     #define PLATFORM_NAME PLATFORM_WINDOWS
+    #define IS_WINDOWS
 #elif __APPLE__
     #define PLATFORM_NAME PLATFORM_APPLE
+    #define IS_APPLE
 #elif __linux__
     #define PLATFORM_NAME PLATFORM_LINUX
+    #define IS_LINUX
 #elif __unix || __unix__
     #define PLATFORM_NAME PLATFORM_UNIX
 #elif __FreeBSD__
