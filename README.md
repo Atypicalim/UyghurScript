@@ -6,17 +6,19 @@
 
 > there is a [vscode extension](https://github.com/kompasim/uyghurscript-vscode-extension) for highlighting and autocompleting.
 
+![screenshot](./resources/screenshot.png)
+
 ## 1. usage
 
 * just double cick `./release/uyghur.exe` to execute integrated script
 
 * run the command `./release/uyghur.exe ./examples/hello.ug` to execute hello world
 
-* double cick `./release/calculator.exe` to run calculator program
+* double cick `./release/hisabliguch.exe` to run calculator program
 
 ![example](./resources/calculator.png) 
 
-* run `./release/uyghur.exe ./examples/ressam.ug` to run the [raylib](https://github.com/raysan5/raylib) binding example
+* run `./release/ressam.exe` to run the [raylib](https://github.com/raysan5/raylib) binding example
 
 ![example](./resources/example.png)
 
@@ -266,7 +268,6 @@ bolektiki sinaq qimmet ...
 
 * traceback
 * libraries
-* editor support (highlight and autocomplete)
 * ...
 
 ## -1. others

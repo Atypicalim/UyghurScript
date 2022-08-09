@@ -8,7 +8,7 @@ local DST_NAME = "uyghur"
 local DST_PROGRAM = DST_DIR .. DST_NAME
 local TEMP_PATH = "./build/script.ug"
 local HEAD_PATH = "./build/script.h"
-local SCRIPT_PATH = "./examples/saet.ug"
+local SCRIPT_PATH = "./examples/ressam.ug"
 local IS_INTEGRATE = true
 
 files.mk_folder(DST_DIR)
