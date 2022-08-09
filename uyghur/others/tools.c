@@ -3,6 +3,30 @@
 #ifndef H_TOOLS
 #define H_TOOLS
 
+// os type
+#define PLATFORM_WINDOWS "PLATFORM_WINDOWS"
+#define PLATFORM_APPLE "PLATFORM_APPLE"
+#define PLATFORM_LINUX "PLATFORM_LINUX"
+#define PLATFORM_UNIX "PLATFORM_UNIX"
+#define PLATFORM_FREEBSD "PLATFORM_FREEBSD"
+#define PLATFORM_UNKNOWN "PLATFORM_UNKNOWN"
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    #define PLATFORM_NAME PLATFORM_WINDOWS
+    #define IS_WINDOWS
+#elif __APPLE__
+    #define PLATFORM_NAME PLATFORM_APPLE
+    #define IS_APPLE
+#elif __linux__
+    #define PLATFORM_NAME PLATFORM_LINUX
+    #define IS_LINUX
+#elif __unix || __unix__
+    #define PLATFORM_NAME PLATFORM_UNIX
+#elif __FreeBSD__
+    #define PLATFORM_NAME PLATFORM_FREEBSD
+#else
+    #define PLATFORM_NAME PLATFORM_UNKNOWN
+#endif
+
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 

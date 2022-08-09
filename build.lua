@@ -22,7 +22,7 @@ else
     local help = help .. "ikrangha [merhaba, uyghur script qa xosh kepsiz ...] yezilsun\n"
     files.write(TEMP_PATH, help)
 end
-os.execute(string.format('echo # uyghurche >> %s', TEMP_PATH))
+os.execute(string.format('echo # uyghurche! >> %s', TEMP_PATH))
 os.execute(string.format('xxd -i %s > %s', TEMP_PATH, HEAD_PATH))
 os.execute(string.format('echo #define UG_SCRIPT_CODE >> %s', HEAD_PATH))
 assert(files.is_file(HEAD_PATH), 'header not found!')
