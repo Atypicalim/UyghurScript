@@ -8,7 +8,7 @@ local DST_NAME = "uyghur"
 local DST_PROGRAM = DST_DIR .. DST_NAME
 local TEMP_PATH = "./build/script.ug"
 local HEAD_PATH = "./build/script.h"
-local SCRIPT_PATH = "./examples/sinaq.ug"
+local SCRIPT_PATH = "./examples/saet.ug"
 local IS_INTEGRATE = true
 
 files.mk_folder(DST_DIR)
@@ -33,7 +33,7 @@ builder:setLibs("raylib")
 builder:setLibs("raygui")
 builder:setOutput(DST_PROGRAM)
 builder:setIcon('./resources/icon.ico')
-builder:start(false)
+builder:start(true)
 
 if tools.is_windows() then
     os.execute(string.format([[cd %s & uyghur.exe]], DST_DIR, DST_NAME))
