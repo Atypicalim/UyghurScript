@@ -10,13 +10,13 @@
 
 ## 1. usage
 
-* just double cick `./release/uyghur.exe` to execute integrated script
+* run command `./release/uyghur.exe ./examples/hello.ug` to execute hello world
 
-* run the command `./release/uyghur.exe ./examples/hello.ug` to execute hello world
+* run command `./release/uyghur.exe ./examples/yuguresh.ug` to execute [raylib](https://github.com/raysan5/raylib) binding
 
-* run `./release/yuguresh.exe` to run the [raylib](https://github.com/raysan5/raylib) binding example
+* double cick `./release/saet.exe` to run clock program
 
-![example](./resources/running.png)
+![example](./resources/clock.png)
 
 * double cick `./release/hisabliguch.exe` to run calculator program
 

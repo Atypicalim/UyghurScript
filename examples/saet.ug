@@ -109,6 +109,9 @@ fonkisiye istirilkaHisablash miqdar hazirqiWaqit mezmuni
     minutGradusi qimmiti minutGradusi qushulghan minutArtuqche bolsun
 tamamlansun
 
+
+
+
 fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
     #
     fonkisiye @waqit{[sikuntElish]} ishlitilsun we netije hazirqiWaqit bolsun
@@ -117,9 +120,9 @@ fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
     fonkisiye @ressam{[rayunToldurushAylandurulghan]} bilen 5 5 490 590 [303030] 0 0 0 ishlitilsun
     fonkisiye @ressam{[chemberToldurush]} bilen merkezX merkezY teglikRadiusi teglikRadiusi [101010] ishlitilsun
     # xet yezish
-    fonkisiye @ressam{[xetYezish]} bilen [../resources/ukij.ttf] tema 36 0 [ff0000ff] 35 20 ishlitilsun
+    fonkisiye @ressam{[xetYezish]} bilen [../resources/ukij.ttf] tema 36 0 [bbbbbb] 35 20 ishlitilsun
     fonkisiye @waqit{[sikuntniAylandurush]} bilen hazirqiWaqit [%Y-%m-%d %H:%M:%S] ishlitilsun we netije chisla bolsun
-    fonkisiye @ressam{[xetYezish]} bilen [../resources/ukij.ttf] chisla 36 0 [ff0000ff] 115 450 ishlitilsun
+    fonkisiye @ressam{[xetYezish]} bilen [../resources/ukij.ttf] chisla 36 0 [eeeeee] 115 450 ishlitilsun
     # istirilka hisablash
     fonkisiye istirilkaHisablash bilen hazirqiWaqit ishlitilsun
     # istirilka sizish
@@ -131,3 +134,4 @@ fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
 tamamlansun
 
 fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
+# END!
