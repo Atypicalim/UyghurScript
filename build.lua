@@ -1,7 +1,7 @@
 
 -- pcall(os.execute, "git clone git@github.com:kompasim/my-build-tools.git ./my-build-tools")
 package.path = package.path .. ";./../my-build-tools/?.lua"
-local Builder = require("c_builder")
+local builder = require("builder")
 
 local DST_DIR = "./build/"
 local DST_NAME = "uyghur"
@@ -27,10 +27,11 @@ os.execute(string.format('xxd -i %s > %s', TEMP_PATH, HEAD_PATH))
 os.execute(string.format('echo #define UG_SCRIPT_CODE >> %s', HEAD_PATH))
 assert(files.is_file(HEAD_PATH), 'header not found!')
 
-local builder = Builder(false)
+local builder = builder.c {}
+-- builder:setDebug(true)
 builder:setInput('./main.c')
-builder:setLibs("raylib")
-builder:setLibs("raygui")
+-- builder:setLibs("raylib")
+-- builder:setLibs("raygui")
 builder:setOutput(DST_PROGRAM)
 builder:setIcon('./resources/icon.ico')
 builder:start(false)

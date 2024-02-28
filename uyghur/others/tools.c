@@ -80,6 +80,57 @@ bool is_equal(char *this, char*other)
     return strcmp(this, other) == 0;
 }
 
+bool is_letter_begin(char c)
+{
+    return isalpha(c) || c == '_' || c == '$';
+}
+
+bool is_letter_body(char c)
+{
+    return isalnum(c) || c == '_';
+}
+
+bool is_letter_valid(const char* str)
+{
+    char c;
+    for (int i = 0; str[i] != '\0'; i++) {
+        c = str[i];
+        if (i == 0 && !is_letter_begin(c)) return false;
+        if (i != 0 && !is_letter_body(c)) return false;
+    }
+    return true;
+}
+
+bool is_string_open(char c) {
+    return c == '[';
+}
+
+bool is_string_body(char c) {
+    return c != '[' && c != ']';
+}
+
+bool is_string_close(char c) {
+    return c == ']';
+}
+
+char convert_border_pair(char c) {
+    if (c == '{') return '}';
+    if (c == '}') return '{';
+    if (c == '[') return ']';
+    if (c == ']') return '[';
+    if (c == '(') return ')';
+    if (c == ')') return '(';
+    return NULL;
+}
+
+char is_border_open(char c) {
+    return c == '{' || c == '[' || c == '(';
+}
+
+char is_border_close(char c) {
+    return c == '}' || c == ']' || c == ')';
+}
+
 char *b2s(bool value)
 {
     if (value == true) return "true";

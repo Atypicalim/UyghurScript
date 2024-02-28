@@ -14,7 +14,6 @@ struct Tokenizer{
     Token *tail;
     Hashmap *keywordsMap;
     String *scope;
-    char keyBorder;
 };
 
 void Tokenizer_reset(Tokenizer *this)
@@ -28,7 +27,6 @@ void Tokenizer_reset(Tokenizer *this)
     this->path = NULL;
     this->code = NULL;
     this->scope = NULL;
-    this->keyBorder = ' ';
 }
 
 void _set_keyword(Hashmap *map, char *tvalue, char *ttype)
@@ -104,6 +102,10 @@ char Tokenizer_getchar(Tokenizer *this, int indent)
     return this->code[this->position + indent];
 }
 
+bool Tokenizer_isChar(Tokenizer *this, int indent, char c) {
+    return this->code[this->position + indent] == c;
+}
+
 // char Tokenizer_getValidChar(Tokenizer *, int)
 char Tokenizer_getValidChar(Tokenizer *this, int indent)
 {
@@ -121,33 +123,8 @@ char Tokenizer_skipN(Tokenizer *this, int n)
     this->position = this->position + n;
 }
 
-void Tokenizer_addToken(Tokenizer *this, char *type, String *value)
-{
-    if (type == TTYPE_NAME)
-    {
-        String *v = Hashmap_get(this->keywordsMap, String_get(value));
-        if (v != NULL)
-        {
-            type = String_equal(v, value) ? TTYPE_WORD : String_get(v);
-        }
-    }
-    //
-    Token *token = NULL;
-    char *s = tools_format(LANG_ERR_TOKEN_PLACE, String_get(value), this->line, this->column, this->path);
-    if (this->keyBorder != ' ')
-    {
-        tools_assert(is_values(type, TTYPES_GROUP_KEYS), "%s%s", LANG_ERR_NO_VALID_TOKEN, s);
-        tools_assert(this->scope != NULL, "%s%s", LANG_ERR_NO_VALID_TOKEN, s);
-        token = Token_key(String_get(this->scope), type, String_get(value));
-    }
-    else
-    {
-        tools_assert(this->scope == NULL, "%s%s", LANG_ERR_NO_VALID_TOKEN, s);
-        token = Token_new(type, String_get(value));
-    }
+void Token_insertToken(Tokenizer *this, Token *token) {
     Token_bindInfo(token, this->path, this->line, this->column);
-    this->scope = NULL;
-    this->keyBorder = ' ';
     //
     if (this->head == NULL)
     {
@@ -162,11 +139,23 @@ void Tokenizer_addToken(Tokenizer *this, char *type, String *value)
     }
 }
 
-void Tokenizer_skipBorder(Tokenizer *this)
+void Tokenizer_addToken(Tokenizer *this, char *type, String *value)
 {
-    if (this->scope != NULL && this->keyBorder != ' ') {
-        if (Tokenizer_getchar(this, 0) == '}') Tokenizer_skipN(this, 1);
+    // printf("addToken:%s->%s\n", type, value->data);
+    if (type == TTYPE_NAME)
+    {
+        String *v = Hashmap_get(this->keywordsMap, String_get(value));
+        if (v != NULL)
+        {
+            type = String_equal(v, value) ? TTYPE_WORD : String_get(v);
+        }
     }
+    //
+    Token *token = NULL;
+    char *s = tools_format(LANG_ERR_TOKEN_PLACE, String_get(value), this->line, this->column, this->path);
+    tools_assert(this->scope == NULL, "%s%s", LANG_ERR_NO_VALID_TOKEN, s);
+    token = Token_new(type, String_get(value));
+    Token_insertToken(this, token);
 }
 
 void Tokenizer_addNumber(Tokenizer *this, char currentChar)
@@ -184,8 +173,78 @@ void Tokenizer_addNumber(Tokenizer *this, char currentChar)
         i++;
     }
     Tokenizer_skipN(this, i);
-    Tokenizer_skipBorder(this);
     Tokenizer_addToken(this, TTYPE_NUMBER, str); // strtod(str, NULL)
+}
+
+String *Tokenizer_readLetter(Tokenizer *this) {
+    String *str = String_new();
+    char c = Tokenizer_getchar(this, 0);
+    //
+    tools_assert(is_letter_begin(c), "invalid letter in %s %d %d %c", this->path, this->line, this->column, c);
+    String_appendChar(str, c);
+    Tokenizer_skipN(this, 1);
+    c = Tokenizer_getchar(this, 0);
+    //
+    while (is_letter_body(c)) {
+        String_appendChar(str, c);
+        Tokenizer_skipN(this, 1);
+        c = Tokenizer_getchar(this, 0);
+    }
+    return str;
+}
+
+String *Tokenizer_readNumber(Tokenizer *this, bool canBeFloat) {
+    String *str = String_new();
+    char c = Tokenizer_getchar(this, 0);
+    //
+    if (c == '-' || c == '+') {
+        String_appendChar(str, c);
+        Tokenizer_skipN(this, 1);
+        c = Tokenizer_getchar(this, 0);
+        tools_assert(isdigit(c), "invalid number in %s %d %d %c", this->path, this->line, this->column, c);
+        String_appendChar(str, c);
+    } else if (isdigit(c)) {
+        String_appendChar(str, '+');
+        String_appendChar(str, c);
+    } else {
+        tools_error("invalid number in %s %d %d %c", this->path, this->line, this->column, c);
+    }
+    // 
+    bool hasDot = false;
+    Tokenizer_skipN(this, 1);
+    c = Tokenizer_getchar(this, 0);
+    while (isdigit(c) || (c == '.' && !hasDot)) {
+        if (c == '.') hasDot = true;
+        String_appendChar(str, c);
+        Tokenizer_skipN(this, 1);
+        c = Tokenizer_getchar(this, 0);
+    }
+    //
+    tools_assert(canBeFloat || !hasDot, "invalid number in %s %d %d %c", this->path, this->line, this->column, c);
+    return str;
+}
+
+String *Tokenizer_readString(Tokenizer *this) {
+    String *str = String_new();
+    char c = Tokenizer_getchar(this, 0);
+    while (is_string_body(c)) {
+        //
+        if (c == '\\')
+        {
+            char next = Tokenizer_getchar(this, 1);
+            char escp = decode_escape(next);
+            if (escp != '\0')
+            {
+                c = escp;
+                Tokenizer_skipN(this, 1);
+            }
+        }
+        //
+        String_appendChar(str, c);
+        Tokenizer_skipN(this, 1);
+        c = Tokenizer_getchar(this, 0);
+    }
+    return str;
 }
 
 Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
@@ -226,44 +285,55 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         // scope
         if (currentChar == '@')
         {
-            String* scope = String_new();
-            int i = 1;
-            char c = Tokenizer_getchar(this, i);
-            while (c != '{' && c != '[')
-            {
-                String_appendChar(scope, c);
-                c = Tokenizer_getchar(this, ++i);
-            }
-            tools_assert(i > 1, "invalid box name in %s %d %d %c", this->path, this->line, this->column, currentChar);
+            Tokenizer_skipN(this, 1);
+            String *scope = Tokenizer_readLetter(this);
             this->scope = scope;
-            this->keyBorder = c;
-            if (c != '[') i++;
-            Tokenizer_skipN(this, i);
             continue;
         }
-
-        // string
-        if (currentChar == '[')
-        {
-            String *str = String_new();
-            int i = 1;
-            char c = Tokenizer_getchar(this, i);
-            while (c != ']')
-            {
-                if (c == '\\')
-                {
-                    char r = decode_escape(Tokenizer_getchar(this, i + 1));
-                    if (r == '\0')
-                    {
-                        c = r;
-                        i++;
-                    }
-                }
-                String_appendChar(str, c);
-                c = Tokenizer_getchar(this, ++i);
+        // key
+        if (is_border_open(currentChar) && this->scope != NULL) {
+            char openChar = currentChar;
+            char closeChar = convert_border_pair(openChar);
+            // not empty
+            Tokenizer_skipN(this, 1);
+            char c = Tokenizer_getchar(this, 0);
+            tools_assert(c != closeChar, "invalid box key start in %s %d %d %c", this->path, this->line, this->column, c);
+            // get key
+            String *txt = NULL;
+            char *typ = NULL;
+            if (openChar == '{') {
+                tools_assert(is_letter_begin(c), "invalid box letter key in %s %d %d %c", this->path, this->line, this->column, c);
+                txt = Tokenizer_readLetter(this);
+                typ = TTYPE_NAME;
+            } else if (openChar == '[') {
+                txt = Tokenizer_readString(this);
+                typ = TTYPE_STRING;
+            } else if (openChar == '(') {
+                tools_assert(c != ')', "invalid box number key in %s %d %d %c", this->path, this->line, this->column, c);
+                txt = Tokenizer_readNumber(this, false);
+                typ = TTYPE_NUMBER;
             }
-            Tokenizer_skipN(this, ++i);
-            Tokenizer_skipBorder(this);
+            // normal close
+            bool isClosed = Tokenizer_isChar(this, 0, closeChar);
+            tools_assert(isClosed, "invalid box key close in %s %d %d %c", this->path, this->line, this->column, c);
+            Tokenizer_skipN(this, 1);
+            // scoped key
+            tools_assert(is_values(typ, TTYPES_GROUP_KEYS), "%s", LANG_ERR_NO_VALID_TOKEN);
+            tools_assert(this->scope != NULL, "%s", LANG_ERR_NO_VALID_TOKEN);
+            Token *token = Token_key(String_get(this->scope), typ, String_get(txt));
+            this->scope = NULL;
+            // insert token
+            Token_insertToken(this, token);
+            continue;
+        }
+        // string
+        if (is_string_open(currentChar))
+        {
+            Tokenizer_skipN(this, 1);
+            String *str = Tokenizer_readString(this);
+            char c = Tokenizer_getchar(this, 0);
+            tools_assert(is_string_close(c), "invalid string close in %s %d %d %c", this->path, this->line, this->column, c);
+            Tokenizer_skipN(this, 1);
             Tokenizer_addToken(this, TTYPE_STRING, str);
             continue;
         }
@@ -314,7 +384,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue; 
         }
         // letter
-        if (isalpha(currentChar) || currentChar == '_'|| currentChar == '$')
+        if (is_letter_begin(currentChar))
         {
             String *str = String_format("%c", currentChar);
             int i = 1;
@@ -322,17 +392,17 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             while (true)
             {
                 c = Tokenizer_getchar(this, i);
-                if (!isalnum(c) && c != '_' && c != '$') break;
+                if (!is_letter_body(c)) break;
                 String_appendChar(str, c);
                 i++;
             }
             Tokenizer_skipN(this, i);
-            Tokenizer_skipBorder(this);
             Tokenizer_addToken(this, TTYPE_NAME, str);
             continue; 
         }
         // unsupported
         char s[1024];
+        printf("--->err!\n");
         sprintf(s, LANG_ERR_NO_VALID_CHAR, this->path, this->line, this->column, currentChar);
         tools_error(s);
         break;
