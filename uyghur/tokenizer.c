@@ -193,6 +193,23 @@ String *Tokenizer_readLetter(Tokenizer *this) {
     return str;
 }
 
+String *Tokenizer_readWord(Tokenizer *this) {
+    String *str = String_new();
+    char c = Tokenizer_getchar(this, 0);
+    //
+    tools_assert(is_word_body(c), "invalid word in %s %d %d %c", this->path, this->line, this->column, c);
+    String_appendChar(str, c);
+    Tokenizer_skipN(this, 1);
+    c = Tokenizer_getchar(this, 0);
+    //
+    while (is_word_body(c)) {
+        String_appendChar(str, c);
+        Tokenizer_skipN(this, 1);
+        c = Tokenizer_getchar(this, 0);
+    }
+    return str;
+}
+
 String *Tokenizer_readNumber(Tokenizer *this, bool canBeFloat) {
     String *str = String_new();
     char c = Tokenizer_getchar(this, 0);
@@ -383,20 +400,10 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             Tokenizer_addNumber(this, '+');
             continue; 
         }
-        // letter
-        if (is_letter_begin(currentChar))
+        // 
+        if (is_word_body(currentChar))
         {
-            String *str = String_format("%c", currentChar);
-            int i = 1;
-            char c;
-            while (true)
-            {
-                c = Tokenizer_getchar(this, i);
-                if (!is_letter_body(c)) break;
-                String_appendChar(str, c);
-                i++;
-            }
-            Tokenizer_skipN(this, i);
+            String *str = Tokenizer_readWord(this);
             Tokenizer_addToken(this, TTYPE_NAME, str);
             continue; 
         }

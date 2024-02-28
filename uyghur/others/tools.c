@@ -123,12 +123,16 @@ char convert_border_pair(char c) {
     return NULL;
 }
 
-char is_border_open(char c) {
+bool is_border_open(char c) {
     return c == '{' || c == '[' || c == '(';
 }
 
-char is_border_close(char c) {
+bool is_border_close(char c) {
     return c == '}' || c == ']' || c == ')';
+}
+
+bool is_word_body(char c) {
+    return isalpha(c);
 }
 
 char *b2s(bool value)
