@@ -80,12 +80,14 @@ bool is_equal(char *this, char*other)
     return strcmp(this, other) == 0;
 }
 
-bool is_word_begin(char c) {
-    return isalpha(c);
+bool is_number_begin(char c)
+{
+    return c == '+' || c == '-' || isdigit(c);
 }
 
-bool is_word_body(char c) {
-    return isalpha(c) || isdigit(c);
+bool is_number_body(char c)
+{
+    return isdigit(c) || c == '.';
 }
 
 bool is_letter_begin(char c)
@@ -137,6 +139,16 @@ bool is_border_open(char c) {
 
 bool is_border_close(char c) {
     return c == '}' || c == ']' || c == ')';
+}
+
+bool is_calculator(char c)
+{
+    return c == '=';
+}
+
+bool is_calculation(char c)
+{
+    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%';
 }
 
 char *b2s(bool value)

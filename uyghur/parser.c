@@ -31,9 +31,9 @@ Parser *Parser_new(Uyghur *uyghur)
 void Parser_error(Parser *this, char *msg)
 {
     Token *token = this->token;
-    char *m = msg != NULL ? msg : LANG_ERR_NO_VALID_TOKEN;
-    char *s = tools_format(LANG_ERR_TOKEN_PLACE, token->value, token->line, token->column, token->file);
-    tools_error("%s%s", m, s);
+    char *m = msg != NULL ? msg : LANG_ERR_PARSER_EXCEPTION;
+    char *s = tools_format(LANG_ERR_TOKEN_PLACE, token->file, token->line, token->column, token->value);
+    tools_error("Parser: %s, %s", m, s);
 }
 
 void Parser_assert(Parser *this, bool value, char *msg)
@@ -92,7 +92,7 @@ void Parser_closeBranch(Parser *this)
 Token *Parser_checkType(Parser *this, int indent, int num, char *s, ...)
 {
     Parser_moveToken(this, indent);
-    Parser_assert(this, this->token != NULL, LANG_ERR_NO_VALID_TYPE);
+    Parser_assert(this, this->token != NULL, LANG_ERR_INVALID_TYPE);
     bool isMatch = false;
     va_list valist;
     int i;
@@ -107,14 +107,14 @@ Token *Parser_checkType(Parser *this, int indent, int num, char *s, ...)
         s = va_arg(valist, char *);
     }
     va_end(valist);
-    Parser_assert(this, isMatch, LANG_ERR_NO_VALID_TYPE);
+    Parser_assert(this, isMatch, LANG_ERR_INVALID_TYPE);
     return this->token;
 }
 
 Token *Parser_checkValue(Parser *this, int indent, int num, char *s, ...)
 {
     Parser_moveToken(this, indent);
-    tools_assert(this->token != NULL, "keynidin sanliq melumat qimmiti [value] umut qilindi emma tepilmidi");
+    tools_assert(this->token != NULL, LANG_ERR_PARSER_DESIRED_VALUE_NOT_FOUND);
     bool isMatch = false;
     va_list valist;
     int i;
@@ -169,8 +169,8 @@ bool Parser_isWord(Parser *this, int indent, char *value)
 Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
 {
     Parser_moveToken(this, indent);
-    Parser_assert(this, this->token != NULL, LANG_ERR_NO_VALID_WORD);
-    Parser_assert(this, is_equal(this->token->type, TTYPE_WORD), LANG_ERR_NO_VALID_WORD);
+    Parser_assert(this, this->token != NULL, LANG_ERR_INVALID_WORD);
+    Parser_assert(this, is_equal(this->token->type, TTYPE_WORD), LANG_ERR_INVALID_WORD);
     bool isMatch = false;
     va_list valist;
     int i;
@@ -185,7 +185,7 @@ Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
         s = va_arg(valist, char *);
     }
     va_end(valist);
-    Parser_assert(this, isMatch, LANG_ERR_NO_VALID_WORD);
+    Parser_assert(this, isMatch, LANG_ERR_INVALID_WORD);
     return this->token;
 }
 
@@ -339,7 +339,7 @@ void Parser_consumeAstIfMiddle(Parser *this)
     // close ASTTYPE_IF_FIRST or ASTTYPE_IF_MIDDLE
     Token *token = this->token;
     char *curType = this->leaf->type;
-    Parser_assert(this, is_equal(curType, ASTTYPE_IF_FIRST) || is_equal(curType, ASTTYPE_IF_MIDDLE), LANG_ERR_NO_IF_FIRST);
+    Parser_assert(this, is_equal(curType, ASTTYPE_IF_FIRST) || is_equal(curType, ASTTYPE_IF_MIDDLE), LANG_ERR_PARSER_INVALID_IF);
     Parser_closeBranch(this);
     //  open ASTTYPE_IF_MIDDLE
     Parser_checkWord(this, 0, 1, TVALUE_IF_ELSE);
@@ -355,7 +355,7 @@ void Parser_consumeAstIfLast(Parser *this)
 {
     // close ASTTYPE_IF_FIRST or ASTTYPE_IF_MIDDLE
     char *curType = this->leaf->type;
-    Parser_assert(this, is_equal(curType, ASTTYPE_IF_FIRST) || is_equal(curType, ASTTYPE_IF_MIDDLE), LANG_ERR_NO_IF_FIRST);
+    Parser_assert(this, is_equal(curType, ASTTYPE_IF_FIRST) || is_equal(curType, ASTTYPE_IF_MIDDLE), LANG_ERR_PARSER_INVALID_IF);
     Parser_closeBranch(this);
     // open ASTTYPE_IF_LAST
     Token *token = Parser_checkWord(this, 0, 1, TVALUE_IF_NO);

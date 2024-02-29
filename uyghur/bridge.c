@@ -234,7 +234,7 @@ void Bridge_call(Bridge *this)
     }
     Cursor_free(cursor);
     // execute
-    Token *funcName = Token_key("*", TTYPE_STRING, this->name);
+    Token *funcName = Token_key(TTYPE_STRING, this->name, "*");
     Value *funcValue = Executer_getValueByToken(executer, funcName, true);
     Value *r = NULL;
     if (is_equal(funcValue->type, RTYPE_FUNCTION)) {

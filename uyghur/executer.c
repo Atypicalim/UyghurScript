@@ -62,8 +62,8 @@ Executer *Executer_new(Uyghur *uyghur)
 void Executer_error(Executer *this, Token *token, char *msg)
 {
     char *m = msg != NULL ? msg : LANG_ERR_EXECUTER_EXCEPTION;
-    char *s = tools_format(LANG_ERR_TOKEN_PLACE, token->value, token->line, token->column, token->file);
-    tools_error("%s%s", m, s);
+    char *s = tools_format(LANG_ERR_TOKEN_PLACE, token->file, token->line, token->column, token->value);
+    tools_error("Executer: %s, %s", m, s);
 }
 
 void Executer_assert(Executer *this, bool value, Token *token, char *msg)
@@ -98,7 +98,7 @@ Container *Executer_getCurrentBox(Executer *this)
         if (Container_isBox(container) || Container_isModule(container)) break;
     }
     Cursor_free(cursor);
-    Executer_assert(this, Container_isBox(container), NULL, "current box not found");
+    Executer_assert(this, Container_isBox(container), NULL, LANG_ERR_EXECUTER_CURRENT_BOX_NOT_FOUND);
     return container;
 }
 
@@ -130,15 +130,16 @@ Container *Executer_getContainerByToken(Executer *this, Token *token)
 {
     // name
     if (Token_isName(token)) return Executer_getContainerByKey(this, token->value);
-    Executer_assert(this, Token_isKey(token), token, "invalid token to get container");
-    if (is_equal(token->value, SCOPE_ALIAS_PROGRAM)) return this->globalContainer;
-    if (is_equal(token->value, SCOPE_ALIAS_MODULE)) return Executer_getCurrentModule(this);
-    if (is_equal(token->value, SCOPE_ALIAS_BOX)) return Executer_getCurrentBox(this);
-    Container *container = Executer_getContainerByKey(this, token->value);
+    Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_KEY_INVALID_TOKEN);
+    Token *extra = (Token *)token->extra;
+    if (is_equal(extra->value, SCOPE_ALIAS_PROGRAM)) return this->globalContainer;
+    if (is_equal(extra->value, SCOPE_ALIAS_MODULE)) return Executer_getCurrentModule(this);
+    if (is_equal(extra->value, SCOPE_ALIAS_BOX)) return Executer_getCurrentBox(this);
+    Container *container = Executer_getContainerByKey(this, extra->value);
     if (container == NULL) return NULL;
-    Value *value = Container_get(container, token->value);
+    Value *value = Container_get(container, extra->value);
     if (value == NULL) return NULL;
-    Executer_assert(this, value->type == RTYPE_CONTAINER, token, LANG_ERR_INVALID_BOX_NAME);
+    Executer_assert(this, value->type == RTYPE_CONTAINER, token, LANG_ERR_EXECUTER_INVALID_BOX_NAME);
     return value->object;
 }
 
@@ -151,18 +152,18 @@ char *Executer_getKeyByToken(Executer *this, Token *token)
     }
     Token *extra = (Token *)token->extra;
     if (Token_isNumber(extra)) {
-        String *s = String_format("%f", atof(extra->value));
+        String *s = String_format("%f", atof(token->value));
         key = String_dump(s);
         String_free(s);
     } else if (Token_isString(extra)) {
-        String *s = String_format("%s", extra->value);
+        String *s = String_format("%s", token->value);
         key = String_dump(s);
         String_free(s);
     } else if (Token_isName(extra)) {
-        Container *container = Executer_getContainerByKey(this, extra->value);
-        Executer_assert(this, container!= NULL, extra, LANG_ERR_INVALID_KEY_NAME);
-        Value *value = Container_get(container, extra->value);
-        Executer_assert(this, value!= NULL, extra, LANG_ERR_INVALID_KEY_NAME);
+        Container *container = Executer_getContainerByKey(this, token->value);
+        Executer_assert(this, container!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY_NAME);
+        Value *value = Container_get(container, token->value);
+        Executer_assert(this, value!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY_NAME);
         key = Value_toString(value);
     }
     return key;
@@ -176,12 +177,10 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
     if (Token_isString(token)) return Value_newString(String_format("%s", token->value), token);
     if (Token_isBox(token)) return Value_newContainer(Container_newBox(), token);
     //
-    Value *result = NULL;
     char *key = Executer_getKeyByToken(this, token);
     Container *container = Executer_getContainerByToken(this, token);
-    if (container != NULL) {
-        result = Container_get(container, key);
-    }
+    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_CINTAINER_NOT_FOUND);
+    Value *result = Container_get(container, key);
     if (result != NULL) {
         Object_retain(result);
     } else if (withEmpty) {
@@ -195,7 +194,7 @@ void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool 
 {
     Container *container = Executer_getContainerByToken(this, token);
     if (withDeclare && container == NULL) container = this->currentContainer;
-    Executer_assert(this, container != NULL, token, LANG_ERR_VARIABLE_NOT_FOUND);
+    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_CINTAINER_NOT_FOUND);
     char *key = Executer_getKeyByToken(this, token);
     Value *replacedValue = Container_set(container, key, value);
     pct_free(key);
@@ -212,7 +211,7 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     Container *container = Executer_getCurrentScope(this);
     Value *old = Container_get(container, name->value);
     Value *new = Executer_getValueByToken(this, token, true);
-    Executer_assert(this, old == NULL, name, LANG_ERR_VARIABLE_IS_FOUND);
+    Executer_assert(this, old == NULL, name, LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED);
     char *key = Executer_getKeyByToken(this, name);
     Container_set(container, key, new);
     Object_release(new);
@@ -229,7 +228,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     if (is_equal(target->value, TVALUE_TARGET_TO) && is_equal(action->value, TVALUE_OUTPUT))
     {
         Value *value = Executer_getValueByToken(this, name, true);
-        Executer_assert(this, value != NULL, name, "invaliid state in operate:");
+        Executer_assert(this, value != NULL, name, LANG_ERR_NO_VALID_STATE);
         char *content = Value_toString(value);
         printf("%s", content);
         Object_release(value);
@@ -317,7 +316,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
     {
         r = Executer_getValueByToken(this, action, true);
     }
-    tools_assert(r != NULL, "not supported action for expression:%s", act);
+    tools_assert(r != NULL, LANG_ERR_EXECUTER_CALCULATION_INVALID, act);
     Executer_setValueByToken(this, target, r, false);
     Object_release(value);
 }
@@ -435,7 +434,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
     }
     Object_release(firstV);
     Object_release(secondV);
-    tools_assert(r != NULL, "not supported action for expression:%s", act);
+    tools_assert(r != NULL, LANG_ERR_EXECUTER_CALCULATION_INVALID, act);
     Executer_setValueByToken(this, target, r, false);
 }
 
@@ -496,8 +495,8 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     Cursor *cursor1 = Queue_reset(leaf->leafs);
     // if
     Leaf *ifNode = Queue_next(leaf->leafs, cursor1);
-    tools_assert(ifNode != NULL, "invalid if");
-    tools_assert(is_equal(ifNode->type, ASTTYPE_IF_FIRST), "invalid if");
+    tools_assert(ifNode != NULL, LANG_ERR_EXECUTER_INVALID_IF);
+    tools_assert(is_equal(ifNode->type, ASTTYPE_IF_FIRST), LANG_ERR_EXECUTER_INVALID_IF);
     Cursor *cursor2 = Stack_reset(ifNode->tokens);
     Token *judge = Stack_next(ifNode->tokens, cursor2);
     Token *right = Stack_next(ifNode->tokens, cursor2);
@@ -527,7 +526,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
             isFinish = true;
         }
         ifNode = Queue_next(leaf->leafs, cursor1);
-        tools_assert(ifNode != NULL, "invalid if");
+        tools_assert(ifNode != NULL, LANG_ERR_EXECUTER_INVALID_IF);
     }
     // else
     if (is_equal(ifNode->type, ASTTYPE_IF_LAST))
@@ -535,7 +534,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         Cursor *cursor2 = Stack_reset(ifNode->tokens);
         Token *judge = Stack_next(ifNode->tokens, cursor2);
         Cursor_free(cursor2);
-        tools_assert(is_equal(judge->value, TVALUE_IF_NO), "invalid if");
+        tools_assert(is_equal(judge->value, TVALUE_IF_NO), LANG_ERR_EXECUTER_INVALID_IF);
         if (!isFinish)
         {
             Executer_pushContainer(this, CONTAINER_TYPE_SCOPE);
@@ -544,12 +543,12 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
             isFinish = true;
         }
         ifNode = Queue_next(leaf->leafs, cursor1);
-        tools_assert(ifNode != NULL, "invalid if");
+        tools_assert(ifNode != NULL, LANG_ERR_EXECUTER_INVALID_IF);
     }
     // end
-    tools_assert(is_equal(ifNode->type, ASTTYPE_END), "invalid if");
+    tools_assert(is_equal(ifNode->type, ASTTYPE_END), LANG_ERR_EXECUTER_INVALID_IF);
     Leaf *nullValue = Queue_next(leaf->leafs, cursor1);
-    tools_assert(nullValue == NULL, "invalid if");
+    tools_assert(nullValue == NULL, LANG_ERR_EXECUTER_INVALID_IF);
     Cursor_free(cursor1);
 }
 
@@ -631,7 +630,7 @@ Value *Executer_runCFunc(Executer *this, Value *funcValue)
     Bridge_send(bridge);
     //
     funcBody(bridge);
-    tools_assert(bridge->type == BRIDGE_STACK_TP_RES, "invalid bridge status, func should return result at the end");
+    tools_assert(bridge->type == BRIDGE_STACK_TP_RES, LANG_ERR_EXECUTER_BRIDGE_INVALID_RESULT);
     Value *r = Bridge_popValue(bridge);
     if (r == NULL) r = Value_newEmpty(NULL);
     return r;
@@ -662,7 +661,7 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     } else if (is_equal(funcValue->type, RTYPE_CFUNCTION)) {
         r = Executer_runCFunc(this, funcValue);
     } else {
-        tools_error("function not found for func name: %s", funcName->value);
+        tools_error(LANG_ERR_EXECUTER_FUNCTION_NOT_FOUND, funcName->value);
     }
     if (!is_equal(resultName->type, TTYPE_EMPTY) && !is_equal(resultName->value, TVALUE_EMPTY)) {
         Executer_setValueByToken(this, resultName, r, true);
@@ -712,7 +711,7 @@ double Executer_calculateFoliage(Executer *this, double left, char *sign, double
     {
         return fmod(left, right);
     }
-    Executer_error(this, token, "invalid sign for calculate:");
+    Executer_error(this, token, LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN);
 }
 
 double Executer_calculateBTree(Executer *this, Foliage *);
@@ -730,7 +729,7 @@ double Executer_calculateBTree(Executer *this, Foliage *foliage)
     } else if (foliage->right != NULL) {
         result = Executer_calculateBTree(this, foliage->right);
     } else {
-        tools_assert(is_values(token->type, TTYPES_GROUP_NUMBER), "invalid calculate argument in executor");
+        tools_assert(is_values(token->type, TTYPES_GROUP_NUMBER), LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);
         Value *v = Executer_getValueByToken(this, token, true);
         Value *newV = Value_toNumber(v);
         result = newV->number;
@@ -752,7 +751,7 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
     double n = Executer_calculateBTree(this, root);
     Value *r = Value_newNumber(n, NULL);
     //
-    tools_assert(r != NULL, "invalid calculate state in executor");
+    tools_assert(r != NULL, LANG_ERR_EXECUTER_CALCULATION_INVALID_STAT);
     Executer_setValueByToken(this, target, r, false);
 }
 
@@ -835,8 +834,7 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     helper_print_leaf(leaf, " ");
     printf("--->\n");
     //
-    tools_error("EXECUTER NOT IMPLEMENTED FOR %s", tp);
-    // helper_print_leaf(leaf, " ");
+    tools_error(LANG_ERR_EXECUTER_NOT_IMPLEMENTED, tp);
 }
 
 bool Executer_consumeTree(Executer *this, Leaf *tree)

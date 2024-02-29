@@ -28,7 +28,7 @@ Uyghur *Uyghur_new()
 
 Value *Uyghur_runCode(Uyghur *this, char *code, char *path)
 {
-    if (path == NULL) path = ".ug";
+    if (path == NULL) path = "*.ug";
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
     Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
     Value *moduleBox = Executer_executeTree(this->executer, path, headLeaf);
@@ -47,7 +47,7 @@ Value *Uyghur_runArgs(Uyghur *this, int argc, char const *argv[])
     if (argc <= 1) return NULL;
     char *path = (char *)argv[1];
     bool exist = file_exist(path);
-    tools_assert(exist, "script file not found, path:%s\n", path);
+    tools_assert(exist, LANG_ERR_UYGHUR_FILE_NOT_FOUND, path);
     Uyghur_runPath(this, path);
 
 }

@@ -51,10 +51,10 @@ Token *Token_name(char *name)
     return Token_new(TTYPE_NAME, name);
 }
 
-Token *Token_key(char *scope, char *keyType, char *keyValue)
+Token *Token_key(char *keyType, char *keyValue, char *scope)
 {
-    Token *token = Token_new(TTYPE_KEY, scope);
-    token->extra = Token_new(keyType, keyValue);
+    Token *token = Token_new(TTYPE_KEY, keyValue);
+    token->extra = Token_new(keyType, scope);
     return token;
 }
 
