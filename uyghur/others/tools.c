@@ -80,6 +80,14 @@ bool is_equal(char *this, char*other)
     return strcmp(this, other) == 0;
 }
 
+bool is_word_begin(char c) {
+    return isalpha(c);
+}
+
+bool is_word_body(char c) {
+    return isalpha(c) || isdigit(c);
+}
+
 bool is_letter_begin(char c)
 {
     return isalpha(c) || c == '_' || c == '$';
@@ -129,10 +137,6 @@ bool is_border_open(char c) {
 
 bool is_border_close(char c) {
     return c == '}' || c == ']' || c == ')';
-}
-
-bool is_word_body(char c) {
-    return isalpha(c);
 }
 
 char *b2s(bool value)
@@ -198,6 +202,17 @@ int char_to_int(char c)
     if (i >= 49) i-= 39;
     if (i < 0 || i > 15) return 0;
     return i;
+}
+
+char *arr_to_str(char arr[], int len)
+{
+    char* ptr = (char *)malloc(len * sizeof(char) + 1);
+    for (int i = 0; i < len; i++)
+    {
+        ptr[i] = arr[i];
+    }
+    ptr[len] = '\0';
+    return ptr;
 }
 
 int hex_to_int(char *str)

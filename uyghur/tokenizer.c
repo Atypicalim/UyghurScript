@@ -197,7 +197,7 @@ String *Tokenizer_readWord(Tokenizer *this) {
     String *str = String_new();
     char c = Tokenizer_getchar(this, 0);
     //
-    tools_assert(is_word_body(c), "invalid word in %s %d %d %c", this->path, this->line, this->column, c);
+    tools_assert(is_word_begin(c), "invalid word in %s %d %d %c", this->path, this->line, this->column, c);
     String_appendChar(str, c);
     Tokenizer_skipN(this, 1);
     c = Tokenizer_getchar(this, 0);
@@ -286,7 +286,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue;
         }
         // empty
-        if (isspace(currentChar))
+        if (isspace(currentChar) || iscntrl(currentChar))
         {
             Tokenizer_skipN(this, 1);
             continue;
