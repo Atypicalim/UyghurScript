@@ -24,6 +24,7 @@
 #define LANG_ERR_TOKENIZER_TKN_INVALID_SIGN "inawetsiz herip uchritildi"
 #define LANG_ERR_TOKENIZER_STRING_START_ERROR "xet beshi xata"
 #define LANG_ERR_TOKENIZER_STRING_END_ERROR "xet axiri xata"
+#define LANG_ERR_TOKENIZER_SCOPE_INVALID_NAME "sanduq ismi inawetsiz"
 #define LANG_ERR_TOKENIZER_KEY_START_ERROR "achquch beshi xata"
 #define LANG_ERR_TOKENIZER_KEY_END_ERROR "achquch axiri xata"
 #define LANG_ERR_TOKENIZER_WORD_CANNOT_BE_KEY "sozlerni achquch ornida ishlitishke bolmaydu"

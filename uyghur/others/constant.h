@@ -142,4 +142,4 @@
 
 #define SCOPE_ALIAS_PROGRAM "*"
 #define SCOPE_ALIAS_MODULE "+"
-#define SCOPE_ALIAS_BOX "+"
+#define SCOPE_ALIAS_BOX "-"

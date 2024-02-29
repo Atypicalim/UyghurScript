@@ -288,7 +288,15 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         if (currentChar == '@')
         {
             Tokenizer_skipN(this, 1);
-            scopeObject = Tokenizer_readLetter(this);
+            char c = Tokenizer_getchar(this, 0);
+            if (is_scope(c)) {
+                Tokenizer_skipN(this, 1);
+                scopeObject = String_format("%c", c);
+            } else {
+                scopeObject = Tokenizer_readLetter(this);
+            }
+            char t = Tokenizer_getchar(this, 0);
+            Tokenizer_assert(this, is_border_open(t), LANG_ERR_TOKENIZER_SCOPE_INVALID_NAME);
             continue;
         }
         // key
@@ -373,7 +381,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         // number
         if (is_number_begin(currentChar))
         {
-            String *num = Tokenizer_readNumber(this, false);
+            String *num = Tokenizer_readNumber(this, true);
             Token *tkn = Token_new(TTYPE_NUMBER, String_get(num));
             Token_addToken(this, tkn);
             continue; 
