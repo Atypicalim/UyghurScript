@@ -26,19 +26,30 @@ Uyghur *Uyghur_new()
     return uyghur;
 }
 
-Value *Uyghur_run(Uyghur *this, char *path, char *content)
+Value *Uyghur_runCode(Uyghur *this, char *code, char *path)
 {
-    Token *headToken = Tokenizer_parseCode(this->tokenizer, path, content);
+    if (path == NULL) path = ".ug";
+    Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
     Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
     Value *moduleBox = Executer_executeTree(this->executer, path, headLeaf);
     return moduleBox;
 }
 
-Value *Uyghur_execute(Uyghur *this, char *path)
+Value *Uyghur_runPath(Uyghur *this, char *path)
 {
-    char *content = file_read(path);
-    if (content == NULL) return NULL;
-    return Uyghur_run(this, path, content);
+    char *code = file_read(path);
+    if (code == NULL) return NULL;
+    return Uyghur_runCode(this, code, path);
+}
+
+Value *Uyghur_runArgs(Uyghur *this, int argc, char const *argv[])
+{
+    if (argc <= 1) return NULL;
+    char *path = (char *)argv[1];
+    bool exist = file_exist(path);
+    tools_assert(exist, "script file not found, path:%s\n", path);
+    Uyghur_runPath(this, path);
+
 }
 
 void Uyghur_free(Uyghur *this)
