@@ -64,19 +64,33 @@ b qimmiti a kichik 5 bolsun
 # logic expressions (teng, hemde, yaki)
 b qimmiti b hemde yalghan bolsun
 
-# calculator (no operator precedence)
+# calculator begin with = sign
 
-x = 1 + 2
-# 3
+# arthimetic
+x = 1 + 2 # 3
+x = 1 + 2 * 3 # 9
+x = 1 + (2 * 3) # 7
+x = 64 ^ (1 / 3) # 4
 
-x = 1 + 2 * 3
-# 9
+# bitwise
+x = 3 & 2 # 2
+x = 3 | 2 # 3
+x = 3 ~ 2 # 1
 
-x = 1 + (2 * 3)
-# 7
+# boolean
+x = rast & yalghan # yalghan
+x = rast | yalghan # rast
+x = rast ~ yalghan # rast
 
-x = 64 ^ (1 / 3)
-# 4
+# logic
+x = [2] ? 2 # false
+x = 2 < 3 # true
+x = [ab] > [ac] # false 
+
+# string
+x = [ab] + [cd] # abcd
+x = [ab] * 2 # abab
+
 
 ```
 
@@ -218,9 +232,8 @@ ikrangha @s[sinaqNetije] yezilsun
 
 # supported key types: variable, string, number
 @boxName{variableName}
-@boxName{123}
 @boxName[stringKey]
-@boxName[stringKey]
+@boxName(numberKey)
 ```
 
 ## 10. bridge
