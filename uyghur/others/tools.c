@@ -130,7 +130,7 @@ char convert_border_pair(char c) {
     if (c == ']') return '[';
     if (c == '(') return ')';
     if (c == ')') return '(';
-    return NULL;
+    return ' ';
 }
 
 bool is_border_open(char c) {
@@ -146,9 +146,29 @@ bool is_calculator(char c)
     return c == '=';
 }
 
+bool is_calculator_value(char *c)
+{
+    return c == '?';
+}
+
+bool is_calculation_number(char c)
+{
+    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%' || c == '<' || c == '>';
+}
+
+bool is_calculation_bool(char c)
+{
+    return c == '!' || c == '&' || c == '|';
+}
+
+bool is_calculation_string(char c)
+{
+    return c == '~';
+}
+
 bool is_calculation(char c)
 {
-    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%';
+    return is_calculator_value(c) || is_calculation_number(c) || is_calculation_bool(c) || is_calculation_string(c);
 }
 
 bool is_scope(char c)

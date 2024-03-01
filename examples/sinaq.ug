@@ -1,5 +1,9 @@
+# TODO: memory leak
 
-miqdar x qimmiti sanduq bolsun
-@x[y] qimmiti [sinaq...] bolsun
-ikrangha @x[y] yezilsun
-# end
+miqdar x qimmiti quruq bolsun
+miqdar t qimmiti rast bolsun
+
+nawada t qimmiti rast bolsa
+    x = 1 - 1
+    ikrangha x yezilsun
+tamamlansun

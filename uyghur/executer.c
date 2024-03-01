@@ -684,57 +684,122 @@ void Executer_consumeResult(Executer *this, Leaf *leaf)
     this->isReturn = true;
 }
 
-double Executer_calculateFoliage(Executer *this, double left, char *sign, double right, Token *token)
+double Executer_calculateNumbers(Executer *this, double left, char *sign, double right, Token *token)
 {
-    if (is_equal(sign, TVALUE_SIGN_ADD))
-    {
-        return left + right;
-    }
-    else if (is_equal(sign, TVALUE_SIGN_SUB))
-    {
-        return left - right;
-    }
-    else if (is_equal(sign, TVALUE_SIGN_MUL))
-    {
-        return left * right;
-    }
-    else if (is_equal(sign, TVALUE_SIGN_DIV))
-    {
+    if (is_equal(sign, TVALUE_SIGN_ADD)) return left + right;
+    if (is_equal(sign, TVALUE_SIGN_SUB)) return left - right;
+    if (is_equal(sign, TVALUE_SIGN_POW)) return pow(left, right);
+    if (is_equal(sign, TVALUE_SIGN_PER)) return fmod(left, right);
+    if (is_equal(sign, TVALUE_SIGN_MUL)) return left * right;
+    if (is_equal(sign, TVALUE_SIGN_DIV)) {
         Executer_assert(this, right != 0, token, LANG_ERR_EXECUTER_INVALID_DEVICE);
         return left / right;
     }
-    else if (is_equal(sign, TVALUE_SIGN_POW))
-    {
-        return pow(left, right);
-    }
-    else if (is_equal(sign, TVALUE_SIGN_PER))
-    {
-        return fmod(left, right);
-    }
+    int lInt = (int)left;
+    int rInt = (int)right;
+    bool isInt = lInt == left && rInt == right;
+    Executer_assert(this, isInt, token, LANG_ERR_CANNOT_BE_FLOAT);
+    if (is_equal(sign, TVALUE_SIGN_NOT)) return lInt ^ rInt;
+    if (is_equal(sign, TVALUE_SIGN_AND)) return lInt & rInt;
+    if (is_equal(sign, TVALUE_SIGN_ORR)) return lInt | rInt;
     Executer_error(this, token, LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN);
+    return 0;
 }
 
-double Executer_calculateBTree(Executer *this, Foliage *);
-double Executer_calculateBTree(Executer *this, Foliage *foliage)
+bool Executer_calculateBooleans(Executer *this, bool left, char *sign, bool right, Token *token)
 {
-    double result = 0;
+    if (is_equal(sign, TVALUE_SIGN_NOT)) return left != right;
+    if (is_equal(sign, TVALUE_SIGN_AND)) return left && right;
+    if (is_equal(sign, TVALUE_SIGN_ORR)) return left || right;
+    Executer_error(this, token, LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN);
+    return NULL;
+}
+
+String* Executer_calculateStrings(Executer *this, String *left, char *sign, String *right, Token *token)
+{
+    if (is_equal(sign, TVALUE_SIGN_LNK)) {
+        return String_format("%s%s", left->data, right->data);
+    }
+    Executer_error(this, token, LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN);
+    return NULL;
+}
+
+Value *Executer_calculateFoliage(Executer *this, Value *left, char *sign, Value *right, Token *token)
+{
+    Value *result = NULL;
+    char *lType = left->type;
+    char *rType = right->type;
+    int compCode = Value_compareTo(left, right);
+    int sameType = compCode != CODE_FAIL;
+    if (is_values(sign, TVAUE_GROUP_CALCULATION_ALL)) {
+        if (is_equal(sign, TVALUE_SIGN_EQUAL)) {
+            bool r = sameType && compCode == CODE_NONE;
+            result = Value_newBoolean(r, token);
+        } else if (sameType && is_equal(sign, TVALUE_SIGN_MORE)) {
+            bool r = compCode == CODE_TRUE;
+            result = Value_newBoolean(r, token);
+        } else if (sameType && is_equal(sign, TVALUE_SIGN_LESS)) {
+            bool r = compCode == CODE_FALSE;
+            result = Value_newBoolean(r, token);
+        }
+    } else if (sameType) {
+        if (is_values(sign, TVAUE_GROUP_CALCULATION_NUM) && is_equal(lType, RTYPE_NUMBER)) {
+            double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);
+            result = Value_newNumber(r, token);
+        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_BOL) && is_equal(lType, RTYPE_NUMBER)) {
+            double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);
+            result = Value_newNumber(r, token);
+        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_BOL) && is_equal(lType, RTYPE_BOOLEAN)) {
+            bool r = Executer_calculateBooleans(this, left->boolean, sign, right->boolean, token);
+            result = Value_newBoolean(r, token);
+        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_STR) && is_equal(lType, RTYPE_STRING)) {
+            String *r = Executer_calculateStrings(this, left->string, sign, right->string, token);
+            result = Value_newString(r, token);
+        }
+    } else {
+        bool bLeftStr = is_equal(lType, RTYPE_STRING);
+        bool bRightStr = is_equal(rType, RTYPE_STRING);
+        bool bLeftNum = is_equal(lType, RTYPE_NUMBER);
+        bool bRightNum = is_equal(rType, RTYPE_NUMBER);
+        bool hasStr = bLeftStr || bRightStr;
+        bool hasNum = bLeftNum || bRightNum;
+        if (hasStr && hasNum && is_equal(sign, TVALUE_SIGN_RPT)) {
+            if (bLeftStr) {
+                String *r = String_clone(left->string);
+                String_repeat(r, right->number);
+                result = Value_newString(r, token);
+            }
+            if (bRightStr) {
+                String *r = String_clone(right->string);
+                String_repeat(r, left->number);
+                result = Value_newString(r, token);
+            }
+        }
+    }
+    // TODO: momory leak
+    // Value_free(left);
+    // Value_free(right);
+    Executer_assert(this, result != NULL, token, LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN);
+    return result;
+}
+
+Value *Executer_calculateBTree(Executer *this, Foliage *);
+Value *Executer_calculateBTree(Executer *this, Foliage *foliage)
+{
+    Value *result = NULL;
     Token *sign = NULL;
     Token *token = foliage->data;
     if (foliage->left != NULL && foliage->right != NULL) {
-        double leftR = Executer_calculateBTree(this, foliage->left);
-        double rightR = Executer_calculateBTree(this, foliage->right);
+        Value *leftR = Executer_calculateBTree(this, foliage->left);
+        Value *rightR = Executer_calculateBTree(this, foliage->right);
         result = Executer_calculateFoliage(this, leftR, token->value, rightR, token);
     } else if (foliage->left != NULL) {
         result = Executer_calculateBTree(this, foliage->left);
     } else if (foliage->right != NULL) {
         result = Executer_calculateBTree(this, foliage->right);
     } else {
-        tools_assert(is_values(token->type, TTYPES_GROUP_NUMBER), LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);
-        Value *v = Executer_getValueByToken(this, token, true);
-        Value *newV = Value_toNumber(v);
-        result = newV->number;
-        Object_release(newV);
-        Object_release(v);
+        Executer_assert(this, is_values(token->type, TTYPES_GROUP_VALUES), token, LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);
+        result = Executer_getValueByToken(this, token, true);
     }
     return result;
 }
@@ -748,10 +813,9 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
     Foliage *root = (Foliage *)body->value;
     //
     // helper_print_btree(root, " ");
-    double n = Executer_calculateBTree(this, root);
-    Value *r = Value_newNumber(n, NULL);
+    Value *r = Executer_calculateBTree(this, root);
     //
-    tools_assert(r != NULL, LANG_ERR_EXECUTER_CALCULATION_INVALID_STAT);
+    Executer_assert(this, r != NULL, target, LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);
     Executer_setValueByToken(this, target, r, false);
 }
 

@@ -33,6 +33,7 @@
 #define LANG_ERR_PARSER_EXCEPTION "logika xataliqi kuruldi"
 #define LANG_ERR_PARSER_DESIRED_VALUE_NOT_FOUND "keynidin umut qilinghan qimmet tepilmidi"
 #define LANG_ERR_PARSER_INVALID_IF "eger jumlisi inawetsiz"
+#define LANG_ERR_PARSER_INVALID_CALCULATOR "hisablash jumlisi inawetsiz"
 
 // executer
 #define LANG_ERR_EXECUTER_EXCEPTION "ijra xataliqi kuruldi"
@@ -41,7 +42,7 @@
 #define LANG_ERR_EXECUTER_EXP_INVALID_TYPE "oxshashmighan miqdar tipi arisida xisablash elip barghili bolmaydu"
 #define LANG_ERR_EXECUTER_KEY_INVALID_TOKEN "inawetsiz achquch qimmiti uchritildi"
 #define LANG_ERR_EXECUTER_CALCULATION_INVALID "hisablash meshghulati inawetsiz:[%s]"
-#define LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN "hisablash heripi qollanmidi"
+#define LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN "hisablash belgisi qollanmidi"
 #define LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS "hisablash miqtarliri qollanmidi"
 #define LANG_ERR_EXECUTER_CALCULATION_INVALID_STAT "hisablash heliti inawetsiz"
 #define LANG_ERR_EXECUTER_INVALID_IF "eger jumlisi inawetsiz"

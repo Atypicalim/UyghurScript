@@ -133,7 +133,7 @@ Token *Parser_checkValue(Parser *this, int indent, int num, char *s, ...)
     return this->token;
 }
 
-bool Parser_isType(Parser *this, int indent, char *tp)
+Token *Parser_getToken(Parser *this, int indent)
 {
     Token *token = this->token;
     int count = indent > 0 ? indent : -indent;
@@ -141,28 +141,44 @@ bool Parser_isType(Parser *this, int indent, char *tp)
     {
         token = indent > 0 ? token->next : token->last;
     }
+    return token;
+}
+
+bool Parser_isTypes(Parser *this, int indent, int num, char *s, ...)
+{
+    Token *token = Parser_getToken(this, indent);
+    bool isMatch = false;
+    va_list valist;
+    int i;
+    va_start(valist, s);
+    for (i = 0; i < num; i++)
+    {
+        if (is_equal(token->type, s))
+        {
+            isMatch = true;
+            break;
+        }
+        s = va_arg(valist, char *);
+    }
+    va_end(valist);
+    return isMatch;
+}
+
+bool Parser_isType(Parser *this, int indent, char *tp)
+{
+    Token *token = Parser_getToken(this, indent);
     return token != NULL && is_equal(token->type, tp);
 }
 
 bool Parser_isValue(Parser *this, int indent, char *value)
 {
-    Token *token = this->token;
-    int count = indent > 0 ? indent : -indent;
-    for (size_t i = 0; i < count; i++)
-    {
-        token = indent > 0 ? token->next : token->last;
-    }
+    Token *token = Parser_getToken(this, indent);
     return token != NULL && is_equal(token->value, value);
 }
 
 bool Parser_isWord(Parser *this, int indent, char *value)
 {
-    Token *token = this->token;
-    int count = indent > 0 ? indent : -indent;
-    for (size_t i = 0; i < count; i++)
-    {
-        token = indent > 0 ? token->next : token->last;
-    }
+    Token *token = Parser_getToken(this, indent);
     return token != NULL && is_equal(token->type, TTYPE_WORD) && is_equal(token->value, value);
 }
 
@@ -472,13 +488,13 @@ void Parser_consumeAstCalculator(Parser *this)
     char *lastType = NULL;
     while (true) {
         current = (Foliage*)currents->tail->data;
-        if (Parser_isType(this, 1, TTYPE_NAME) || Parser_isType(this, 1, TTYPE_KEY) || Parser_isType(this, 1, TTYPE_NUMBER)) {
+        if (Parser_isTypes(this, 1, TTYPES_GROUP_VALUES)) {
             if (lastType == NULL || is_values(lastType, 1, TVALUE_OPEN)) {
-                tempT = Parser_checkType(this, 1, TTYPES_GROUP_NUMBER);
+                tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
                 tempF = Foliage_new(tempT);
                 current->left = tempF;
-            } else if (is_values(lastType, TVAUE_GROUP_CALCULATION_ALL)) {
-                tempT = Parser_checkType(this, 1, TTYPES_GROUP_NUMBER);
+            } else if (is_calculations(lastType)) {
+                tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
                 tempF = Foliage_new(tempT);
                 current->right = tempF;
             } else {
@@ -487,7 +503,7 @@ void Parser_consumeAstCalculator(Parser *this)
             lastType = tempT->type;
             continue;
         } else if (Parser_isType(this, 1, TTYPE_CALCULATION)) {
-            Parser_assert(this, is_values(lastType, 1, TVALUE_CLOSE) || is_values(lastType, TTYPES_GROUP_NUMBER), "invalid calculator order: ");
+            Parser_assert(this, is_values(lastType, 1, TVALUE_CLOSE) || is_values(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
             tempT = Parser_checkType(this, 1, 1, TTYPE_CALCULATION);
             if (current->data != NULL) {
                 tempF = Foliage_new(tempT);
@@ -509,7 +525,7 @@ void Parser_consumeAstCalculator(Parser *this)
                 Parser_checkWord(this, 1, 1, TVALUE_OPEN);
                 tempF = Foliage_new(NULL);
                 current->left = tempF;
-            } else if (is_values(lastType, TVAUE_GROUP_CALCULATION_ALL)) {
+            } else if (is_calculations(lastType)) {
                 Parser_checkWord(this, 1, 1, TVALUE_OPEN);
                 tempF = Foliage_new(NULL);
                 current->right = tempF;
@@ -520,7 +536,7 @@ void Parser_consumeAstCalculator(Parser *this)
             lastType = TVALUE_OPEN;
             continue;
         } else if (Parser_isWord(this, 1, TVALUE_CLOSE)) {
-            Parser_assert(this, is_values(lastType, 1, TVALUE_CLOSE) || is_values(lastType, TTYPES_GROUP_NUMBER), "invalid calculator state:");
+            Parser_assert(this, is_values(lastType, 1, TVALUE_CLOSE) || is_values(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
             Parser_checkWord(this, 1, 1, TVALUE_CLOSE);
             Stack_pop(currents);
             lastType = TVALUE_CLOSE;

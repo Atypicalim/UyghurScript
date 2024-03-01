@@ -277,12 +277,13 @@ String *String_format(char *template, ...)
 
 String* String_repeat(String *this, int count)
 {
-    if (count <= 0 || this->length <= 1) return this;
+    if (count <= 0 || this->length <= 0) return this;
     char *data = String_dump(this);
     while (--count > 0) {
         String_appendStr(this, data);
     }
     pct_free(data);
+    return this;
 }
 
 String *String_subString(String *this, int from, int to)

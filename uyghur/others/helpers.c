@@ -136,6 +136,14 @@ bool is_values(char *target, int num, char *s, ...)
     return false;
 }
 
+bool is_calculations(char *target)
+{
+    return is_values(target, TVAUE_GROUP_CALCULATION_ALL)
+    || is_values(target, TVAUE_GROUP_CALCULATION_NUM)
+    || is_values(target, TVAUE_GROUP_CALCULATION_BOL)
+    || is_values(target, TVAUE_GROUP_CALCULATION_STR);
+}
+
 bool is_higher_priority_calculation(char *target, char *than)
 {
     if (is_values(target, TVAUE_GROUP_CALCULATION_3) && is_values(than, TVAUE_GROUP_CALCULATION_2)) return true;

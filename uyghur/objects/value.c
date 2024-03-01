@@ -190,6 +190,23 @@ Value *Value_toNumber(Value *this)
     }
 }
 
+int Value_compareTo(Value *this, Value *other)
+{
+    if (!other || !is_equal(this->type, other->type)) {
+         return CODE_FAIL;
+    }
+    if (is_equal(this->type, RTYPE_NUMBER)) {
+        if (this->number > other->number) return CODE_TRUE;
+        if (this->number < other->number) return CODE_FALSE;
+    } else if (is_equal(this->type, RTYPE_STRING)) {
+        return String_compare(this->string, other->string);
+    } else if (is_equal(this->type, RTYPE_BOOLEAN)) {
+        if (this->boolean && !other->boolean) return CODE_TRUE;
+        if (!this->boolean && other->boolean) return CODE_FALSE;
+    }
+    return CODE_NONE;
+}
+
 void Value_free(Value *this)
 {
     // char *tag = _get_cache_tag(this->type, this->boolean, this->number, String_get(this->string));

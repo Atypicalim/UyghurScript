@@ -88,6 +88,13 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     _set_keyword(map, TVALUE_SIGN_DIV, TTYPE_CALCULATION);
     _set_keyword(map, TVALUE_SIGN_POW, TTYPE_CALCULATION);
     _set_keyword(map, TVALUE_SIGN_PER, TTYPE_CALCULATION);
+    _set_keyword(map, TVALUE_SIGN_EQUAL, TTYPE_CALCULATION);
+    _set_keyword(map, TVALUE_SIGN_MORE, TTYPE_CALCULATION);
+    _set_keyword(map, TVALUE_SIGN_LESS, TTYPE_CALCULATION);
+    _set_keyword(map, TVALUE_SIGN_NOT, TTYPE_CALCULATION);
+    _set_keyword(map, TVALUE_SIGN_AND, TTYPE_CALCULATION);
+    _set_keyword(map, TVALUE_SIGN_ORR, TTYPE_CALCULATION);
+    _set_keyword(map, TVALUE_SIGN_LNK, TTYPE_CALCULATION);
     _fill_keyword(map, TVALUE_OPEN);
     _fill_keyword(map, TVALUE_CLOSE);
     tokenizer->keywordsMap = map;

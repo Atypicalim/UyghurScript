@@ -12,7 +12,7 @@
 # orders: ( )
 # numbers: + - * / ^ %
 # strings: ~
-# logics: ! & |
+# logics: ! ^ & |
 
 # change
 # variable value function made => @{variable} == get a key from root scope
@@ -63,3 +63,6 @@
 # pointer
 # a = &b
 # b = *a
+
+# optimization
+# give boolean data type to value object and remove string comparation for type
