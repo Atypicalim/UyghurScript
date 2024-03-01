@@ -2,14 +2,14 @@
 
 miqdar tag qimmiti quruq bolsun
 
-fonkisiye @*{[doska_korsitish_qayturmisi]} mezmuni
-    fonkisiye @awaz{[ekirish]} bilen [../resources/road.wav] ishlitilsun we netije tag bolsun
-    fonkisiye @awaz{[quyush]} bilen tag ishlitilsun
-    fonkisiye @awaz{[ekirish]} bilen [../resources/door.wav] ishlitilsun we netije tag bolsun
-    fonkisiye @awaz{[quyush]} bilen tag ishlitilsun
+fonkisiye @*[doska_korsitish_qayturmisi] mezmuni
+    fonkisiye @awaz[ekirish] bilen [../resources/road.wav] ishlitilsun we netije tag bolsun
+    fonkisiye @awaz[quyush] bilen tag ishlitilsun
+    fonkisiye @awaz[ekirish] bilen [../resources/door.wav] ishlitilsun we netije tag bolsun
+    fonkisiye @awaz[quyush] bilen tag ishlitilsun
 tamamlansun
 
-fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
+fonkisiye @*[doska_sizish_qayturmisi] mezmuni
 tamamlansun
 
-fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
+fonkisiye @doska[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun

@@ -4,7 +4,7 @@ miqdar s qimmiti 1 bolsun
 miqdar t qimmiti quruq bolsun
 miqdar o qimmiti 0 bolsun
 
-fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
+fonkisiye @*[doska_sizish_qayturmisi] mezmuni
 
     t qimmiti s chong 2 bolsun
     eger t qimmiti rast bolsa
@@ -13,14 +13,14 @@ fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
         s qimmiti s qushulghan 0.0001 bolsun
     tamamlansun
 
-    fonkisiye @ressam{[xetMolcherlesh]} bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we netije w bolsun
+    fonkisiye @ressam[xetMolcherlesh] bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we netije w bolsun
     o qimmiti w bulungen 2 bolsun
     o qimmiti 250 elinghan o bolsun
-    fonkisiye @ressam{[xetYezish]} bilen [../resources/ukij.ttf] [SINAQ] 36 0 [ff0000ff] o 50 ishlitilsun
+    fonkisiye @ressam[xetYezish] bilen [../resources/ukij.ttf] [SINAQ] 36 0 [ff0000ff] o 50 ishlitilsun
 
-    fonkisiye @ressam{[xetEkirish]} bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we netije r bolsun
-    fonkisiye @ressam{[tamghaBesish]} bilen r 250 250 0.5 0.5 [ffaaaaff] 0 0 -1 -1 0 s ishlitilsun
+    fonkisiye @ressam[xetEkirish] bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we netije r bolsun
+    fonkisiye @ressam[tamghaBesish] bilen r 250 250 0.5 0.5 [ffaaaaff] 0 0 -1 -1 0 s ishlitilsun
 
 tamamlansun
 
-fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
+fonkisiye @doska[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun

@@ -4,9 +4,9 @@
 
 # box variable type
 # s qimmiti sanduq bolsun
-# @box{[key]}
 # @box{variable}
-# @box{1}
+# @box[string]
+# @box{number}
 
 # operations
 # orders: ( )
@@ -26,10 +26,10 @@
 
 # ################################################################################
 
-# fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
+# fonkisiye @*[doska_sizish_qayturmisi] mezmuni
 # tamamlansun
 
-# fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
+# fonkisiye @doska[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun
 
 # ################################################################################
 

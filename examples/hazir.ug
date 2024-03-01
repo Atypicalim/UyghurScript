@@ -5,10 +5,10 @@ miqdar hazirqiWaqit qimmiti quruq bolsun
 miqdar hazirqiChisla qimmiti quruq bolsun
 
 # get time
-fonkisiye @waqit{[sikuntElish]} ishlitilsun we netije hazirqiWaqit bolsun
+fonkisiye @waqit[sikuntElish] ishlitilsun we netije hazirqiWaqit bolsun
 
 # convert to date
-fonkisiye @waqit{[sikuntniAylandurush]} bilen hazirqiWaqit [%Y-%m-%d %H:%M:%S] ishlitilsun we netije hazirqiChisla bolsun
+fonkisiye @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%Y-%m-%d %H:%M:%S] ishlitilsun we netije hazirqiChisla bolsun
 
 # print to cosole
 ikrangha hazirqiChisla yezilsun

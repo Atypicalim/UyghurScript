@@ -192,34 +192,34 @@ fonkisiye funcName ishlitilsun
 s qimmiti sanduq bolsun
 
 # put a number
-@s{[yighinda]} qimmiti 1 qushulghan 2 bolsun
+@s[yighinda] qimmiti 1 qushulghan 2 bolsun
 
 # bind a function
-fonkisiye @s{[sinaqFonkisiye]} miqdar x y mezmuni
-    @s{[yighinda]} qimmiti x qushulghan y bolsun
-    ikrangha @s{[yighinda]} yezilsun
-    netije @s{[yighinda]} qayturulsun
+fonkisiye @s[sinaqFonkisiye] miqdar x y mezmuni
+    @s[yighinda] qimmiti x qushulghan y bolsun
+    ikrangha @s[yighinda] yezilsun
+    netije @s[yighinda] qayturulsun
 tamamlansun
 
 # call and get result as a box varibale
-fonkisiye @s{[sinaqFonkisiye]} bilen 11 22 ishlitilsun we netije @s{[sinaqNetije]} bolsun
+fonkisiye @s[sinaqFonkisiye] bilen 11 22 ishlitilsun we netije @s[sinaqNetije] bolsun
 
 # print the resultType
-ikrangha @s{[sinaqNetije]} yezilsun
+ikrangha @s[sinaqNetije] yezilsun
 
 # this box pointer: -, find in closest box
-@-{[keyName]}
+@-[keyName]
 
 # this module pointer: +, find in closest module
-@+{[keyName]}
+@+[keyName]
 
 # global box pointer: *, find in global scope
-@*{[keyName]}
+@*[keyName]
 
 # supported key types: variable, string, number
 @boxName{variableName}
 @boxName{123}
-@boxName{[stringKey]}
+@boxName[stringKey]
 @boxName[stringKey]
 ```
 
@@ -254,7 +254,7 @@ bolektikiQimmet qimmiti [bolektiki sinaq qimmet ...] bolsun
 # bash_programma.ug
 ikrangha [bash programmidin salam ...] yezilsun
 fonkisiye ekirish bilen [../bolek_programma.ug] ishlitilsun we netije bolekSanduq bolsun
-ikrangha @bolekSanduq{[bolektikiQimmet]} yezilsun
+ikrangha @bolekSanduq[bolektikiQimmet] yezilsun
 
 # run the program
 `.uyghur.exe ./bash_programma.ug`

@@ -62,10 +62,10 @@ miqdar x qimmiti quruq bolsun
 miqdar y qimmiti quruq bolsun
 fonkisiye istirilkaSizish miqdar istirilka bulung mezmuni
     # Pythagoras qanuniyiti
-    fonkisiye @san{[radianghaAylandurush]} bilen bulung ishlitilsun we netije a bolsun
-    fonkisiye @san{[radianghaAylandurush]} bilen bulung ishlitilsun we netije b bolsun
-    fonkisiye @san{[sinosHisablash]} bilen a ishlitilsun we netije a bolsun
-    fonkisiye @san{[kosinosHisablash]} bilen b ishlitilsun we netije b bolsun
+    fonkisiye @san[radianghaAylandurush] bilen bulung ishlitilsun we netije a bolsun
+    fonkisiye @san[radianghaAylandurush] bilen bulung ishlitilsun we netije b bolsun
+    fonkisiye @san[sinosHisablash] bilen a ishlitilsun we netije a bolsun
+    fonkisiye @san[kosinosHisablash] bilen b ishlitilsun we netije b bolsun
     # 
     eger istirilka qimmiti SAET bolsa
         hazirqiRadius qimmiti saetRadiusi bolsun
@@ -82,14 +82,14 @@ fonkisiye istirilkaSizish miqdar istirilka bulung mezmuni
     x qimmiti merkezX qushulghan x bolsun
     y qimmiti merkezY elinghan y bolsun
     # 
-    fonkisiye @ressam{[siziqSizish]} bilen merkezX merkezY x y 5 [eeeeee] ishlitilsun
+    fonkisiye @ressam[siziqSizish] bilen merkezX merkezY x y 5 [eeeeee] ishlitilsun
 tamamlansun
 
 fonkisiye istirilkaHisablash miqdar hazirqiWaqit mezmuni
     # waqitni aylandurush
-    fonkisiye @waqit{[sikuntniAylandurush]} bilen hazirqiWaqit [%H] ishlitilsun we netije saet bolsun
-    fonkisiye @waqit{[sikuntniAylandurush]} bilen hazirqiWaqit [%M] ishlitilsun we netije minut bolsun
-    fonkisiye @waqit{[sikuntniAylandurush]} bilen hazirqiWaqit [%S] ishlitilsun we netije sikunit bolsun
+    fonkisiye @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%H] ishlitilsun we netije saet bolsun
+    fonkisiye @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%M] ishlitilsun we netije minut bolsun
+    fonkisiye @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%S] ishlitilsun we netije sikunit bolsun
     saet qimmiti san bolsun
     minut qimmiti san bolsun
     sikunit qimmiti san bolsun
@@ -112,17 +112,17 @@ tamamlansun
 
 
 
-fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
+fonkisiye @*[doska_sizish_qayturmisi] mezmuni
     #
-    fonkisiye @waqit{[sikuntElish]} ishlitilsun we netije hazirqiWaqit bolsun
+    fonkisiye @waqit[sikuntElish] ishlitilsun we netije hazirqiWaqit bolsun
     # teglik sizish
-    fonkisiye @ressam{[rayunToldurushAylandurulghan]} bilen 0 0 ikranKengliki ikranIgizliki [101010] 0 0 0 ishlitilsun
-    fonkisiye @ressam{[rayunToldurushAylandurulghan]} bilen 5 5 490 590 [303030] 0 0 0 ishlitilsun
-    fonkisiye @ressam{[chemberToldurush]} bilen merkezX merkezY teglikRadiusi teglikRadiusi [101010] ishlitilsun
+    fonkisiye @ressam[rayunToldurushAylandurulghan] bilen 0 0 ikranKengliki ikranIgizliki [101010] 0 0 0 ishlitilsun
+    fonkisiye @ressam[rayunToldurushAylandurulghan] bilen 5 5 490 590 [303030] 0 0 0 ishlitilsun
+    fonkisiye @ressam[chemberToldurush] bilen merkezX merkezY teglikRadiusi teglikRadiusi [101010] ishlitilsun
     # xet yezish
-    fonkisiye @ressam{[xetYezish]} bilen [../resources/ukij.ttf] tema 36 0 [bbbbbb] 35 20 ishlitilsun
-    fonkisiye @waqit{[sikuntniAylandurush]} bilen hazirqiWaqit [%Y-%m-%d %H:%M:%S] ishlitilsun we netije chisla bolsun
-    fonkisiye @ressam{[xetYezish]} bilen [../resources/ukij.ttf] chisla 36 0 [eeeeee] 115 450 ishlitilsun
+    fonkisiye @ressam[xetYezish] bilen [../resources/ukij.ttf] tema 36 0 [bbbbbb] 35 20 ishlitilsun
+    fonkisiye @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%Y-%m-%d %H:%M:%S] ishlitilsun we netije chisla bolsun
+    fonkisiye @ressam[xetYezish] bilen [../resources/ukij.ttf] chisla 36 0 [eeeeee] 115 450 ishlitilsun
     # istirilka hisablash
     fonkisiye istirilkaHisablash bilen hazirqiWaqit ishlitilsun
     # istirilka sizish
@@ -130,8 +130,8 @@ fonkisiye @*{[doska_sizish_qayturmisi]} mezmuni
     fonkisiye istirilkaSizish bilen MINUT minutGradusi ishlitilsun
     fonkisiye istirilkaSizish bilen SIKUNIT sikunitGradusi ishlitilsun
     # mekez sizish
-    fonkisiye @ressam{[chemberToldurush]} bilen merkezX merkezY 10 10 [303030] ishlitilsun
+    fonkisiye @ressam[chemberToldurush] bilen merkezX merkezY 10 10 [303030] ishlitilsun
 tamamlansun
 
-fonkisiye @doska{[korsitish]} bilen -1 -1 [sinaq] 4096 ishlitilsun
+fonkisiye @doska[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun
 # END!
