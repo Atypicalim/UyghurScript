@@ -1,9 +1,3 @@
-# TODO: memory leak
-
 miqdar x qimmiti quruq bolsun
-miqdar t qimmiti rast bolsun
-
-nawada t qimmiti rast bolsa
-    x = 1 - 1
-    ikrangha x yezilsun
-tamamlansun
+x = [33] ? 33
+ikrangha x yezilsun

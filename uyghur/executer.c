@@ -793,6 +793,8 @@ Value *Executer_calculateBTree(Executer *this, Foliage *foliage)
         Value *leftR = Executer_calculateBTree(this, foliage->left);
         Value *rightR = Executer_calculateBTree(this, foliage->right);
         result = Executer_calculateFoliage(this, leftR, token->value, rightR, token);
+        Object_release(leftR);
+        Object_release(rightR);
     } else if (foliage->left != NULL) {
         result = Executer_calculateBTree(this, foliage->left);
     } else if (foliage->right != NULL) {
