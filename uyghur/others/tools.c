@@ -146,7 +146,7 @@ bool is_calculator(char c)
     return c == '=';
 }
 
-bool is_calculator_value(char *c)
+bool is_calculator_common(char c)
 {
     return c == '?';
 }
@@ -168,7 +168,7 @@ bool is_calculation_string(char c)
 
 bool is_calculation(char c)
 {
-    return is_calculator_value(c) || is_calculation_number(c) || is_calculation_bool(c) || is_calculation_string(c);
+    return is_calculator_common(c) || is_calculation_number(c) || is_calculation_bool(c) || is_calculation_string(c);
 }
 
 bool is_scope(char c)

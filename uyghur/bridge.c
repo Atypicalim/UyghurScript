@@ -71,12 +71,25 @@ Value *Bridge_popValue(Bridge *this)
     return v;
 }
 
+Value *Bridge_nextValueWithNull(Bridge *this)
+{
+    if (this->cursor == NULL) return NULL;
+    Value *v = Stack_next(this->stack, this->cursor);
+    return v;
+}
+
+void *Bridge_nextVoid(Bridge *this)
+{
+    Value *v = Bridge_nextValueWithNull(this);
+    if (v == NULL) return NULL;
+    return Value_getValue(v);
+}
+
 // get next value, value object auto released when reset the stack
 Value *Bridge_nextValue(Bridge *this)
 {
-    if (this->cursor == NULL) return Value_newEmpty(NULL);
-    Value *v = Stack_next(this->stack, this->cursor);
-    if (v == NULL) return Value_newEmpty(NULL);
+    Value *v = Bridge_nextValueWithNull(this);
+    if (v == NULL) v = Value_newEmpty(NULL);
     return v;
 }
 
@@ -110,7 +123,7 @@ void Bridge_pushString(Bridge *this, char *value)
 
 void Bridge_pushFunction(Bridge *this, void (*value)(Bridge *))
 {
-    Bridge_pushValue(this, Value_newCFunction(value, NULL));
+    Bridge_pushValue(this, Value_newCFunction(value, UG_EMP));
 }
 
 // read variables
@@ -252,5 +265,39 @@ void Bridge_call(Bridge *this)
     // result
     Bridge_startResult(this);
     Bridge_pushValue(this, r);
+    Bridge_return(this);
+}
+
+void Bridge_bind(Bridge *this, char *name, void *value, char type)
+{
+    Bridge_pushKey(this, name);
+    Bridge_pushValue(this, Value_newCFunction(value, type));
+}
+
+// TODO: fix voi* to float bug
+void Bridge_run(Bridge *this, Value *value) {
+    void (*func)(Bridge *) = value->object;
+    char type = (char) value->character;
+    void *arg1 = Bridge_nextVoid(this);
+    char *arg2 = Bridge_nextVoid(this);
+    char *arg3 = Bridge_nextVoid(this);
+    char *arg4 = Bridge_nextVoid(this);
+    char *arg5 = Bridge_nextVoid(this);
+    char *arg6 = Bridge_nextVoid(this);
+    char *arg7 = Bridge_nextVoid(this);
+    char *arg8 = Bridge_nextVoid(this);
+    char *arg9 = Bridge_nextVoid(this);
+    char *arg0 = Bridge_nextVoid(this);
+    // 
+    void *(*function)() = (void *(*)())func;
+    void *result = function(func, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg0);
+    // 
+    Bridge_startResult(this);
+    if (type == UG_NUM) Bridge_pushNumber(this, (int)result);
+    if (type == UG_BOL) Bridge_pushBoolean(this, (bool)result);
+    if (type == UG_STR) {
+        Bridge_pushString(this, (char *)result);
+        pct_free(result);
+    }
     Bridge_return(this);
 }

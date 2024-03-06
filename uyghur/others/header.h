@@ -77,6 +77,8 @@ Value *Bridge_nextValue(Bridge *);
 void Bridge_startArgument(Bridge *);
 void *Bridge_send(Bridge *);
 void *Bridge_return(Bridge *);
+void Bridge_bind(Bridge *, char *, void *, char);
+void Bridge_run(Bridge *, Value *);
 
 struct Trace
 {

@@ -30,28 +30,6 @@ void Executer_reset(Executer *this)
     this->isReturn = false;
 }
 
-void Executer_pushContainer(Executer *this, char *type)
-{
-    Executer_assert(this, this->containerStack->size < MAX_STACK_SIZE, NULL, LANG_ERR_EXECUTER_STACK_OVERFLOW);
-    Container *container = Container_new(type);
-    Stack_push(this->containerStack, container);
-    this->currentContainer = (Container *)this->containerStack->tail->data;
-    this->rootContainer = (Container *)this->containerStack->head->data;
-}
-
-Container *Executer_popContainer(Executer *this, char *type)
-{
-    Container *container = Stack_pop(this->containerStack);
-    this->currentContainer = (Container *)this->containerStack->tail->data;
-    tools_assert(container != NULL && is_equal(container->type, type), LANG_ERR_NO_VALID_STATE);
-    if (is_equal(type, CONTAINER_TYPE_SCOPE)) {
-        Object_release(container);
-        return NULL;
-    } else {
-        return container;
-    }
-}
-
 Executer *Executer_new(Uyghur *uyghur)
 {
     Executer *executer = malloc(sizeof(Executer));
@@ -74,6 +52,28 @@ void Executer_assert(Executer *this, bool value, Token *token, char *msg)
 {
     if (value == true) return;
     Executer_error(this, token, msg);
+}
+
+void Executer_pushContainer(Executer *this, char *type)
+{
+    Executer_assert(this, this->containerStack->size < MAX_STACK_SIZE, NULL, LANG_ERR_EXECUTER_STACK_OVERFLOW);
+    Container *container = Container_new(type);
+    Stack_push(this->containerStack, container);
+    this->currentContainer = (Container *)this->containerStack->tail->data;
+    this->rootContainer = (Container *)this->containerStack->head->data;
+}
+
+Container *Executer_popContainer(Executer *this, char *type)
+{
+    Container *container = Stack_pop(this->containerStack);
+    this->currentContainer = (Container *)this->containerStack->tail->data;
+    tools_assert(container != NULL && is_equal(container->type, type), LANG_ERR_NO_VALID_STATE);
+    if (is_equal(type, CONTAINER_TYPE_SCOPE)) {
+        Object_release(container);
+        return NULL;
+    } else {
+        return container;
+    }
 }
 
 Container *Executer_getCurrentProgram(Executer *this)
@@ -618,7 +618,6 @@ Value *Executer_runFunc(Executer *this, Value *funcValue)
 
 Value *Executer_runCFunc(Executer *this, Value *funcValue)
 {
-    void (*funcBody)(Bridge *) = funcValue->object;
     Bridge *bridge = this->uyghur->bridge;
     Bridge_startArgument(bridge);
     Stack_reverse(this->callStack);
@@ -633,7 +632,8 @@ Value *Executer_runCFunc(Executer *this, Value *funcValue)
     Cursor_free(cursor);
     Bridge_send(bridge);
     //
-    funcBody(bridge);
+    Bridge_run(bridge, funcValue);
+    //
     tools_assert(bridge->type == BRIDGE_STACK_TP_RES, LANG_ERR_EXECUTER_BRIDGE_INVALID_RESULT);
     Value *r = Bridge_popValue(bridge);
     if (r == NULL) r = Value_newEmpty(NULL);

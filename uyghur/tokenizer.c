@@ -166,7 +166,7 @@ void Token_addToken(Tokenizer *this, Token *token) {
 }
 
 void Tokenizer_addLetter(Tokenizer *this, String *value) {
-    String *type = Tokenizer_getWord(this, value);
+    char *type = Tokenizer_getWord(this, value);
     if (type == NULL) type = TTYPE_NAME;
     Token *token = Token_new(type, String_get(value));
     Token_addToken(this, token);

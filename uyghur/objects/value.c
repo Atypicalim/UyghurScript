@@ -13,6 +13,7 @@ typedef struct ValueNode {
     struct _Object;
     char *type;
     bool boolean;
+    char character;
     double number;
     String *string;
     void *object;
@@ -79,9 +80,11 @@ Value *Value_newFunction(void *function, void *extra)
     return Value_new(RTYPE_FUNCTION ,NULL, 0, NULL, function, extra);
 }
 
-Value *Value_newCFunction(void *function, void *extra)
+Value *Value_newCFunction(void *function, char type)
 {
-    return Value_new(RTYPE_CFUNCTION ,NULL, 0, NULL, function, extra);
+    Value *v = Value_new(RTYPE_CFUNCTION ,NULL, 0, NULL, function, NULL);
+    v->character = type;
+    return v;
 }
 
 void Value_print(Value *this)
@@ -188,6 +191,19 @@ Value *Value_toNumber(Value *this)
     {
         return Value_newNumber(0, NULL);
     }
+}
+
+// TODO: fix void* to float bug
+void *Value_getValue(Value *this)
+{
+    if (is_equal(this->type, RTYPE_NUMBER)) {
+        return (int)this->number;
+    } else if (is_equal(this->type, RTYPE_STRING)) {
+        return String_get(this->string);
+    } else if (is_equal(this->type, RTYPE_BOOLEAN)) {
+        return (void *)this->boolean;
+    }
+    return NULL;
 }
 
 int Value_compareTo(Value *this, Value *other)

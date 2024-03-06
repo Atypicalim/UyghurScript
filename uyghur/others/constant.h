@@ -3,6 +3,16 @@
 #define UG_VERSION_NAME "0.1" 
 #define UG_VERSION_CODE 0.1 
 
+#define UG_BOL 'b'
+#define UG_NUM 'n'
+#define UG_STR 's'
+#define UG_EMP 'e'
+// #define UG_OBJ 'o'
+// #define UG_FUN 'f'
+// #define UG_NAT 't'
+// #define UG_CON 'c'
+
+
 #define PCT_OBJ_VALUE "PCT_OBJ_VALUE"
 #define PCT_OBJ_CONTAINER "PCT_OBJ_CONTAINER"
 #define PCT_OBJ_TOKEN "PCT_OBJ_TOKEN"
