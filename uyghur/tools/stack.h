@@ -7,6 +7,7 @@
 
 typedef struct _Stack {
     struct _Object;
+    int size;
     Block *head;
     Block *tail;
     Block *cursor;
@@ -16,6 +17,7 @@ Stack *Stack_new()
 {
     Stack *stack = (Stack *)pct_mallloc(sizeof(Stack));
     Object_init(stack, PCT_OBJ_STACK);
+    stack->size = 0;
     stack->head = NULL;
     stack->tail = NULL;
     stack->cursor = NULL;
@@ -36,6 +38,7 @@ void Stack_print(Stack *this)
 
 void Stack_push(Stack *this, void *data)
 {
+    this->size++;
     Block *block = Block_new(data);
     if (this->head == NULL)
     {
@@ -52,6 +55,7 @@ void *Stack_pop(Stack *this)
 {
     if (this->tail == NULL)
     {
+        this->size = 0;
         return NULL;
     }
     else
@@ -60,11 +64,13 @@ void *Stack_pop(Stack *this)
         Block *tail = this->tail;
         if (this->tail == this->head)
         {
+            this->size = 0;
             this->head = NULL;
             this->tail = NULL;
         }
         else
         {
+            this->size--;
             this->tail = this->tail->last;
             this->tail->next = NULL;
         }

@@ -64,6 +64,16 @@ void *Array_get(Array *this, int index)
     return this->elements[index];
 }
 
+void *Array_getLast(Array *this)
+{
+    return Array_get(this, this->length - 1);
+}
+
+void *Array_getFirst(Array *this)
+{
+    return Array_get(this, 0);
+}
+
 void *Array_del(Array *this, int index)
 {
     if (index < 0 || index >= this->length) return NULL;
@@ -78,6 +88,16 @@ void *Array_del(Array *this, int index)
     return item;
 }
 
+void *Array_delLast(Array *this)
+{
+    return Array_del(this, this->length - 1);
+}
+
+void *Array_delFirst(Array *this)
+{
+    return Array_del(this, 0);
+}
+
 bool _array_insert(Array *this, int index, void *element, bool isBefore)
 {
     if (!this->nullable && element == NULL) return false;
@@ -89,6 +109,8 @@ bool _array_insert(Array *this, int index, void *element, bool isBefore)
         index = this->length - 1;
         isBefore = false;
     }
+    Object_retain(element);
+    // 
     if (this->length == 0)
     {
         this->elements[0] = element;
@@ -128,6 +150,26 @@ bool Array_prepend(Array *this, void *element)
 bool Array_append(Array *this, void *element)
 {
     return Array_insertAfter(this, this->length - 1, element);
+}
+
+bool Array_push(Array *this, void *element)
+{
+    return Array_insertAfter(this, this->length - 1, element);
+}
+
+void *Array_pop(Array *this)
+{
+    return Array_del(this, this->length - 1);
+}
+
+bool Array_unshift(Array *this, void *element)
+{
+    return Array_insertBefore(this, 0, element);
+}
+
+void *Array_shift(Array *this)
+{
+    return Array_del(this, 0);
 }
 
 // int compare(const void *num1, const void *num2) { return 0; }

@@ -1,8 +1,10 @@
 // language
 
 #define LANG_ERR "XATALIQ"
-#define LANG_WAR "AGAHLANDURUSH"
-#define LANG_ERR_NO_VALID_STATE "inawetsiz xalet kuruldi"
+#define LANG_WAR "ESKERTME"
+#define LANG_LOG "UCHUR"
+#define LANG_UNKNOWN "NAMELUM"
+#define LANG_ERR_NO_VALID_STATE "inawetsiz halet kuruldi"
 #define LANG_ERR_NO_INPUT_NAME "uyghur script programma hejjet ismi birilmidi"
 
 // uyghur
@@ -51,5 +53,6 @@
 #define LANG_ERR_EXECUTER_INVALID_DEVICE "bolguchi san qimmiti nol bolsa bolmaydu: "
 #define LANG_ERR_EXECUTER_INVALID_BOX_NAME "sanduq ismi inawetsiz"
 #define LANG_ERR_EXECUTER_INVALID_KEY_NAME "achquch ismi inawetsiz"
-#define LANG_ERR_EXECUTER_CINTAINER_NOT_FOUND "nishanlanghan sanduq tepilmidi"
+#define LANG_ERR_EXECUTER_INVALID_VARIABLE "nishanlanghan miqdar tepilmidi"
 #define LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED "miqdar alliburun iniqlanghan"
+#define LANG_ERR_EXECUTER_STACK_OVERFLOW "saqlash boshluqi teship ketti"

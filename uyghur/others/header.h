@@ -22,6 +22,8 @@
 #include "tools.c"
 
 bool isTest = false;
+#define MAX_STACK_SIZE 1000
+#define MAX_TRACE_SIZE 5
 
 #define H_PCT_OBJECT_CALLBACKS
 void Object_initByType(char *, void *);
@@ -41,6 +43,7 @@ void Object_printByType(char *, void *);
 typedef struct Tokenizer Tokenizer;
 typedef struct Parser Parser;
 typedef struct Executer Executer;
+typedef struct Trace Trace;
 typedef struct Bridge Bridge;
 
 typedef struct Uyghur {
@@ -48,6 +51,7 @@ typedef struct Uyghur {
     Tokenizer *tokenizer;
     Parser *parser;
     Executer *executer;
+    Trace *trace;
     Bridge *bridge;
 } Uyghur;
 
@@ -73,5 +77,14 @@ Value *Bridge_nextValue(Bridge *);
 void Bridge_startArgument(Bridge *);
 void *Bridge_send(Bridge *);
 void *Bridge_return(Bridge *);
+
+struct Trace
+{
+    Uyghur *uyghur;
+    Array *array;
+};
+void Trace_push(Trace *, Token *);
+void Trace_pop(Trace *, Token *);
+void Trace_write(Trace *);
 
 #endif

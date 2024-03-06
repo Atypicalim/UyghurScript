@@ -7,6 +7,7 @@
 
 typedef struct _Queue {
     struct _Object;
+    int size;
     Block *head;
     Block *tail;
     Block *cursor;
@@ -16,6 +17,7 @@ Queue *Queue_new()
 {
     Queue *queue = (Queue *)pct_mallloc(sizeof(Queue));
     Object_init(queue, PCT_OBJ_QUEUE);
+    queue->size = 0;
     queue->head = NULL;
     queue->tail = NULL;
     queue->cursor = NULL;
@@ -36,6 +38,7 @@ void Queue_print(Queue *this)
 
 void Queue_push(Queue *this, void *data)
 {
+    this->size++;
     Block *block = Block_new(data);
     if (this->head == NULL)
     {
@@ -52,6 +55,7 @@ void *Queue_pop(Queue *this)
 {
     if (this->head == NULL)
     {
+        this->size = 0;
         return NULL;
     }
     else
@@ -60,11 +64,13 @@ void *Queue_pop(Queue *this)
         Block *head = this->head;
         if (this->head == this->tail)
         {
+            this->size = 0;
             this->head = NULL;
             this->tail = NULL;
         }
         else
         {
+            this->size--;
             this->head = this->head->next;
             this->head->last = NULL;
         }

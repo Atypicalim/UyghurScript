@@ -32,6 +32,7 @@ void Executer_reset(Executer *this)
 
 void Executer_pushContainer(Executer *this, char *type)
 {
+    Executer_assert(this, this->containerStack->size < MAX_STACK_SIZE, NULL, LANG_ERR_EXECUTER_STACK_OVERFLOW);
     Container *container = Container_new(type);
     Stack_push(this->containerStack, container);
     this->currentContainer = (Container *)this->containerStack->tail->data;
@@ -62,8 +63,11 @@ Executer *Executer_new(Uyghur *uyghur)
 void Executer_error(Executer *this, Token *token, char *msg)
 {
     char *m = msg != NULL ? msg : LANG_ERR_EXECUTER_EXCEPTION;
-    char *s = tools_format(LANG_ERR_TOKEN_PLACE, token->file, token->line, token->column, token->value);
-    tools_error("Executer: %s, %s", m, s);
+    char *s = token == NULL ? LANG_UNKNOWN : format_token_place(token);
+    char *err = tools_format("Executer: %s, %s", m, s);
+    printf("[%s] => %s\n", LANG_ERR, err);
+    Trace_write(this->uyghur->trace);
+    exit(1);
 }
 
 void Executer_assert(Executer *this, bool value, Token *token, char *msg)
@@ -179,7 +183,7 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
     //
     char *key = Executer_getKeyByToken(this, token);
     Container *container = Executer_getContainerByToken(this, token);
-    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_CINTAINER_NOT_FOUND);
+    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     Value *result = Container_get(container, key);
     if (result != NULL) {
         Object_retain(result);
@@ -194,7 +198,7 @@ void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool 
 {
     Container *container = Executer_getContainerByToken(this, token);
     if (withDeclare && container == NULL) container = this->currentContainer;
-    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_CINTAINER_NOT_FOUND);
+    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     char *key = Executer_getKeyByToken(this, token);
     Value *replacedValue = Container_set(container, key, value);
     pct_free(key);
@@ -657,7 +661,9 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     Value *r = NULL;
     Value *funcValue = Executer_getValueByToken(this, funcName, true);
     if (is_equal(funcValue->type, RTYPE_FUNCTION)) {
+        Trace_push(this->uyghur->trace, funcName);
         r = Executer_runFunc(this, funcValue);
+        Trace_pop(this->uyghur->trace, NULL);
     } else if (is_equal(funcValue->type, RTYPE_CFUNCTION)) {
         r = Executer_runCFunc(this, funcValue);
     } else {

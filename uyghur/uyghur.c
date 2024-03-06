@@ -8,6 +8,7 @@
 #include "tokenizer.c"
 #include "parser.c"
 #include "executer.c"
+#include "trace.c"
 #include "bridge.c"
 
 void Uyghur_init(Uyghur *this)
@@ -22,6 +23,7 @@ Uyghur *Uyghur_new()
     uyghur->tokenizer = Tokenizer_new(uyghur);
     uyghur->parser = Parser_new(uyghur);
     uyghur->executer = Executer_new(uyghur);
+    uyghur->trace = Trace_new(uyghur);
     uyghur->bridge = Bridge_new(uyghur);
     return uyghur;
 }

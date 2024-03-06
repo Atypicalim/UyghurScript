@@ -152,6 +152,16 @@ bool is_higher_priority_calculation(char *target, char *than)
     return false;
 }
 
+char *format_token_place(Token *token)
+{
+    tools_format(LANG_ERR_TOKEN_PLACE, token->file, token->line, token->column, token->value);
+}
+
+char *format_some_place(Token *token)
+{
+    tools_format(LANG_ERR_SOME_PLACE, token->file, token->line, token->column);
+}
+
 void Object_initByType(char *type, void *object)
 {
     //
