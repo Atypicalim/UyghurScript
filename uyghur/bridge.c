@@ -274,9 +274,8 @@ void Bridge_bind(Bridge *this, char *name, void *value, char type)
     Bridge_pushValue(this, Value_newCFunction(value, type));
 }
 
-// TODO: fix voi* to float bug
 void Bridge_run(Bridge *this, Value *value) {
-    void (*func)(Bridge *) = value->object;
+    void *func = value->object;
     char type = (char) value->character;
     void *arg1 = Bridge_nextVoid(this);
     char *arg2 = Bridge_nextVoid(this);
@@ -288,16 +287,20 @@ void Bridge_run(Bridge *this, Value *value) {
     char *arg8 = Bridge_nextVoid(this);
     char *arg9 = Bridge_nextVoid(this);
     char *arg0 = Bridge_nextVoid(this);
-    // 
-    void *(*function)() = (void *(*)())func;
-    void *result = function(func, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg0);
-    // 
     Bridge_startResult(this);
-    if (type == UG_NUM) Bridge_pushNumber(this, (int)result);
-    if (type == UG_BOL) Bridge_pushBoolean(this, (bool)result);
-    if (type == UG_STR) {
-        Bridge_pushString(this, (char *)result);
-        pct_free(result);
+    if (type == UG_NUM) {
+        float (*function)() = func;
+        float num = function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg0);
+        Bridge_pushNumber(this, num);
+    } else if (type == UG_BOL) {
+        bool (*function)() = func;
+        bool bol = function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg0);
+        Bridge_pushBoolean(this, bol);
+    } else if (type == UG_STR) {
+        char *(*function)() = func;
+        char *str = function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg0);
+        Bridge_pushString(this, str);
+        pct_free(str);
     }
     Bridge_return(this);
 }
