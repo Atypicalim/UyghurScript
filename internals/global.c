@@ -14,7 +14,7 @@ void oqush(Bridge *bridge)
 void yezish(Bridge *bridge)
 {
     Value *v = Bridge_nextValue(bridge);
-    while (v->type != RTYPE_EMPTY)
+    while (v->type != UG_RTYPE_NIL)
     {
         system_write_terminal(Value_toString(v));
         v = Bridge_nextValue(bridge);

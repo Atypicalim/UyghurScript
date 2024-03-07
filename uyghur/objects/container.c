@@ -15,9 +15,9 @@ typedef struct _Container {
 
 Container *Container_new(char *tp)
 {
-    bool isBox = is_equal(tp, CONTAINER_TYPE_BOX);
-    bool isScope = is_equal(tp, CONTAINER_TYPE_SCOPE);
-    bool isModule = is_equal(tp, CONTAINER_TYPE_MODULE);
+    bool isBox = is_equal(tp, UG_CTYPE_BOX);
+    bool isScope = is_equal(tp, UG_CTYPE_SCP);
+    bool isModule = is_equal(tp, UG_CTYPE_MDL);
     tools_assert(isBox || isScope || isModule, "invalid container type for new");
     Container *container = malloc(sizeof(Container));
     Object_init(container, PCT_OBJ_CONTAINER);
@@ -28,17 +28,17 @@ Container *Container_new(char *tp)
 
 Container *Container_newBox()
 {
-    return Container_new(CONTAINER_TYPE_BOX);
+    return Container_new(UG_CTYPE_BOX);
 }
 
 Container *Container_newScope()
 {
-    return Container_new(CONTAINER_TYPE_SCOPE);
+    return Container_new(UG_CTYPE_SCP);
 }
 
 Container *Container_newModule()
 {
-    return Container_new(CONTAINER_TYPE_MODULE);
+    return Container_new(UG_CTYPE_MDL);
 }
 
 void *Container_set(Container *this, char *key, void *value)
@@ -68,17 +68,17 @@ void Container_print(Container *this)
 
 bool Container_isScope(Container *this)
 {
-    return is_equal(this->type, CONTAINER_TYPE_SCOPE);
+    return is_equal(this->type, UG_CTYPE_SCP);
 }
 
 bool Container_isBox(Container *this)
 {
-    return is_equal(this->type, CONTAINER_TYPE_BOX);
+    return is_equal(this->type, UG_CTYPE_BOX);
 }
 
 bool Container_isModule(Container *this)
 {
-    return is_equal(this->type, CONTAINER_TYPE_MODULE);
+    return is_equal(this->type, UG_CTYPE_MDL);
 }
 
 void Container_free(Container *this)

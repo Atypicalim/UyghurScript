@@ -179,14 +179,14 @@ bool Parser_isValue(Parser *this, int indent, char *value)
 bool Parser_isWord(Parser *this, int indent, char *value)
 {
     Token *token = Parser_getToken(this, indent);
-    return token != NULL && is_equal(token->type, TTYPE_WORD) && is_equal(token->value, value);
+    return token != NULL && is_equal(token->type, UG_TTYPE_WRD) && is_equal(token->value, value);
 }
 
 Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
 {
     Parser_moveToken(this, indent);
     Parser_assert(this, this->token != NULL, LANG_ERR_INVALID_WORD);
-    Parser_assert(this, is_equal(this->token->type, TTYPE_WORD), LANG_ERR_INVALID_WORD);
+    Parser_assert(this, is_equal(this->token->type, UG_TTYPE_WRD), LANG_ERR_INVALID_WORD);
     bool isMatch = false;
     va_list valist;
     int i;
@@ -208,7 +208,7 @@ Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
 void Parser_consumeAstVariable(Parser *this)
 {
     Parser_checkWord(this, 0, 1, TVALUE_VARIABLE);
-    Token *name = Parser_checkType(this, 1, 1, TTYPE_NAME);
+    Token *name = Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
     Parser_checkWord(this, 1, 1, TVALUE_VALUE);
     Token *action = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
     Parser_checkWord(this, 1, 1, TVALUE_MADE);
@@ -222,26 +222,26 @@ void Parser_consumeAstOperate(Parser *this)
     Token *action = NULL;
     if (is_equal(this->token->value, TVALUE_TARGET_FROM))
     {
-        name = Parser_checkType(this, 1, 2, TTYPE_NAME, TTYPE_KEY);
+        name = Parser_checkType(this, 1, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
         action = Parser_checkWord(this, 1, 1, TVALUE_INPUT);
     }
     else if (is_equal(this->token->value, TVALUE_TARGET_TO))
     {
         name = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
-        action = Parser_checkWord(this, 1, 2, TVALUE_OUTPUT, TTYPE_KEY);
+        action = Parser_checkWord(this, 1, 2, TVALUE_OUTPUT, UG_TTYPE_KEY);
     }
     Parser_pushLeaf(this, ASTTYPE_OPERATE, 3, target, name, action);
 }
 
 void Parser_consumeAstExpression(Parser *this)
 {
-    Token *target = Parser_checkType(this, 0, 2, TTYPE_NAME, TTYPE_KEY);
+    Token *target = Parser_checkType(this, 0, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
     Parser_checkWord(this, 1, 1, TVALUE_VALUE);
     // single
     if (Parser_isWord(this, 2, TVALUE_MADE))
     {
         Token *source = NULL;
-        if (Parser_isType(this, 1, TTYPE_WORD))
+        if (Parser_isType(this, 1, UG_TTYPE_WRD))
         {
             source = Parser_checkWord(this, 1, TVAUE_GROUP_EXP_SINGLE);
         }
@@ -254,65 +254,65 @@ void Parser_consumeAstExpression(Parser *this)
         return;
     }
     // string
-    if (Parser_isType(this, 1, TTYPE_STRING))
+    if (Parser_isType(this, 1, UG_TTYPE_STR))
     {
-        Token *first = Parser_checkType(this, 1, 1, TTYPE_STRING);
+        Token *first = Parser_checkType(this, 1, 1, UG_TTYPE_STR);
         Token *action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_STRING);
-        Token *second = Parser_checkType(this, 1, 3, TTYPE_STRING, TTYPE_NAME, TTYPE_KEY);
+        Token *second = Parser_checkType(this, 1, 3, UG_TTYPE_STR, UG_TTYPE_NAM, UG_TTYPE_KEY);
         Parser_checkWord(this, 1, 1, TVALUE_MADE);
         Parser_pushLeaf(this, ASTTYPE_EXPRESSION_DOUBLE, 4, target, first, action, second);
         return;
     }
     // number
-    if (Parser_isType(this, 1, TTYPE_NUMBER))
+    if (Parser_isType(this, 1, UG_TTYPE_NUM))
     {
-        Token *first = Parser_checkType(this, 1, 1, TTYPE_NUMBER);
+        Token *first = Parser_checkType(this, 1, 1, UG_TTYPE_NUM);
         Token *action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_NUMBER);
-        Token *second = Parser_checkType(this, 1, 3, TTYPE_NUMBER, TTYPE_NAME, TTYPE_KEY);
+        Token *second = Parser_checkType(this, 1, 3, UG_TTYPE_NUM, UG_TTYPE_NAM, UG_TTYPE_KEY);
         Parser_checkWord(this, 1, 1, TVALUE_MADE);
         Parser_pushLeaf(this, ASTTYPE_EXPRESSION_DOUBLE, 4, target, first, action, second);
         return;
     }
     // bool
-    if (Parser_isType(this, 1, TTYPE_BOOL) || Parser_isType(this, 1, TTYPE_EMPTY))
+    if (Parser_isType(this, 1, UG_TTYPE_BOL) || Parser_isType(this, 1, UG_TTYPE_EMP))
     {
-        Token *first = Parser_checkType(this, 1, 2, TTYPE_BOOL, TTYPE_EMPTY);
+        Token *first = Parser_checkType(this, 1, 2, UG_TTYPE_BOL, UG_TTYPE_EMP);
         Token *action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_BOOL);
-        Token *second = Parser_checkType(this, 1, 4, TTYPE_BOOL, TTYPE_EMPTY, TTYPE_NAME, TTYPE_KEY);
+        Token *second = Parser_checkType(this, 1, 4, UG_TTYPE_BOL, UG_TTYPE_EMP, UG_TTYPE_NAM, UG_TTYPE_KEY);
         Parser_checkWord(this, 1, 1, TVALUE_MADE);
         Parser_pushLeaf(this, ASTTYPE_EXPRESSION_DOUBLE, 4, target, first, action, second);
         return;
     }
     // name
-    if (Parser_isType(this, 1, TTYPE_NAME) || Parser_isType(this, 1, TTYPE_KEY))
+    if (Parser_isType(this, 1, UG_TTYPE_NAM) || Parser_isType(this, 1, UG_TTYPE_KEY))
     {
-        Token *first = Parser_checkType(this, 1, 2, TTYPE_NAME, TTYPE_KEY);
+        Token *first = Parser_checkType(this, 1, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
         Token *action = NULL;
         Token *second = NULL;
-        if (Parser_isType(this, 2, TTYPE_STRING))
+        if (Parser_isType(this, 2, UG_TTYPE_STR))
         {
             action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_STRING);
-            second = Parser_checkType(this, 1, 1, TTYPE_STRING);
+            second = Parser_checkType(this, 1, 1, UG_TTYPE_STR);
         }
-        else if (Parser_isType(this, 2, TTYPE_NUMBER))
+        else if (Parser_isType(this, 2, UG_TTYPE_NUM))
         {
             action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_NUMBER);
-            second = Parser_checkType(this, 1, 1, TTYPE_NUMBER);
+            second = Parser_checkType(this, 1, 1, UG_TTYPE_NUM);
         }
-        else if (Parser_isType(this, 2, TTYPE_BOOL) || Parser_isType(this, 2, TTYPE_EMPTY))
+        else if (Parser_isType(this, 2, UG_TTYPE_BOL) || Parser_isType(this, 2, UG_TTYPE_EMP))
         {
             action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_BOOL);
-            second = Parser_checkType(this, 1, 2, TTYPE_BOOL, TTYPE_EMPTY);
+            second = Parser_checkType(this, 1, 2, UG_TTYPE_BOL, UG_TTYPE_EMP);
         }
-        else if (Parser_isType(this, 2, TTYPE_NAME) || Parser_isType(this, 2, TTYPE_KEY))
+        else if (Parser_isType(this, 2, UG_TTYPE_NAM) || Parser_isType(this, 2, UG_TTYPE_KEY))
         {
             action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_ALL);
-            second = Parser_checkType(this, 1, 2, TTYPE_NAME, TTYPE_KEY);
+            second = Parser_checkType(this, 1, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
         }
-        else if (Parser_isType(this, 2, TTYPE_BOX))
+        else if (Parser_isType(this, 2, UG_TTYPE_BOX))
         {
             action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_CONTAINER);
-            second = Parser_checkType(this, 1, 1, TTYPE_BOX);
+            second = Parser_checkType(this, 1, 1, UG_TTYPE_BOX);
         }
         else
         {
@@ -323,11 +323,11 @@ void Parser_consumeAstExpression(Parser *this)
         return;
     }
     // box
-    if (Parser_isType(this, 1, TTYPE_BOX))
+    if (Parser_isType(this, 1, UG_TTYPE_BOX))
     {
-        Token *first = Parser_checkType(this, 1, 1, TTYPE_BOX);
+        Token *first = Parser_checkType(this, 1, 1, UG_TTYPE_BOX);
         Token *action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_CONTAINER);
-        Token *second = Parser_checkType(this, 1, 3, TTYPE_BOX, TTYPE_NAME, TTYPE_KEY);
+        Token *second = Parser_checkType(this, 1, 3, UG_TTYPE_BOX, UG_TTYPE_NAM, UG_TTYPE_KEY);
         Parser_checkWord(this, 1, 1, TVALUE_MADE);
         Parser_pushLeaf(this, ASTTYPE_EXPRESSION_DOUBLE, 4, target, first, action, second);
         return;
@@ -419,18 +419,18 @@ void Parser_consumeAstResult(Parser *this)
 void Parser_consumeAstFunc(Parser *this)
 {
     Parser_checkWord(this, 0, 1, TVALUE_FUNCTION);
-    Token *name = Parser_checkType(this, 1, 2, TTYPE_NAME, TTYPE_KEY);
+    Token *name = Parser_checkType(this, 1, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
     Leaf *leaf = Leaf_new(ASTTYPE_FUNC);
     Leaf *code = Leaf_new(ASTTYPE_CODE);
         // args
     if (Parser_isValue(this, 1, TVALUE_VARIABLE))
     {
         Parser_checkValue(this, 1, 1, TVALUE_VARIABLE);
-        Token *variable = Parser_checkType(this, 1, 2, TTYPE_NAME, TTYPE_KEY);
+        Token *variable = Parser_checkType(this, 1, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
         while (variable != NULL)
         {
             Stack_push(code->tokens, variable);
-            variable = Parser_isValue(this, 1, TVALUE_CONTENT) ? NULL : Parser_checkType(this, 1, 2, TTYPE_NAME, TTYPE_KEY);
+            variable = Parser_isValue(this, 1, TVALUE_CONTENT) ? NULL : Parser_checkType(this, 1, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
         }
     }
     // finish
@@ -446,7 +446,7 @@ void Parser_consumeAstFunc(Parser *this)
 void Parser_consumeAstCall(Parser *this)
 {
     Parser_checkWord(this, 0, 1, TVALUE_FUNCTION);
-    Token *name = Parser_checkType(this, 1, 2, TTYPE_NAME, TTYPE_KEY);
+    Token *name = Parser_checkType(this, 1, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
     Leaf *leaf = Leaf_new(ASTTYPE_CALL);
     // args
     if (Parser_isValue(this, 1, TVALUE_WITH))
@@ -467,7 +467,7 @@ void Parser_consumeAstCall(Parser *this)
     {
         Parser_checkValue(this, 1, 1, TVALUE_FURTHER);
         Parser_checkWord(this, 1, 1, TVALUE_RESULT);
-        result = Parser_checkType(this, 1, 2, TTYPE_NAME, TTYPE_KEY);
+        result = Parser_checkType(this, 1, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
         Parser_checkWord(this, 1, 1, TVALUE_MADE);
     }
     Stack_push(leaf->tokens, result);
@@ -478,7 +478,7 @@ void Parser_consumeAstCall(Parser *this)
 
 void Parser_consumeAstCalculator(Parser *this)
 {
-    Token *target = Parser_checkType(this, 0, 2, TTYPE_NAME, TTYPE_KEY);
+    Token *target = Parser_checkType(this, 0, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
     Parser_checkWord(this, 1, 1, TVALUE_CALCULATOR);
     Token *tempT = NULL;
     Foliage *tempF = NULL;
@@ -502,9 +502,9 @@ void Parser_consumeAstCalculator(Parser *this)
             }
             lastType = tempT->type;
             continue;
-        } else if (Parser_isType(this, 1, TTYPE_CALCULATION)) {
+        } else if (Parser_isType(this, 1, UG_TTYPE_CLC)) {
             Parser_assert(this, is_values(lastType, 1, TVALUE_CLOSE) || is_values(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
-            tempT = Parser_checkType(this, 1, 1, TTYPE_CALCULATION);
+            tempT = Parser_checkType(this, 1, 1, UG_TTYPE_CLC);
             if (current->data != NULL) {
                 tempF = Foliage_new(tempT);
                 if (is_higher_priority_calculation(tempT->value, ((Token *)current->data)->value)) {
@@ -545,7 +545,7 @@ void Parser_consumeAstCalculator(Parser *this)
         break;
     }
     current = (Foliage*)currents->head->data;
-    Token *body = Token_new(TTYPE_CALCULATION, current);
+    Token *body = Token_new(UG_TTYPE_CLC, current);
     Parser_pushLeaf(this, ASTTYPE_CALCULATOR, 2, target, body);
 }
 
@@ -555,7 +555,7 @@ void Parser_consumeToken(Parser *this, Token *token)
     char *t = token->type;
     char *v = token->value;
     // VARIABLE
-    if (is_equal(t, TTYPE_WORD) && is_equal(v, TVALUE_VARIABLE))
+    if (is_equal(t, UG_TTYPE_WRD) && is_equal(v, TVALUE_VARIABLE))
     {
         Parser_consumeAstVariable(this);
         return;
@@ -609,19 +609,19 @@ void Parser_consumeToken(Parser *this, Token *token)
         return;
     }
     // EXPRESSION
-    if ((is_equal(t, TTYPE_NAME) || is_equal(t, TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_VALUE))
+    if ((is_equal(t, UG_TTYPE_NAM) || is_equal(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_VALUE))
     {
         Parser_consumeAstExpression(this);
         return;
     }
     // calculate
-    if ((is_equal(t, TTYPE_NAME) || is_equal(t, TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_CALCULATOR))
+    if ((is_equal(t, UG_TTYPE_NAM) || is_equal(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_CALCULATOR))
     {
         Parser_consumeAstCalculator(this);
         return;
     }
     // OPERATE
-    if (is_equal(t, TTYPE_WORD) && (is_equal(v, TVALUE_TARGET_FROM) || is_equal(v, TVALUE_TARGET_TO)))
+    if (is_equal(t, UG_TTYPE_WRD) && (is_equal(v, TVALUE_TARGET_FROM) || is_equal(v, TVALUE_TARGET_TO)))
     {
         Parser_consumeAstOperate(this);
         return;

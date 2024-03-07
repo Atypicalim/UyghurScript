@@ -48,7 +48,7 @@ Bridge *Bridge_new(Uyghur *uyghur)
 char *Bridge_topType(Bridge *this)
 {
     Block *tail = this->stack->tail;
-    return tail != NULL ? ((Value *)tail->data)->type : RTYPE_EMPTY;
+    return tail != NULL ? ((Value *)tail->data)->type : UG_RTYPE_NIL;
 }
 
 void Bridge_pushValue(Bridge *this, Value *value)
@@ -71,24 +71,11 @@ Value *Bridge_popValue(Bridge *this)
     return v;
 }
 
-Value *Bridge_nextValueWithNull(Bridge *this)
-{
-    if (this->cursor == NULL) return NULL;
-    Value *v = Stack_next(this->stack, this->cursor);
-    return v;
-}
-
-void *Bridge_nextVoid(Bridge *this)
-{
-    Value *v = Bridge_nextValueWithNull(this);
-    if (v == NULL) return NULL;
-    return Value_getValue(v);
-}
-
 // get next value, value object auto released when reset the stack
 Value *Bridge_nextValue(Bridge *this)
 {
-    Value *v = Bridge_nextValueWithNull(this);
+    if (this->cursor == NULL) return NULL;
+    Value *v = Stack_next(this->stack, this->cursor);
     if (v == NULL) v = Value_newEmpty(NULL);
     return v;
 }
@@ -123,7 +110,7 @@ void Bridge_pushString(Bridge *this, char *value)
 
 void Bridge_pushFunction(Bridge *this, void (*value)(Bridge *))
 {
-    Bridge_pushValue(this, Value_newCFunction(value, UG_EMP));
+    Bridge_pushValue(this, Value_newCFunction(value, NULL));
 }
 
 // read variables
@@ -131,21 +118,21 @@ void Bridge_pushFunction(Bridge *this, void (*value)(Bridge *))
 bool Bridge_nextBoolean(Bridge *this)
 {
     Value *v = Bridge_nextValue(this);
-    tools_assert(is_equal(v->type, RTYPE_BOOLEAN), "invalid bridge arguments, %s argument not found", RTYPE_BOOLEAN);
+    tools_assert(is_equal(v->type, UG_RTYPE_BOL), "invalid bridge arguments, %s argument not found", UG_RTYPE_BOL);
     return v->boolean;
 }
 
 double Bridge_nextNumber(Bridge *this)
 {
     Value *v = Bridge_nextValue(this);
-    tools_assert(is_equal(v->type, RTYPE_NUMBER), "invalid bridge arguments, %s argument not found", RTYPE_NUMBER);
+    tools_assert(is_equal(v->type, UG_RTYPE_NUM), "invalid bridge arguments, %s argument not found", UG_RTYPE_NUM);
     return v->number;
 }
 
 char *Bridge_nextString(Bridge *this)
 {
     Value *v = Bridge_nextValue(this);
-    tools_assert(is_equal(v->type, RTYPE_STRING), "invalid bridge arguments, %s argument not found", RTYPE_STRING);
+    tools_assert(is_equal(v->type, UG_RTYPE_STR), "invalid bridge arguments, %s argument not found", UG_RTYPE_STR);
     return String_get(v->string);
 }
 
@@ -247,10 +234,10 @@ void Bridge_call(Bridge *this)
     }
     Cursor_free(cursor);
     // execute
-    Token *funcName = Token_key(TTYPE_STRING, this->name, "*");
+    Token *funcName = Token_key(UG_TTYPE_STR, this->name, "*");
     Value *funcValue = Executer_getValueByToken(executer, funcName, true);
     Value *r = NULL;
-    if (is_equal(funcValue->type, RTYPE_FUNCTION)) {
+    if (is_equal(funcValue->type, UG_RTYPE_FUN)) {
         r = Executer_runFunc(executer, funcValue);
     } else {
         tools_warning("function not found for func name: %s", this->name);
@@ -268,39 +255,9 @@ void Bridge_call(Bridge *this)
     Bridge_return(this);
 }
 
-void Bridge_bind(Bridge *this, char *name, void *value, char type)
-{
-    Bridge_pushKey(this, name);
-    Bridge_pushValue(this, Value_newCFunction(value, type));
-}
-
 void Bridge_run(Bridge *this, Value *value) {
     void *func = value->object;
     char type = (char) value->character;
-    void *arg1 = Bridge_nextVoid(this);
-    char *arg2 = Bridge_nextVoid(this);
-    char *arg3 = Bridge_nextVoid(this);
-    char *arg4 = Bridge_nextVoid(this);
-    char *arg5 = Bridge_nextVoid(this);
-    char *arg6 = Bridge_nextVoid(this);
-    char *arg7 = Bridge_nextVoid(this);
-    char *arg8 = Bridge_nextVoid(this);
-    char *arg9 = Bridge_nextVoid(this);
-    char *arg0 = Bridge_nextVoid(this);
-    Bridge_startResult(this);
-    if (type == UG_NUM) {
-        float (*function)() = func;
-        float num = function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg0);
-        Bridge_pushNumber(this, num);
-    } else if (type == UG_BOL) {
-        bool (*function)() = func;
-        bool bol = function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg0);
-        Bridge_pushBoolean(this, bol);
-    } else if (type == UG_STR) {
-        char *(*function)() = func;
-        char *str = function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg0);
-        Bridge_pushString(this, str);
-        pct_free(str);
-    }
-    Bridge_return(this);
+    void (*function)() = func;
+    function(this);
 }

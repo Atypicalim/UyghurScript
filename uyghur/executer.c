@@ -68,7 +68,7 @@ Container *Executer_popContainer(Executer *this, char *type)
     Container *container = Stack_pop(this->containerStack);
     this->currentContainer = (Container *)this->containerStack->tail->data;
     tools_assert(container != NULL && is_equal(container->type, type), LANG_ERR_NO_VALID_STATE);
-    if (is_equal(type, CONTAINER_TYPE_SCOPE)) {
+    if (is_equal(type, UG_CTYPE_SCP)) {
         Object_release(container);
         return NULL;
     } else {
@@ -143,7 +143,7 @@ Container *Executer_getContainerByToken(Executer *this, Token *token)
     if (container == NULL) return NULL;
     Value *value = Container_get(container, extra->value);
     if (value == NULL) return NULL;
-    Executer_assert(this, value->type == RTYPE_CONTAINER, token, LANG_ERR_EXECUTER_INVALID_BOX_NAME);
+    Executer_assert(this, value->type == UG_RTYPE_CNT, token, LANG_ERR_EXECUTER_INVALID_BOX_NAME);
     return value->object;
 }
 
@@ -256,7 +256,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
     Value *r = NULL;
     char *act = action->value;
     //
-    if (is_values(action->type, 1, TTYPE_WORD))
+    if (is_values(action->type, 1, UG_TTYPE_WRD))
     {
         if (is_equal(act, TVALUE_EMPTY))
         {
@@ -265,23 +265,23 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
         }
         else if (is_equal(act, TVALUE_NOT))
         {
-            if (is_equal(value->type, RTYPE_NUMBER))
+            if (is_equal(value->type, UG_RTYPE_NUM))
             {
                 r = Value_newBoolean(value->number <= 0, NULL);
             }
-            else if (is_equal(value->type, RTYPE_STRING))
+            else if (is_equal(value->type, UG_RTYPE_STR))
             {
                 r = Value_newBoolean(!is_equal(String_get(value->string), TVALUE_TRUE), NULL);
             }
-            else if (is_equal(value->type, RTYPE_EMPTY))
+            else if (is_equal(value->type, UG_RTYPE_NIL))
             {
                 r = Value_newBoolean(true, NULL);
             }
-            else if (is_equal(value->type, RTYPE_BOOLEAN))
+            else if (is_equal(value->type, UG_RTYPE_BOL))
             {
                 r = Value_newBoolean(!value->boolean, NULL);
             }
-            else if (is_equal(value->type, RTYPE_FUNCTION))
+            else if (is_equal(value->type, UG_RTYPE_FUN))
             {
                 r = Value_newBoolean(false, NULL);
             }
@@ -306,7 +306,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
             Token *funcToken = Token_name(funcName);
             // TODO: memory leak
             Value *funcValue = Executer_getValueByToken(this, funcToken, true);
-            if(is_equal(funcValue->type, RTYPE_FUNCTION) || is_equal(funcValue->type, RTYPE_CFUNCTION))
+            if(is_equal(funcValue->type, UG_RTYPE_FUN) || is_equal(funcValue->type, UG_RTYPE_NTV))
             {
                 r = funcValue;
             }
@@ -349,7 +349,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
     {
         Executer_error(this, action, LANG_ERR_EXECUTER_EXP_INVALID_TYPE);
     }
-    else if (is_values(act, TVALUE_GROUP_EXP_STRING) && is_equal(firstType, RTYPE_STRING))
+    else if (is_values(act, TVALUE_GROUP_EXP_STRING) && is_equal(firstType, UG_RTYPE_STR))
     {
         char *firstS = Value_toString(firstV);
         char *secondS = Value_toString(secondV);
@@ -365,7 +365,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
         pct_free(firstS);
         pct_free(secondS);
     }
-    else if (is_values(act, TVALUE_GROUP_EXP_NUMBER) && is_equal(firstType, RTYPE_NUMBER))
+    else if (is_values(act, TVALUE_GROUP_EXP_NUMBER) && is_equal(firstType, UG_RTYPE_NUM))
     {
         Value *vFirst = Value_toNumber(firstV);
         Value *vSecond = Value_toNumber(secondV);
@@ -403,7 +403,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
             r = Value_newNumber(firstN / secondN, NULL);
         }
     }
-    else if (is_values(act, TVALUE_GROUP_EXP_BOOL) && is_equal(firstType, RTYPE_BOOLEAN))
+    else if (is_values(act, TVALUE_GROUP_EXP_BOOL) && is_equal(firstType, UG_RTYPE_BOL))
     {
         Value *vFirst = Value_toBoolean(firstV);
         Value *vSecond = Value_toBoolean(secondV);
@@ -424,7 +424,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
             r = Value_newBoolean(firstB == true || secondB == true, NULL);
         }
     }
-    else if (is_values(act, TVALUE_GROUP_EXP_CONTAINER) && is_equal(firstType, RTYPE_CONTAINER))
+    else if (is_values(act, TVALUE_GROUP_EXP_CONTAINER) && is_equal(firstType, UG_RTYPE_CNT))
     {
         char *firstS = Value_toString(firstV);
         char *secondS = Value_toString(secondV);
@@ -454,13 +454,13 @@ bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge
     // different type
     if (!is_equal(leftType, rightType)) {
         value = !shouldYes;
-    } else if (is_equal(leftType, RTYPE_STRING) && is_equal(rightType, RTYPE_STRING)) {
+    } else if (is_equal(leftType, UG_RTYPE_STR) && is_equal(rightType, UG_RTYPE_STR)) {
         char *leftS = Value_toString(leftV);
         char *rightS = Value_toString(rightV);
         value = shouldYes == is_equal(leftS, rightS);
         pct_free(leftS);
         pct_free(rightS);
-    } else if (is_equal(leftType, RTYPE_NUMBER) && is_equal(rightType, RTYPE_NUMBER)) {
+    } else if (is_equal(leftType, UG_RTYPE_NUM) && is_equal(rightType, UG_RTYPE_NUM)) {
         Value *vFirst = Value_toNumber(leftV);
         Value *vSecond = Value_toNumber(rightV);
         double leftN = vFirst->number;
@@ -468,7 +468,7 @@ bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge
         Object_release(vFirst);
         Object_release(vSecond);
         value = shouldYes == (leftN == rightN);
-    } else if (is_equal(leftType, RTYPE_BOOLEAN) && is_equal(rightType, RTYPE_BOOLEAN)) {
+    } else if (is_equal(leftType, UG_RTYPE_BOL) && is_equal(rightType, UG_RTYPE_BOL)) {
         Value *vFirst = Value_toBoolean(leftV);
         Value *vSecond = Value_toBoolean(rightV);
         bool leftB = vFirst->boolean;
@@ -476,9 +476,9 @@ bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge
         Object_release(vFirst);
         Object_release(vSecond);
         value = shouldYes == (leftB == rightB);
-    } else if (is_equal(leftType, RTYPE_EMPTY) && is_equal(rightType, RTYPE_EMPTY)) {
+    } else if (is_equal(leftType, UG_RTYPE_NIL) && is_equal(rightType, UG_RTYPE_NIL)) {
         value = true;
-    } else if (is_equal(leftType, RTYPE_CONTAINER) && is_equal(rightType, RTYPE_CONTAINER)) {
+    } else if (is_equal(leftType, UG_RTYPE_CNT) && is_equal(rightType, UG_RTYPE_CNT)) {
         char *leftS = Value_toString(leftV);
         char *rightS = Value_toString(rightV);
         value = shouldYes == is_equal(leftS, rightS); // check pointer id
@@ -508,9 +508,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     Cursor_free(cursor2);
     if (!isFinish && Executer_checkJudge(this, left, right, judge))
     {
-        Executer_pushContainer(this, CONTAINER_TYPE_SCOPE);
+        Executer_pushContainer(this, UG_CTYPE_SCP);
         Executer_consumeTree(this, ifNode);
-        Executer_popContainer(this, CONTAINER_TYPE_SCOPE);
+        Executer_popContainer(this, UG_CTYPE_SCP);
         isFinish = true;
     }
     // elseif
@@ -524,9 +524,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         Cursor_free(cursor2);
         if (!isFinish && Executer_checkJudge(this, left, right, judge))
         {
-            Executer_pushContainer(this, CONTAINER_TYPE_SCOPE);
+            Executer_pushContainer(this, UG_CTYPE_SCP);
             Executer_consumeTree(this, ifNode);
-            Executer_popContainer(this, CONTAINER_TYPE_SCOPE);
+            Executer_popContainer(this, UG_CTYPE_SCP);
             isFinish = true;
         }
         ifNode = Queue_next(leaf->leafs, cursor1);
@@ -541,9 +541,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         tools_assert(is_equal(judge->value, TVALUE_IF_NO), LANG_ERR_EXECUTER_INVALID_IF);
         if (!isFinish)
         {
-            Executer_pushContainer(this, CONTAINER_TYPE_SCOPE);
+            Executer_pushContainer(this, UG_CTYPE_SCP);
             Executer_consumeTree(this, ifNode);
-            Executer_popContainer(this, CONTAINER_TYPE_SCOPE);
+            Executer_popContainer(this, UG_CTYPE_SCP);
             isFinish = true;
         }
         ifNode = Queue_next(leaf->leafs, cursor1);
@@ -565,9 +565,9 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
     Cursor_free(cursor);
     while (Executer_checkJudge(this, left, right, judge))
     {
-        Executer_pushContainer(this, CONTAINER_TYPE_SCOPE);
+        Executer_pushContainer(this, UG_CTYPE_SCP);
         Executer_consumeTree(this, leaf);
-        Executer_popContainer(this, CONTAINER_TYPE_SCOPE);
+        Executer_popContainer(this, UG_CTYPE_SCP);
     }
 }
 
@@ -607,9 +607,9 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
 Value *Executer_runFunc(Executer *this, Value *funcValue)
 {
     Leaf *codeNode = funcValue->object;
-    Executer_pushContainer(this, CONTAINER_TYPE_SCOPE);
+    Executer_pushContainer(this, UG_CTYPE_SCP);
     Executer_consumeLeaf(this, codeNode);
-    Executer_popContainer(this, CONTAINER_TYPE_SCOPE);
+    Executer_popContainer(this, UG_CTYPE_SCP);
     this->isReturn = false;
     Value *r = Stack_pop(this->callStack);
     if (r == NULL) r = Value_newEmpty(NULL);
@@ -660,16 +660,16 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     // get func
     Value *r = NULL;
     Value *funcValue = Executer_getValueByToken(this, funcName, true);
-    if (is_equal(funcValue->type, RTYPE_FUNCTION)) {
+    if (is_equal(funcValue->type, UG_RTYPE_FUN)) {
         Trace_push(this->uyghur->trace, funcName);
         r = Executer_runFunc(this, funcValue);
         Trace_pop(this->uyghur->trace, NULL);
-    } else if (is_equal(funcValue->type, RTYPE_CFUNCTION)) {
+    } else if (is_equal(funcValue->type, UG_RTYPE_NTV)) {
         r = Executer_runCFunc(this, funcValue);
     } else {
         tools_error(LANG_ERR_EXECUTER_FUNCTION_NOT_FOUND, funcName->value);
     }
-    if (!is_equal(resultName->type, TTYPE_EMPTY) && !is_equal(resultName->value, TVALUE_EMPTY)) {
+    if (!is_equal(resultName->type, UG_TTYPE_EMP) && !is_equal(resultName->value, TVALUE_EMPTY)) {
         Executer_setValueByToken(this, resultName, r, true);
     } else {
         Object_release(r);
@@ -749,24 +749,24 @@ Value *Executer_calculateFoliage(Executer *this, Value *left, char *sign, Value 
             result = Value_newBoolean(r, token);
         }
     } else if (sameType) {
-        if (is_values(sign, TVAUE_GROUP_CALCULATION_NUM) && is_equal(lType, RTYPE_NUMBER)) {
+        if (is_values(sign, TVAUE_GROUP_CALCULATION_NUM) && is_equal(lType, UG_RTYPE_NUM)) {
             double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);
             result = Value_newNumber(r, token);
-        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_BOL) && is_equal(lType, RTYPE_NUMBER)) {
+        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_BOL) && is_equal(lType, UG_RTYPE_NUM)) {
             double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);
             result = Value_newNumber(r, token);
-        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_BOL) && is_equal(lType, RTYPE_BOOLEAN)) {
+        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_BOL) && is_equal(lType, UG_RTYPE_BOL)) {
             bool r = Executer_calculateBooleans(this, left->boolean, sign, right->boolean, token);
             result = Value_newBoolean(r, token);
-        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_STR) && is_equal(lType, RTYPE_STRING)) {
+        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_STR) && is_equal(lType, UG_RTYPE_STR)) {
             String *r = Executer_calculateStrings(this, left->string, sign, right->string, token);
             result = Value_newString(r, token);
         }
     } else {
-        bool bLeftStr = is_equal(lType, RTYPE_STRING);
-        bool bRightStr = is_equal(rType, RTYPE_STRING);
-        bool bLeftNum = is_equal(lType, RTYPE_NUMBER);
-        bool bRightNum = is_equal(rType, RTYPE_NUMBER);
+        bool bLeftStr = is_equal(lType, UG_RTYPE_STR);
+        bool bRightStr = is_equal(rType, UG_RTYPE_STR);
+        bool bLeftNum = is_equal(lType, UG_RTYPE_NUM);
+        bool bRightNum = is_equal(rType, UG_RTYPE_NUM);
         bool hasStr = bLeftStr || bRightStr;
         bool hasNum = bLeftNum || bRightNum;
         if (hasStr && hasNum && is_equal(sign, TVALUE_SIGN_RPT)) {
@@ -925,10 +925,10 @@ bool Executer_consumeTree(Executer *this, Leaf *tree)
 
 Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
 {
-    Executer_pushContainer(this, CONTAINER_TYPE_BOX);
+    Executer_pushContainer(this, UG_CTYPE_BOX);
     Executer_consumeTree(this, tree);
     if (this->containerStack->head == this->containerStack->tail) return NULL;
-    Container *container = Executer_popContainer(this, CONTAINER_TYPE_BOX);
+    Container *container = Executer_popContainer(this, UG_CTYPE_BOX);
     Value *module = Value_newContainer(container, NULL);
     Container_set(this->globalContainer, path, module);
     return module;

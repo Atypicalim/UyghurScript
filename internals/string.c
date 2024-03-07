@@ -116,9 +116,9 @@ void ug_str_format(Bridge *bridge)
     char *f = Bridge_nextString(bridge);
     Value *v = Bridge_nextValue(bridge);
     String *r = NULL;
-    if (v->type == RTYPE_NUMBER) r = String_format(f, v->number);
-    if (v->type == RTYPE_STRING) r = String_format(f, v->string);
-    if (v->type == RTYPE_BOOLEAN) r = String_format(f, v->boolean);
+    if (v->type == UG_RTYPE_NUM) r = String_format(f, v->number);
+    if (v->type == UG_RTYPE_STR) r = String_format(f, v->string);
+    if (v->type == UG_RTYPE_BOL) r = String_format(f, v->boolean);
     if (r == NULL) r = String_format("");
     Bridge_startResult(bridge);
     Bridge_pushString(bridge, String_get(r));

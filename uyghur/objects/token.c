@@ -43,64 +43,64 @@ void Token_bindInfo(Token *this, const char *file, int line, int column)
 
 Token *Token_empty()
 {
-    return Token_new(TTYPE_EMPTY, TVALUE_EMPTY);
+    return Token_new(UG_TTYPE_EMP, TVALUE_EMPTY);
 }
 
 Token *Token_name(char *name)
 {
-    return Token_new(TTYPE_NAME, name);
+    return Token_new(UG_TTYPE_NAM, name);
 }
 
 Token *Token_key(char *keyType, char *keyValue, char *scope)
 {
-    Token *token = Token_new(TTYPE_KEY, keyValue);
+    Token *token = Token_new(UG_TTYPE_KEY, keyValue);
     token->extra = Token_new(keyType, scope);
     return token;
 }
 
 bool Token_isName(Token *this)
 {
-    return is_equal(this->type, TTYPE_NAME);
+    return is_equal(this->type, UG_TTYPE_NAM);
 }
 
 bool Token_isKey(Token *this)
 {
-    return is_equal(this->type, TTYPE_KEY);
+    return is_equal(this->type, UG_TTYPE_KEY);
 }
 
 bool Token_isWord(Token *this)
 {
-    return is_equal(this->type, TTYPE_WORD);
+    return is_equal(this->type, UG_TTYPE_WRD);
 }
 
 bool Token_isString(Token *this)
 {
-    return is_equal(this->type, TTYPE_STRING);
+    return is_equal(this->type, UG_TTYPE_STR);
 }
 
 bool Token_isNumber(Token *this)
 {
-    return is_equal(this->type, TTYPE_NUMBER);
+    return is_equal(this->type, UG_TTYPE_NUM);
 }
 
 bool Token_isBool(Token *this)
 {
-    return is_equal(this->type, TTYPE_BOOL);
+    return is_equal(this->type, UG_TTYPE_BOL);
 }
 
 bool Token_isEmpty(Token *this)
 {
-    return is_equal(this->type, TTYPE_EMPTY);
+    return is_equal(this->type, UG_TTYPE_EMP);
 }
 
 bool Token_isBox(Token *this)
 {
-    return is_equal(this->type, TTYPE_BOX);
+    return is_equal(this->type, UG_TTYPE_BOX);
 }
 
 bool Token_isCalculation(Token *this)
 {
-    return is_equal(this->type, TTYPE_CALCULATION);
+    return is_equal(this->type, UG_TTYPE_CLC);
 }
 
 bool Token_isStatic(Token *this)

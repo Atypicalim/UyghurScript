@@ -12,7 +12,7 @@ void ug_system_get_name(Bridge *bridge)
 void ug_system_exit_program(Bridge *bridge)
 {
     int code = 0;
-    if (Bridge_topType(bridge) != RTYPE_EMPTY) code = Bridge_nextNumber(bridge);
+    if (Bridge_topType(bridge) != UG_RTYPE_NIL) code = Bridge_nextNumber(bridge);
     system_exit_program(code);
     Bridge_startResult(bridge);
     Bridge_return(bridge);
@@ -58,7 +58,7 @@ void ug_system_read_terminal(Bridge *bridge)
 void ug_system_write_terminal(Bridge *bridge)
 {
     Value *v = Bridge_nextValue(bridge);
-    while (v->type != RTYPE_EMPTY)
+    while (v->type != UG_RTYPE_NIL)
     {
         system_write_terminal(Value_toString(v));
         v = Bridge_nextValue(bridge);
