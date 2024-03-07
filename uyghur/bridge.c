@@ -45,7 +45,7 @@ Bridge *Bridge_new(Uyghur *uyghur)
 
 // get top type of the stack
 
-char *Bridge_topType(Bridge *this)
+char Bridge_topType(Bridge *this)
 {
     Block *tail = this->stack->tail;
     return tail != NULL ? ((Value *)tail->data)->type : UG_RTYPE_NIL;

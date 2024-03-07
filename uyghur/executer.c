@@ -335,17 +335,17 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
     Cursor_free(cursor);
     Value *secondV = Executer_getValueByToken(this, second, true);
     Value *firstV = Executer_getValueByToken(this, first, true);
-    char *firstType = firstV->type;
-    char *secondType = secondV->type;
+    char firstType = firstV->type;
+    char secondType = secondV->type;
     Value *r = NULL;
     char *act = action->value;
     //
     // TODO add type change to standard libray and forbid expression between different types
-    if (is_equal(act, TVALUE_EQUAL) && !is_equal(firstType, secondType))
+    if (is_equal(act, TVALUE_EQUAL) && firstType != secondType)
     {
         r = Value_newBoolean(false, NULL);
     }
-    else if (!is_equal(firstType, secondType))
+    else if (firstType == secondType)
     {
         Executer_error(this, action, LANG_ERR_EXECUTER_EXP_INVALID_TYPE);
     }
@@ -448,11 +448,11 @@ bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge
     Value *leftV = Executer_getValueByToken(this, left, true);
     Value *rightV = Executer_getValueByToken(this, right, true);
     char *judgeValue = judge->value;
-    char *leftType = leftV->type;
-    char *rightType = rightV->type;
+    char leftType = leftV->type;
+    char rightType = rightV->type;
     bool shouldYes = is_equal(judgeValue, TVALUE_IF_OK);
     // different type
-    if (!is_equal(leftType, rightType)) {
+    if (leftType != rightType) {
         value = !shouldYes;
     } else if (leftType == UG_RTYPE_STR && rightType == UG_RTYPE_STR) {
         char *leftS = Value_toString(leftV);
@@ -733,8 +733,8 @@ String* Executer_calculateStrings(Executer *this, String *left, char *sign, Stri
 Value *Executer_calculateFoliage(Executer *this, Value *left, char *sign, Value *right, Token *token)
 {
     Value *result = NULL;
-    char *lType = left->type;
-    char *rType = right->type;
+    char lType = left->type;
+    char rType = right->type;
     int compCode = Value_compareTo(left, right);
     int sameType = compCode != CODE_FAIL;
     if (is_values(sign, TVAUE_GROUP_CALCULATION_ALL)) {

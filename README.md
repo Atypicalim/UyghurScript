@@ -253,7 +253,7 @@ Bridge_register(bridge);
 Bridge_startFunc(bridge, "functionName");
 Bridge_pushValue(bridge, NULL);
 Bridge_call(bridge);
-char *resultType = Bridge_topType(bridge);
+char resultType = Bridge_topType(bridge);
 void *resultValue = Bridge_nextValue(bridge);
 ```
 
