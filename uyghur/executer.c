@@ -54,7 +54,7 @@ void Executer_assert(Executer *this, bool value, Token *token, char *msg)
     Executer_error(this, token, msg);
 }
 
-void Executer_pushContainer(Executer *this, char *type)
+void Executer_pushContainer(Executer *this, char type)
 {
     Executer_assert(this, this->containerStack->size < MAX_STACK_SIZE, NULL, LANG_ERR_EXECUTER_STACK_OVERFLOW);
     Container *container = Container_new(type);
@@ -63,12 +63,12 @@ void Executer_pushContainer(Executer *this, char *type)
     this->rootContainer = (Container *)this->containerStack->head->data;
 }
 
-Container *Executer_popContainer(Executer *this, char *type)
+Container *Executer_popContainer(Executer *this, char type)
 {
     Container *container = Stack_pop(this->containerStack);
     this->currentContainer = (Container *)this->containerStack->tail->data;
-    tools_assert(container != NULL && is_equal(container->type, type), LANG_ERR_NO_VALID_STATE);
-    if (is_equal(type, UG_CTYPE_SCP)) {
+    tools_assert(container != NULL && container->type == type, LANG_ERR_NO_VALID_STATE);
+    if (type == UG_CTYPE_SCP) {
         Object_release(container);
         return NULL;
     } else {
@@ -265,23 +265,23 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
         }
         else if (is_equal(act, TVALUE_NOT))
         {
-            if (is_equal(value->type, UG_RTYPE_NUM))
+            if (value->type == UG_RTYPE_NUM)
             {
                 r = Value_newBoolean(value->number <= 0, NULL);
             }
-            else if (is_equal(value->type, UG_RTYPE_STR))
+            else if (value->type == UG_RTYPE_STR)
             {
                 r = Value_newBoolean(!is_equal(String_get(value->string), TVALUE_TRUE), NULL);
             }
-            else if (is_equal(value->type, UG_RTYPE_NIL))
+            else if (value->type == UG_RTYPE_NIL)
             {
                 r = Value_newBoolean(true, NULL);
             }
-            else if (is_equal(value->type, UG_RTYPE_BOL))
+            else if (value->type == UG_RTYPE_BOL)
             {
                 r = Value_newBoolean(!value->boolean, NULL);
             }
-            else if (is_equal(value->type, UG_RTYPE_FUN))
+            else if (value->type == UG_RTYPE_FUN)
             {
                 r = Value_newBoolean(false, NULL);
             }
@@ -306,7 +306,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
             Token *funcToken = Token_name(funcName);
             // TODO: memory leak
             Value *funcValue = Executer_getValueByToken(this, funcToken, true);
-            if(is_equal(funcValue->type, UG_RTYPE_FUN) || is_equal(funcValue->type, UG_RTYPE_NTV))
+            if(funcValue->type == UG_RTYPE_FUN || funcValue->type == UG_RTYPE_NTV)
             {
                 r = funcValue;
             }
@@ -349,7 +349,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
     {
         Executer_error(this, action, LANG_ERR_EXECUTER_EXP_INVALID_TYPE);
     }
-    else if (is_values(act, TVALUE_GROUP_EXP_STRING) && is_equal(firstType, UG_RTYPE_STR))
+    else if (is_values(act, TVALUE_GROUP_EXP_STRING) && firstType == UG_RTYPE_STR)
     {
         char *firstS = Value_toString(firstV);
         char *secondS = Value_toString(secondV);
@@ -365,7 +365,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
         pct_free(firstS);
         pct_free(secondS);
     }
-    else if (is_values(act, TVALUE_GROUP_EXP_NUMBER) && is_equal(firstType, UG_RTYPE_NUM))
+    else if (is_values(act, TVALUE_GROUP_EXP_NUMBER) && firstType == UG_RTYPE_NUM)
     {
         Value *vFirst = Value_toNumber(firstV);
         Value *vSecond = Value_toNumber(secondV);
@@ -403,7 +403,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
             r = Value_newNumber(firstN / secondN, NULL);
         }
     }
-    else if (is_values(act, TVALUE_GROUP_EXP_BOOL) && is_equal(firstType, UG_RTYPE_BOL))
+    else if (is_values(act, TVALUE_GROUP_EXP_BOOL) && firstType == UG_RTYPE_BOL)
     {
         Value *vFirst = Value_toBoolean(firstV);
         Value *vSecond = Value_toBoolean(secondV);
@@ -424,7 +424,7 @@ void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
             r = Value_newBoolean(firstB == true || secondB == true, NULL);
         }
     }
-    else if (is_values(act, TVALUE_GROUP_EXP_CONTAINER) && is_equal(firstType, UG_RTYPE_CNT))
+    else if (is_values(act, TVALUE_GROUP_EXP_CONTAINER) && firstType == UG_RTYPE_CNT)
     {
         char *firstS = Value_toString(firstV);
         char *secondS = Value_toString(secondV);
@@ -454,13 +454,13 @@ bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge
     // different type
     if (!is_equal(leftType, rightType)) {
         value = !shouldYes;
-    } else if (is_equal(leftType, UG_RTYPE_STR) && is_equal(rightType, UG_RTYPE_STR)) {
+    } else if (leftType == UG_RTYPE_STR && rightType == UG_RTYPE_STR) {
         char *leftS = Value_toString(leftV);
         char *rightS = Value_toString(rightV);
         value = shouldYes == is_equal(leftS, rightS);
         pct_free(leftS);
         pct_free(rightS);
-    } else if (is_equal(leftType, UG_RTYPE_NUM) && is_equal(rightType, UG_RTYPE_NUM)) {
+    } else if (leftType == UG_RTYPE_NUM && rightType == UG_RTYPE_NUM) {
         Value *vFirst = Value_toNumber(leftV);
         Value *vSecond = Value_toNumber(rightV);
         double leftN = vFirst->number;
@@ -468,7 +468,7 @@ bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge
         Object_release(vFirst);
         Object_release(vSecond);
         value = shouldYes == (leftN == rightN);
-    } else if (is_equal(leftType, UG_RTYPE_BOL) && is_equal(rightType, UG_RTYPE_BOL)) {
+    } else if (leftType == UG_RTYPE_BOL && rightType == UG_RTYPE_BOL) {
         Value *vFirst = Value_toBoolean(leftV);
         Value *vSecond = Value_toBoolean(rightV);
         bool leftB = vFirst->boolean;
@@ -476,9 +476,9 @@ bool Executer_checkJudge(Executer *this, Token *left, Token *right, Token *judge
         Object_release(vFirst);
         Object_release(vSecond);
         value = shouldYes == (leftB == rightB);
-    } else if (is_equal(leftType, UG_RTYPE_NIL) && is_equal(rightType, UG_RTYPE_NIL)) {
+    } else if (leftType == UG_RTYPE_NIL && rightType == UG_RTYPE_NIL) {
         value = true;
-    } else if (is_equal(leftType, UG_RTYPE_CNT) && is_equal(rightType, UG_RTYPE_CNT)) {
+    } else if (leftType == UG_RTYPE_CNT && rightType == UG_RTYPE_CNT) {
         char *leftS = Value_toString(leftV);
         char *rightS = Value_toString(rightV);
         value = shouldYes == is_equal(leftS, rightS); // check pointer id
@@ -616,7 +616,7 @@ Value *Executer_runFunc(Executer *this, Value *funcValue)
     return r;
 }
 
-Value *Executer_runCFunc(Executer *this, Value *funcValue)
+Value *Executer_runNative(Executer *this, Value *funcValue)
 {
     Bridge *bridge = this->uyghur->bridge;
     Bridge_startArgument(bridge);
@@ -660,12 +660,12 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     // get func
     Value *r = NULL;
     Value *funcValue = Executer_getValueByToken(this, funcName, true);
-    if (is_equal(funcValue->type, UG_RTYPE_FUN)) {
+    if (funcValue->type == UG_RTYPE_FUN) {
         Trace_push(this->uyghur->trace, funcName);
         r = Executer_runFunc(this, funcValue);
         Trace_pop(this->uyghur->trace, NULL);
-    } else if (is_equal(funcValue->type, UG_RTYPE_NTV)) {
-        r = Executer_runCFunc(this, funcValue);
+    } else if (funcValue->type == UG_RTYPE_NTV) {
+        r = Executer_runNative(this, funcValue);
     } else {
         tools_error(LANG_ERR_EXECUTER_FUNCTION_NOT_FOUND, funcName->value);
     }
@@ -749,24 +749,24 @@ Value *Executer_calculateFoliage(Executer *this, Value *left, char *sign, Value 
             result = Value_newBoolean(r, token);
         }
     } else if (sameType) {
-        if (is_values(sign, TVAUE_GROUP_CALCULATION_NUM) && is_equal(lType, UG_RTYPE_NUM)) {
+        if (is_values(sign, TVAUE_GROUP_CALCULATION_NUM) && lType == UG_RTYPE_NUM) {
             double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);
             result = Value_newNumber(r, token);
-        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_BOL) && is_equal(lType, UG_RTYPE_NUM)) {
+        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_BOL) && lType == UG_RTYPE_NUM) {
             double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);
             result = Value_newNumber(r, token);
-        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_BOL) && is_equal(lType, UG_RTYPE_BOL)) {
+        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_BOL) && lType == UG_RTYPE_BOL) {
             bool r = Executer_calculateBooleans(this, left->boolean, sign, right->boolean, token);
             result = Value_newBoolean(r, token);
-        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_STR) && is_equal(lType, UG_RTYPE_STR)) {
+        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_STR) && lType == UG_RTYPE_STR) {
             String *r = Executer_calculateStrings(this, left->string, sign, right->string, token);
             result = Value_newString(r, token);
         }
     } else {
-        bool bLeftStr = is_equal(lType, UG_RTYPE_STR);
-        bool bRightStr = is_equal(rType, UG_RTYPE_STR);
-        bool bLeftNum = is_equal(lType, UG_RTYPE_NUM);
-        bool bRightNum = is_equal(rType, UG_RTYPE_NUM);
+        bool bLeftStr = lType == UG_RTYPE_STR;
+        bool bRightStr = rType == UG_RTYPE_STR;
+        bool bLeftNum = lType == UG_RTYPE_NUM;
+        bool bRightNum = rType == UG_RTYPE_NUM;
         bool hasStr = bLeftStr || bRightStr;
         bool hasNum = bLeftNum || bRightNum;
         if (hasStr && hasNum && is_equal(sign, TVALUE_SIGN_RPT)) {

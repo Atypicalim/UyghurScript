@@ -118,21 +118,21 @@ void Bridge_pushFunction(Bridge *this, void (*value)(Bridge *))
 bool Bridge_nextBoolean(Bridge *this)
 {
     Value *v = Bridge_nextValue(this);
-    tools_assert(is_equal(v->type, UG_RTYPE_BOL), "invalid bridge arguments, %s argument not found", UG_RTYPE_BOL);
+    tools_assert(v->type == UG_RTYPE_BOL, "invalid bridge arguments, %s argument not found", UG_RTYPE_BOL);
     return v->boolean;
 }
 
 double Bridge_nextNumber(Bridge *this)
 {
     Value *v = Bridge_nextValue(this);
-    tools_assert(is_equal(v->type, UG_RTYPE_NUM), "invalid bridge arguments, %s argument not found", UG_RTYPE_NUM);
+    tools_assert(v->type == UG_RTYPE_NUM, "invalid bridge arguments, %s argument not found", UG_RTYPE_NUM);
     return v->number;
 }
 
 char *Bridge_nextString(Bridge *this)
 {
     Value *v = Bridge_nextValue(this);
-    tools_assert(is_equal(v->type, UG_RTYPE_STR), "invalid bridge arguments, %s argument not found", UG_RTYPE_STR);
+    tools_assert(v->type == UG_RTYPE_STR, "invalid bridge arguments, %s argument not found", UG_RTYPE_STR);
     return String_get(v->string);
 }
 
@@ -180,9 +180,9 @@ void *Bridge_send(Bridge *this)
     Value *v = Stack_next(this->stack, cursor);
     while(v != NULL)
     {
-        if (!is_values(v->type, RTYPE_GROUP_BASE))
+        if (!is_base_type(v->type))
         {
-            tools_error("invalid bridge status, type %s not available in c", v->type);
+            tools_error("invalid bridge status, type %c not available in c", v->type);
         }
         v = Stack_next(this->stack, cursor);
     }
@@ -237,7 +237,7 @@ void Bridge_call(Bridge *this)
     Token *funcName = Token_key(UG_TTYPE_STR, this->name, "*");
     Value *funcValue = Executer_getValueByToken(executer, funcName, true);
     Value *r = NULL;
-    if (is_equal(funcValue->type, UG_RTYPE_FUN)) {
+    if (funcValue->type == UG_RTYPE_FUN) {
         r = Executer_runFunc(executer, funcValue);
     } else {
         tools_warning("function not found for func name: %s", this->name);

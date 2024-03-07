@@ -11,7 +11,7 @@ Hashmap *valueCache = NULL;
 
 typedef struct ValueNode {
     struct _Object;
-    char *type;
+    char type;
     bool boolean;
     char character;
     double number;
@@ -20,22 +20,22 @@ typedef struct ValueNode {
     void *extra;
 } Value;
 
-char *_get_cache_tag(char *type, bool boolean, double number, char *string)
+char *_get_cache_tag(char type, bool boolean, double number, char *string)
 {
-    if (is_equal(type, UG_RTYPE_NIL)) return tools_format("<R-VALUE:%s>", type);
-    if (is_equal(type, UG_RTYPE_BOL)) return tools_format("<R-VALUE:%s:%s>", type, b2s(boolean));
-    if (is_equal(type, UG_RTYPE_NUM) && round(number) == number)
+    if (type == UG_RTYPE_NIL) return tools_format("<R-VALUE:%c>", type);
+    if (type == UG_RTYPE_BOL) return tools_format("<R-VALUE:%c:%s>", type, b2s(boolean));
+    if (type == UG_RTYPE_NUM && round(number) == number)
     {
-        return tools_format("<R-VALUE:%s:%f>", type, number);
+        return tools_format("<R-VALUE:%c:%f>", type, number);
     }
-    if (is_equal(type, UG_RTYPE_STR) && strlen(string) <= CACHE_STRING_MAX_LENGTH)
+    if (type == UG_RTYPE_STR && strlen(string) <= CACHE_STRING_MAX_LENGTH)
     {
-        return tools_format("<R-VALUE:%s:%s>", type, string);
+        return tools_format("<R-VALUE:%c:%s>", type, string);
     }
     return NULL;
 }
 
- Value *Value_new(char *type, bool boolean, double number, String *string, void *object, void *extra)
+ Value *Value_new(char type, bool boolean, double number, String *string, void *object, void *extra)
 {
     // create
     Value *value = malloc(sizeof(Value));
@@ -87,49 +87,49 @@ Value *Value_newCFunction(void *function, void *extra)
 
 void Value_print(Value *this)
 {
-    if (is_equal(this->type, UG_RTYPE_NIL))
+    if (this->type == UG_RTYPE_NIL)
     {
-        printf("[RV => t:%s v:%s]\n", this->type, TVALUE_EMPTY);
+        printf("[RV => t:%c v:%s]\n", this->type, TVALUE_EMPTY);
     }
-    else if (is_equal(this->type, UG_RTYPE_BOL))
+    else if (this->type == UG_RTYPE_BOL)
     {
         bool value = this->boolean;
-        printf("[RV => t:%s v:%s]\n", this->type, value ? TVALUE_TRUE : TVALUE_FALSE);
+        printf("[RV => t:%c v:%s]\n", this->type, value ? TVALUE_TRUE : TVALUE_FALSE);
     }
-    else if (is_equal(this->type, UG_RTYPE_NUM))
+    else if (this->type == UG_RTYPE_NUM)
     {
         double value = this->number;
-        printf("[RV => t:%s v:%f]\n", this->type, value);
+        printf("[RV => t:%c v:%f]\n", this->type, value);
     }
-    else if (is_equal(this->type, UG_RTYPE_STR))
+    else if (this->type == UG_RTYPE_STR)
     {
         char *value = String_get(this->string);
-        printf("[RV => t:%s v:%s]\n", this->type, value);
+        printf("[RV => t:%c v:%s]\n", this->type, value);
     }
     else
     {
-        printf("[RV => t:%s]\n", this->type);
+        printf("[RV => t:%c]\n", this->type);
     }
 }
 
 // TODO return Value
 char *Value_toString(Value *this)
 {
-    if (is_equal(this->type, UG_RTYPE_NIL))
+    if (this->type == UG_RTYPE_NIL)
     {
         return tools_format("%s", TVALUE_EMPTY);
     }
-    if (is_equal(this->type, UG_RTYPE_BOL))
+    if (this->type == UG_RTYPE_BOL)
     {
         double value = this->boolean;
         return tools_format("%s", value ? TVALUE_TRUE : TVALUE_FALSE);
     }
-    if (is_equal(this->type, UG_RTYPE_NUM))
+    if (this->type == UG_RTYPE_NUM)
     {
         double value = this->number;
         return tools_format("%f", value);
     }
-    if (is_equal(this->type, UG_RTYPE_STR))
+    if (this->type == UG_RTYPE_STR)
     {
         return String_dump(this->string);
     }
@@ -142,19 +142,19 @@ char *Value_toString(Value *this)
 
 Value *Value_toBoolean(Value *this)
 {
-    if (is_equal(this->type, UG_RTYPE_NUM))
+    if (this->type == UG_RTYPE_NUM)
     {
         return Value_newBoolean(this->number > 0, NULL);
     }
-    else if (is_equal(this->type, UG_RTYPE_STR))
+    else if (this->type == UG_RTYPE_STR)
     {
         return Value_newBoolean(is_equal(String_get(this->string), TVALUE_TRUE), NULL);
     }
-    else if (is_equal(this->type, UG_RTYPE_NIL))
+    else if (this->type == UG_RTYPE_NIL)
     {
         return Value_newBoolean(false, NULL);
     }
-    else if (is_equal(this->type, UG_RTYPE_BOL))
+    else if (this->type == UG_RTYPE_BOL)
     {
         Object_retain(this);
         return this;
@@ -168,20 +168,20 @@ Value *Value_toBoolean(Value *this)
 Value *Value_toNumber(Value *this)
 {
 
-    if (is_equal(this->type, UG_RTYPE_NUM))
+    if (this->type == UG_RTYPE_NUM)
     {
         Object_retain(this);
         return this;
     }
-    else if (is_equal(this->type, UG_RTYPE_STR))
+    else if (this->type == UG_RTYPE_STR)
     {
         return Value_newNumber(atof(String_get(this->string)), NULL);
     }
-    else if (is_equal(this->type, UG_RTYPE_NIL))
+    else if (this->type == UG_RTYPE_NIL)
     {
         return Value_newNumber(0, NULL);
     }
-    else if (is_equal(this->type, UG_RTYPE_BOL))
+    else if (this->type == UG_RTYPE_BOL)
     {
         return Value_newNumber(this->boolean ? 1 : 0, NULL);
     }
@@ -193,15 +193,15 @@ Value *Value_toNumber(Value *this)
 
 int Value_compareTo(Value *this, Value *other)
 {
-    if (!other || !is_equal(this->type, other->type)) {
+    if (!other || this->type != other->type) {
          return CODE_FAIL;
     }
-    if (is_equal(this->type, UG_RTYPE_NUM)) {
+    if (this->type == UG_RTYPE_NUM) {
         if (this->number > other->number) return CODE_TRUE;
         if (this->number < other->number) return CODE_FALSE;
-    } else if (is_equal(this->type, UG_RTYPE_STR)) {
+    } else if (this->type == UG_RTYPE_STR) {
         return String_compare(this->string, other->string);
-    } else if (is_equal(this->type, UG_RTYPE_BOL)) {
+    } else if (this->type == UG_RTYPE_BOL) {
         if (this->boolean && !other->boolean) return CODE_TRUE;
         if (!this->boolean && other->boolean) return CODE_FALSE;
     }
@@ -217,11 +217,11 @@ void Value_free(Value *this)
     //     free(tag);
     // }
     
-    if (is_equal(this->type, UG_RTYPE_STR))
+    if (this->type == UG_RTYPE_STR)
     {
         Object_release(this->string);
     }
-    if (is_equal(this->type, UG_RTYPE_CNT))
+    if (this->type == UG_RTYPE_CNT)
     {
         Object_release(this->object);
     }

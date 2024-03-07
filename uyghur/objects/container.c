@@ -10,14 +10,14 @@
 typedef struct _Container {
     struct _Object;
     Hashmap *map;
-    char *type;
+    char type;
 } Container;
 
-Container *Container_new(char *tp)
+Container *Container_new(char tp)
 {
-    bool isBox = is_equal(tp, UG_CTYPE_BOX);
-    bool isScope = is_equal(tp, UG_CTYPE_SCP);
-    bool isModule = is_equal(tp, UG_CTYPE_MDL);
+    bool isBox = tp == UG_CTYPE_BOX;
+    bool isScope = tp == UG_CTYPE_SCP;
+    bool isModule = tp == UG_CTYPE_MDL;
     tools_assert(isBox || isScope || isModule, "invalid container type for new");
     Container *container = malloc(sizeof(Container));
     Object_init(container, PCT_OBJ_CONTAINER);
@@ -68,17 +68,17 @@ void Container_print(Container *this)
 
 bool Container_isScope(Container *this)
 {
-    return is_equal(this->type, UG_CTYPE_SCP);
+    return this->type == UG_CTYPE_SCP;
 }
 
 bool Container_isBox(Container *this)
 {
-    return is_equal(this->type, UG_CTYPE_BOX);
+    return this->type == UG_CTYPE_BOX;
 }
 
 bool Container_isModule(Container *this)
 {
-    return is_equal(this->type, UG_CTYPE_MDL);
+    return this->type == UG_CTYPE_MDL;
 }
 
 void Container_free(Container *this)

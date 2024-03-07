@@ -4,14 +4,14 @@
 #define UG_VERSION_CODE 0.1 
 
 // runtime type
-#define UG_RTYPE_NIL "~"
-#define UG_RTYPE_BOL "b"
-#define UG_RTYPE_NUM "n"
-#define UG_RTYPE_STR "s"
-#define UG_RTYPE_OBJ "o"
-#define UG_RTYPE_FUN "f"
-#define UG_RTYPE_NTV "t"
-#define UG_RTYPE_CNT "c"
+#define UG_RTYPE_NIL '~'
+#define UG_RTYPE_BOL 'b'
+#define UG_RTYPE_NUM 'n'
+#define UG_RTYPE_STR 's'
+#define UG_RTYPE_OBJ 'o'
+#define UG_RTYPE_FUN 'f'
+#define UG_RTYPE_NTV 't'
+#define UG_RTYPE_CNT 'c'
 
 // token types
 #define UG_TTYPE_NAM "NAM"
@@ -25,9 +25,9 @@
 #define UG_TTYPE_CLC "CLC"
 
 // container type
-#define UG_CTYPE_BOX "BOX"
-#define UG_CTYPE_SCP "SCP"
-#define UG_CTYPE_MDL "MDL"
+#define UG_CTYPE_BOX 'x'
+#define UG_CTYPE_SCP 's'
+#define UG_CTYPE_MDL 'm'
 
 #define PCT_OBJ_VALUE "PCT_OBJ_VALUE"
 #define PCT_OBJ_CONTAINER "PCT_OBJ_CONTAINER"
