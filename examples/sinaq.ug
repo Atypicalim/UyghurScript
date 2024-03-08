@@ -1,3 +1,16 @@
-miqdar x qimmiti quruq bolsun
-x = [33] ? 33
-ikrangha x yezilsun
+
+# self
+
+miqdar s qimmiti sanduq bolsun
+
+fonkisiye @s[test1] miqdar a mezmuni
+    # fonkisiye @*[cFuncTest] bilen 0 ishlitilsun we netije x bolsun
+    netije [x] qayturulsun
+tamamlansun
+
+fonkisiye @s[test0] miqdar a mezmuni
+    fonkisiye @-[test1] bilen 0 ishlitilsun we netije x bolsun
+    netije quruq qayturulsun
+tamamlansun
+
+fonkisiye @s[test0] bilen [yeah!] ishlitilsun we netije x bolsun

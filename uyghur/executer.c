@@ -76,6 +76,13 @@ Container *Executer_popContainer(Executer *this, char type)
     }
 }
 
+Container *Executer_getCurrentGlobal(Executer *this, Token *token)
+{
+    Container *container = this->globalContainer;
+    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
+    return container;
+}
+
 Container *Executer_getCurrentModule(Executer *this, Token *token)
 {
     Cursor *cursor = Stack_reset(this->containerStack);
@@ -96,6 +103,9 @@ Container *Executer_getCurrentBox(Executer *this, Token *token)
     while ((container =  Stack_next(this->containerStack, cursor)) != NULL)
     {
         if (Container_isBox(container) || Container_isModule(container)) break;
+        // TODO: self
+        // give a _ variable in fun call as argument
+        // then search _ in scopes to find self box
     }
     Cursor_free(cursor);
     Executer_assert(this, Container_isBox(container), token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
@@ -134,7 +144,7 @@ Container *Executer_getContainerByToken(Executer *this, Token *token)
     if (Token_isName(token)) return Executer_getContainerByKey(this, token->value);
     Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_KEY_INVALID_TOKEN);
     Token *extra = (Token *)token->extra;
-    if (is_equal(extra->value, SCOPE_ALIAS_PRG)) return this->globalContainer;
+    if (is_equal(extra->value, SCOPE_ALIAS_PRG)) return Executer_getCurrentGlobal(this, token);
     if (is_equal(extra->value, SCOPE_ALIAS_MDL)) return Executer_getCurrentModule(this, token);
     if (is_equal(extra->value, SCOPE_ALIAS_BOX)) return Executer_getCurrentBox(this, token);
     Container *container = Executer_getContainerByKey(this, extra->value);
