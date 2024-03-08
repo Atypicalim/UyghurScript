@@ -76,12 +76,7 @@ Container *Executer_popContainer(Executer *this, char type)
     }
 }
 
-Container *Executer_getCurrentProgram(Executer *this)
-{
-    return this->globalContainer;
-}
-
-Container *Executer_getCurrentModule(Executer *this)
+Container *Executer_getCurrentModule(Executer *this, Token *token)
 {
     Cursor *cursor = Stack_reset(this->containerStack);
     Container *container = NULL;
@@ -90,10 +85,11 @@ Container *Executer_getCurrentModule(Executer *this)
         if (Container_isModule(container)) break;
     }
     Cursor_free(cursor);
+    Executer_assert(this, Container_isModule(container), token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
     return container;
 }
 
-Container *Executer_getCurrentBox(Executer *this)
+Container *Executer_getCurrentBox(Executer *this, Token *token)
 {
     Cursor *cursor = Stack_reset(this->containerStack);
     Container *container = NULL;
@@ -102,13 +98,15 @@ Container *Executer_getCurrentBox(Executer *this)
         if (Container_isBox(container) || Container_isModule(container)) break;
     }
     Cursor_free(cursor);
-    Executer_assert(this, Container_isBox(container), NULL, LANG_ERR_EXECUTER_CURRENT_BOX_NOT_FOUND);
+    Executer_assert(this, Container_isBox(container), token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
     return container;
 }
 
-Container *Executer_getCurrentScope(Executer *this)
+Container *Executer_getCurrentScope(Executer *this, Token *token)
 {
-    return this->currentContainer;
+    Container *container = this->currentContainer;
+    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
+    return container;
 }
 
 Container *Executer_getContainerByKey(Executer *this, char *key)
@@ -137,8 +135,8 @@ Container *Executer_getContainerByToken(Executer *this, Token *token)
     Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_KEY_INVALID_TOKEN);
     Token *extra = (Token *)token->extra;
     if (is_equal(extra->value, SCOPE_ALIAS_PRG)) return this->globalContainer;
-    if (is_equal(extra->value, SCOPE_ALIAS_MDL)) return Executer_getCurrentModule(this);
-    if (is_equal(extra->value, SCOPE_ALIAS_BOX)) return Executer_getCurrentBox(this);
+    if (is_equal(extra->value, SCOPE_ALIAS_MDL)) return Executer_getCurrentModule(this, token);
+    if (is_equal(extra->value, SCOPE_ALIAS_BOX)) return Executer_getCurrentBox(this, token);
     Container *container = Executer_getContainerByKey(this, extra->value);
     if (container == NULL) return NULL;
     Value *value = Container_get(container, extra->value);
@@ -212,7 +210,7 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     Token *token = Stack_next(leaf->tokens, cursor);
     Token *name = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
-    Container *container = Executer_getCurrentScope(this);
+    Container *container = Executer_getCurrentScope(this, name);
     Value *old = Container_get(container, name->value);
     Value *new = Executer_getValueByToken(this, token, true);
     Executer_assert(this, old == NULL, name, LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED);
@@ -925,10 +923,10 @@ bool Executer_consumeTree(Executer *this, Leaf *tree)
 
 Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
 {
-    Executer_pushContainer(this, UG_CTYPE_BOX);
+    Executer_pushContainer(this, UG_CTYPE_MDL);
     Executer_consumeTree(this, tree);
     if (this->containerStack->head == this->containerStack->tail) return NULL;
-    Container *container = Executer_popContainer(this, UG_CTYPE_BOX);
+    Container *container = Executer_popContainer(this, UG_CTYPE_MDL);
     Value *module = Value_newContainer(container, NULL);
     Container_set(this->globalContainer, path, module);
     return module;

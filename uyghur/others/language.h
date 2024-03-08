@@ -41,7 +41,7 @@
 // executer
 #define LANG_ERR_EXECUTER_EXCEPTION "ijra xataliqi kuruldi"
 #define LANG_ERR_EXECUTER_NOT_IMPLEMENTED "ijra qilish qollanmidi:[%s]"
-#define LANG_ERR_EXECUTER_CURRENT_BOX_NOT_FOUND "nowettiki sanduq tepilmidi"
+#define LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND "nishanlanghan sanduq tepilmidi"
 #define LANG_ERR_EXECUTER_EXP_INVALID_TYPE "oxshashmighan miqdar tipi arisida xisablash elip barghili bolmaydu"
 #define LANG_ERR_EXECUTER_KEY_INVALID_TOKEN "inawetsiz achquch qimmiti uchritildi"
 #define LANG_ERR_EXECUTER_CALCULATION_INVALID "hisablash meshghulati inawetsiz:[%s]"
