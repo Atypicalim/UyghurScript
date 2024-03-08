@@ -44,7 +44,7 @@ void Executer_error(Executer *this, Token *token, char *msg)
     char *s = token == NULL ? LANG_UNKNOWN : format_token_place(token);
     char *err = tools_format("Executer: %s, %s", m, s);
     printf("[%s] => %s\n", LANG_ERR, err);
-    Trace_write(this->uyghur->trace);
+    Debug_writeTrace(this->uyghur->debug);
     exit(1);
 }
 
@@ -136,8 +136,8 @@ Container *Executer_getContainerByToken(Executer *this, Token *token)
     if (Token_isName(token)) return Executer_getContainerByKey(this, token->value);
     Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_KEY_INVALID_TOKEN);
     Token *extra = (Token *)token->extra;
-    if (is_equal(extra->value, SCOPE_ALIAS_PROGRAM)) return this->globalContainer;
-    if (is_equal(extra->value, SCOPE_ALIAS_MODULE)) return Executer_getCurrentModule(this);
+    if (is_equal(extra->value, SCOPE_ALIAS_PRG)) return this->globalContainer;
+    if (is_equal(extra->value, SCOPE_ALIAS_MDL)) return Executer_getCurrentModule(this);
     if (is_equal(extra->value, SCOPE_ALIAS_BOX)) return Executer_getCurrentBox(this);
     Container *container = Executer_getContainerByKey(this, extra->value);
     if (container == NULL) return NULL;
@@ -256,7 +256,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
     Value *r = NULL;
     char *act = action->value;
     //
-    if (is_values(action->type, 1, UG_TTYPE_WRD))
+    if (is_equal(action->type, UG_TTYPE_WRD))
     {
         if (is_equal(act, TVALUE_EMPTY))
         {
@@ -500,7 +500,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     // if
     Leaf *ifNode = Queue_next(leaf->leafs, cursor1);
     tools_assert(ifNode != NULL, LANG_ERR_EXECUTER_INVALID_IF);
-    tools_assert(is_equal(ifNode->type, ASTTYPE_IF_FIRST), LANG_ERR_EXECUTER_INVALID_IF);
+    tools_assert(ifNode->type == UG_ATYPE_IF_F, LANG_ERR_EXECUTER_INVALID_IF);
     Cursor *cursor2 = Stack_reset(ifNode->tokens);
     Token *judge = Stack_next(ifNode->tokens, cursor2);
     Token *right = Stack_next(ifNode->tokens, cursor2);
@@ -515,7 +515,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     }
     // elseif
     ifNode = Queue_next(leaf->leafs, cursor1);
-    while (is_equal(ifNode->type, ASTTYPE_IF_MIDDLE))
+    while (ifNode->type == UG_ATYPE_IF_M)
     {
         Cursor *cursor2 = Stack_reset(ifNode->tokens);
         Token *judge = Stack_next(ifNode->tokens, cursor2);
@@ -533,7 +533,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         tools_assert(ifNode != NULL, LANG_ERR_EXECUTER_INVALID_IF);
     }
     // else
-    if (is_equal(ifNode->type, ASTTYPE_IF_LAST))
+    if (ifNode->type == UG_ATYPE_IF_L)
     {
         Cursor *cursor2 = Stack_reset(ifNode->tokens);
         Token *judge = Stack_next(ifNode->tokens, cursor2);
@@ -550,7 +550,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         tools_assert(ifNode != NULL, LANG_ERR_EXECUTER_INVALID_IF);
     }
     // end
-    tools_assert(is_equal(ifNode->type, ASTTYPE_END), LANG_ERR_EXECUTER_INVALID_IF);
+    tools_assert(ifNode->type == UG_ATYPE_END, LANG_ERR_EXECUTER_INVALID_IF);
     Leaf *nullValue = Queue_next(leaf->leafs, cursor1);
     tools_assert(nullValue == NULL, LANG_ERR_EXECUTER_INVALID_IF);
     Cursor_free(cursor1);
@@ -660,15 +660,15 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     // get func
     Value *r = NULL;
     Value *funcValue = Executer_getValueByToken(this, funcName, true);
+    Debug_pushTrace(this->uyghur->debug, funcName);
     if (funcValue->type == UG_RTYPE_FUN) {
-        Trace_push(this->uyghur->trace, funcName);
         r = Executer_runFunc(this, funcValue);
-        Trace_pop(this->uyghur->trace, NULL);
     } else if (funcValue->type == UG_RTYPE_NTV) {
         r = Executer_runNative(this, funcValue);
     } else {
         tools_error(LANG_ERR_EXECUTER_FUNCTION_NOT_FOUND, funcName->value);
     }
+    Debug_popTrace(this->uyghur->debug, NULL);
     if (!is_equal(resultName->type, UG_TTYPE_EMP) && !is_equal(resultName->value, TVALUE_EMPTY)) {
         Executer_setValueByToken(this, resultName, r, true);
     } else {
@@ -829,75 +829,75 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
 
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
-    char *tp = leaf->type;
+    char tp = leaf->type;
     // variable
-    if (is_equal(tp, ASTTYPE_VARIABLE))
+    if (tp == UG_ATYPE_VAR)
     {
         Executer_consumeVariable(this, leaf);
         return;
     }
     // operate
-    if (is_equal(tp, ASTTYPE_OPERATE))
+    if (tp == UG_ATYPE_OPRT)
     {
         Executer_consumeOperate(this, leaf);
         return;
     }
     // expression single
-    if (is_equal(tp, ASTTYPE_EXPRESSION_SINGLE))
+    if (tp == UG_ATYPE_EXP_S)
     {
         Executer_consumeExpSingle(this, leaf);
         return;
     }
     // expression double
-    if (is_equal(tp, ASTTYPE_EXPRESSION_DOUBLE))
+    if (tp == UG_ATYPE_EXP_D)
     {
         Executer_consumeExpDouble(this, leaf);
         return;
     }
     // if
-    if (is_equal(tp, ASTTYPE_IF))
+    if (tp == UG_ATYPE_IF)
     {
         Executer_consumeIf(this, leaf);
         return;
     }
     // while
-    if(is_equal(tp, ASTTYPE_WHILE))
+    if(tp == UG_ATYPE_WHL)
     {
         Executer_consumeWhile(this, leaf);
         return;
     }
     // function
-    if(is_equal(tp, ASTTYPE_FUNC))
+    if(tp == UG_ATYPE_FUN)
     {
         Executer_consumeFunction(this, leaf);
         return;
     }
     // call
-    if(is_equal(tp, ASTTYPE_CALL))
+    if(tp == UG_ATYPE_CALL)
     {
         Executer_consumeCall(this, leaf);
         return;
     }
     // code
-    if(is_equal(tp, ASTTYPE_CODE))
+    if(tp == UG_ATYPE_CODE)
     {
         Executer_consumeCode(this, leaf);
         return;
     }
     // result
-    if(is_equal(tp, ASTTYPE_RESULT))
+    if(tp == UG_ATYPE_RSLT)
     {
         Executer_consumeResult(this, leaf);
         return;
     }
     // calculator
-    if (is_equal(tp, ASTTYPE_CALCULATOR))
+    if (tp == UG_ATYPE_CLC)
     {
         Executer_consumeCalculator(this, leaf);
         return;
     }
     // end
-    if(is_equal(tp, ASTTYPE_END))
+    if(tp == UG_ATYPE_END)
     {
         return;
     }

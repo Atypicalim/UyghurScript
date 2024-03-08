@@ -29,13 +29,3 @@ fonkisiye @sestima[isminiElish] ishlitilsun we netije r bolsun
 # fonkisiye @sestima[muhitQimmitiOqush] bilen [JAVA_HOME] ishlitilsun we netije r bolsun
 # D:\Java\jdk1.8
 ```
-
-```python
-fonkisiye @sestima[terminaldinOqush] ishlitilsun we netije r bolsun
-# input some content ...
-```
-
-```python
-fonkisiye @sestima[terminalghaYezish] bilen r ishlitilsun
-# output test content ...
-```

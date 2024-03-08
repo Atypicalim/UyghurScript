@@ -3,6 +3,7 @@
 #define LANG_ERR "XATALIQ"
 #define LANG_WAR "ESKERTME"
 #define LANG_LOG "UCHUR"
+#define LANG_TRACE "IZLAR"
 #define LANG_UNKNOWN "NAMELUM"
 #define LANG_ERR_NO_VALID_STATE "inawetsiz halet kuruldi"
 #define LANG_ERR_NO_INPUT_NAME "uyghur script programma hejjet ismi birilmidi"

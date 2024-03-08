@@ -26,9 +26,9 @@ bool isTest = false;
 #define MAX_TRACE_SIZE 5
 
 #define H_PCT_OBJECT_CALLBACKS
-void Object_initByType(char *, void *);
-void Object_freeByType(char *, void *);
-void Object_printByType(char *, void *);
+void Object_initByType(char, void *);
+void Object_freeByType(char, void *);
+void Object_printByType(char, void *);
 #include "../tools/header.h"
 
 #include "utils.c"
@@ -43,7 +43,7 @@ void Object_printByType(char *, void *);
 typedef struct Tokenizer Tokenizer;
 typedef struct Parser Parser;
 typedef struct Executer Executer;
-typedef struct Trace Trace;
+typedef struct Debug Debug;
 typedef struct Bridge Bridge;
 
 typedef struct Uyghur {
@@ -51,11 +51,9 @@ typedef struct Uyghur {
     Tokenizer *tokenizer;
     Parser *parser;
     Executer *executer;
-    Trace *trace;
+    Debug *debug;
     Bridge *bridge;
 } Uyghur;
-
-Value *Uyghur_runPath(Uyghur *, char *);
 
 #define BRIDGE_STACK_TP_BOX 1
 #define BRIDGE_STACK_TP_FUN 2
@@ -77,16 +75,18 @@ Value *Bridge_nextValue(Bridge *);
 void Bridge_startArgument(Bridge *);
 void *Bridge_send(Bridge *);
 void *Bridge_return(Bridge *);
-void Bridge_bind(Bridge *, char *, void *, char);
 void Bridge_run(Bridge *, Value *);
 
-struct Trace
+typedef char* UG_NAMES;
+typedef void (*NATIVE)(Bridge *);
+
+struct Debug
 {
     Uyghur *uyghur;
-    Array *array;
+    Array *trace;
 };
-void Trace_push(Trace *, Token *);
-void Trace_pop(Trace *, Token *);
-void Trace_write(Trace *);
+void Debug_pushTrace(Debug *, Token *);
+void Debug_popTrace(Debug *, Token *);
+void Debug_writeTrace(Debug *);
 
 #endif

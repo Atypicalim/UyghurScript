@@ -3,11 +3,11 @@
 #define H_PCT_UG_OBJECT
 
 typedef struct _Object {
-    void *objType;
+    char objType;
     int referenceCount;
 } Object;
 
-void Object_init(void *_this, void *_objType)
+void Object_init(void *_this, char _objType)
 {
     Object *this = _this;
     this->objType = _objType;
@@ -59,7 +59,7 @@ void Object_print(void *_this)
     #ifdef H_PCT_OBJECT_CALLBACKS
     Object_printByType(this->objType, this);
     #elif
-    printf("<object,type:%s,address:%d>\n", this->objType, this);
+    printf("<object,type:%c,address:%d>\n", this->objType, this);
     #endif
 }
 

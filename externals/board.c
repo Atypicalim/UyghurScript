@@ -85,300 +85,238 @@ void raylib_run_program(int width, int height, char *title, int mode)
 
 void ug_baord_set_log(Bridge *bridge)
 {
-    int level = Bridge_nextNumber(bridge);
+    int level = Bridge_receiveNumber(bridge);
     SetTraceLogLevel(level);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_set_fps(Bridge *bridge)
 {
-    SetTargetFPS(Bridge_nextNumber(bridge));
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    SetTargetFPS(Bridge_receiveNumber(bridge));
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_get_fps(Bridge *bridge)
 {
-    Bridge_startResult(bridge);
-    Bridge_pushNumber(bridge, GetFPS());
-    Bridge_return(bridge);
+    Bridge_returnNumber(bridge, GetFPS());
 }
 
 void ug_baord_draw_fps(Bridge *bridge)
 {
-    int x = Bridge_nextNumber(bridge);
-    int y = Bridge_nextNumber(bridge);
+    int x = Bridge_receiveNumber(bridge);
+    int y = Bridge_receiveNumber(bridge);
     DrawFPS(x, y);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_board_show_window(Bridge *bridge)
 {
-    int w = Bridge_nextNumber(bridge);
-    int h = Bridge_nextNumber(bridge);
-    char *title = Bridge_nextString(bridge);
-    int mode = Bridge_nextNumber(bridge);
+    int w = Bridge_receiveNumber(bridge);
+    int h = Bridge_receiveNumber(bridge);
+    char *title = Bridge_receiveString(bridge);
+    int mode = Bridge_receiveNumber(bridge);
     raylib_run_program(w, h, title, mode);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_hide_window(Bridge *bridge)
 {
     if (IsWindowReady()) CloseWindow();
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_is_fullscreen(Bridge *bridge)
 {
-    Bridge_startResult(bridge);
-    Bridge_pushBoolean(bridge, IsWindowFullscreen());
-    Bridge_return(bridge);
+    Bridge_returnBoolean(bridge, IsWindowFullscreen());
 }
 
 void ug_baord_is_hidden(Bridge *bridge)
 {
-    Bridge_startResult(bridge);
-    Bridge_pushBoolean(bridge, IsWindowHidden());
-    Bridge_return(bridge);
+    Bridge_returnBoolean(bridge, IsWindowHidden());
 }
 
 void ug_baord_is_minimized(Bridge *bridge)
 {
-    Bridge_startResult(bridge);
-    Bridge_pushBoolean(bridge, IsWindowMinimized());
-    Bridge_return(bridge);
+    Bridge_returnBoolean(bridge, IsWindowMinimized());
 }
 
 void ug_baord_is_maximized(Bridge *bridge)
 {
-    Bridge_startResult(bridge);
-    Bridge_pushBoolean(bridge, IsWindowMaximized());
-    Bridge_return(bridge);
+    Bridge_returnBoolean(bridge, IsWindowMaximized());
 }
 
 void ug_baord_toggle_fullscreen(Bridge *bridge)
 {
     ToggleFullscreen();
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_set_minimize(Bridge *bridge)
 {
     MinimizeWindow();
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_set_maximize(Bridge *bridge)
 {
     MaximizeWindow();
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_set_normalize(Bridge *bridge)
 {
     RestoreWindow();
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_set_title(Bridge *bridge)
 {
-    SetWindowTitle(Bridge_nextString(bridge));
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    SetWindowTitle(Bridge_receiveString(bridge));
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_set_icon(Bridge *bridge)
 {
-    char *path = Bridge_nextString(bridge);
+    char *path = Bridge_receiveString(bridge);
     Image image = LoadImage(path);
     SetWindowIcon(image);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_set_position(Bridge *bridge)
 {
-    int x = Bridge_nextNumber(bridge);
-    int y = Bridge_nextNumber(bridge);
-    SetWindowPosition(x, y); 
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    int x = Bridge_receiveNumber(bridge);
+    int y = Bridge_receiveNumber(bridge);
+    SetWindowPosition(x, y);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_get_position(Bridge *bridge)
 {
     Vector2 vector2 = GetWindowPosition();
-    Bridge_startResult(bridge);
-    Bridge_pushNumber(bridge, vector2.x);
-    Bridge_pushNumber(bridge, vector2.y);
-    Bridge_return(bridge);
+    Bridge_returnNumbers(bridge, 2, vector2.x, vector2.y);
 }
 
 void ug_baord_set_size(Bridge *bridge)
 {
-    int w = Bridge_nextNumber(bridge);
-    int h = Bridge_nextNumber(bridge);
+    int w = Bridge_receiveNumber(bridge);
+    int h = Bridge_receiveNumber(bridge);
     SetWindowSize(w, h); 
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_get_size(Bridge *bridge)
 {
-    Bridge_startResult(bridge);
-    Bridge_pushNumber(bridge, GetScreenWidth());
-    Bridge_pushNumber(bridge, GetScreenHeight());
-    Bridge_return(bridge);
-}
-
-void ug_baord_get_screen_size(Bridge *bridge)
-{
-    int w = GetScreenWidth();
-    int h = GetScreenHeight();
-    Bridge_startResult(bridge);
-    Bridge_pushNumber(bridge, w);
-    Bridge_pushNumber(bridge, h);
-    Bridge_return(bridge);
+    Bridge_returnNumbers(bridge, 2, GetScreenWidth(), GetScreenHeight());
 }
 
 void ug_baord_set_min_size(Bridge *bridge)
 {
-    int w = Bridge_nextNumber(bridge);
-    int h = Bridge_nextNumber(bridge);
-    SetWindowMinSize(w, h); 
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    int w = Bridge_receiveNumber(bridge);
+    int h = Bridge_receiveNumber(bridge);
+    SetWindowMinSize(w, h);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_show_cursor(Bridge *bridge)
 {
-    bool b = Bridge_nextBoolean(bridge);
+    bool b = Bridge_receiveBoolean(bridge);
     if (b) ShowCursor();
     if (!b) HideCursor();
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_enable_cursor(Bridge *bridge)
 {
-    bool b = Bridge_nextBoolean(bridge);
+    bool b = Bridge_receiveBoolean(bridge);
     if (b) EnableCursor();
     if (!b) DisableCursor();
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_have_cursor(Bridge *bridge)
 {
-    Bridge_startResult(bridge);
-    Bridge_pushBoolean(bridge, IsCursorOnScreen());
-    Bridge_return(bridge);
+    Bridge_returnBoolean(bridge, IsCursorOnScreen());
 } 
 
 void ug_baord_set_clipboard(Bridge *bridge)
 {
-    char *c = Bridge_nextString(bridge);
+    char *c = Bridge_receiveString(bridge);
     SetClipboardText(c);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_get_clipboard(Bridge *bridge)
 {
     char *r = (char*)GetClipboardText();
-    Bridge_startResult(bridge);
-    Bridge_pushString(bridge, r);
-    Bridge_return(bridge);
+    Bridge_returnString(bridge, r);
 }
 
 void ug_baord_set_mourse_cursor(Bridge *bridge)
 {
-    SetMouseCursor(Bridge_nextNumber(bridge));
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    int c = Bridge_receiveNumber(bridge);
+    SetMouseCursor(c);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_baord_get_mouse_position(Bridge *bridge)
 {
-    Bridge_startResult(bridge);
-    Bridge_pushNumber(bridge, GetMouseX());
-    Bridge_pushNumber(bridge, GetMouseY());
-    Bridge_return(bridge);
+    Bridge_returnNumbers(bridge, 2, GetMouseX(), GetMouseY());
 }
 
 void ug_baord_get_mouse_wheel(Bridge *bridge)
 {
-    Bridge_startResult(bridge);
-    Bridge_pushNumber(bridge, GetMouseWheelMove());
-    Bridge_return(bridge);
+    Bridge_returnNumber(bridge, GetMouseWheelMove());
 }
 
 void ug_baord_get_mouse_key_action(Bridge *bridge)
 {
-    int keyCode = Bridge_nextNumber(bridge);
+    int keyCode = Bridge_receiveNumber(bridge);
     int action = 0;
     if (IsMouseButtonPressed(keyCode)) action = 1;
     if (IsMouseButtonReleased(keyCode)) action = -1;
-    Bridge_startResult(bridge);
-    Bridge_pushNumber(bridge, action);
-    Bridge_return(bridge);
+    Bridge_returnNumber(bridge, action);
 }
 
 void ug_baord_get_mouse_key_state(Bridge *bridge)
 {
-    int keyCode = Bridge_nextNumber(bridge);
+    int keyCode = Bridge_receiveNumber(bridge);
     int action = 0;
     if (IsMouseButtonDown(keyCode)) action = 1;
     if (IsMouseButtonUp(keyCode)) action = -1;
-    Bridge_startResult(bridge);
-    Bridge_pushNumber(bridge, action);
-    Bridge_return(bridge);
+    Bridge_returnNumber(bridge, action);
 }
 
 void ug_baord_get_keyboard_key_action(Bridge *bridge)
 {
-    int keyCode = Bridge_nextNumber(bridge);
+    int keyCode = Bridge_receiveNumber(bridge);
     int action = 0;
     if (IsKeyPressed(keyCode)) action = 1;
     if (IsKeyReleased(keyCode)) action = -1;
-    Bridge_startResult(bridge);
-    Bridge_pushNumber(bridge, action);
-    Bridge_return(bridge);
+    Bridge_returnNumber(bridge, action);
 }
 
 void ug_baord_get_keybaord_key_state(Bridge *bridge)
 {
-    int keyCode = Bridge_nextNumber(bridge);
+    int keyCode = Bridge_receiveNumber(bridge);
     int action = 0;
     if (IsKeyDown(keyCode)) action = 1;
     if (IsKeyUp(keyCode)) action = -1;
-    Bridge_startResult(bridge);
-    Bridge_pushNumber(bridge, action);
-    Bridge_return(bridge);
+    Bridge_returnNumber(bridge, action);
 }
 
 void ug_baord_save_screenshot(Bridge *bridge)
 {
-    char *path = Bridge_nextString(bridge);
+    char *path = Bridge_receiveString(bridge);
     TakeScreenshot(path);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_board_audio_set_volume(Bridge *bridge)
 {
-    float v = Bridge_nextNumber(bridge);
+    float v = Bridge_receiveNumber(bridge);
     SetMasterVolume(v);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 // other
@@ -390,81 +328,44 @@ void lib_raylib_main_register(Bridge *bridge)
     //
     Bridge_startBox(bridge, "doska");
     // settings
-    Bridge_pushKey(bridge, "logDerijisiniBikitish");
-    Bridge_pushFunction(bridge, ug_baord_set_log);
-    Bridge_pushKey(bridge, "fpsBikitish");
-    Bridge_pushFunction(bridge, ug_baord_set_fps);
-    Bridge_pushKey(bridge, "fpsElish");
-    Bridge_pushFunction(bridge, ug_baord_get_fps);
-    Bridge_pushKey(bridge, "fpsSizish");
-    Bridge_pushFunction(bridge, ug_baord_draw_fps);
+    Bridge_bindNative(bridge, "logDerijisiniBikitish", ug_baord_set_log);
+    Bridge_bindNative(bridge, "fpsBikitish", ug_baord_set_fps);
+    Bridge_bindNative(bridge, "fpsElish", ug_baord_get_fps);
+    Bridge_bindNative(bridge, "fpsSizish", ug_baord_draw_fps);
     // window
-    Bridge_pushKey(bridge, "korsitish");
-    Bridge_pushFunction(bridge, ug_board_show_window);
-    Bridge_pushKey(bridge, "yushurush");
-    Bridge_pushFunction(bridge, ug_baord_hide_window);
-    Bridge_pushKey(bridge, "putunIkranmu");
-    Bridge_pushFunction(bridge, ug_baord_is_fullscreen);
-    Bridge_pushKey(bridge, "yushurunghanmu");
-    Bridge_pushFunction(bridge, ug_baord_is_hidden);
-    Bridge_pushKey(bridge, "kichiklitilgenmu");
-    Bridge_pushFunction(bridge, ug_baord_is_minimized);
-    Bridge_pushKey(bridge, "chongaytilghanmu");
-    Bridge_pushFunction(bridge, ug_baord_is_maximized);
-    Bridge_pushKey(bridge, "putunIkranHalitiniAlmashturush");
-    Bridge_pushFunction(bridge, ug_baord_toggle_fullscreen);
-    Bridge_pushKey(bridge, "kichiklitish");
-    Bridge_pushFunction(bridge, ug_baord_set_minimize);
-    Bridge_pushKey(bridge, "chongaytish");
-    Bridge_pushFunction(bridge, ug_baord_set_maximize);
-    Bridge_pushKey(bridge, "normallashturush");
-    Bridge_pushFunction(bridge, ug_baord_set_normalize);
-    Bridge_pushKey(bridge, "temaBikitish");
-    Bridge_pushFunction(bridge, ug_baord_set_title);
-    Bridge_pushKey(bridge, "sibelgeBikitish");
-    Bridge_pushFunction(bridge, ug_baord_set_icon);
-    Bridge_pushKey(bridge, "orniniBikitish");
-    Bridge_pushFunction(bridge, ug_baord_set_position);
-    Bridge_pushKey(bridge, "orniniElish");
-    Bridge_pushFunction(bridge, ug_baord_get_position);
-    Bridge_pushKey(bridge, "chongliqiniBikitish");
-    Bridge_pushFunction(bridge, ug_baord_set_size);
-    Bridge_pushKey(bridge, "chongliqiniElish");
-    Bridge_pushFunction(bridge, ug_baord_get_size);
-    Bridge_pushKey(bridge, "ikranChongliqiniElish");
-    Bridge_pushFunction(bridge, ug_baord_get_screen_size);
-    Bridge_pushKey(bridge, "engKichikChongliqiniBikitish");
-    Bridge_pushFunction(bridge, ug_baord_set_min_size);
-    Bridge_pushKey(bridge, "istirilkaKorsitish");
-    Bridge_pushFunction(bridge, ug_baord_show_cursor);
-    Bridge_pushKey(bridge, "istirilkaQozghitish");
-    Bridge_pushFunction(bridge, ug_baord_enable_cursor);
-    Bridge_pushKey(bridge, "istirilkaIchidimu");
-    Bridge_pushFunction(bridge, ug_baord_have_cursor);
+    Bridge_bindNative(bridge, "korsitish", ug_board_show_window);
+    Bridge_bindNative(bridge, "yushurush", ug_baord_hide_window);
+    Bridge_bindNative(bridge, "putunIkranmu", ug_baord_is_fullscreen);
+    Bridge_bindNative(bridge, "yushurunghanmu", ug_baord_is_hidden);
+    Bridge_bindNative(bridge, "kichiklitilgenmu", ug_baord_is_minimized);
+    Bridge_bindNative(bridge, "chongaytilghanmu", ug_baord_is_maximized);
+    Bridge_bindNative(bridge, "putunIkranHalitiniAlmashturush", ug_baord_toggle_fullscreen);
+    Bridge_bindNative(bridge, "kichiklitish", ug_baord_set_minimize);
+    Bridge_bindNative(bridge, "chongaytish", ug_baord_set_maximize);
+    Bridge_bindNative(bridge, "normallashturush", ug_baord_set_normalize);
+    Bridge_bindNative(bridge, "temaBikitish", ug_baord_set_title);
+    Bridge_bindNative(bridge, "sibelgeBikitish", ug_baord_set_icon);
+    Bridge_bindNative(bridge, "orniniBikitish", ug_baord_set_position);
+    Bridge_bindNative(bridge, "orniniElish", ug_baord_get_position);
+    Bridge_bindNative(bridge, "chongliqiniBikitish", ug_baord_set_size);
+    Bridge_bindNative(bridge, "chongliqiniElish", ug_baord_get_size);
+    Bridge_bindNative(bridge, "engKichikChongliqiniBikitish", ug_baord_set_min_size);
+    Bridge_bindNative(bridge, "istirilkaKorsitish", ug_baord_show_cursor);
+    Bridge_bindNative(bridge, "istirilkaQozghitish", ug_baord_enable_cursor);
+    Bridge_bindNative(bridge, "istirilkaIchidimu", ug_baord_have_cursor);
     // system
-    Bridge_pushKey(bridge, "chaplashTaxtisiniBikitish");
-    Bridge_pushFunction(bridge, ug_baord_set_clipboard);
-    Bridge_pushKey(bridge, "chaplashTaxtisiniElish");
-    Bridge_pushFunction(bridge, ug_baord_get_clipboard);
-    Bridge_pushKey(bridge, "mausIstirilkaBelgisiniBikitish");
-    Bridge_pushFunction(bridge, ug_baord_set_mourse_cursor);
-    Bridge_pushKey(bridge, "mausIstirilkaOrniniElish");
-    Bridge_pushFunction(bridge, ug_baord_get_mouse_position);
-    Bridge_pushKey(bridge, "mausAylanmaOrniniElish");
-    Bridge_pushFunction(bridge, ug_baord_get_mouse_wheel);
-    Bridge_pushKey(bridge, "mausKunupkisiHerkitiniElish");
-    Bridge_pushFunction(bridge, ug_baord_get_mouse_key_action);
-    Bridge_pushKey(bridge, "mausKunupkisiHalitiniElish");
-    Bridge_pushFunction(bridge, ug_baord_get_mouse_key_state);
-    Bridge_pushKey(bridge, "tahtayKunupkisiHerkitiniElish");
-    Bridge_pushFunction(bridge, ug_baord_get_keyboard_key_action);
-    Bridge_pushKey(bridge, "tahtayKunupkisiHalitiniElish");
-    Bridge_pushFunction(bridge, ug_baord_get_keybaord_key_state);
+    Bridge_bindNative(bridge, "chaplashTaxtisiniBikitish", ug_baord_set_clipboard);
+    Bridge_bindNative(bridge, "chaplashTaxtisiniElish", ug_baord_get_clipboard);
+    Bridge_bindNative(bridge, "mausIstirilkaBelgisiniBikitish", ug_baord_set_mourse_cursor);
+    Bridge_bindNative(bridge, "mausIstirilkaOrniniElish", ug_baord_get_mouse_position);
+    Bridge_bindNative(bridge, "mausAylanmaOrniniElish", ug_baord_get_mouse_wheel);
+    Bridge_bindNative(bridge, "mausKunupkisiHerkitiniElish", ug_baord_get_mouse_key_action);
+    Bridge_bindNative(bridge, "mausKunupkisiHalitiniElish", ug_baord_get_mouse_key_state);
+    Bridge_bindNative(bridge, "tahtayKunupkisiHerkitiniElish", ug_baord_get_keyboard_key_action);
+    Bridge_bindNative(bridge, "tahtayKunupkisiHalitiniElish", ug_baord_get_keybaord_key_state);
     // other
-    Bridge_pushKey(bridge, "ikranniResimgeTartipSaxlash");
-    Bridge_pushFunction(bridge, ug_baord_save_screenshot);
-    Bridge_pushKey(bridge, "programmaAwaziniBikitish");
-    Bridge_pushFunction(bridge, ug_board_audio_set_volume);
+    Bridge_bindNative(bridge, "ikranniResimgeTartipSaxlash", ug_baord_save_screenshot);
+    Bridge_bindNative(bridge, "programmaAwaziniBikitish", ug_board_audio_set_volume);
     //
     Bridge_register(bridge);
 }

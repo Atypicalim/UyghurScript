@@ -20,7 +20,7 @@ Container *Container_new(char tp)
     bool isModule = tp == UG_CTYPE_MDL;
     tools_assert(isBox || isScope || isModule, "invalid container type for new");
     Container *container = malloc(sizeof(Container));
-    Object_init(container, PCT_OBJ_CONTAINER);
+    Object_init(container, PCT_OBJ_CNTNR);
     container->map = Hashmap_new();
     container->type = tp;
     return container;

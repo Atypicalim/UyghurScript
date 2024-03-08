@@ -41,76 +41,66 @@ void raylib_unload_sound_by_tag(char *tag)
 
 void ug_board_sound_load(Bridge *bridge)
 {
-    char *path = Bridge_nextString(bridge);
+    char *path = Bridge_receiveString(bridge);
     char *tag = get_audio_tag_for_sound(path);
     raylib_load_sound_by_tag(tag, path);
-    Bridge_startResult(bridge);
-    Bridge_pushString(bridge, tag);
-    Bridge_return(bridge);
+    Bridge_returnString(bridge, tag);
 }
 
 void ug_board_sound_unload(Bridge *bridge)
 {
-    char *tag = Bridge_nextString(bridge);
+    char *tag = Bridge_receiveString(bridge);
     raylib_unload_sound_by_tag(tag);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_board_sound_play(Bridge *bridge)
 {
-    char *tag = Bridge_nextString(bridge);
+    char *tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     PlaySound(sound);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_board_sound_stop(Bridge *bridge)
 {
-    char *tag = Bridge_nextString(bridge);
+    char *tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     StopSound(sound);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_board_sound_resume(Bridge *bridge)
 {
-    char *tag = Bridge_nextString(bridge);
+    char *tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     ResumeSound(sound);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_board_sound_pause(Bridge *bridge)
 {
-    char *tag = Bridge_nextString(bridge);
+    char *tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     PauseSound(sound);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void ug_board_sound_is_playing(Bridge *bridge)
 {
-    char *tag = Bridge_nextString(bridge);
+    char *tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     bool r = IsSoundPlaying(sound);
-    Bridge_startResult(bridge);
-    Bridge_pushBoolean(bridge, r);
-    Bridge_return(bridge);
+    Bridge_returnBoolean(bridge, r);
 }
 
 void ug_board_sound_set_volume(Bridge *bridge)
 {
-    char *tag = Bridge_nextString(bridge);
+    char *tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
-    float volume = Bridge_nextNumber(bridge);
+    float volume = Bridge_receiveNumber(bridge);
     SetSoundVolume(sound, volume);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 // other
@@ -120,22 +110,14 @@ void lib_raylib_sound_register(Bridge *bridge)
     //
     Bridge_startBox(bridge, "awaz");
     //
-    Bridge_pushKey(bridge, "ekirish");
-    Bridge_pushFunction(bridge, ug_board_sound_load);
-    Bridge_pushKey(bridge, "tazilash");
-    Bridge_pushFunction(bridge, ug_board_sound_unload);
-    Bridge_pushKey(bridge, "quyush");
-    Bridge_pushFunction(bridge, ug_board_sound_play);
-    Bridge_pushKey(bridge, "toxtitish");
-    Bridge_pushFunction(bridge, ug_board_sound_stop);
-    Bridge_pushKey(bridge, "turghuzush");
-    Bridge_pushFunction(bridge, ug_board_sound_pause);
-    Bridge_pushKey(bridge, "mangghuzush");
-    Bridge_pushFunction(bridge, ug_board_sound_resume);
-    Bridge_pushKey(bridge, "quyuliwatamdu");
-    Bridge_pushFunction(bridge, ug_board_sound_is_playing);
-    Bridge_pushKey(bridge, "yuqiriliqiniBikitish");
-    Bridge_pushFunction(bridge, ug_board_sound_set_volume);
+    Bridge_bindNative(bridge, "ekirish", ug_board_sound_load);
+    Bridge_bindNative(bridge, "tazilash", ug_board_sound_unload);
+    Bridge_bindNative(bridge, "quyush", ug_board_sound_play);
+    Bridge_bindNative(bridge, "toxtitish", ug_board_sound_stop);
+    Bridge_bindNative(bridge, "turghuzush", ug_board_sound_pause);
+    Bridge_bindNative(bridge, "mangghuzush", ug_board_sound_resume);
+    Bridge_bindNative(bridge, "quyuliwatamdu", ug_board_sound_is_playing);
+    Bridge_bindNative(bridge, "yuqiriliqiniBikitish", ug_board_sound_set_volume);
     //
     Bridge_register(bridge);
 }

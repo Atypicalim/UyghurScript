@@ -51,6 +51,34 @@ char Bridge_topType(Bridge *this)
     return tail != NULL ? ((Value *)tail->data)->type : UG_RTYPE_NIL;
 }
 
+// pop next value, you should release the value object manually
+Value *Bridge_popValue(Bridge *this)
+{
+    Value *v = Stack_pop(this->stack);
+    if (v == NULL) return Value_newEmpty(NULL);
+    return v;
+}
+
+// get next value, value object auto released when reset the stack
+Value *Bridge_nextValue(Bridge *this)
+{
+    tools_assert(this->cursor != NULL, "invalid bridge status, cursor required for values");
+    Value *v = Stack_next(this->stack, this->cursor);
+    if (v == NULL) v = Value_newEmpty(NULL);
+    return v;
+}
+
+// key value
+
+void Bridge_pushKey(Bridge *this, char *key)
+{
+    tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, key available for only box");
+    tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key neceessary for last value");
+    Value *keyValue = Value_newString(String_format(key), NULL);
+    Stack_push(this->stack, keyValue);
+    this->last = BRIDGE_ITEM_TP_KEY;
+}
+
 void Bridge_pushValue(Bridge *this, Value *value)
 {
     tools_assert(this->type > 0, "invalid bridge status, not started");
@@ -63,35 +91,12 @@ void Bridge_pushValue(Bridge *this, Value *value)
     this->last = BRIDGE_ITEM_TP_VAL;
 }
 
-// pop next value, you should release the value object manually
-Value *Bridge_popValue(Bridge *this)
+// push variables
+
+void Bridge_pushEmpty(Bridge *this, bool value)
 {
-    Value *v = Stack_pop(this->stack);
-    if (v == NULL) return Value_newEmpty(NULL);
-    return v;
+    Bridge_pushValue(this, Value_newEmpty(NULL));
 }
-
-// get next value, value object auto released when reset the stack
-Value *Bridge_nextValue(Bridge *this)
-{
-    if (this->cursor == NULL) return NULL;
-    Value *v = Stack_next(this->stack, this->cursor);
-    if (v == NULL) v = Value_newEmpty(NULL);
-    return v;
-}
-
-// push key
-
-void Bridge_pushKey(Bridge *this, char *key)
-{
-    tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, key available for only box");
-    tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key neceessary for last value");
-    Value *keyValue = Value_newString(String_format(key), NULL);
-    Stack_push(this->stack, keyValue);
-    this->last = BRIDGE_ITEM_TP_KEY;
-}
-
-// push value
 
 void Bridge_pushBoolean(Bridge *this, bool value)
 {
@@ -108,34 +113,6 @@ void Bridge_pushString(Bridge *this, char *value)
     Bridge_pushValue(this, Value_newString(String_format(value), NULL));
 }
 
-void Bridge_pushFunction(Bridge *this, void (*value)(Bridge *))
-{
-    Bridge_pushValue(this, Value_newCFunction(value, NULL));
-}
-
-// read variables
-
-bool Bridge_nextBoolean(Bridge *this)
-{
-    Value *v = Bridge_nextValue(this);
-    tools_assert(v->type == UG_RTYPE_BOL, "invalid bridge arguments, %s argument not found", UG_RTYPE_BOL);
-    return v->boolean;
-}
-
-double Bridge_nextNumber(Bridge *this)
-{
-    Value *v = Bridge_nextValue(this);
-    tools_assert(v->type == UG_RTYPE_NUM, "invalid bridge arguments, %s argument not found", UG_RTYPE_NUM);
-    return v->number;
-}
-
-char *Bridge_nextString(Bridge *this)
-{
-    Value *v = Bridge_nextValue(this);
-    tools_assert(v->type == UG_RTYPE_STR, "invalid bridge arguments, %s argument not found", UG_RTYPE_STR);
-    return String_get(v->string);
-}
-
 // rgister box or globals to script
 
 void Bridge_startBox(Bridge *this, char *name)
@@ -143,6 +120,30 @@ void Bridge_startBox(Bridge *this, char *name)
     Bridge_reset(this);
     this->name = name;
     this->type = BRIDGE_STACK_TP_BOX;
+}
+
+void Bridge_bindBoolean(Bridge *this, UG_NAMES name, bool bol)
+{
+    Bridge_pushKey(this, name);
+    Bridge_pushValue(this, Value_newBoolean(bol, NULL));
+}
+
+void Bridge_bindNumber(Bridge *this, UG_NAMES name, double num)
+{
+    Bridge_pushKey(this, name);
+    Bridge_pushValue(this, Value_newNumber(num, NULL));
+}
+
+void Bridge_bindString(Bridge *this, UG_NAMES name, char *str)
+{
+    Bridge_pushKey(this, name);
+    Bridge_pushValue(this, Value_newString(String_format(str), NULL));
+}
+
+void Bridge_bindNative(Bridge *this, UG_NAMES name, NATIVE fun)
+{
+    Bridge_pushKey(this, name);
+    Bridge_pushValue(this, Value_newNative(fun, NULL));
 }
 
 void Bridge_register(Bridge *this)
@@ -165,7 +166,7 @@ void Bridge_register(Bridge *this)
     this->name = NULL;
 }
 
-// send arguments to c from script
+// send native call arguments from script
 
 void Bridge_startArgument(Bridge *this)
 {
@@ -191,7 +192,7 @@ void *Bridge_send(Bridge *this)
     this->cursor = Stack_reset(this->stack);
 }
 
-// return result to script from c
+// return native call results to script
 
 void Bridge_startResult(Bridge *this)
 {
@@ -204,6 +205,117 @@ void *Bridge_return(Bridge *this)
     tools_assert(this->type == BRIDGE_STACK_TP_RES, "invalid bridge status, result expected for return");
     if (this->stack->head == NULL) Bridge_pushValue(this, Value_newEmpty(NULL));
     tools_assert(this->stack->head == this->stack->tail, "invalid bridge status, can return only one value");
+}
+
+// receive arguments from script to c
+
+Value *Bridge_receiveValue(Bridge *this, char tp)
+{
+    Value *v = Bridge_nextValue(this);
+    if (tp != UG_RTYPE_NON) {
+        tools_assert(v->type == tp, "invalid bridge arguments, %c argument not found", tp);
+    }
+    return v;
+}
+
+void Bridge_receiveEmpty(Bridge *this)
+{
+    Value *v = Bridge_receiveValue(this, UG_RTYPE_NIL);
+}
+
+bool Bridge_receiveBoolean(Bridge *this)
+{
+    Value *v = Bridge_receiveValue(this, UG_RTYPE_BOL);
+    return v->boolean;
+}
+
+double Bridge_receiveNumber(Bridge *this)
+{
+    Value *v = Bridge_receiveValue(this, UG_RTYPE_NUM);
+    return v->number;
+}
+
+char *Bridge_receiveString(Bridge *this)
+{
+    Value *v = Bridge_receiveValue(this, UG_RTYPE_STR);
+    return String_get(v->string);
+}
+
+// return result to script from c
+
+void Bridge_returnValue(Bridge *this, Value *value)
+{
+    Bridge_startResult(this);
+    Bridge_pushValue(this, value);
+    Bridge_return(this);
+}
+
+void Bridge_returnEmpty(Bridge *this)
+{
+    Value *v = Value_newEmpty(NULL);
+    Bridge_returnValue(this, v);
+}
+
+void Bridge_returnBoolean(Bridge *this, bool val)
+{
+    Value *v = Value_newBoolean(val, NULL);
+    Bridge_returnValue(this, v);
+}
+
+void Bridge_returnNumber(Bridge *this, double val)
+{
+    Value *v = Value_newNumber(val, NULL);
+    Bridge_returnValue(this, v);
+}
+
+void Bridge_returnString(Bridge *this, char *val)
+{
+    Value *v = Value_newString(String_format(val), NULL);
+    Bridge_returnValue(this, v);
+}
+
+// return results to script from c
+
+void Bridge_returnBooleans(Bridge *this, int num, bool val, ...)
+{
+    Bridge_startResult(this);
+    va_list args;
+    va_start(args, val);
+    int i;
+    for (i = 0; i < num; i++) {
+        Bridge_pushBoolean(this, val);
+       val = va_arg(args, int);
+    }
+    va_end(args);
+    Bridge_return(this);
+}
+
+void Bridge_returnNumbers(Bridge *this, int num, double val, ...)
+{
+    Bridge_startResult(this);
+    va_list args;
+    va_start(args, val);
+    int i;
+    for (i = 0; i < num; i++) {
+        Bridge_pushNumber(this, val);
+       val = va_arg(args, double);
+    }
+    va_end(args);
+    Bridge_return(this);
+}
+
+void Bridge_returnStrings(Bridge *this, int num, char *val, ...)
+{
+    Bridge_startResult(this);
+    va_list args;
+    va_start(args, val);
+    int i;
+    for (i = 0; i < num; i++) {
+        Bridge_pushString(this, val);
+       val = va_arg(args, char *);
+    }
+    va_end(args);
+    Bridge_return(this);
 }
 
 // call script func fom c

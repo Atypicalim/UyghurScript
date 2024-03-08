@@ -167,32 +167,32 @@ char *format_some_place(Token *token)
     tools_format(LANG_ERR_SOME_PLACE, token->file, token->line, token->column);
 }
 
-void Object_initByType(char *type, void *object)
+void Object_initByType(char type, void *object)
 {
     //
 }
 
-void Object_freeByType(char *type, void *object)
+void Object_freeByType(char type, void *object)
 {
-    if (is_equal(type, PCT_OBJ_OBJECT)) return Object_free(object);
-    if (is_equal(type, PCT_OBJ_STRING)) return String_free(object);
-    if (is_equal(type, PCT_OBJ_ARRAY)) return Array_free(object);
-    if (is_equal(type, PCT_OBJ_CURSOR)) return Cursor_free(object);
-    if (is_equal(type, PCT_OBJ_STACK)) return Stack_free(object);
-    if (is_equal(type, PCT_OBJ_QUEUE)) return Queue_free(object);
-    if (is_equal(type, PCT_OBJ_HASHMAP)) return Hashmap_free(object);
-    if (is_equal(type, PCT_OBJ_FOLIAGE)) return Foliage_free(object);
-    if (is_equal(type, PCT_OBJ_BLOCK)) return Block_free(object);
-    if (is_equal(type, PCT_OBJ_ENTRY)) return Entry_free(object);
-    if (is_equal(type, PCT_OBJ_VALUE)) return Value_free(object);
-    if (is_equal(type, PCT_OBJ_CONTAINER)) return Container_free(object);
-    if (is_equal(type, PCT_OBJ_TOKEN)) return Token_free(object);
-    if (is_equal(type, PCT_OBJ_LEAF)) return Leaf_free(object);
+    if (type == PCT_OBJ_OBJECT) return Object_free(object);
+    if (type == PCT_OBJ_STRING) return String_free(object);
+    if (type == PCT_OBJ_ARRAY) return Array_free(object);
+    if (type == PCT_OBJ_CURSOR) return Cursor_free(object);
+    if (type == PCT_OBJ_STACK) return Stack_free(object);
+    if (type == PCT_OBJ_QUEUE) return Queue_free(object);
+    if (type == PCT_OBJ_HASHMAP) return Hashmap_free(object);
+    if (type == PCT_OBJ_FOLIAGE) return Foliage_free(object);
+    if (type == PCT_OBJ_BLOCK) return Block_free(object);
+    if (type == PCT_OBJ_ENTRY) return Entry_free(object);
+    if (type == PCT_OBJ_VALUE) return Value_free(object);
+    if (type == PCT_OBJ_CNTNR) return Container_free(object);
+    if (type == PCT_OBJ_TOKEN) return Token_free(object);
+    if (type == PCT_OBJ_LEAF) return Leaf_free(object);
 }
 
-void Object_printByType(char *type, void *object)
+void Object_printByType(char type, void *object)
 {
-    if (is_equal(type, PCT_OBJ_VALUE)) return Value_print(object);
+    if (type == PCT_OBJ_VALUE) return Value_print(object);
 }
 
 #endif

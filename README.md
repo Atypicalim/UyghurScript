@@ -243,8 +243,7 @@ ikrangha @s[sinaqNetije] yezilsun
 ```c
 // register c values to script (NULL in start function to global scope)
 Bridge_startBox(bridge, NULL);
-Bridge_pushKey(bridge, "keyName");
-Bridge_pushValue(bridge, NULL);
+Bridge_bindValue(bridge, "keyName", NULL);
 Bridge_register(bridge);
 ```
 

@@ -5,9 +5,7 @@
 void oqush(Bridge *bridge)
 {
     char *r = system_read_terminal();
-    Bridge_startResult(bridge);
-    Bridge_pushString(bridge, r);
-    Bridge_return(bridge);
+    Bridge_returnString(bridge, r);
     pct_free(r);
 }
 
@@ -19,13 +17,21 @@ void yezish(Bridge *bridge)
         system_write_terminal(Value_toString(v));
         v = Bridge_nextValue(bridge);
     }
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
+}
+
+void izlash(Bridge *bridge)
+{
+    char *msg = "izlash";
+    if (Bridge_topType(bridge) == UG_RTYPE_STR) msg = Bridge_receiveString(bridge);
+    printf("\n[%s] %s\n", LANG_LOG, msg);
+    Debug_writeTrace(bridge->uyghur->debug);
+    Bridge_returnEmpty(bridge);
 }
 
 void ekirish(Bridge *bridge)
 {
-    char *path = Bridge_nextString(bridge);
+    char *path = Bridge_receiveString(bridge);
     Uyghur *uyghur = bridge->uyghur;
     Value *box = Container_get(uyghur->executer->globalContainer, path);
     if (box == NULL) box = Uyghur_runPath(uyghur, path);
@@ -37,30 +43,24 @@ void ekirish(Bridge *bridge)
 
 void tazilash(Bridge *bridge)
 {
-    char *path = Bridge_nextString(bridge);
+    char *path = Bridge_receiveString(bridge);
     Container_del(bridge->uyghur->executer->globalContainer, path);
-    Bridge_startResult(bridge);
-    Bridge_return(bridge);
+    Bridge_returnEmpty(bridge);
 }
 
 void lib_global_register(Bridge *bridge)
 {
     Bridge_startBox(bridge, NULL);
     // variables
-    Bridge_pushKey(bridge, "NESHIR_ISMI");
-    Bridge_pushString(bridge, UG_VERSION_NAME);
-    Bridge_pushKey(bridge, "NESHIR_NUMIRI");
-    Bridge_pushNumber(bridge, UG_VERSION_CODE);
+    Bridge_bindString(bridge, "NESHIR_ISMI", UG_VERSION_NAME);
+    Bridge_bindNumber(bridge, "NESHIR_NUMIRI", UG_VERSION_CODE);
     // console
-    Bridge_pushKey(bridge, "oqush");
-    Bridge_pushFunction(bridge, oqush);
-    Bridge_pushKey(bridge, "yezish");
-    Bridge_pushFunction(bridge, yezish);
+    Bridge_bindNative(bridge, "oqush", oqush);
+    Bridge_bindNative(bridge, "yezish", yezish);
+    Bridge_bindNative(bridge, "izlash", izlash);
     // module
-    Bridge_pushKey(bridge, "ekirish");
-    Bridge_pushFunction(bridge, ekirish);
-    Bridge_pushKey(bridge, "tazilash");
-    Bridge_pushFunction(bridge, tazilash);
+    Bridge_bindNative(bridge, "ekirish", ekirish);
+    Bridge_bindNative(bridge, "tazilash", tazilash);
     //
     Bridge_register(bridge);
 }

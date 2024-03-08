@@ -14,16 +14,16 @@
 #include <limits.h>
 
 // object types
-#define PCT_OBJ_OBJECT "PCT_OBJ_OBJECT"
-#define PCT_OBJ_STRING "PCT_OBJ_STRING"
-#define PCT_OBJ_ARRAY "PCT_OBJ_ARRAY"
-#define PCT_OBJ_CURSOR "PCT_OBJ_CURSOR"
-#define PCT_OBJ_STACK "PCT_OBJ_STACK"
-#define PCT_OBJ_QUEUE "PCT_OBJ_QUEUE"
-#define PCT_OBJ_HASHMAP "PCT_OBJ_HASHMAP"
-#define PCT_OBJ_FOLIAGE "PCT_OBJ_FOLIAGE"
-#define PCT_OBJ_BLOCK "PCT_OBJ_BLOCK"
-#define PCT_OBJ_ENTRY "PCT_OBJ_ENTRY"
+#define PCT_OBJ_OBJECT 'O'
+#define PCT_OBJ_STRING 'S'
+#define PCT_OBJ_ARRAY 'A'
+#define PCT_OBJ_CURSOR 'C'
+#define PCT_OBJ_STACK 'S'
+#define PCT_OBJ_QUEUE 'Q'
+#define PCT_OBJ_HASHMAP 'H'
+#define PCT_OBJ_FOLIAGE 'F'
+#define PCT_OBJ_BLOCK 'B'
+#define PCT_OBJ_ENTRY 'E'
 
 void *pct_mallloc(size_t size)
 {

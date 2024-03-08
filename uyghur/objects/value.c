@@ -20,6 +20,10 @@ typedef struct ValueNode {
     void *extra;
 } Value;
 
+Value *Value_EMPTY;
+Value *Value_TRUE;
+Value *Value_FALSE;
+
 char *_get_cache_tag(char type, bool boolean, double number, char *string)
 {
     if (type == UG_RTYPE_NIL) return tools_format("<R-VALUE:%c>", type);
@@ -52,17 +56,15 @@ char *_get_cache_tag(char type, bool boolean, double number, char *string)
 
 Value *Value_newEmpty(void *extra)
 {
-    return Value_new(UG_RTYPE_NIL, NULL, 0, NULL, NULL, extra);
-}
-
-Value *Value_newContainer(Container *box, void *extra)
-{
-    return Value_new(UG_RTYPE_CNT, NULL, 0, NULL, box, extra);
+    if (Value_EMPTY == NULL) Value_EMPTY = Value_new(UG_RTYPE_NIL, NULL, 0, NULL, NULL, NULL);
+    return Value_EMPTY;
 }
 
 Value *Value_newBoolean(bool boolean, void *extra)
 {
-    return Value_new(UG_RTYPE_BOL, boolean, 0, NULL, NULL, extra);
+    if (Value_TRUE == NULL) Value_TRUE = Value_new(UG_RTYPE_BOL, true, 0, NULL, NULL, NULL);
+    if (Value_FALSE == NULL) Value_FALSE = Value_new(UG_RTYPE_BOL, false, 0, NULL, NULL, NULL);
+    return boolean ? Value_TRUE : Value_FALSE;
 }
 
 Value *Value_newNumber(double number, void *extra)
@@ -75,12 +77,17 @@ Value *Value_newString(String *string, void *extra)
     return Value_new(UG_RTYPE_STR, NULL, 0, string, NULL, extra);
 }
 
+Value *Value_newContainer(Container *box, void *extra)
+{
+    return Value_new(UG_RTYPE_CNT, NULL, 0, NULL, box, extra);
+}
+
 Value *Value_newFunction(void *function, void *extra)
 {
     return Value_new(UG_RTYPE_FUN ,NULL, 0, NULL, function, extra);
 }
 
-Value *Value_newCFunction(void *function, void *extra)
+Value *Value_newNative(void *function, void *extra)
 {
     return Value_new(UG_RTYPE_NTV ,NULL, 0, NULL, function, extra);
 }
@@ -217,15 +224,14 @@ void Value_free(Value *this)
     //     free(tag);
     // }
     
-    if (this->type == UG_RTYPE_STR)
-    {
+    if (this->type == UG_RTYPE_STR) {
         Object_release(this->string);
-    }
-    if (this->type == UG_RTYPE_CNT)
-    {
+    } else if (this->type == UG_RTYPE_CNT) {
         Object_release(this->object);
     }
-    Object_free(this);
+    if (this != Value_EMPTY && this != Value_TRUE && this != Value_FALSE) {
+        Object_free(this);
+    }
 }
 
 #endif

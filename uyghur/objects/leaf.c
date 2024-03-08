@@ -11,13 +11,13 @@
 
 typedef struct LeafNode {
     struct _Object;
-    char *type; // ast type
+    char type; // ast type
     struct LeafNode *parent; // parent leaf
     Stack *tokens; // tokens of this ast leaf (params of expression, statement or func)
     Queue *leafs; // programs of this ast leaf (sub code block of statement or func)
 } Leaf;
 
-Leaf *Leaf_new(char *type)
+Leaf *Leaf_new(char type)
 {
     Leaf *leaf = malloc(sizeof(Leaf));
     Object_init(leaf, PCT_OBJ_LEAF);
@@ -30,7 +30,7 @@ Leaf *Leaf_new(char *type)
 
 void Leaf_print(Leaf *this)
 {
-    printf("[(LEAF_START) => address:%d type:%s]\n", this, this->type);
+    printf("[(LEAF_START) => address:%d type:%c]\n", this, this->type);
     Stack_print(this->tokens); // TODO: while stack->next
     Queue_print(this->leafs); // while queue->next
     printf("[(LEAF_END) => address:%d]\n", this);
