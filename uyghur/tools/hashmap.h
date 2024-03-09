@@ -21,6 +21,7 @@ Hashmap* Hashmap_new() {
 
 // TODO: release removed value
 void Hashmap_free(Hashmap *this) {
+    assert(this != NULL);
     Entry *ptr;
     Entry *head;
     for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
@@ -36,6 +37,8 @@ void Hashmap_free(Hashmap *this) {
 
 void *Hashmap_set(Hashmap *this, char *_key, void *value) {
     assert(this != NULL);
+    assert(_key != NULL);
+    assert(value != NULL);
     String *key = String_format(_key);
     int pos = String_hash(key) % HASHMAP_DEFAULT_CAPACITY;
     //
@@ -51,6 +54,7 @@ void *Hashmap_set(Hashmap *this, char *_key, void *value) {
             tmp = ptr->value;
             Entry_set(ptr, key, value);
             Object_release(key);
+            // TODO: release tmp
             return tmp;
         }
         ptr = ptr->next;
@@ -64,6 +68,7 @@ void *Hashmap_set(Hashmap *this, char *_key, void *value) {
 
 void *Hashmap_get(Hashmap *this, char *_key) {
     assert(this != NULL);
+    assert(_key != NULL);
     String *key = String_format(_key);
     int pos = String_hash(key) % HASHMAP_DEFAULT_CAPACITY;
     //
@@ -82,6 +87,7 @@ void *Hashmap_get(Hashmap *this, char *_key) {
 // TODO: release removed value
 void Hashmap_del(Hashmap *this, char *_key) {
     assert(this != NULL);
+    assert(_key != NULL);
     String *key = String_format(_key);
     int pos = String_hash(key) % HASHMAP_DEFAULT_CAPACITY;
     //

@@ -102,10 +102,12 @@ Container *Executer_getCurrentBox(Executer *this, Token *token)
     Container *container = NULL;
     while ((container =  Stack_next(this->containerStack, cursor)) != NULL)
     {
-        if (Container_isBox(container) || Container_isModule(container)) break;
-        // TODO: self
-        // give a _ variable in fun call as argument
-        // then search _ in scopes to find self box
+        if (!Container_isScope(container)) break;
+        Value *self = Container_get(container, SCOPE_ALIAS_BOX);
+        if (self != NULL) {
+            container = self->object;
+            break;
+        }
     }
     Cursor_free(cursor);
     Executer_assert(this, Container_isBox(container), token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
@@ -314,14 +316,7 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
             Token *funcToken = Token_name(funcName);
             // TODO: memory leak
             Value *funcValue = Executer_getValueByToken(this, funcToken, true);
-            if(funcValue->type == UG_RTYPE_FUN || funcValue->type == UG_RTYPE_NTV)
-            {
-                r = funcValue;
-            }
-            else
-            {
-                r = Value_newEmpty(NULL);
-            }
+            r = Value_isRunnable(funcValue) ? funcValue : Value_newEmpty(NULL);
         }
     }
     else
@@ -581,13 +576,26 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
 
 void Executer_consumeFunction(Executer *this, Leaf *leaf)
 {
+    // func name
     Cursor *cursor1 = Stack_reset(leaf->tokens);
     Token *function = Stack_next(leaf->tokens, cursor1);
     Cursor_free(cursor1);
+    // func body
     Cursor *cursor2 = Queue_reset(leaf->leafs);
     Leaf *code = Queue_next(leaf->leafs, cursor2);
     Cursor_free(cursor2);
-    Executer_setValueByToken(this, function, Value_newFunction(code, NULL), true);
+    // func self
+    Value *self = NULL;
+    if (Token_isKey(function)) {
+        Container *container = Executer_getContainerByToken(this, function);
+        Executer_assert(this, container != NULL, function, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
+        if (Container_isBox(container)) {
+            self = Value_newContainer(container, NULL);
+        }
+    }
+    Value *func = Value_newFunction(code, self);
+    // save func
+    Executer_setValueByToken(this, function, func, true);
 }
 
 void Executer_consumeCode(Executer *this, Leaf *leaf)
@@ -615,9 +623,13 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
 Value *Executer_runFunc(Executer *this, Value *funcValue)
 {
     Leaf *codeNode = funcValue->object;
+    Value *selfValue = funcValue->extra;
+    // 
     Executer_pushContainer(this, UG_CTYPE_SCP);
+    Container_set(this->currentContainer, SCOPE_ALIAS_BOX, selfValue);
     Executer_consumeLeaf(this, codeNode);
     Executer_popContainer(this, UG_CTYPE_SCP);
+    // 
     this->isReturn = false;
     Value *r = Stack_pop(this->callStack);
     if (r == NULL) r = Value_newEmpty(NULL);
@@ -652,10 +664,10 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
 {
     Stack_clear(this->callStack);
     Cursor *cursor = Stack_reset(leaf->tokens);
-    // get func name and result name
-    Token *funcName = Stack_next(leaf->tokens, cursor);
+    // get runnable name and result name
+    Token *runnableName = Stack_next(leaf->tokens, cursor);
     Token *resultName = Stack_next(leaf->tokens, cursor);
-    // push args to use
+    // push args
     Token *arg = Stack_next(leaf->tokens, cursor);
     while(arg != NULL)
     {
@@ -665,25 +677,28 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
         arg = Stack_next(leaf->tokens, cursor);
     }
     Cursor_free(cursor);
-    // get func
+    // get runable
+    Value *runnableValue = Executer_getValueByToken(this, runnableName, false);
+    Executer_assert(this, runnableValue != NULL, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND);
+    // run runnable
     Value *r = NULL;
-    Value *funcValue = Executer_getValueByToken(this, funcName, true);
-    Debug_pushTrace(this->uyghur->debug, funcName);
-    if (funcValue->type == UG_RTYPE_FUN) {
-        r = Executer_runFunc(this, funcValue);
-    } else if (funcValue->type == UG_RTYPE_NTV) {
-        r = Executer_runNative(this, funcValue);
+    Debug_pushTrace(this->uyghur->debug, runnableName);
+    if (runnableValue->type == UG_RTYPE_FUN) {
+        r = Executer_runFunc(this, runnableValue);
+    } else if (runnableValue->type == UG_RTYPE_NTV) {
+        r = Executer_runNative(this, runnableValue);
     } else {
-        tools_error(LANG_ERR_EXECUTER_FUNCTION_NOT_FOUND, funcName->value);
+        Executer_error(this, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND);
     }
     Debug_popTrace(this->uyghur->debug, NULL);
+    // return result
     if (!is_equal(resultName->type, UG_TTYPE_EMP) && !is_equal(resultName->value, TVALUE_EMPTY)) {
         Executer_setValueByToken(this, resultName, r, true);
     } else {
         Object_release(r);
     }
-    //
-    Object_release(funcValue);
+    // release objects
+    Object_release(runnableValue);
     Stack_clear(this->callStack);
 }
 

@@ -349,7 +349,7 @@ void Bridge_call(Bridge *this)
     Token *funcName = Token_key(UG_TTYPE_STR, this->name, "*");
     Value *funcValue = Executer_getValueByToken(executer, funcName, true);
     Value *r = NULL;
-    if (funcValue->type == UG_RTYPE_FUN) {
+    if (Value_isFunc(funcValue)) {
         r = Executer_runFunc(executer, funcValue);
     } else {
         tools_warning("function not found for func name: %s", this->name);

@@ -92,6 +92,21 @@ Value *Value_newNative(void *function, void *extra)
     return Value_new(UG_RTYPE_NTV ,NULL, 0, NULL, function, extra);
 }
 
+bool Value_isFunc(Value *this)
+{
+    return this != NULL && this->type == UG_RTYPE_FUN;
+}
+
+bool Value_isNative(Value *this)
+{
+    return this != NULL && this->type == UG_RTYPE_NTV;
+}
+
+bool Value_isRunnable(Value *this)
+{
+    return this != NULL && (this->type == UG_RTYPE_FUN || this->type == UG_RTYPE_NTV);
+}
+
 void Value_print(Value *this)
 {
     if (this->type == UG_RTYPE_NIL)

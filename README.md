@@ -221,10 +221,10 @@ fonkisiye @s[sinaqFonkisiye] bilen 11 22 ishlitilsun we netije @s[sinaqNetije] b
 # print the resultType
 ikrangha @s[sinaqNetije] yezilsun
 
-# this box pointer: -, find in closest box
+# this box pointer: -, find in binding box
 @-[keyName]
 
-# this module pointer: +, find in closest module
+# this module pointer: +, find in current module
 @+[keyName]
 
 # global box pointer: *, find in global scope

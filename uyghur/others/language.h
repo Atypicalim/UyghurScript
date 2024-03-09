@@ -50,7 +50,7 @@
 #define LANG_ERR_EXECUTER_CALCULATION_INVALID_STAT "hisablash heliti inawetsiz"
 #define LANG_ERR_EXECUTER_INVALID_IF "eger jumlisi inawetsiz"
 #define LANG_ERR_EXECUTER_BRIDGE_INVALID_RESULT "kowruk qayturghan qimmet inawetsiz"
-#define LANG_ERR_EXECUTER_FUNCTION_NOT_FOUND "fonkisiye:[%s] tepilmidi"
+#define LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND "ijra qilinghuchi tepilmidi"
 #define LANG_ERR_EXECUTER_INVALID_DEVICE "bolguchi san qimmiti nol bolsa bolmaydu: "
 #define LANG_ERR_EXECUTER_INVALID_BOX_NAME "sanduq ismi inawetsiz"
 #define LANG_ERR_EXECUTER_INVALID_KEY_NAME "achquch ismi inawetsiz"

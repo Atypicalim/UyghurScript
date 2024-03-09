@@ -43,7 +43,12 @@ Container *Container_newModule()
 
 void *Container_set(Container *this, char *key, void *value)
 {
-    return Hashmap_set(this->map, key, value);
+    if (value != NULL) {
+        return Hashmap_set(this->map, key, value);
+    } else {
+        Hashmap_del(this->map, key);
+        return NULL;
+    }
 }
 
 void *Container_get(Container *this, char *key)
