@@ -26,7 +26,7 @@
 
 ## 2. data types and variable declaration
 
-```python
+```powershell
 # declare
 miqdar m qimmiti quruq bolsun
 
@@ -48,7 +48,7 @@ d qimmiti quruq bolsun
 
 ## 3. expressions
 
-```python
+```powershell
 # assign a value
 b qimmiti yalghan bolsun
 
@@ -96,7 +96,7 @@ x = [ab] * 2 # abab
 
 ## 4. operations
 
-```python
+```powershell
 sQimmet qimmiti [yalghan] bolsun
 
 # transforming type (san, xet, quruq, logika, ekische, fonkisiye)
@@ -111,7 +111,7 @@ ikrangha sQimmet yezilsun
 
 ## 5. io
 
-```python
+```powershell
 # output
 ikrangha [Ana Tilim Zer Tilim!] yezilsun
 
@@ -123,7 +123,7 @@ ikrangha a yezilsun
 
 ## 6. if
 
-```python
+```powershell
 
 a qimmiti quruq bolsun
 b qimmiti rast bolsun
@@ -152,7 +152,7 @@ ikrangha d yezilsun
 
 ## 7. while
 
-```python
+```powershell
 yezildighanQimmet qimmiti [] bolsun
 sinaqQimmet qimmiti 1 bolsun
 tekshurulmeQimmet qimmiti rast bolsun
@@ -170,7 +170,7 @@ tamamlansun
 
 ## 8. functions
 
-```python
+```powershell
 # a variable for function result
 yighinda qimmiti 0 bolsun
 
@@ -201,7 +201,7 @@ fonkisiye funcName ishlitilsun
 
 ## 9. box
 
-```python
+```powershell
 #  declare a box
 s qimmiti sanduq bolsun
 
@@ -258,7 +258,7 @@ void *resultValue = Bridge_nextValue(bridge);
 
 ## 11. import
 
-```python
+```powershell
 # bolek_programma.ug
 ikrangha [bolek programmidin salam ...] yezilsun
 bolektikiQimmet qimmiti [bolektiki sinaq qimmet ...] bolsun
@@ -279,7 +279,7 @@ bolektiki sinaq qimmet ...
 
 ## -2. todo
 
-* traceback
+* objective
 * libraries
 * ...
 
