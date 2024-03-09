@@ -123,7 +123,7 @@ void helper_print_btree(Foliage *root, char *_space)
 
 bool is_base_type(char tp)
 {
-    return tp == UG_RTYPE_BOL || tp == UG_RTYPE_NUM || tp == UG_RTYPE_STR;
+    return tp == UG_RTYPE_NIL || tp == UG_RTYPE_BOL || tp == UG_RTYPE_NUM || tp == UG_RTYPE_STR;
 }
 
 bool is_values(char *target, int num, char *s, ...)

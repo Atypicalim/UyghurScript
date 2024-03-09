@@ -59,13 +59,11 @@ Value *Bridge_popValue(Bridge *this)
     return v;
 }
 
-// get next value, value object auto released when reset the stack
+// nullable: get next value, value object auto released when reset the stack
 Value *Bridge_nextValue(Bridge *this)
 {
     tools_assert(this->cursor != NULL, "invalid bridge status, cursor required for values");
-    Value *v = Stack_next(this->stack, this->cursor);
-    if (v == NULL) v = Value_newEmpty(NULL);
-    return v;
+    return Stack_next(this->stack, this->cursor);
 }
 
 // key value
@@ -212,7 +210,8 @@ void *Bridge_return(Bridge *this)
 Value *Bridge_receiveValue(Bridge *this, char tp)
 {
     Value *v = Bridge_nextValue(this);
-    if (tp != UG_RTYPE_NON) {
+    if (v == NULL) v = Value_newEmpty(NULL);
+    if (tp != UG_CHR_NON) {
         tools_assert(v->type == tp, "invalid bridge arguments, %c argument not found", tp);
     }
     return v;

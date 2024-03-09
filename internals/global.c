@@ -12,9 +12,9 @@ void oqush(Bridge *bridge)
 void yezish(Bridge *bridge)
 {
     Value *v = Bridge_nextValue(bridge);
-    while (v->type != UG_RTYPE_NIL)
+    while (v != NULL)
     {
-        system_write_terminal(Value_toString(v));
+        printf("%s ", Value_toString(v));
         v = Bridge_nextValue(bridge);
     }
     Bridge_returnEmpty(bridge);
@@ -36,9 +36,7 @@ void ekirish(Bridge *bridge)
     Value *box = Container_get(uyghur->executer->globalContainer, path);
     if (box == NULL) box = Uyghur_runPath(uyghur, path);
     if (box == NULL) box = Value_newEmpty(NULL);
-    Bridge_startResult(bridge);
-    Bridge_pushValue(bridge, box);
-    Bridge_return(bridge);
+    Bridge_returnValue(bridge, box);
 }
 
 void tazilash(Bridge *bridge)

@@ -54,11 +54,6 @@ char *system_read_terminal()
     return data;
 }
 
-void system_write_terminal(char *value)
-{
-    printf("%s", value);
-}
-
 int time_get_zone()
 {
     time_t currentTime = time(NULL);

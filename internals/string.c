@@ -94,7 +94,7 @@ void ug_string_link(Bridge *bridge)
 void ug_str_format(Bridge *bridge)
 {
     char *f = Bridge_receiveString(bridge);
-    Value *v = Bridge_nextValue(bridge);
+    Value *v = Bridge_receiveValue(bridge, UG_CHR_NON);
     String *r = NULL;
     if (v->type == UG_RTYPE_NUM) r = String_format(f, v->number);
     if (v->type == UG_RTYPE_STR) r = String_format(f, v->string);
