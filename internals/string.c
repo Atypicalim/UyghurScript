@@ -94,14 +94,41 @@ void ug_string_link(Bridge *bridge)
 void ug_str_format(Bridge *bridge)
 {
     char *f = Bridge_receiveString(bridge);
-    Value *v = Bridge_receiveValue(bridge, UG_CHR_NON);
+    Value *v = Bridge_receiveValue(bridge, UG_RTYPE_NON);
+    Value *t = Bridge_nextValue(bridge);
+    tools_assert(t == NULL, "too many arguments for string format");
     String *r = NULL;
     if (v->type == UG_RTYPE_NUM) r = String_format(f, v->number);
-    if (v->type == UG_RTYPE_STR) r = String_format(f, v->string);
+    if (v->type == UG_RTYPE_STR) r = String_format(f, String_get(v->string));
     if (v->type == UG_RTYPE_BOL) r = String_format(f, v->boolean);
-    if (r == NULL) r = String_format("");
+    if (r == NULL) r = String_format(f, v->object);
     Bridge_returnString(bridge, String_get(r));
     Object_release(r);
+}
+
+void ug_str_fill(Bridge *bridge)
+{
+    char *f = Bridge_receiveString(bridge);
+    String *r = String_format("%s", f);
+    // 
+    Value *v = Bridge_nextValue(bridge);
+    int index = 1;
+    char *target = tools_format("{%i}", index);
+    while (v != NULL)
+    {
+        char *arg = Value_toString(v);
+        int len = String_length(r);
+        String_replace(r, target, arg, 0, len - 1, INT_MAX);
+        pct_free(arg);
+        pct_free(target);
+        v = Bridge_nextValue(bridge);
+        index = index + 1;
+        target = tools_format("{%i}", index);
+    }
+    pct_free(target);
+    // 
+    Bridge_returnString(bridge, String_get(r));
+    String_free(r);
 }
 
 void lib_string_register(Bridge *bridge)
@@ -123,6 +150,7 @@ void lib_string_register(Bridge *bridge)
     // 
     Bridge_bindNative(bridge, "ulash", ug_string_link);
     Bridge_bindNative(bridge, "formatlash", ug_str_format);
+    Bridge_bindNative(bridge, "toldurush", ug_str_fill);
     //
     Bridge_register(bridge);
 }

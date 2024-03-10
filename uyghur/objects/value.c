@@ -92,6 +92,23 @@ Value *Value_newNative(void *function, void *extra)
     return Value_new(UG_RTYPE_NTV ,NULL, 0, NULL, function, extra);
 }
 
+bool Value_isNumber(Value *this)
+{
+    return this != NULL && this->type == UG_RTYPE_NUM;
+}
+
+bool Value_isInt(Value *this)
+{
+    double intpart;
+    return Value_isNumber(this) && modf(this->number, &intpart) == 0.0;
+}
+
+bool Value_isFlt(Value *this)
+{
+    double intpart;
+    return Value_isNumber(this) && modf(this->number, &intpart) != 0.0;
+}
+
 bool Value_isFunc(Value *this)
 {
     return this != NULL && this->type == UG_RTYPE_FUN;
@@ -137,28 +154,19 @@ void Value_print(Value *this)
 // TODO return Value
 char *Value_toString(Value *this)
 {
-    if (this->type == UG_RTYPE_NIL)
-    {
+    if (this == NULL || this->type == UG_RTYPE_NIL) {
         return tools_format("%s", TVALUE_EMPTY);
-    }
-    if (this->type == UG_RTYPE_BOL)
-    {
+    } if (this->type == UG_RTYPE_BOL) {
         double value = this->boolean;
         return tools_format("%s", value ? TVALUE_TRUE : TVALUE_FALSE);
-    }
-    if (this->type == UG_RTYPE_NUM)
-    {
+    } if (this->type == UG_RTYPE_NUM) {
         double value = this->number;
-        return tools_format("%f", value);
-    }
-    if (this->type == UG_RTYPE_STR)
-    {
+        return Value_isInt(this) ? tools_format("%i", (int)value) : tools_format("%.15g", (double)value);
+    } if (this->type == UG_RTYPE_STR) {
         return String_dump(this->string);
-    }
-    else
-    {
+    } else {
         void *value = this->object;
-        return tools_format("[RV => t:%s p:%d]\n", this->type, value != NULL ? value : 0);
+        return tools_format("<Object t:%s p:%d>\n", this->type, value != NULL ? value : 0);
     } 
 }
 

@@ -44,11 +44,10 @@ Bridge *Bridge_new(Uyghur *uyghur)
 }
 
 // get top type of the stack
-
 char Bridge_topType(Bridge *this)
 {
     Block *tail = this->stack->tail;
-    return tail != NULL ? ((Value *)tail->data)->type : UG_RTYPE_NIL;
+    return tail != NULL ? ((Value *)tail->data)->type : UG_RTYPE_NON;
 }
 
 // pop next value, you should release the value object manually
@@ -211,7 +210,7 @@ Value *Bridge_receiveValue(Bridge *this, char tp)
 {
     Value *v = Bridge_nextValue(this);
     if (v == NULL) v = Value_newEmpty(NULL);
-    if (tp != UG_CHR_NON) {
+    if (tp != UG_RTYPE_NON) {
         tools_assert(v->type == tp, "invalid bridge arguments, %c argument not found", tp);
     }
     return v;

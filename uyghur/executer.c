@@ -166,10 +166,13 @@ char *Executer_getKeyByToken(Executer *this, Token *token)
     }
     Token *extra = (Token *)token->extra;
     if (Token_isNumber(extra)) {
+        // TODO: use tools_format
         String *s = String_format("%f", atof(token->value));
         key = String_dump(s);
         String_free(s);
     } else if (Token_isString(extra)) {
+        // 
+        // TODO: use tools_format
         String *s = String_format("%s", token->value);
         key = String_dump(s);
         String_free(s);

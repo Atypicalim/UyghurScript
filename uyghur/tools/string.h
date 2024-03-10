@@ -133,9 +133,13 @@ String *String_insert(String *this, int at, String *that)
 
 String *String_delete(String *this, int from, int to)
 {
-    if (from < 0 || to > this->length || from >= to) return this;
-    memmove(this->data + from, this->data + to, this->length - to);
-    this->length -= (to - from);
+    limit_range(this->length, true, &from, &to);
+    int len = this->length;
+    char *dst = this->data + from;
+    char *src = this->data + to + 1;
+    size_t cnt = this->length - to - 1;
+    memmove(dst, src, cnt);
+    this->length -= (to - from + 1);
     this->data[this->length] = '\0';
     return this;
 }
@@ -288,9 +292,9 @@ String* String_repeat(String *this, int count)
 
 String *String_subString(String *this, int from, int to)
 {
+    limit_range(this->length, true, &from, &to);
     String *s = String_new();
-    if (from < 0 || to > this->length || from >= to) return this;
-    int len = to - from;
+    int len = to - from + 1;
     char *temp = pct_mallloc(len + 1);
     memmove(temp, this->data + from, len);
     temp[len] = '\0';
@@ -365,18 +369,19 @@ bool String_contains(String *this, char *target)
 
 String *String_replace(String *this, char *target, char *relacement, int from, int to, int count)
 {
-    if (from < 0 || to > this->length || from >= to) return this;
+    limit_range(this->length, true, &from, &to);
+    int thisLen = String_length(this);
     int targetLen = strlen(target);
     int replacementLen = strlen(relacement);
     if (targetLen <= 0 || count == 0) return this;
     int fromIndex = from;
     int foundIndex = -1;
     int replaceCount = 0;
-    String *result = String_subString(this, -1, fromIndex);
+    String *result = String_new();
     String *temp = NULL;
     while((foundIndex = String_findNext(this, fromIndex, target)) >= 0) {
         if (foundIndex >= to) break;
-        temp = String_subString(this, fromIndex, foundIndex);
+        temp = String_subString(this, fromIndex, foundIndex - 1);
         String_append(result, String_get(temp));
         String_free(temp);
         String_append(result, relacement);
@@ -384,7 +389,7 @@ String *String_replace(String *this, char *target, char *relacement, int from, i
         replaceCount++;
         if (count > 0 && replaceCount >= count) break;
     }
-    temp = String_subString(this, fromIndex, this->length);
+    temp = String_subString(this, fromIndex, this->length - 1);
     String_append(result, String_get(temp));
     String_free(temp);
     String_set(this, String_get(result));

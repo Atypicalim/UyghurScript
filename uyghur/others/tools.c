@@ -275,6 +275,24 @@ int num_random(int from, int to)
     return r;
 }
 
+// limit as : 0 ~ size (-size ~ -1)
+void limit_range(int size, bool swapXY, int *_from, int *_to)
+{
+    int from = *_from;
+    int to = *_to;
+    if (from < 0) from = MAX(0, size + from);
+    if (to < 0) to = MAX(0, size + to);
+    from = MIN(size - 1, MAX(0, from));
+    to = MIN(size - 1, MAX(0, to));
+    if (swapXY && from > to) {
+        int tmp = from;
+        from = to;
+        to = tmp;
+    }
+    *_from = from;
+    *_to = to; 
+}
+
 bool file_write(char *path, char *data)
 {
     if (data == NULL) return false;

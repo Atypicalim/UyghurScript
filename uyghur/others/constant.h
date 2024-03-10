@@ -3,11 +3,8 @@
 #define UG_VERSION_NAME "0.1" 
 #define UG_VERSION_CODE 0.1 
 
-// common constant
-#define UG_CHR_NON ' '
-#define UG_STR_NON " "
-
 // runtime type
+#define UG_RTYPE_NON ' '
 #define UG_RTYPE_NIL '~'
 #define UG_RTYPE_BOL 'b'
 #define UG_RTYPE_NUM 'n'
