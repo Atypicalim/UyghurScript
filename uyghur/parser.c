@@ -335,6 +335,15 @@ void Parser_consumeAstExpression(Parser *this)
     Parser_error(this, NULL);
 }
 
+void Parser_consumeAstJudge(Parser *this, char aType)
+{
+    Token *name = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
+    Parser_checkWord(this, 1, 1, TVALUE_VALUE);
+    Token *value = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
+    Token *action = Parser_checkWord(this, 1, 2, TVALUE_IF_OK, TVALUE_IF_NO);
+    Parser_pushLeaf(this, aType, 3, name, value, action);
+}
+
 void Parser_consumeAstIfFirst(Parser *this)
 {
     // open UG_ATYPE_IF
@@ -342,11 +351,7 @@ void Parser_consumeAstIfFirst(Parser *this)
     Parser_openBranch(this);
     // open UG_ATYPE_IF_F
     Parser_checkWord(this, 0, 1, TVALUE_IF);
-    Token *name = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
-    Parser_checkWord(this, 1, 1, TVALUE_VALUE);
-    Token *value = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
-    Token *action = Parser_checkWord(this, 1, 2, TVALUE_IF_OK, TVALUE_IF_NO);
-    Parser_pushLeaf(this, UG_ATYPE_IF_F, 3, name, value, action);
+    Parser_consumeAstJudge(this, UG_ATYPE_IF_F);
     Parser_openBranch(this);
 }
 
@@ -359,11 +364,7 @@ void Parser_consumeAstIfMiddle(Parser *this)
     Parser_closeBranch(this);
     //  open UG_ATYPE_IF_M
     Parser_checkWord(this, 0, 1, TVALUE_IF_ELSE);
-    Token *name = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
-    Parser_checkWord(this, 1, 1, TVALUE_VALUE);
-    Token *value = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
-    Token *action = Parser_checkWord(this, 1, 2, TVALUE_IF_OK, TVALUE_IF_NO);
-    Parser_pushLeaf(this, UG_ATYPE_IF_M, 3, name, value, action);
+    Parser_consumeAstJudge(this, UG_ATYPE_IF_M);
     Parser_openBranch(this);
 }
 
@@ -400,11 +401,7 @@ void Parser_consumeAstEnd(Parser *this)
 void Parser_consumeAstWhile(Parser *this)
 {
     Parser_checkWord(this, 0, 1, TVALUE_WHILE);
-    Token *name = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
-    Parser_checkWord(this, 1, 1, TVALUE_VALUE);
-    Token *value = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
-    Token *action = Parser_checkWord(this, 1, 2, TVALUE_IF_OK, TVALUE_IF_NO);
-    Parser_pushLeaf(this, UG_ATYPE_WHL, 3, name, value, action);
+    Parser_consumeAstJudge(this, UG_ATYPE_WHL);
     Parser_openBranch(this);
 }
 
