@@ -172,26 +172,17 @@ char *Value_toString(Value *this)
 
 Value *Value_toBoolean(Value *this)
 {
-    if (this->type == UG_RTYPE_NUM)
-    {
-        return Value_newBoolean(this->number > 0, NULL);
-    }
-    else if (this->type == UG_RTYPE_STR)
-    {
-        return Value_newBoolean(is_equal(String_get(this->string), TVALUE_TRUE), NULL);
-    }
-    else if (this->type == UG_RTYPE_NIL)
-    {
+    if (this == NULL || this->type == UG_RTYPE_NIL) {
         return Value_newBoolean(false, NULL);
-    }
-    else if (this->type == UG_RTYPE_BOL)
-    {
+    } else if (this->type == UG_RTYPE_NUM) {
+        return Value_newBoolean(this->number > 0, NULL);
+    } else if (this->type == UG_RTYPE_STR) {
+        return Value_newBoolean(is_equal(String_get(this->string), TVALUE_TRUE), NULL);
+    } else if (this->type == UG_RTYPE_BOL) {
         Object_retain(this);
         return this;
-    }
-    else
-    {
-        return Value_newBoolean(false, NULL);
+    } else {
+        return Value_newBoolean(true, NULL);
     }
 }
 
@@ -238,6 +229,22 @@ int Value_compareTo(Value *this, Value *other)
     return CODE_NONE;
 }
 
+bool Value_isTrue(Value *this)
+{
+    if (this == NULL || this->type == UG_RTYPE_NIL) {
+        return false;
+    } else if (this->type == UG_RTYPE_BOL) {
+        return this->boolean;
+    } else {
+        return true;
+    }
+}
+
+void Value_release(Value *this)
+{
+    Object_release(this);
+}
+
 void Value_free(Value *this)
 {
     // char *tag = _get_cache_tag(this->type, this->boolean, this->number, String_get(this->string));
@@ -246,7 +253,6 @@ void Value_free(Value *this)
     // {
     //     free(tag);
     // }
-    
     if (this->type == UG_RTYPE_STR) {
         Object_release(this->string);
     } else if (this->type == UG_RTYPE_CNT) {

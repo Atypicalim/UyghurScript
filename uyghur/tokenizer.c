@@ -106,6 +106,7 @@ char *Tokenizer_getWord(Tokenizer *this, String *letter)
 {
     String *val = Hashmap_get(this->keywordsMap, String_get(letter));
     if (val == NULL) return NULL;
+    // TODO: replace words with signs
     char *typ = String_equal(letter, val) ? UG_TTYPE_WRD : String_get(val);
     return typ;
 }
@@ -352,11 +353,11 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue;
         }
         // calculation
-        if (isCalculator && is_calculation(currentChar))
+        if (isCalculator && is_calculation_char(currentChar))
         {
             char lastC = Tokenizer_getValidChar(this, -1);
             char nextC = Tokenizer_getValidChar(this, 1);
-            if (!is_calculation(lastC) && !is_calculation(nextC) && lastC != '=' && lastC != '(')
+            if (!is_calculation_char(lastC) && !is_calculation_char(nextC) && lastC != '=' && lastC != '(')
             {
                 Tokenizer_addLetter(this, String_format("%c", currentChar));
                 Tokenizer_skipN(this, 1);
@@ -374,6 +375,15 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         if (isCalculator && currentChar == ')')
         {
             Tokenizer_addLetter(this, String_format("%s", TVALUE_CLOSE));
+            Tokenizer_skipN(this, 1);
+            continue;
+        }
+        // calculation
+        if (is_calculation_logicals(currentChar))
+        {
+            char lastC = Tokenizer_getchar(this, -1);
+            char nextC = Tokenizer_getchar(this, 1);
+            Tokenizer_addLetter(this, String_format("%c", currentChar));
             Tokenizer_skipN(this, 1);
             continue;
         }

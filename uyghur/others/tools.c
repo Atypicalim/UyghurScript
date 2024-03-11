@@ -80,6 +80,11 @@ bool is_equal(char *this, char*other)
     return strcmp(this, other) == 0;
 }
 
+bool is_character(char *str, char ch)
+{
+    return strlen(str) == 1 && str[0] == ch;
+}
+
 bool is_number_begin(char c)
 {
     return c == '+' || c == '-' || isdigit(c);
@@ -144,31 +149,6 @@ bool is_border_close(char c) {
 bool is_calculator(char c)
 {
     return c == '=';
-}
-
-bool is_calculator_common(char c)
-{
-    return c == '?';
-}
-
-bool is_calculation_number(char c)
-{
-    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%' || c == '<' || c == '>';
-}
-
-bool is_calculation_bool(char c)
-{
-    return c == '!' || c == '&' || c == '|';
-}
-
-bool is_calculation_string(char c)
-{
-    return c == '~';
-}
-
-bool is_calculation(char c)
-{
-    return is_calculator_common(c) || is_calculation_number(c) || is_calculation_bool(c) || is_calculation_string(c);
 }
 
 bool is_scope(char c)

@@ -141,7 +141,52 @@ bool is_values(char *target, int num, char *s, ...)
     return false;
 }
 
-bool is_calculations(char *target)
+bool is_characters(char target, int num, char *s, ...)
+{
+    tools_assert(target != ' ', "invalid target in is characters");
+    va_list valist;
+    int i;
+    va_start(valist, s);
+    for (i = 0; i < num; i++)
+    {
+        if (is_character(s, target)) return true;
+        s = va_arg(valist, char *);
+    }
+    va_end(valist);
+    return false;
+}
+
+bool is_calculator_common(char c)
+{
+    return is_characters(c, TVAUE_GROUP_CALCULATION_ALL);
+}
+
+bool is_calculation_number(char c)
+{
+    return is_characters(c, TVAUE_GROUP_CALCULATION_NUM);
+}
+
+bool is_calculation_bool(char c)
+{
+    return is_characters(c, TVAUE_GROUP_CALCULATION_BOL);
+}
+
+bool is_calculation_string(char c)
+{
+    return is_characters(c, TVAUE_GROUP_CALCULATION_STR);
+}
+
+bool is_calculation_logicals(char c)
+{
+    return is_characters(c, TVAUE_GROUP_CALCULATION_ALL) || is_characters(c, TVAUE_GROUP_CALCULATION_BOL);
+}
+
+bool is_calculation_char(char c)
+{
+    return is_calculator_common(c) || is_calculation_number(c) || is_calculation_bool(c) || is_calculation_string(c);
+}
+
+bool is_calculation_str(char *target)
 {
     return is_values(target, TVAUE_GROUP_CALCULATION_ALL)
     || is_values(target, TVAUE_GROUP_CALCULATION_NUM)

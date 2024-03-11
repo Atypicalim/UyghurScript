@@ -337,11 +337,16 @@ void Parser_consumeAstExpression(Parser *this)
 
 void Parser_consumeAstJudge(Parser *this, char aType)
 {
-    Token *name = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
-    Parser_checkWord(this, 1, 1, TVALUE_VALUE);
-    Token *value = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
-    Token *action = Parser_checkWord(this, 1, 2, TVALUE_IF_OK, TVALUE_IF_NO);
-    Parser_pushLeaf(this, aType, 3, name, value, action);
+    Token *first = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+    if (Parser_isType(this, 1, UG_TTYPE_CLC)) {
+        Token *clcltn = Parser_checkType(this, 1, 1, UG_TTYPE_CLC);
+        Token *second = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+        Token *action = Parser_checkWord(this, 1, 2, TVALUE_IF_OK, TVALUE_IF_NO);
+        Parser_pushLeaf(this, aType, 4, second, clcltn, first, action);
+    } else {
+        Token *action = Parser_checkWord(this, 1, 2, TVALUE_IF_OK, TVALUE_IF_NO);
+        Parser_pushLeaf(this, aType, 2, first, action);
+    }
 }
 
 void Parser_consumeAstIfFirst(Parser *this)
@@ -490,7 +495,7 @@ void Parser_consumeAstCalculator(Parser *this)
                 tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
                 tempF = Foliage_new(tempT);
                 current->left = tempF;
-            } else if (is_calculations(lastType)) {
+            } else if (is_calculation_str(lastType)) {
                 tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
                 tempF = Foliage_new(tempT);
                 current->right = tempF;
@@ -522,7 +527,7 @@ void Parser_consumeAstCalculator(Parser *this)
                 Parser_checkWord(this, 1, 1, TVALUE_OPEN);
                 tempF = Foliage_new(NULL);
                 current->left = tempF;
-            } else if (is_calculations(lastType)) {
+            } else if (is_calculation_str(lastType)) {
                 Parser_checkWord(this, 1, 1, TVALUE_OPEN);
                 tempF = Foliage_new(NULL);
                 current->right = tempF;

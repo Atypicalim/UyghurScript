@@ -31,8 +31,8 @@ Leaf *Leaf_new(char type)
 void Leaf_print(Leaf *this)
 {
     printf("[(LEAF_START) => address:%d type:%c]\n", this, this->type);
-    Stack_print(this->tokens); // TODO: while stack->next
-    Queue_print(this->leafs); // while queue->next
+    Stack_print(this->tokens);
+    Queue_print(this->leafs);
     printf("[(LEAF_END) => address:%d]\n", this);
 }
 

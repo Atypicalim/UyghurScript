@@ -89,5 +89,7 @@ struct Debug
 void Debug_pushTrace(Debug *, Token *);
 void Debug_popTrace(Debug *, Token *);
 void Debug_writeTrace(Debug *);
+void Debug_error(Uyghur *);
+void Debug_assert(Uyghur *);
 
 #endif
