@@ -24,7 +24,7 @@
 
 
 
-## 2. data types and variable declaration
+## 2. variable declaration
 
 ```powershell
 # declare
@@ -32,40 +32,26 @@ miqdar m qimmiti quruq bolsun
 
 # free
 m qimmiti quruq bolsun
-
-# string
-s qimmiti [Salam Uyghur Script!] bolsun
-
-# number
-n qimmiti 1 bolsun
-
-# bool (rast, yalghan)
-b qimmiti rast bolsun
-
-# empty
-d qimmiti quruq bolsun
 ```
 
-## 3. expressions
+## 3. type conversion
 
 ```powershell
-# assign a value
-b qimmiti yalghan bolsun
+miqdar m qimmiti [yezish] bolsun
 
-# string expressions (teng, ulanghan)
-s qimmiti [hi! ] ulanghan [boy ...] bolsun
+# get func by string
+m qimmiti fonkisiye bolsun
+ikrangha m yezilsun
 
-# number expressions (teng, qushulghan, elinghan, kupeytilgen, bulungen)
-n qimmiti n kupeytilgen 10 bolsun
+# convert value to boolean
+m qimmiti logika bolsun
+ikrangha m yezilsun
 
-# logic expressions (teng, kichik, chong)
-b qimmiti a kichik 5 bolsun
+```
 
-# logic expressions (teng, hemde, yaki)
-b qimmiti b hemde yalghan bolsun
+## 4. calculator
 
-# calculator begin with = sign
-
+```powershell
 # arthimetic
 x = 1 + 2 # 3
 x = 1 + 2 * 3 # 9
@@ -90,26 +76,18 @@ x = [ab] > [ac] # false
 # string
 x = [ab] + [cd] # abcd
 x = [ab] * 2 # abab
-
-
 ```
 
-## 4. operations
+## 5. operations
 
 ```powershell
-sQimmet qimmiti [yalghan] bolsun
-
-# transforming type (san, xet, quruq, logika, ekische, fonkisiye)
-sQimmet qimmiti logika bolsun
-
-# logic not
-sQimmet qimmiti ekische bolsun
-
-# print a logic value
+# read a value
+ikrandin sQimmet oqulsun
+# print a value
 ikrangha sQimmet yezilsun
 ```
 
-## 5. io
+## 6. io
 
 ```powershell
 # output
@@ -121,105 +99,80 @@ a qimmiti [mezmun:] ulanghan a bolsun
 ikrangha a yezilsun
 ```
 
-## 6. if
+## 7. if
 
 ```powershell
-
-a qimmiti quruq bolsun
-b qimmiti rast bolsun
-c qimmiti rast bolsun
-d qimmiti [quruq!!!] bolsun
-
-# the left side can be any value
-eger a qimmiti rast bolsa
-    ikrangha [eger] yezilsun
-    d qimmiti [eger] bolsun
-egerde b qimmiti rast bolsa
-    ikrangha [egerde1] yezilsun
-    d qimmiti [egerde1] bolsun
-egerde c qimmiti rast bolmisa
-    ikrangha [egerde2] yezilsun
-    d qimmiti [egerde2] bolsun
+eger 0 bolsa
+    ikrangha [if] yezilsun
+egerde rast bolmisa
+    ikrangha [elif] yezilsun
 bolmisa
-    d qimmiti [ichide] bolsun
-    ikrangha d yezilsun
-    d qimmiti [bolmisa] bolsun
-    ikrangha d yezilsun
-tamamlansun
-
-ikrangha d yezilsun
-```
-
-## 7. while
-
-```powershell
-yezildighanQimmet qimmiti [] bolsun
-sinaqQimmet qimmiti 1 bolsun
-tekshurulmeQimmet qimmiti rast bolsun
-
-# the left side can be any value
-nawada tekshurulmeQimmet qimmiti rast bolsa
-    sinaqQimmetS qimmiti sinaqQimmet bolsun
-    sinaqQimmetS qimmiti xet bolsun
-    yezildighanQimmet qimmiti [nawada: sanaq ] ulanghan sinaqQimmetS bolsun
-    ikrangha yezildighanQimmet yezilsun
-    sinaqQimmet qimmiti sinaqQimmet qushulghan 1 bolsun
-    tekshurulmeQimmet qimmiti sinaqQimmet kichik 5 bolsun
+    ikrangha [else] yezilsun
 tamamlansun
 ```
 
-## 8. functions
+## 8. while
 
 ```powershell
-# a variable for function result
-yighinda qimmiti 0 bolsun
-
-# function without args and return
-fonkisiye sanYezish mezmuni
-    ikrangha yighinda yezilsun
+nawada rast bolsa
+    ikrangha [while] yezilsun
 tamamlansun
+```
 
-# a function receiving two arguments and returning a result
+## 9. exception
+
+```powershell
+xataliq e mezmuni
+    x = 3 / 0
+tamamlansun
+# return e == empty if no exception
+eger e bolsa
+    ikrangha [exception:] yezilsun
+    ikrangha e yezilsun
+bolmisa
+    ikrangha [successful!] yezilsun
+tamamlansun
+# exception: cannot devided by zero
+```
+
+## 10. functions
+
+```powershell
+# a global variable
+miqdar yighinda qimmiti 0 bolsun
+
+# a function with two arguments
 fonkisiye sanQushush miqdar x y mezmuni
-    waqitliqMiqdar qimmiti 0 bolsun
-    waqitliqMiqdar qimmiti x qushulghan y bolsun
-    netije waqitliqMiqdar qayturulsun
+    yighinda = x + y
+    netije yighinda qayturulsun
 tamamlansun
 
-# call function with two arguments and receive the result
-fonkisiye sanQushush bilen 10 20 ishlitilsun we netije yighinda bolsun
-
-# a string varibale storing a function name
+# a string varibale of function name
 funcName qimmiti [sanYezish] bolsun
 
-# transform the string to a func which is the string value targeting
+# get function by string value
 funcName qimmiti fonkisiye bolsun
 
-# call a function without any argument and result 
-fonkisiye funcName ishlitilsun
+# call functions and receive result
+fonkisiye funcName bilen 10 20 ishlitilsun we netije result bolsun
+
+# print the result value received
+ikrangha result yezilsun
 ```
 
-## 9. box
+## 11. box
 
 ```powershell
 #  declare a box
 s qimmiti sanduq bolsun
 
 # put a number
-@s[yighinda] qimmiti 1 qushulghan 2 bolsun
+@s[yighinda] qimmiti 123 bolsun
 
-# bind a function
+# set a method
 fonkisiye @s[sinaqFonkisiye] miqdar x y mezmuni
-    @s[yighinda] qimmiti x qushulghan y bolsun
-    ikrangha @s[yighinda] yezilsun
-    netije @s[yighinda] qayturulsun
+  @-[yighinda] = x + y
 tamamlansun
-
-# call and get result as a box varibale
-fonkisiye @s[sinaqFonkisiye] bilen 11 22 ishlitilsun we netije @s[sinaqNetije] bolsun
-
-# print the resultType
-ikrangha @s[sinaqNetije] yezilsun
 
 # this box pointer: -, find in binding box
 @-[keyName]
@@ -233,10 +186,10 @@ ikrangha @s[sinaqNetije] yezilsun
 # supported key types: variable, string, number
 @boxName{variableName}
 @boxName[stringKey]
-@boxName(numberKey)
+@boxName(123)
 ```
 
-## 10. bridge
+## 12. bridge
 
 > u can get the bridge objet and communicate between c and script, just check `main.c` for more information
 
@@ -256,7 +209,7 @@ char resultType = Bridge_topType(bridge);
 void *resultValue = Bridge_receiveValue(bridge);
 ```
 
-## 11. import
+## 13. import
 
 ```powershell
 # bolek_programma.ug

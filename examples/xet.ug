@@ -6,16 +6,16 @@ miqdar o qimmiti 0 bolsun
 
 fonkisiye @*[doska_sizish_qayturmisi] mezmuni
 
-    t qimmiti s chong 2 bolsun
-    eger t qimmiti rast bolsa
+    t = s > 2
+    eger t bolsa
         s qimmiti 1 bolsun
     bolmisa
-        s qimmiti s qushulghan 0.0001 bolsun
+        s = s + 0.0001
     tamamlansun
 
     fonkisiye @ressam[xetMolcherlesh] bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we netije w bolsun
-    o qimmiti w bulungen 2 bolsun
-    o qimmiti 250 elinghan o bolsun
+    o = w / 2
+    o = 250 - o
     fonkisiye @ressam[xetYezish] bilen [../resources/ukij.ttf] [SINAQ] 36 0 [ff0000ff] o 50 ishlitilsun
 
     fonkisiye @ressam[xetEkirish] bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we netije r bolsun

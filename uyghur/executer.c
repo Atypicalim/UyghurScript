@@ -31,6 +31,8 @@ void Executer_reset(Executer *this)
     this->rootContainer = NULL;
     this->globalContainer = Container_newScope();
     this->isReturn = false;
+    this->isCatch = false;
+    this->errorMsg = NULL;
 }
 
 Executer *Executer_new(Uyghur *uyghur)
@@ -533,6 +535,7 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
         Executer_pushContainer(this, UG_CTYPE_SCP);
         Executer_consumeTree(this, leaf);
         Executer_popContainer(this, UG_CTYPE_SCP);
+        if (this->errorMsg != NULL) break;
     }
 }
 
@@ -549,8 +552,13 @@ void Executer_consumeException(Executer *this, Leaf *leaf)
     Executer_popContainer(this, UG_CTYPE_SCP);
     // 
     this->isCatch = false;
-    String *message = String_format("%s", this->errorMsg);
-    Value *error = Value_newString(message, NULL);
+    Value *error = NULL;
+    if (this->errorMsg != NULL) {
+        String *message = String_format("%s", this->errorMsg);
+        error = Value_newString(message, NULL);
+    } else {
+        error = Value_newEmpty(NULL);
+    }
     this->errorMsg = NULL;
     Executer_setValueByToken(this, name, error, true);
 }
@@ -735,7 +743,7 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
     char tp = leaf->type;
-    // 
+    // throwing
     if (setjmp(jump_buffer) != 0 || (this->errorMsg != NULL && tp != UG_ATYPE_EXC)) {
         return;
     }

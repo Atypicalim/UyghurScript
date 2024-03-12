@@ -17,15 +17,15 @@ tamamlansun
 fonkisiye @*[doska_sizish_qayturmisi] mezmuni
 
     m = m + 1
-    t qimmiti m chong 400 bolsun
-    eger t qimmiti rast bolsa
+    t = m > 400
+    eger t bolsa
         n = n % 8
         n = n + 1
         m = 0 + 0
     tamamlansun
 
-    t qimmiti n kichik 5 bolsun
-    eger t qimmiti rast bolsa
+    t = n < 5
+    eger t bolsa
         x = (n - 1) * 200
         y = 0
     bolmisa

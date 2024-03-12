@@ -35,37 +35,37 @@ miqdar sinaqQimmet qimmiti quruq bolsun
 # get sign
 fonkisiye belgilerniElish miqdar x mezmuni
     miqdar r qimmiti quruq bolsun
-    eger x qimmiti quruq bolsa
+    eger x ? quruq bolsa
         r qimmiti [] bolsun
-    egerde x qimmiti 1 bolsa
+    egerde x ? 1 bolsa
         r qimmiti [1] bolsun
-    egerde x qimmiti 2 bolsa
+    egerde x ? 2 bolsa
         r qimmiti [2] bolsun
-    egerde x qimmiti 3 bolsa
+    egerde x ? 3 bolsa
         r qimmiti [3] bolsun
-    egerde x qimmiti 4 bolsa
+    egerde x ? 4 bolsa
         r qimmiti [4] bolsun
-    egerde x qimmiti 5 bolsa
+    egerde x ? 5 bolsa
         r qimmiti [5] bolsun
-    egerde x qimmiti 6 bolsa
+    egerde x ? 6 bolsa
         r qimmiti [6] bolsun
-    egerde x qimmiti 7 bolsa
+    egerde x ? 7 bolsa
         r qimmiti [7] bolsun
-    egerde x qimmiti 8 bolsa
+    egerde x ? 8 bolsa
         r qimmiti [8] bolsun
-    egerde x qimmiti 9 bolsa
+    egerde x ? 9 bolsa
         r qimmiti [9] bolsun
-    egerde x qimmiti 10 bolsa
+    egerde x ? 10 bolsa
         r qimmiti [0] bolsun
-    egerde x qimmiti 11 bolsa
+    egerde x ? 11 bolsa
         r qimmiti [+] bolsun
-    egerde x qimmiti 12 bolsa
+    egerde x ? 12 bolsa
         r qimmiti [-] bolsun
-    egerde x qimmiti 13 bolsa
+    egerde x ? 13 bolsa
         r qimmiti [*] bolsun
-    egerde x qimmiti 14 bolsa
+    egerde x ? 14 bolsa
         r qimmiti [/] bolsun
-    egerde x qimmiti 15 bolsa
+    egerde x ? 15 bolsa
         r qimmiti [=] bolsun
     bolmisa
         fonkisiye @xet[formatlash] bilen [%f] x ishlitilsun we netije r bolsun # str_format bug
@@ -84,16 +84,16 @@ tamamlansun
 
 # calculate result
 fonkisiye netijiniHisablash mezmuni
-    eger herketQimmet qimmiti quruq bolsa
+    eger herketQimmet ? quruq bolsa
         netijeQimmet qimmiti hazirqiQimmet bolsun
-    egerde herketQimmet qimmiti 11 bolsa
-        netijeQimmet qimmiti netijeQimmet qushulghan hazirqiQimmet bolsun
-    egerde herketQimmet qimmiti 12 bolsa
-        netijeQimmet qimmiti netijeQimmet elinghan hazirqiQimmet bolsun
-    egerde herketQimmet qimmiti 13 bolsa
-        netijeQimmet qimmiti netijeQimmet kupeytilgen hazirqiQimmet bolsun
-    egerde herketQimmet qimmiti 14 bolsa
-        netijeQimmet qimmiti netijeQimmet bulungen hazirqiQimmet bolsun
+    egerde herketQimmet ? 11 bolsa
+        netijeQimmet = netijeQimmet + hazirqiQimmet
+    egerde herketQimmet ? 12 bolsa
+        netijeQimmet = netijeQimmet - hazirqiQimmet
+    egerde herketQimmet ? 13 bolsa
+        netijeQimmet = netijeQimmet * hazirqiQimmet
+    egerde herketQimmet ? 14 bolsa
+        netijeQimmet = netijeQimmet / hazirqiQimmet
     tamamlansun
     herketQimmet qimmiti quruq bolsun
     hazirqiQimmet qimmiti 0 bolsun
@@ -102,68 +102,68 @@ tamamlansun
 # buttons callback
 fonkisiye kunupkaQauturmisi miqdar id mezmuni
     # check
-    test1 qimmiti aldinqiQimmet chong 0 bolsun
-    test2 qimmiti aldinqiQimmet kichik 11 bolsun
-    aldinqisiSanmu qimmiti test1 hemde test2 bolsun
-    test1 qimmiti aldinqiQimmet chong 10 bolsun
-    test2 qimmiti aldinqiQimmet kichik 15 bolsun
-    aldinqisiHerketmu qimmiti test1 hemde test2 bolsun
-    aldinqisiTengmu qimmiti aldinqiQimmet teng 15 bolsun
+    test1 = aldinqiQimmet > 0
+    test2 = aldinqiQimmet < 11
+    aldinqisiSanmu = test1 & test2
+    test1 = aldinqiQimmet > 10
+    test2 = aldinqiQimmet < 15
+    aldinqisiHerketmu = test1 & test2
+    aldinqisiTengmu = aldinqiQimmet ? 15
     # check
-    test1 qimmiti id chong 0 bolsun
-    test2 qimmiti id kichik 11 bolsun
-    buSanmu qimmiti test1 hemde test2 bolsun
-    test1 qimmiti id chong 10 bolsun
-    test2 qimmiti id kichik 15 bolsun
-    buHerketmu qimmiti test1 hemde test2 bolsun
-    buTengmu qimmiti id teng 15 bolsun
+    test1 = id > 0
+    test2 = id < 11
+    buSanmu = test1 & test2
+    test1 = id > 10
+    test2 = id < 15
+    buHerketmu = test1 & test2
+    buTengmu = id ? 15
     # invalid
-    sinaqQimmet qimmiti buTengmu hemde aldinqisiTengmu bolsun
-    eger sinaqQimmet qimmiti rast bolsa
+    sinaqQimmet = buTengmu & aldinqisiTengmu
+    eger sinaqQimmet bolsa
         netije quruq qayturulsun
     tamamlansun
-    sinaqQimmet qimmiti buTengmu hemde aldinqisiHerketmu bolsun
-    eger sinaqQimmet qimmiti rast bolsa
+    sinaqQimmet = buTengmu & aldinqisiHerketmu
+    eger sinaqQimmet bolsa
         netije quruq qayturulsun
     tamamlansun
-    sinaqQimmet qimmiti buHerketmu hemde aldinqisiHerketmu bolsun
-    eger sinaqQimmet qimmiti rast bolsa
+    sinaqQimmet = buHerketmu & aldinqisiHerketmu
+    eger sinaqQimmet bolsa
         netije quruq qayturulsun
     tamamlansun
-    sinaqQimmet qimmiti buHerketmu hemde aldinqisiTengmu bolsun
-    eger sinaqQimmet qimmiti rast bolsa
+    sinaqQimmet = buHerketmu & aldinqisiTengmu
+    eger sinaqQimmet bolsa
         netije quruq qayturulsun
     tamamlansun
-    sinaqQimmet qimmiti aldinqiQimmet chong ENG_CHONG_KIRGUZGILI_BULDIGHAN_QIMMET bolsun
-    eger sinaqQimmet qimmiti rast bolsa
+    sinaqQimmet = aldinqiQimmet > ENG_CHONG_KIRGUZGILI_BULDIGHAN_QIMMET
+    eger sinaqQimmet bolsa
         netije quruq qayturulsun
     tamamlansun
-    sinaqQimmet qimmiti netijeQimmet chong ENG_CHONG_HISABLIGHILI_BULDIGHAN_QIMMET bolsun
-    eger sinaqQimmet qimmiti rast bolsa
+    sinaqQimmet = netijeQimmet > ENG_CHONG_HISABLIGHILI_BULDIGHAN_QIMMET
+    eger sinaqQimmet bolsa
         netije quruq qayturulsun
     tamamlansun
     # record
     aldinqiQimmet qimmiti id bolsun
     # input number
-    eger buSanmu qimmiti rast bolsa
-        hazirqiQimmet qimmiti hazirqiQimmet kupeytilgen 10 bolsun
-        hazirqiQimmet qimmiti hazirqiQimmet qushulghan id bolsun
-        eger id qimmiti 10 bolsa
-            hazirqiQimmet qimmiti hazirqiQimmet elinghan 10 bolsun
+    eger buSanmu bolsa
+        hazirqiQimmet = hazirqiQimmet * 10
+        hazirqiQimmet = hazirqiQimmet + id
+        eger id ? 10 bolsa
+            hazirqiQimmet = hazirqiQimmet - 10
         tamamlansun
-        eger aldinqisiTengmu qimmiti rast bolsa
+        eger aldinqisiTengmu bolsa
             netijeQimmet qimmiti 0 bolsun
         tamamlansun
         netije quruq qayturulsun
     tamamlansun
     # input action
-    eger buHerketmu qimmiti rast bolsa
+    eger buHerketmu bolsa
         fonkisiye netijiniHisablash ishlitilsun
         hazirqiQimmet qimmiti 0 bolsun
         herketQimmet qimmiti id bolsun
     tamamlansun
     # equal button
-    eger buTengmu qimmiti rast bolsa
+    eger buTengmu bolsa
         fonkisiye netijiniHisablash ishlitilsun
         hazirqiQimmet qimmiti 0 bolsun
         herketQimmet qimmiti quruq bolsun
@@ -175,21 +175,21 @@ fonkisiye kunupkaSizish miqdar id mezmuni
     # 2d point
     fonkisiye @san[qalduqniHisablash] bilen id 5 ishlitilsun we netije kordinatX bolsun
     fonkisiye @san[bulunminiHisablash] bilen id 5 ishlitilsun we netije kordinatY bolsun
-    eger kordinatX qimmiti 0 bolsa
+    eger kordinatX ? 0 bolsa
         kordinatX qimmiti 5 bolsun
-        kordinatY qimmiti kordinatY elinghan 1 bolsun
+        kordinatY = kordinatY - 1
     tamamlansun
     # position
-    kordinatX qimmiti kordinatX elinghan 1 bolsun
-    kordinatY qimmiti kordinatY qushulghan 1 bolsun
-    kunupkaOrniX qimmiti 101 kupeytilgen kordinatX bolsun
-    kunupkaOrniY qimmiti 51 kupeytilgen kordinatY bolsun
-    kunupkaOrniX qimmiti kunupkaOrniX qushulghan 5 bolsun
-    kunupkaOrniY qimmiti kunupkaOrniY qushulghan 15 bolsun
+    kordinatX = kordinatX - 1
+    kordinatY = kordinatY + 1
+    kunupkaOrniX = 101 * kordinatX
+    kunupkaOrniY = 51 * kordinatY
+    kunupkaOrniX = kunupkaOrniX + 5
+    kunupkaOrniY = kunupkaOrniY + 15
     fonkisiye belgilerniElish bilen id ishlitilsun we netije kunupkaXeti bolsun
     # button
     fonkisiye @zapchas[kunupkaKorsitish] bilen kunupkaOrniX kunupkaOrniY 100 50 kunupkaXeti ishlitilsun we netije rr bolsun
-    eger rr qimmiti rast bolsa
+    eger rr bolsa
         fonkisiye kunupkaQauturmisi bilen id ishlitilsun
     tamamlansun
 
@@ -199,11 +199,11 @@ fonkisiye @*[doska_sizish_qayturmisi] mezmuni
 
     # buttons
     kunupkaNumuri qimmiti 1 bolsun
-    tekshuruldighanQimmet qimmiti kunupkaNumuri kichik kunupkaSani bolsun
-    nawada tekshuruldighanQimmet qimmiti rast bolsa
+    tekshuruldighanQimmet = kunupkaNumuri < kunupkaSani
+    nawada tekshuruldighanQimmet bolsa
         fonkisiye kunupkaSizish bilen kunupkaNumuri ishlitilsun
-        kunupkaNumuri qimmiti kunupkaNumuri qushulghan 1 bolsun
-        tekshuruldighanQimmet qimmiti kunupkaNumuri kichik kunupkaSani bolsun
+        kunupkaNumuri = kunupkaNumuri + 1
+        tekshuruldighanQimmet = kunupkaNumuri < kunupkaSani
     tamamlansun
     # screen
     fonkisiye @ressam[rayunToldurushAylandurulghan] bilen 7 5 500 55 [555555] 0 0 0 ishlitilsun
@@ -211,7 +211,7 @@ fonkisiye @*[doska_sizish_qayturmisi] mezmuni
     fonkisiye @ressam[rayunToldurushAylandurulghan] bilen 350 20 70 35 [88888833] 0 0 0 ishlitilsun
     # clear
     fonkisiye @zapchas[kunupkaKorsitish] bilen 425 10 75 45 [Tazilash] ishlitilsun we netije rr bolsun
-    eger rr qimmiti rast bolsa
+    eger rr bolsa
         fonkisiye tazilashQayturmisi ishlitilsun
     tamamlansun
     # input

@@ -7,8 +7,8 @@ miqdar ikranIgizliki qimmiti 500 bolsun
 # ikran merkizi
 miqdar merkezX qimmiti quruq bolsun
 miqdar merkezY qimmiti quruq bolsun
-merkezX qimmiti ikranKengliki bulungen 2 bolsun
-merkezY qimmiti ikranIgizliki bulungen 2 bolsun
+merkezX = ikranKengliki / 2
+merkezY = ikranIgizliki / 2
 
 # miqdarlar
 miqdar tema qimmiti [chik chik chik, oyghan balijan ...] bolsun
@@ -42,16 +42,16 @@ miqdar hazirqiRadius qimmiti quruq bolsun
 # miqdardin bulung hisablash
 fonkisiye bulungHisablash miqdar hazirqi umumiy mezmuni
     miqdar waqitliqQimmet qimmiti 360 bolsun
-    waqitliqQimmet qimmiti waqitliqQimmet bulungen umumiy bolsun
-    waqitliqQimmet qimmiti waqitliqQimmet kupeytilgen hazirqi bolsun
+    waqitliqQimmet = waqitliqQimmet / umumiy
+    waqitliqQimmet = waqitliqQimmet * hazirqi
     netije waqitliqQimmet qayturulsun
 tamamlansun
 
 # artuqche bulung hisablash
 fonkisiye artuqcheHisablash miqdar hazirqi jamiiy mezmuni
     miqdar waqitliqQimmet qimmiti jamiiy bolsun
-    waqitliqQimmet qimmiti waqitliqQimmet bulungen 360 bolsun
-    waqitliqQimmet qimmiti waqitliqQimmet kupeytilgen hazirqi bolsun
+    waqitliqQimmet = waqitliqQimmet / 360
+    waqitliqQimmet = waqitliqQimmet * hazirqi
     netije waqitliqQimmet qayturulsun
 tamamlansun
 
@@ -67,20 +67,20 @@ fonkisiye istirilkaSizish miqdar istirilka bulung mezmuni
     fonkisiye @san[sinosHisablash] bilen a ishlitilsun we netije a bolsun
     fonkisiye @san[kosinosHisablash] bilen b ishlitilsun we netije b bolsun
     # 
-    eger istirilka qimmiti SAET bolsa
+    eger istirilka ? SAET bolsa
         hazirqiRadius qimmiti saetRadiusi bolsun
-    egerde istirilka qimmiti MINUT bolsa
+    egerde istirilka ? MINUT bolsa
         hazirqiRadius qimmiti minutRadiusi bolsun
-    egerde istirilka qimmiti SIKUNIT bolsa
+    egerde istirilka ? SIKUNIT bolsa
         hazirqiRadius qimmiti sikunitRadiusi bolsun
     bolmisa
         hazirqiRadius qimmiti teglikRadiusi bolsun
     tamamlansun
     # 
-    x qimmiti hazirqiRadius kupeytilgen a bolsun
-    y qimmiti hazirqiRadius kupeytilgen b bolsun
-    x qimmiti merkezX qushulghan x bolsun
-    y qimmiti merkezY elinghan y bolsun
+    x = hazirqiRadius * a
+    y = hazirqiRadius * b
+    x = merkezX + x
+    y = merkezY - y
     # 
     fonkisiye @ressam[siziqSizish] bilen merkezX merkezY x y 5 [eeeeee] ishlitilsun
 tamamlansun
@@ -94,9 +94,9 @@ fonkisiye istirilkaHisablash miqdar hazirqiWaqit mezmuni
     minut qimmiti san bolsun
     sikunit qimmiti san bolsun
     # 24 saet alahide bir terep qilish
-    chushtinKiyinmu qimmiti saet chong 11 bolsun
-    eger chushtinKiyinmu qimmiti rast bolsa
-        saet qimmiti saet elinghan 12 bolsun
+    chushtinKiyinmu = saet > 11
+    eger chushtinKiyinmu bolsa
+        saet = saet - 12
     tamamlansun
     # gradusqa aylandurush
     fonkisiye bulungHisablash bilen saet 12 ishlitilsun we netije saetGradusi bolsun
@@ -105,8 +105,8 @@ fonkisiye istirilkaHisablash miqdar hazirqiWaqit mezmuni
     # artuqini hisablash
     fonkisiye artuqcheHisablash bilen minutGradusi 30 ishlitilsun we netije saetArtuqche bolsun
     fonkisiye artuqcheHisablash bilen sikunitGradusi 5 ishlitilsun we netije minutArtuqche bolsun
-    saetGradusi qimmiti saetGradusi qushulghan saetArtuqche bolsun
-    minutGradusi qimmiti minutGradusi qushulghan minutArtuqche bolsun
+    saetGradusi = saetGradusi + saetArtuqche
+    minutGradusi = minutGradusi + minutArtuqche
 tamamlansun
 
 

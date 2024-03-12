@@ -164,6 +164,10 @@ char *Value_toString(Value *this)
         return Value_isInt(this) ? tools_format("%i", (int)value) : tools_format("%.15g", (double)value);
     } if (this->type == UG_RTYPE_STR) {
         return String_dump(this->string);
+    } if (this->type == UG_RTYPE_FUN) {
+        return tools_format("<Function p:%d>\n",  this->object);
+    } if (this->type == UG_RTYPE_NTV) {
+        return tools_format("<Native p:%d>\n",  this->object);
     } else {
         void *value = this->object;
         return tools_format("<Object t:%c p:%d>\n", this->type, value != NULL ? value : 0);

@@ -8,15 +8,15 @@ miqdar d qimmiti 0.1 bolsun
 
 fonkisiye @*[doska_sizish_qayturmisi] mezmuni
 
-    t1 qimmiti x chong 400 bolsun
-    t2 qimmiti x kichik 100 bolsun
-    eger t1 qimmiti rast bolsa
+    t1 = x > 400
+    t2 = x < 100
+    eger t1 bolsa
         d qimmiti -0.1 bolsun
-    egerde t2 qimmiti rast bolsa
+    egerde t2 bolsa
         d qimmiti 0.1 bolsun
     tamamlansun
-    x qimmiti x qushulghan d bolsun
-    y qimmiti y qushulghan d bolsun
+    x = x + d
+    y = y + d
     fonkisiye @ressam[chemberSizish] bilen x y 100 100 [55aaff] ishlitilsun
 
 tamamlansun
