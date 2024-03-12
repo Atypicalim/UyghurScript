@@ -2,6 +2,7 @@
 
 #include "others/header.h"
 
+jmp_buf jump_buffer;
 struct Executer {
     Uyghur *uyghur;
     Leaf *tree;
@@ -12,6 +13,8 @@ struct Executer {
     Container *rootContainer;
     Container *globalContainer;
     bool isReturn;
+    bool isCatch;
+    char *errorMsg;
 };
 
 void Executer_consumeLeaf(Executer *, Leaf *);
@@ -43,9 +46,14 @@ void Executer_error(Executer *this, Token *token, char *msg)
     char *m = msg != NULL ? msg : LANG_ERR_EXECUTER_EXCEPTION;
     char *s = token == NULL ? LANG_UNKNOWN : format_token_place(token);
     char *err = tools_format("Executer: %s, %s", m, s);
-    printf("[%s] => %s\n", LANG_ERR, err);
-    Debug_writeTrace(this->uyghur->debug);
-    exit(1);
+    if (this->isCatch) {
+        this->errorMsg = err;
+        longjmp(jump_buffer, 1);
+    } else {
+        printf("[%s] => %s\n", LANG_ERR, err);
+        Debug_writeTrace(this->uyghur->debug);
+        exit(1);
+    }
 }
 
 void Executer_assert(Executer *this, bool value, Token *token, char *msg)
@@ -228,7 +236,7 @@ double Executer_calculateNumbers(Executer *this, double left, char *sign, double
     if (is_equal(sign, TVALUE_SIGN_PER)) return fmod(left, right);
     if (is_equal(sign, TVALUE_SIGN_MUL)) return left * right;
     if (is_equal(sign, TVALUE_SIGN_DIV)) {
-        Executer_assert(this, right != 0, token, LANG_ERR_EXECUTER_INVALID_DEVICE);
+        Executer_assert(this, right != 0, token, LANG_ERR_EXECUTER_INVALID_DEVIDE);
         return left / right;
     }
     int lInt = (int)left;
@@ -359,7 +367,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     }
 }
 
-void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
+void Executer_consumeConvert(Executer *this, Leaf *leaf)
 {
     Cursor *cursor = Stack_reset(leaf->tokens);
     Token *action = Stack_next(leaf->tokens, cursor);
@@ -429,123 +437,6 @@ void Executer_consumeExpSingle(Executer *this, Leaf *leaf)
     tools_assert(r != NULL, LANG_ERR_EXECUTER_CALCULATION_INVALID, act);
     Executer_setValueByToken(this, target, r, false);
     Object_release(value);
-}
-
-void Executer_consumeExpDouble(Executer *this, Leaf *leaf)
-{
-    Cursor *cursor = Stack_reset(leaf->tokens);
-    Token *second = Stack_next(leaf->tokens, cursor);
-    Token *action = Stack_next(leaf->tokens, cursor);
-    Token *first = Stack_next(leaf->tokens, cursor);
-    Token *target = Stack_next(leaf->tokens, cursor);
-    Cursor_free(cursor);
-    Value *secondV = Executer_getValueByToken(this, second, true);
-    Value *firstV = Executer_getValueByToken(this, first, true);
-    char firstType = firstV->type;
-    char secondType = secondV->type;
-    Value *r = NULL;
-    char *act = action->value;
-    //
-    // TODO add type change to standard libray and forbid expression between different types
-    if (is_equal(act, TVALUE_EQUAL) && firstType != secondType)
-    {
-        r = Value_newBoolean(false, NULL);
-    }
-    else if (firstType == secondType)
-    {
-        Executer_error(this, action, LANG_ERR_EXECUTER_EXP_INVALID_TYPE);
-    }
-    else if (is_values(act, TVALUE_GROUP_EXP_STRING) && firstType == UG_RTYPE_STR)
-    {
-        char *firstS = Value_toString(firstV);
-        char *secondS = Value_toString(secondV);
-        if (is_equal(act, TVALUE_EQUAL))
-        {
-            bool boolean = is_equal(firstS, secondS);
-            r = Value_newBoolean(boolean, NULL);
-        }
-        else if (is_equal(act, TVALUE_CONCAT))
-        {
-            r = Value_newString(String_format("%s%s", firstS, secondS), NULL);
-        }
-        pct_free(firstS);
-        pct_free(secondS);
-    }
-    else if (is_values(act, TVALUE_GROUP_EXP_NUMBER) && firstType == UG_RTYPE_NUM)
-    {
-        Value *vFirst = Value_toNumber(firstV);
-        Value *vSecond = Value_toNumber(secondV);
-        double firstN = vFirst->number;
-        double secondN = vSecond->number;
-        Object_release(vFirst);
-        Object_release(vSecond);
-        if (is_equal(act, TVALUE_EQUAL))
-        {
-            r = Value_newBoolean(firstN == secondN, NULL);
-        }
-        else if (is_equal(act, TVALUE_LESS))
-        {
-            r = Value_newBoolean(firstN < secondN, NULL);
-        }
-        else if (is_equal(act, TVALUE_MORE))
-        {
-            r = Value_newBoolean(firstN > secondN, NULL);
-        }
-        else if (is_equal(act, TVALUE_ADD))
-        {
-            r = Value_newNumber(firstN + secondN, NULL);
-        }
-        else if (is_equal(act, TVALUE_SUB))
-        {
-            r = Value_newNumber(firstN - secondN, NULL);
-        }
-        else if (is_equal(act, TVALUE_MUL))
-        {
-            r = Value_newNumber(firstN * secondN, NULL);
-        }
-        else if (is_equal(act, TVALUE_DIV))
-        {
-            Executer_assert(this, secondN != 0, second, LANG_ERR_EXECUTER_INVALID_DEVICE);
-            r = Value_newNumber(firstN / secondN, NULL);
-        }
-    }
-    else if (is_values(act, TVALUE_GROUP_EXP_BOOL) && firstType == UG_RTYPE_BOL)
-    {
-        Value *vFirst = Value_toBoolean(firstV);
-        Value *vSecond = Value_toBoolean(secondV);
-        bool firstB = vFirst->boolean;
-        bool secondB = vSecond->boolean;
-        Object_release(vFirst);
-        Object_release(vSecond);
-        if (is_equal(act, TVALUE_EQUAL))
-        {
-            r = Value_newBoolean(firstB == secondB, NULL);
-        }
-        else if (is_equal(act, TVALUE_AND))
-        {
-            r = Value_newBoolean(firstB == true && secondB == true, NULL);
-        }
-        else if (is_equal(act, TVALUE_OR))
-        {
-            r = Value_newBoolean(firstB == true || secondB == true, NULL);
-        }
-    }
-    else if (is_values(act, TVALUE_GROUP_EXP_CONTAINER) && firstType == UG_RTYPE_CNT)
-    {
-        char *firstS = Value_toString(firstV);
-        char *secondS = Value_toString(secondV);
-        if (is_equal(act, TVALUE_EQUAL))
-        {
-            bool boolean = is_equal(firstS, secondS);
-            r = Value_newBoolean(boolean, NULL);
-        }
-        pct_free(firstS);
-        pct_free(secondS);
-    }
-    Object_release(firstV);
-    Object_release(secondV);
-    tools_assert(r != NULL, LANG_ERR_EXECUTER_CALCULATION_INVALID, act);
-    Executer_setValueByToken(this, target, r, false);
 }
 
 bool Executer_checkJudge(Executer *this, Leaf *leaf)
@@ -637,13 +528,31 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
 
 void Executer_consumeWhile(Executer *this, Leaf *leaf)
 {
-
     while (Executer_checkJudge(this, leaf))
     {
         Executer_pushContainer(this, UG_CTYPE_SCP);
         Executer_consumeTree(this, leaf);
         Executer_popContainer(this, UG_CTYPE_SCP);
     }
+}
+
+void Executer_consumeException(Executer *this, Leaf *leaf)
+{
+    
+    Cursor *cursor = Stack_reset(leaf->tokens);
+    Token *name = Stack_next(leaf->tokens, cursor);
+    Cursor_free(cursor);
+    this->isCatch = true;
+    // 
+    Executer_pushContainer(this, UG_CTYPE_SCP);
+    Executer_consumeTree(this, leaf);
+    Executer_popContainer(this, UG_CTYPE_SCP);
+    // 
+    this->isCatch = false;
+    String *message = String_format("%s", this->errorMsg);
+    Value *error = Value_newString(message, NULL);
+    this->errorMsg = NULL;
+    Executer_setValueByToken(this, name, error, true);
 }
 
 void Executer_consumeFunction(Executer *this, Leaf *leaf)
@@ -826,6 +735,10 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
     char tp = leaf->type;
+    // 
+    if (setjmp(jump_buffer) != 0 || (this->errorMsg != NULL && tp != UG_ATYPE_EXC)) {
+        return;
+    }
     // variable
     if (tp == UG_ATYPE_VAR)
     {
@@ -838,16 +751,10 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
         Executer_consumeOperate(this, leaf);
         return;
     }
-    // expression single
-    if (tp == UG_ATYPE_EXP_S)
+    // expression
+    if (tp == UG_ATYPE_CVT)
     {
-        Executer_consumeExpSingle(this, leaf);
-        return;
-    }
-    // expression double
-    if (tp == UG_ATYPE_EXP_D)
-    {
-        Executer_consumeExpDouble(this, leaf);
+        Executer_consumeConvert(this, leaf);
         return;
     }
     // if
@@ -860,6 +767,12 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     if(tp == UG_ATYPE_WHL)
     {
         Executer_consumeWhile(this, leaf);
+        return;
+    }
+    // exception
+    if(tp == UG_ATYPE_EXC)
+    {
+        Executer_consumeException(this, leaf);
         return;
     }
     // function

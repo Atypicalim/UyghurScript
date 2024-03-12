@@ -46,7 +46,7 @@ void helper_print_leaf(Leaf *this, char *_space)
     char *space =  String_dump(str);
     Object_release(str);
     // TODO
-    printf("%s[LEAF => type:%s]\n", space, this->type);
+    printf("%s[LEAF => type:%c]\n", space, this->type);
     //
     printf("%s [STACK]\n", space);
     Block *currentT = this->tokens->head;

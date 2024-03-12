@@ -12,7 +12,8 @@ struct Tokenizer{
     const char *code;
     Token *head;
     Token *tail;
-    Hashmap *keywordsMap;
+    Hashmap *aliasMap;
+    Hashmap *wordsMap;
 };
 
 void Tokenizer_reset(Tokenizer *this)
@@ -39,76 +40,44 @@ void _fill_keyword(Hashmap *map, char *tvalue)
 
 Tokenizer *Tokenizer_new(Uyghur *uyghur)
 {
+    // alias
+    Hashmap *aliasMap = Hashmap_new();
+    size_t aSize = sizeof(UG_ALIAS_MAP) / sizeof(UG_ALIAS_MAP[0]);
+    for (size_t i = 0; i < aSize; i++) {
+        char *key = (char *)UG_ALIAS_MAP[i].key;
+        char *val = (char *)UG_ALIAS_MAP[i].val;
+        Hashmap_set(aliasMap, key, String_format(val));
+    }
+    // words
+    Hashmap *wordsMap = Hashmap_new();
+    size_t wSize = sizeof(UG_WORDS_MAP) / sizeof(UG_WORDS_MAP[0]);
+    for (size_t i = 0; i < wSize; i++) {
+        char *key = (char *)UG_WORDS_MAP[i].key;
+        char *val = (char *)UG_WORDS_MAP[i].val;
+        if (val == NULL) val = key;
+        Hashmap_set(wordsMap, key, String_format(val));
+    }
+    // init
     Tokenizer *tokenizer = malloc(sizeof(Tokenizer));
     tokenizer->uyghur = uyghur;
-    Hashmap *map = Hashmap_new();
-    _fill_keyword(map, TVALUE_WHILE);
-    _fill_keyword(map, TVALUE_IF);
-    _fill_keyword(map, TVALUE_IF_ELSE);
-    _fill_keyword(map, TVALUE_IF_OK);
-    _fill_keyword(map, TVALUE_IF_NO);
-    _fill_keyword(map, TVALUE_CODE_END);
-    _fill_keyword(map, TVALUE_OUTPUT);
-    _fill_keyword(map, TVALUE_INPUT);
-    _fill_keyword(map, TVALUE_DOT);
-    _fill_keyword(map, TVALUE_STR);
-    _fill_keyword(map, TVALUE_NUM);
-    _fill_keyword(map, TVALUE_BOOLEAN);
-    _fill_keyword(map, TVALUE_AND);
-    _fill_keyword(map, TVALUE_OR);
-    _fill_keyword(map, TVALUE_NOT);
-    _fill_keyword(map, TVALUE_ADD);
-    _fill_keyword(map, TVALUE_SUB);
-    _fill_keyword(map, TVALUE_MUL);
-    _fill_keyword(map, TVALUE_DIV);
-    _fill_keyword(map, TVALUE_LESS);
-    _fill_keyword(map, TVALUE_MORE);
-    _fill_keyword(map, TVALUE_CONCAT);
-    _fill_keyword(map, TVALUE_EQUAL);
-    _fill_keyword(map, TVALUE_TARGET_FROM);
-    _fill_keyword(map, TVALUE_TARGET_TO);
-    _fill_keyword(map, TVALUE_VARIABLE);
-    _fill_keyword(map, TVALUE_VALUE);
-    _fill_keyword(map, TVALUE_MADE);
-    _fill_keyword(map, TVALUE_FUNCTION);
-    _fill_keyword(map, TVALUE_CONTENT);
-    _fill_keyword(map, TVALUE_WITH);
-    _fill_keyword(map, TVALUE_CALL);
-    _fill_keyword(map, TVALUE_RETURN);
-    _fill_keyword(map, TVALUE_FURTHER);
-    _fill_keyword(map, TVALUE_RESULT);
-    _set_keyword(map, TVALUE_TRUE, UG_TTYPE_BOL);
-    _set_keyword(map, TVALUE_FALSE, UG_TTYPE_BOL);
-    _set_keyword(map, TVALUE_EMPTY, UG_TTYPE_EMP);
-    _set_keyword(map, TVALUE_BOX, UG_TTYPE_BOX);
-    _fill_keyword(map, TVALUE_CALCULATOR);
-    _set_keyword(map, TVALUE_SIGN_ADD, UG_TTYPE_CLC);
-    _set_keyword(map, TVALUE_SIGN_SUB, UG_TTYPE_CLC);
-    _set_keyword(map, TVALUE_SIGN_MUL, UG_TTYPE_CLC);
-    _set_keyword(map, TVALUE_SIGN_DIV, UG_TTYPE_CLC);
-    _set_keyword(map, TVALUE_SIGN_POW, UG_TTYPE_CLC);
-    _set_keyword(map, TVALUE_SIGN_PER, UG_TTYPE_CLC);
-    _set_keyword(map, TVALUE_SIGN_EQUAL, UG_TTYPE_CLC);
-    _set_keyword(map, TVALUE_SIGN_MORE, UG_TTYPE_CLC);
-    _set_keyword(map, TVALUE_SIGN_LESS, UG_TTYPE_CLC);
-    _set_keyword(map, TVALUE_SIGN_NOT, UG_TTYPE_CLC);
-    _set_keyword(map, TVALUE_SIGN_AND, UG_TTYPE_CLC);
-    _set_keyword(map, TVALUE_SIGN_ORR, UG_TTYPE_CLC);
-    _set_keyword(map, TVALUE_SIGN_LNK, UG_TTYPE_CLC);
-    _fill_keyword(map, TVALUE_OPEN);
-    _fill_keyword(map, TVALUE_CLOSE);
-    tokenizer->keywordsMap = map;
+    tokenizer->aliasMap = aliasMap;
+    tokenizer->wordsMap = wordsMap;
     Tokenizer_reset(tokenizer);
     return tokenizer;
 }
 
-char *Tokenizer_getWord(Tokenizer *this, String *letter)
-{
-    String *val = Hashmap_get(this->keywordsMap, String_get(letter));
-    if (val == NULL) return NULL;
-    // TODO: replace words with signs
-    char *typ = String_equal(letter, val) ? UG_TTYPE_WRD : String_get(val);
-    return typ;
+Token *Tokenizer_parseLetter(Tokenizer *this, String *letter, bool isGetName)
+{   
+    // alias 
+    String *alias = Hashmap_get(this->aliasMap, String_get(letter));
+    if (alias != NULL) letter = alias;
+    // name
+    String *val = Hashmap_get(this->wordsMap, String_get(letter));
+    if (val == NULL) return Token_new(UG_TTYPE_NAM, String_get(letter));
+    // word
+    char *type = String_equal(letter, val) ? UG_TTYPE_WRD : String_get(val);
+    Token *token = Token_new(type, String_get(letter));
+    return token;
 }
 
 char Tokenizer_getchar(Tokenizer *this, int indent)
@@ -167,17 +136,16 @@ void Token_addToken(Tokenizer *this, Token *token) {
 }
 
 void Tokenizer_addLetter(Tokenizer *this, String *value) {
-    char *type = Tokenizer_getWord(this, value);
-    if (type == NULL) type = UG_TTYPE_NAM;
-    Token *token = Token_new(type, String_get(value));
+    Token *token = Tokenizer_parseLetter(this, value, true);
     Token_addToken(this, token);
 }
 
 String *Tokenizer_readLetter(Tokenizer *this) {
     String *str = String_new();
     char c = Tokenizer_getchar(this, 0);
+    char n = Tokenizer_getchar(this, 1);
     //
-    Tokenizer_assert(this, is_letter_begin(c), LANG_ERR_INVALID_LTTR);
+    Tokenizer_assert(this, is_letter_begin(c, n), LANG_ERR_INVALID_LTTR);
     String_appendChar(str, c);
     Tokenizer_skipN(this, 1);
     c = Tokenizer_getchar(this, 0);
@@ -321,8 +289,8 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             char *typ = NULL;
             if (openChar == '{') {
                 txt = Tokenizer_readLetter(this);
-                char *_typ = Tokenizer_getWord(this, txt);
-                Tokenizer_assert(this, _typ == NULL, LANG_ERR_TOKENIZER_WORD_CANNOT_BE_KEY);
+                Token *_tkn = Tokenizer_parseLetter(this, txt, false);
+                Tokenizer_assert(this, _tkn == NULL, LANG_ERR_TOKENIZER_WORD_CANNOT_BE_KEY);
                 typ = UG_TTYPE_NAM;
             } else if (openChar == '[') {
                 txt = Tokenizer_readString(this, false);
@@ -396,7 +364,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue;
         }
         // number
-        if (is_number_begin(currentChar))
+        if (is_number_begin(currentChar, Tokenizer_getchar(this, 1)))
         {
             String *num = Tokenizer_readNumber(this, true);
             Token *tkn = Token_new(UG_TTYPE_NUM, String_get(num));
@@ -404,7 +372,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue; 
         }
         // letter
-        if (is_letter_begin(currentChar))
+        if (is_letter_begin(currentChar, Tokenizer_getchar(this, 1)))
         {
             String *ltr = Tokenizer_readLetter(this);
             Tokenizer_addLetter(this, ltr);
@@ -428,10 +396,15 @@ void Tokenizer_free(Tokenizer *this)
         Token_free(current);
         current = temp;
     }
-    if (this->keywordsMap != NULL)
+    if (this->aliasMap != NULL)
     {
-        Object_release(this->keywordsMap);
-        this->keywordsMap = NULL;
+        Object_release(this->aliasMap);
+        this->aliasMap = NULL;
+    }
+    if (this->wordsMap != NULL)
+    {
+        Object_release(this->wordsMap);
+        this->wordsMap = NULL;
     }
     this->uyghur = NULL;
     Tokenizer_reset(this);

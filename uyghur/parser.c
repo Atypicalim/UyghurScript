@@ -205,14 +205,15 @@ Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
     return this->token;
 }
 
+// TODO:relace calculation word
 void Parser_consumeAstVariable(Parser *this)
 {
     Parser_checkWord(this, 0, 1, TVALUE_VARIABLE);
     Token *name = Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
-    Parser_checkWord(this, 1, 1, TVALUE_VALUE);
-    Token *action = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
+    Parser_checkWord(this, 1, 1, TVALUE_INITIAL);
+    Token *token = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
     Parser_checkWord(this, 1, 1, TVALUE_MADE);
-    Parser_pushLeaf(this, UG_ATYPE_VAR, 2, name, action);
+    Parser_pushLeaf(this, UG_ATYPE_VAR, 2, name, token);
 }
 
 void Parser_consumeAstOperate(Parser *this)
@@ -233,103 +234,24 @@ void Parser_consumeAstOperate(Parser *this)
     Parser_pushLeaf(this, UG_ATYPE_OPRT, 3, target, name, action);
 }
 
-void Parser_consumeAstExpression(Parser *this)
+void Parser_consumeAstConvert(Parser *this)
 {
     Token *target = Parser_checkType(this, 0, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
-    Parser_checkWord(this, 1, 1, TVALUE_VALUE);
+    Parser_checkWord(this, 1, 1, TVALUE_CONVERT);
     // single
     if (Parser_isWord(this, 2, TVALUE_MADE))
     {
         Token *source = NULL;
         if (Parser_isType(this, 1, UG_TTYPE_WRD))
         {
-            source = Parser_checkWord(this, 1, TVAUE_GROUP_EXP_SINGLE);
+            source = Parser_checkWord(this, 1, TVAUES_GROUP_CONVERT);
         }
         else
         {
             source = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
         }
         Parser_checkWord(this, 1, 1, TVALUE_MADE);
-        Parser_pushLeaf(this, UG_ATYPE_EXP_S, 2, target, source);
-        return;
-    }
-    // string
-    if (Parser_isType(this, 1, UG_TTYPE_STR))
-    {
-        Token *first = Parser_checkType(this, 1, 1, UG_TTYPE_STR);
-        Token *action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_STRING);
-        Token *second = Parser_checkType(this, 1, 3, UG_TTYPE_STR, UG_TTYPE_NAM, UG_TTYPE_KEY);
-        Parser_checkWord(this, 1, 1, TVALUE_MADE);
-        Parser_pushLeaf(this, UG_ATYPE_EXP_D, 4, target, first, action, second);
-        return;
-    }
-    // number
-    if (Parser_isType(this, 1, UG_TTYPE_NUM))
-    {
-        Token *first = Parser_checkType(this, 1, 1, UG_TTYPE_NUM);
-        Token *action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_NUMBER);
-        Token *second = Parser_checkType(this, 1, 3, UG_TTYPE_NUM, UG_TTYPE_NAM, UG_TTYPE_KEY);
-        Parser_checkWord(this, 1, 1, TVALUE_MADE);
-        Parser_pushLeaf(this, UG_ATYPE_EXP_D, 4, target, first, action, second);
-        return;
-    }
-    // bool
-    if (Parser_isType(this, 1, UG_TTYPE_BOL) || Parser_isType(this, 1, UG_TTYPE_EMP))
-    {
-        Token *first = Parser_checkType(this, 1, 2, UG_TTYPE_BOL, UG_TTYPE_EMP);
-        Token *action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_BOOL);
-        Token *second = Parser_checkType(this, 1, 4, UG_TTYPE_BOL, UG_TTYPE_EMP, UG_TTYPE_NAM, UG_TTYPE_KEY);
-        Parser_checkWord(this, 1, 1, TVALUE_MADE);
-        Parser_pushLeaf(this, UG_ATYPE_EXP_D, 4, target, first, action, second);
-        return;
-    }
-    // name
-    if (Parser_isType(this, 1, UG_TTYPE_NAM) || Parser_isType(this, 1, UG_TTYPE_KEY))
-    {
-        Token *first = Parser_checkType(this, 1, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
-        Token *action = NULL;
-        Token *second = NULL;
-        if (Parser_isType(this, 2, UG_TTYPE_STR))
-        {
-            action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_STRING);
-            second = Parser_checkType(this, 1, 1, UG_TTYPE_STR);
-        }
-        else if (Parser_isType(this, 2, UG_TTYPE_NUM))
-        {
-            action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_NUMBER);
-            second = Parser_checkType(this, 1, 1, UG_TTYPE_NUM);
-        }
-        else if (Parser_isType(this, 2, UG_TTYPE_BOL) || Parser_isType(this, 2, UG_TTYPE_EMP))
-        {
-            action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_BOOL);
-            second = Parser_checkType(this, 1, 2, UG_TTYPE_BOL, UG_TTYPE_EMP);
-        }
-        else if (Parser_isType(this, 2, UG_TTYPE_NAM) || Parser_isType(this, 2, UG_TTYPE_KEY))
-        {
-            action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_ALL);
-            second = Parser_checkType(this, 1, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
-        }
-        else if (Parser_isType(this, 2, UG_TTYPE_BOX))
-        {
-            action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_CONTAINER);
-            second = Parser_checkType(this, 1, 1, UG_TTYPE_BOX);
-        }
-        else
-        {
-            Parser_error(this, NULL);
-        }
-        Parser_checkWord(this, 1, 1, TVALUE_MADE);
-        Parser_pushLeaf(this, UG_ATYPE_EXP_D, 4, target, first, action, second);
-        return;
-    }
-    // box
-    if (Parser_isType(this, 1, UG_TTYPE_BOX))
-    {
-        Token *first = Parser_checkType(this, 1, 1, UG_TTYPE_BOX);
-        Token *action = Parser_checkValue(this, 1, TVALUE_GROUP_EXP_CONTAINER);
-        Token *second = Parser_checkType(this, 1, 3, UG_TTYPE_BOX, UG_TTYPE_NAM, UG_TTYPE_KEY);
-        Parser_checkWord(this, 1, 1, TVALUE_MADE);
-        Parser_pushLeaf(this, UG_ATYPE_EXP_D, 4, target, first, action, second);
+        Parser_pushLeaf(this, UG_ATYPE_CVT, 2, target, source);
         return;
     }
     Parser_error(this, NULL);
@@ -407,6 +329,15 @@ void Parser_consumeAstWhile(Parser *this)
 {
     Parser_checkWord(this, 0, 1, TVALUE_WHILE);
     Parser_consumeAstJudge(this, UG_ATYPE_WHL);
+    Parser_openBranch(this);
+}
+
+void Parser_consumeAstException(Parser *this)
+{
+    Parser_checkWord(this, 0, 1, TVALUE_EXCEPTION);
+    Token *name = Parser_checkType(this, 1, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
+    Parser_checkWord(this, 1, 1, TVALUE_CONTENT);
+    Parser_pushLeaf(this, UG_ATYPE_EXC, 1, name);
     Parser_openBranch(this);
 }
 
@@ -610,10 +541,16 @@ void Parser_consumeToken(Parser *this, Token *token)
         Parser_consumeAstWhile(this);
         return;
     }
-    // EXPRESSION
-    if ((is_equal(t, UG_TTYPE_NAM) || is_equal(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_VALUE))
+    // exception
+    if (is_equal(v, TVALUE_EXCEPTION))
     {
-        Parser_consumeAstExpression(this);
+        Parser_consumeAstException(this);
+        return;
+    }
+    // EXPRESSION
+    if ((is_equal(t, UG_TTYPE_NAM) || is_equal(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_CONVERT))
+    {
+        Parser_consumeAstConvert(this);
         return;
     }
     // calculate

@@ -1,16 +1,12 @@
 
 miqdar x qimmiti 0 bolsun
-nawada quruq qimmiti rast bolmisa
-    x = x + 1
-    ikrangha x yezilsun
-    ikrangha [\n] yezilsun
-tamamlansun
 
-# # exception
-# ijralash
-#     # 
-#     # 
-#     # 
-# xataliq e bolsa/bolmisa
-#     # 
-# tamamlansun
+# exception
+xataliq e mezmuni
+    ikrangha [111\n] yezilsun
+    x = 3 / 0
+    ikrangha x yezilsun
+    ikrangha [\n222\n] yezilsun
+tamamlansun
+ikrangha e yezilsun
+ikrangha [\nEnd!] yezilsun

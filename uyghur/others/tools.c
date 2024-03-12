@@ -85,9 +85,12 @@ bool is_character(char *str, char ch)
     return strlen(str) == 1 && str[0] == ch;
 }
 
-bool is_number_begin(char c)
+bool is_number_begin(char c, char n)
 {
-    return c == '+' || c == '-' || isdigit(c);
+    if (isdigit(c)) return true;
+    if ((c == '+' || c == '-') && isdigit(n)) return true;
+    return false;
+
 }
 
 bool is_number_body(char c)
@@ -95,9 +98,11 @@ bool is_number_body(char c)
     return isdigit(c) || c == '.';
 }
 
-bool is_letter_begin(char c)
+bool is_letter_begin(char c, char n)
 {
-    return isalpha(c) || c == '_' || c == '$';
+    if (isalpha(c)) return true;
+    if ((c == '_' || c == '$') && isalpha(n)) return true;
+    return false;
 }
 
 bool is_letter_body(char c)
@@ -108,9 +113,11 @@ bool is_letter_body(char c)
 bool is_letter_valid(const char* str)
 {
     char c;
+    char n;
     for (int i = 0; str[i] != '\0'; i++) {
         c = str[i];
-        if (i == 0 && !is_letter_begin(c)) return false;
+        n = str[i + 1];
+        if (i == 0 && !is_letter_begin(c, n)) return false;
         if (i != 0 && !is_letter_body(c)) return false;
     }
     return true;

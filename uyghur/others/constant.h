@@ -39,8 +39,8 @@
 #define UG_ATYPE_IF_M ':'
 #define UG_ATYPE_IF_L ';'
 #define UG_ATYPE_WHL 'W'
-#define UG_ATYPE_EXP_S 'S'
-#define UG_ATYPE_EXP_D 'D' // TODO complex
+#define UG_ATYPE_EXC 'X'
+#define UG_ATYPE_CVT 'C'
 #define UG_ATYPE_OPRT '%'
 #define UG_ATYPE_CLC '='
 
@@ -78,9 +78,6 @@
 //
 #define TVALUE_TRUE "rast"
 #define TVALUE_FALSE "yalghan"
-//
-#define TVALUE_AND "hemde"
-#define TVALUE_OR "yaki"
 #define TVALUE_NOT "ekische"
 
 // calculate
@@ -108,23 +105,16 @@
 #define TVALUE_CLOSE ")"
 
 //
-#define TVALUE_ADD "qushulghan"
-#define TVALUE_SUB "elinghan"
-#define TVALUE_MUL "kupeytilgen"
-#define TVALUE_DIV "bulungen"
-#define TVALUE_LESS "kichik"
-#define TVALUE_MORE "chong"
-// 
-#define TVALUE_CONCAT "ulanghan"
-#define TVALUE_EQUAL "teng"
-//
 #define TVALUE_TARGET_FROM "ikrandin" // TODO implement with standart library -> box+func
 #define TVALUE_TARGET_TO "ikrangha" // TODO implement with standart library -> box+func (screen, file, etc)
 //
 #define TVALUE_VARIABLE "miqdar"
-#define TVALUE_VALUE "qimmiti"
+#define TVALUE_INITIAL "qimmiti" // beshida
+#define TVALUE_CONVERT "qimmiti" // tipi
 #define TVALUE_MADE "bolsun"
-
+// 
+#define TVALUE_EXCEPTION "xataliq"
+// 
 #define TVALUE_FUNCTION "fonkisiye"
 #define TVALUE_CONTENT "mezmuni"
 #define TVALUE_WITH "bilen"
@@ -132,6 +122,78 @@
 #define TVALUE_RETURN "qayturulsun"
 #define TVALUE_FURTHER "we"
 #define TVALUE_RESULT "netije"
+
+const UG_PAIRS UG_ALIAS_MAP[] = {
+    // 
+    {"qushulghan", TVALUE_SIGN_ADD},
+    {"elinghan", TVALUE_SIGN_SUB},
+    {"kupeytilgen", TVALUE_SIGN_MUL},
+    {"bulungen", TVALUE_SIGN_DIV},
+    // 
+    {"kichik", TVALUE_SIGN_LESS},
+    {"chong", TVALUE_SIGN_MORE},
+    {"teng", TVALUE_SIGN_EQUAL},
+    // 
+    {"ekische", TVALUE_SIGN_NOT},
+    {"hemde", TVALUE_SIGN_AND},
+    {"yaki", TVALUE_SIGN_ORR},
+};
+
+const UG_PAIRS UG_WORDS_MAP[] = {
+    {TVALUE_VARIABLE, 0},
+    {TVALUE_INITIAL, 0},
+    {TVALUE_MADE, 0},
+    {TVALUE_CODE_END, 0},
+    {TVALUE_IF_OK, 0},
+    {TVALUE_IF_NO, 0},
+    // 
+    {TVALUE_OUTPUT, 0},
+    {TVALUE_INPUT, 0},
+    {TVALUE_TARGET_FROM, 0},
+    {TVALUE_TARGET_TO, 0},
+    // 
+    {TVALUE_WHILE, 0},
+    {TVALUE_IF, 0},
+    {TVALUE_IF_ELSE, 0},
+    //
+    {TVALUE_EXCEPTION, 0},
+    // 
+    {TVALUE_FUNCTION, 0},
+    {TVALUE_CONTENT, 0},
+    {TVALUE_WITH, 0},
+    {TVALUE_CALL, 0},
+    {TVALUE_RETURN, 0},
+    {TVALUE_FURTHER, 0},
+    {TVALUE_RESULT, 0},
+    // 
+    {TVALUE_STR, 0},
+    {TVALUE_NUM, 0},
+    {TVALUE_BOOLEAN, 0},
+    {TVALUE_NOT, 0},
+    // 
+    {TVALUE_TRUE, UG_TTYPE_BOL},
+    {TVALUE_FALSE, UG_TTYPE_BOL},
+    {TVALUE_EMPTY, UG_TTYPE_EMP},
+    {TVALUE_BOX, UG_TTYPE_BOX},
+    // 
+    {TVALUE_CALCULATOR, 0},
+    {TVALUE_SIGN_ADD, UG_TTYPE_CLC},
+    {TVALUE_SIGN_SUB, UG_TTYPE_CLC},
+    {TVALUE_SIGN_MUL, UG_TTYPE_CLC},
+    {TVALUE_SIGN_DIV, UG_TTYPE_CLC},
+    {TVALUE_SIGN_POW, UG_TTYPE_CLC},
+    {TVALUE_SIGN_PER, UG_TTYPE_CLC},
+    {TVALUE_SIGN_EQUAL, UG_TTYPE_CLC},
+    {TVALUE_SIGN_MORE, UG_TTYPE_CLC},
+    {TVALUE_SIGN_LESS, UG_TTYPE_CLC},
+    {TVALUE_SIGN_NOT, UG_TTYPE_CLC},
+    {TVALUE_SIGN_AND, UG_TTYPE_CLC},
+    {TVALUE_SIGN_ORR, UG_TTYPE_CLC},
+    {TVALUE_SIGN_LNK, UG_TTYPE_CLC},
+    //
+    {TVALUE_OPEN, 0},
+    {TVALUE_CLOSE, 0},
+};
 
 #define TTYPES_GROUP_DEFINE 7, UG_TTYPE_NAM, UG_TTYPE_KEY, UG_TTYPE_STR, UG_TTYPE_NUM, UG_TTYPE_BOL, UG_TTYPE_EMP, UG_TTYPE_BOX
 #define TTYPES_GROUP_VALUES 6, UG_TTYPE_NAM, UG_TTYPE_KEY, UG_TTYPE_STR, UG_TTYPE_NUM, UG_TTYPE_BOL, UG_TTYPE_EMP
@@ -141,14 +203,7 @@
 #define TTYPES_GROUP_KEYS 3, UG_TTYPE_NAM, UG_TTYPE_STR, UG_TTYPE_NUM
 
 #define TTYPES_GROUP_TARGETS 2, TVALUE_TARGET_FROM, TVALUE_TARGET_TO
-
-#define TVALUE_GROUP_EXP_STRING 2, TVALUE_EQUAL, TVALUE_CONCAT
-#define TVALUE_GROUP_EXP_NUMBER 7, TVALUE_EQUAL, TVALUE_ADD, TVALUE_SUB, TVALUE_MUL, TVALUE_DIV, TVALUE_LESS, TVALUE_MORE
-#define TVALUE_GROUP_EXP_BOOL 3, TVALUE_EQUAL, TVALUE_AND, TVALUE_OR
-#define TVALUE_GROUP_EXP_ALL 10, TVALUE_EQUAL, TVALUE_CONCAT, TVALUE_ADD, TVALUE_SUB, TVALUE_MUL, TVALUE_DIV, TVALUE_LESS, TVALUE_MORE, TVALUE_AND, TVALUE_OR
-#define TVALUE_GROUP_EXP_CONTAINER 1, TVALUE_EQUAL
-
-#define TVAUE_GROUP_EXP_SINGLE 6, TVALUE_NUM, TVALUE_STR, TVALUE_EMPTY, TVALUE_BOOLEAN, TVALUE_FUNCTION, TVALUE_NOT
+#define TVAUES_GROUP_CONVERT 6, TVALUE_NUM, TVALUE_STR, TVALUE_EMPTY, TVALUE_BOOLEAN, TVALUE_FUNCTION, TVALUE_NOT
 
 #define TVAUE_GROUP_CALCULATION_ALL 3, TVALUE_SIGN_EQUAL, TVALUE_SIGN_LESS, TVALUE_SIGN_MORE
 #define TVAUE_GROUP_CALCULATION_NUM 6, TVALUE_SIGN_ADD, TVALUE_SIGN_SUB, TVALUE_SIGN_MUL, TVALUE_SIGN_DIV, TVALUE_SIGN_POW, TVALUE_SIGN_PER

@@ -40,7 +40,7 @@
 
 // executer
 #define LANG_ERR_EXECUTER_EXCEPTION "ijra xataliqi kuruldi"
-#define LANG_ERR_EXECUTER_NOT_IMPLEMENTED "ijra qilish qollanmidi:[%s]"
+#define LANG_ERR_EXECUTER_NOT_IMPLEMENTED "ijra qilish qollanmidi:[%c]"
 #define LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND "nishanlanghan sanduq tepilmidi"
 #define LANG_ERR_EXECUTER_EXP_INVALID_TYPE "oxshashmighan miqdar tipi arisida xisablash elip barghili bolmaydu"
 #define LANG_ERR_EXECUTER_KEY_INVALID_TOKEN "inawetsiz achquch qimmiti uchritildi"
@@ -51,7 +51,7 @@
 #define LANG_ERR_EXECUTER_INVALID_IF "eger jumlisi inawetsiz"
 #define LANG_ERR_EXECUTER_BRIDGE_INVALID_RESULT "kowruk qayturghan qimmet inawetsiz"
 #define LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND "ijra qilinghuchi tepilmidi"
-#define LANG_ERR_EXECUTER_INVALID_DEVICE "bolguchi san qimmiti nol bolsa bolmaydu: "
+#define LANG_ERR_EXECUTER_INVALID_DEVIDE "bolguchi san qimmiti nol bolsa bolmaydu: "
 #define LANG_ERR_EXECUTER_INVALID_BOX_NAME "sanduq ismi inawetsiz"
 #define LANG_ERR_EXECUTER_INVALID_KEY_NAME "achquch ismi inawetsiz"
 #define LANG_ERR_EXECUTER_INVALID_VARIABLE "nishanlanghan miqdar tepilmidi"

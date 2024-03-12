@@ -63,7 +63,7 @@ void Container_del(Container *this, char *key)
 
 char *Container_toString(Container *this)
 {
-    return tools_format("[Container => type:%s]", this->type);
+    return tools_format("[Container => type:%c]", this->type);
 }
 
 void Container_print(Container *this)

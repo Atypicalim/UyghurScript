@@ -166,7 +166,7 @@ char *Value_toString(Value *this)
         return String_dump(this->string);
     } else {
         void *value = this->object;
-        return tools_format("<Object t:%s p:%d>\n", this->type, value != NULL ? value : 0);
+        return tools_format("<Object t:%c p:%d>\n", this->type, value != NULL ? value : 0);
     } 
 }
 
