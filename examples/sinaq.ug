@@ -1,12 +1,5 @@
 
-miqdar x qimmiti 0 bolsun
 
-# exception
-xataliq e mezmuni
-    ikrangha [111\n] yezilsun
-    x = 3 / 0
-    ikrangha x yezilsun
-    ikrangha [\n222\n] yezilsun
-tamamlansun
-ikrangha e yezilsun
-ikrangha [\nEnd!] yezilsun
+miqdar m qimmiti rast bolsun
+m qimmiti ekische bolsun
+ikrangha m yezilsun
