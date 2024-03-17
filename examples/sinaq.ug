@@ -1,5 +1,15 @@
 
+miqdar s qimmiti sanduq bolsun
+@s(1) = 111
+@s(2) = [abc]
+@s(3) = 333
 
-miqdar m qimmiti rast bolsun
-m qimmiti ekische bolsun
-ikrangha m yezilsun
+fonkisiye func miqdar k v mezmuni
+    ikrangha k yezilsun
+    ikrangha [:] yezilsun
+    ikrangha v yezilsun
+    ikrangha [\n] yezilsun
+    netije quruq qayturulsun
+tamamlansun
+
+fonkisiye @sanduq[sanduqSinaq] bilen s func ishlitilsun we netije r bolsun
