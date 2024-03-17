@@ -156,9 +156,9 @@ Container *Executer_getContainerByToken(Executer *this, Token *token)
     if (Token_isName(token)) return Executer_getContainerByKey(this, token->value);
     Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_KEY_INVALID_TOKEN);
     Token *extra = (Token *)token->extra;
-    if (is_equal(extra->value, SCOPE_ALIAS_PRG)) return Executer_getCurrentGlobal(this, token);
-    if (is_equal(extra->value, SCOPE_ALIAS_MDL)) return Executer_getCurrentModule(this, token);
-    if (is_equal(extra->value, SCOPE_ALIAS_BOX)) return Executer_getCurrentBox(this, token);
+    if (is_eq_string(extra->value, SCOPE_ALIAS_PRG)) return Executer_getCurrentGlobal(this, token);
+    if (is_eq_string(extra->value, SCOPE_ALIAS_MDL)) return Executer_getCurrentModule(this, token);
+    if (is_eq_string(extra->value, SCOPE_ALIAS_BOX)) return Executer_getCurrentBox(this, token);
     Container *container = Executer_getContainerByKey(this, extra->value);
     if (container == NULL) return NULL;
     Value *value = Container_get(container, extra->value);
@@ -169,28 +169,15 @@ Container *Executer_getContainerByToken(Executer *this, Token *token)
 
 char *Executer_getKeyByToken(Executer *this, Token *token)
 {
-    char *key = token->value;
-    if (!Token_isKey(token)) {
-        return tools_format("%s", key);
-    }
-    Token *extra = (Token *)token->extra;
-    if (Token_isNumber(extra)) {
-        // TODO: use tools_format
-        String *s = String_format("%f", atof(token->value));
-        key = String_dump(s);
-        String_free(s);
-    } else if (Token_isString(extra)) {
-        // 
-        // TODO: use tools_format
-        String *s = String_format("%s", token->value);
-        key = String_dump(s);
-        String_free(s);
-    } else if (Token_isName(extra)) {
+    char *key;
+    if (Token_isKeyOfName(token)) {
         Container *container = Executer_getContainerByKey(this, token->value);
         Executer_assert(this, container!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY_NAME);
         Value *value = Container_get(container, token->value);
         Executer_assert(this, value!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY_NAME);
         key = Value_toString(value);
+    } else {
+        key = Token_toString(token);
     }
     return key;
 }
@@ -198,7 +185,7 @@ char *Executer_getKeyByToken(Executer *this, Token *token)
 Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
 {
     if (Token_isEmpty(token)) return Value_newEmpty(token);
-    if (Token_isBool(token)) return Value_newBoolean(is_equal(token->value, TVALUE_TRUE), token);
+    if (Token_isBool(token)) return Value_newBoolean(is_eq_string(token->value, TVALUE_TRUE), token);
     if (Token_isNumber(token)) return Value_newNumber(atof(token->value), token);
     if (Token_isString(token)) return Value_newString(String_format("%s", token->value), token);
     if (Token_isBox(token)) return Value_newContainer(Container_newBox(), token);
@@ -232,12 +219,12 @@ void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool 
 
 double Executer_calculateNumbers(Executer *this, double left, char *sign, double right, Token *token)
 {
-    if (is_equal(sign, TVALUE_SIGN_ADD)) return left + right;
-    if (is_equal(sign, TVALUE_SIGN_SUB)) return left - right;
-    if (is_equal(sign, TVALUE_SIGN_POW)) return pow(left, right);
-    if (is_equal(sign, TVALUE_SIGN_PER)) return fmod(left, right);
-    if (is_equal(sign, TVALUE_SIGN_MUL)) return left * right;
-    if (is_equal(sign, TVALUE_SIGN_DIV)) {
+    if (is_eq_string(sign, TVALUE_SIGN_ADD)) return left + right;
+    if (is_eq_string(sign, TVALUE_SIGN_SUB)) return left - right;
+    if (is_eq_string(sign, TVALUE_SIGN_POW)) return pow(left, right);
+    if (is_eq_string(sign, TVALUE_SIGN_PER)) return fmod(left, right);
+    if (is_eq_string(sign, TVALUE_SIGN_MUL)) return left * right;
+    if (is_eq_string(sign, TVALUE_SIGN_DIV)) {
         Executer_assert(this, right != 0, token, LANG_ERR_EXECUTER_INVALID_DEVIDE);
         return left / right;
     }
@@ -245,25 +232,25 @@ double Executer_calculateNumbers(Executer *this, double left, char *sign, double
     int rInt = (int)right;
     bool isInt = lInt == left && rInt == right;
     Executer_assert(this, isInt, token, LANG_ERR_CANNOT_BE_FLOAT);
-    if (is_equal(sign, TVALUE_SIGN_NOT)) return lInt ^ rInt;
-    if (is_equal(sign, TVALUE_SIGN_AND)) return lInt & rInt;
-    if (is_equal(sign, TVALUE_SIGN_ORR)) return lInt | rInt;
+    if (is_eq_string(sign, TVALUE_SIGN_NOT)) return lInt ^ rInt;
+    if (is_eq_string(sign, TVALUE_SIGN_AND)) return lInt & rInt;
+    if (is_eq_string(sign, TVALUE_SIGN_ORR)) return lInt | rInt;
     Executer_error(this, token, LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN);
     return 0;
 }
 
 bool Executer_calculateBooleans(Executer *this, bool left, char *sign, bool right, Token *token)
 {
-    if (is_equal(sign, TVALUE_SIGN_NOT)) return left != right;
-    if (is_equal(sign, TVALUE_SIGN_AND)) return left && right;
-    if (is_equal(sign, TVALUE_SIGN_ORR)) return left || right;
+    if (is_eq_string(sign, TVALUE_SIGN_NOT)) return left != right;
+    if (is_eq_string(sign, TVALUE_SIGN_AND)) return left && right;
+    if (is_eq_string(sign, TVALUE_SIGN_ORR)) return left || right;
     Executer_error(this, token, LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN);
     return NULL;
 }
 
 String* Executer_calculateStrings(Executer *this, String *left, char *sign, String *right, Token *token)
 {
-    if (is_equal(sign, TVALUE_SIGN_LNK)) {
+    if (is_eq_string(sign, TVALUE_SIGN_LNK)) {
         return String_format("%s%s", left->data, right->data);
     }
     Executer_error(this, token, LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN);
@@ -278,28 +265,28 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
     char *sign = token->value;
     int compCode = Value_compareTo(left, right);
     int sameType = compCode != CODE_FAIL;
-    if (is_values(sign, TVAUE_GROUP_CALCULATION_ALL)) {
-        if (is_equal(sign, TVALUE_SIGN_EQUAL)) {
+    if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_ALL)) {
+        if (is_eq_string(sign, TVALUE_SIGN_EQUAL)) {
             bool r = sameType && compCode == CODE_NONE;
             result = Value_newBoolean(r, token);
-        } else if (sameType && is_equal(sign, TVALUE_SIGN_MORE)) {
+        } else if (sameType && is_eq_string(sign, TVALUE_SIGN_MORE)) {
             bool r = compCode == CODE_TRUE;
             result = Value_newBoolean(r, token);
-        } else if (sameType && is_equal(sign, TVALUE_SIGN_LESS)) {
+        } else if (sameType && is_eq_string(sign, TVALUE_SIGN_LESS)) {
             bool r = compCode == CODE_FALSE;
             result = Value_newBoolean(r, token);
         }
     } else if (sameType) {
-        if (is_values(sign, TVAUE_GROUP_CALCULATION_NUM) && lType == UG_RTYPE_NUM) {
+        if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_NUM) && lType == UG_RTYPE_NUM) {
             double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);
             result = Value_newNumber(r, token);
-        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_BOL) && lType == UG_RTYPE_NUM) {
+        } else if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_BOL) && lType == UG_RTYPE_NUM) {
             double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);
             result = Value_newNumber(r, token);
-        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_BOL) && lType == UG_RTYPE_BOL) {
+        } else if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_BOL) && lType == UG_RTYPE_BOL) {
             bool r = Executer_calculateBooleans(this, left->boolean, sign, right->boolean, token);
             result = Value_newBoolean(r, token);
-        } else if (is_values(sign, TVAUE_GROUP_CALCULATION_STR) && lType == UG_RTYPE_STR) {
+        } else if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_STR) && lType == UG_RTYPE_STR) {
             String *r = Executer_calculateStrings(this, left->string, sign, right->string, token);
             result = Value_newString(r, token);
         }
@@ -310,7 +297,7 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
         bool bRightNum = rType == UG_RTYPE_NUM;
         bool hasStr = bLeftStr || bRightStr;
         bool hasNum = bLeftNum || bRightNum;
-        if (hasStr && hasNum && is_equal(sign, TVALUE_SIGN_RPT)) {
+        if (hasStr && hasNum && is_eq_string(sign, TVALUE_SIGN_RPT)) {
             if (bLeftStr) {
                 String *r = String_clone(left->string);
                 String_repeat(r, right->number);
@@ -352,7 +339,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     Token *name = Stack_next(leaf->tokens, cursor);
     Token *target = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
-    if (is_equal(target->value, TVALUE_TARGET_TO) && is_equal(action->value, TVALUE_OUTPUT))
+    if (is_eq_string(target->value, TVALUE_TARGET_TO) && is_eq_string(action->value, TVALUE_OUTPUT))
     {
         Value *value = Executer_getValueByToken(this, name, true);
         Executer_assert(this, value != NULL, name, LANG_ERR_NO_VALID_STATE);
@@ -361,7 +348,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
         Object_release(value);
         pct_free(content);
     }
-    else if (is_equal(target->value, TVALUE_TARGET_FROM) && is_equal(action->value, TVALUE_INPUT))
+    else if (is_eq_string(target->value, TVALUE_TARGET_FROM) && is_eq_string(action->value, TVALUE_INPUT))
     {
         char line[1024];
         scanf(" %[^\n]", line);
@@ -379,14 +366,14 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
     Value *r = NULL;
     char *act = action->value;
     //
-    if (is_equal(action->type, UG_TTYPE_WRD))
+    if (is_eq_string(action->type, UG_TTYPE_WRD))
     {
-        if (is_equal(act, TVALUE_EMPTY))
+        if (is_eq_string(act, TVALUE_EMPTY))
         {
             // TODO free object
             r = Value_newEmpty(NULL);
         }
-        else if (is_equal(act, TVALUE_NOT))
+        else if (is_eq_string(act, TVALUE_NOT))
         {
             if (value->type == UG_RTYPE_NUM)
             {
@@ -394,7 +381,7 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
             }
             else if (value->type == UG_RTYPE_STR)
             {
-                r = Value_newBoolean(!is_equal(String_get(value->string), TVALUE_TRUE), NULL);
+                r = Value_newBoolean(!is_eq_string(String_get(value->string), TVALUE_TRUE), NULL);
             }
             else if (value->type == UG_RTYPE_NIL)
             {
@@ -409,21 +396,21 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
                 r = Value_newBoolean(false, NULL);
             }
         }
-        else if (is_equal(act, TVALUE_NUM))
+        else if (is_eq_string(act, TVALUE_NUM))
         {
             r = Value_toNumber(value);
         }
-        else if (is_equal(act, TVALUE_STR))
+        else if (is_eq_string(act, TVALUE_STR))
         {
             char *content = Value_toString(value);
             r = Value_newString(String_format("%s", content), NULL);
             pct_free(content);
         }
-        else if (is_equal(act, TVALUE_BOOLEAN))
+        else if (is_eq_string(act, TVALUE_BOOLEAN))
         {
             r = Value_toBoolean(value);
         }
-        else if (is_equal(act, TVALUE_FUNCTION))
+        else if (is_eq_string(act, TVALUE_FUNCTION))
         {
             char *funcName = String_get(value->string);
             Token *funcToken = Token_name(funcName);
@@ -465,7 +452,7 @@ bool Executer_checkJudge(Executer *this, Leaf *leaf)
         resultV = Executer_calculateValues(this, firstV, clcltn, secondV);
     }
     // 
-    bool shouldOk = is_equal(judge->value, TVALUE_IF_OK);
+    bool shouldOk = is_eq_string(judge->value, TVALUE_IF_OK);
     bool isOk = Value_isTrue(resultV);
     // 
     if (firstV != NULL) Object_release(firstV);
@@ -510,7 +497,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         Cursor *cursor2 = Stack_reset(ifNode->tokens);
         Token *judge = Stack_next(ifNode->tokens, cursor2);
         Cursor_free(cursor2);
-        tools_assert(is_equal(judge->value, TVALUE_IF_NO), LANG_ERR_EXECUTER_INVALID_IF);
+        tools_assert(is_eq_string(judge->value, TVALUE_IF_NO), LANG_ERR_EXECUTER_INVALID_IF);
         if (!isFinish)
         {
             Executer_pushContainer(this, UG_CTYPE_SCP);
@@ -681,7 +668,7 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     }
     Debug_popTrace(this->uyghur->debug, NULL);
     // return result
-    if (!is_equal(resultName->type, UG_TTYPE_EMP) && !is_equal(resultName->value, TVALUE_EMPTY)) {
+    if (!is_eq_string(resultName->type, UG_TTYPE_EMP) && !is_eq_string(resultName->value, TVALUE_EMPTY)) {
         Executer_setValueByToken(this, resultName, r, true);
     } else {
         Object_release(r);
@@ -719,7 +706,7 @@ Value *Executer_calculateBTree(Executer *this, Foliage *foliage)
     } else if (foliage->right != NULL) {
         result = Executer_calculateBTree(this, foliage->right);
     } else {
-        Executer_assert(this, is_values(token->type, TTYPES_GROUP_VALUES), token, LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);
+        Executer_assert(this, is_eq_strings(token->type, TTYPES_GROUP_VALUES), token, LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);
         result = Executer_getValueByToken(this, token, true);
     }
     return result;

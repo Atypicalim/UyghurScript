@@ -75,14 +75,60 @@ char *tools_format(char *msg, ...)
     return t;
 }
 
-bool is_equal(char *this, char*other)
+double _toolsIntPart;
+bool tools_number_is_integer(double num)
+{
+    return modf(num, &_toolsIntPart) == 0.0;
+}
+
+char *tools_number_to_string(double num)
+{
+    return tools_number_is_integer(num) ? tools_format("%i", (int)num) : tools_format("%.15g", (double)num);
+}
+
+char *tools_boolean_to_string(bool bol)
+{
+    return tools_format("%s", bol ? TVALUE_TRUE : TVALUE_FALSE);
+}
+
+bool is_eq_string(char *this, char* other)
 {
     return strcmp(this, other) == 0;
 }
 
-bool is_character(char *str, char ch)
+bool is_eq_character(char *str, char ch)
 {
     return strlen(str) == 1 && str[0] == ch;
+}
+
+bool is_eq_strings(char *target, int num, char *s, ...)
+{
+    tools_assert(target != NULL, "invalid target in is values");
+    va_list valist;
+    int i;
+    va_start(valist, s);
+    for (i = 0; i < num; i++)
+    {
+        if (is_eq_string(target, s)) return true;
+        s = va_arg(valist, char *);
+    }
+    va_end(valist);
+    return false;
+}
+
+bool is_eq_characters(char target, int num, char *s, ...)
+{
+    tools_assert(target != ' ', "invalid target in is characters");
+    va_list valist;
+    int i;
+    va_start(valist, s);
+    for (i = 0; i < num; i++)
+    {
+        if (is_eq_character(s, target)) return true;
+        s = va_arg(valist, char *);
+    }
+    va_end(valist);
+    return false;
 }
 
 bool is_number_begin(char c, char n)

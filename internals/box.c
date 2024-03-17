@@ -4,13 +4,19 @@
 
 void test_box(Bridge *bridge)
 {
+    Value *box = Bridge_receiveValue(bridge, UG_RTYPE_CNT);
+    Value *fun = Bridge_receiveValue(bridge, UG_RTYPE_FUN);
+    
+    printf("test:\n");
+    Value_print(box);
+    Value_print(fun);
     // todo
     Bridge_returnEmpty(bridge);
 }
 
 void lib_box_register(Bridge *bridge)
 {
-    Bridge_startBox(bridge, NULL);
+    Bridge_startBox(bridge, "sanduq");
     //
     Bridge_bindNative(bridge, "sanduqSinaq", test_box);
     //

@@ -99,14 +99,12 @@ bool Value_isNumber(Value *this)
 
 bool Value_isInt(Value *this)
 {
-    double intpart;
-    return Value_isNumber(this) && modf(this->number, &intpart) == 0.0;
+    return Value_isNumber(this) && tools_number_is_integer(this->number);
 }
 
 bool Value_isFlt(Value *this)
 {
-    double intpart;
-    return Value_isNumber(this) && modf(this->number, &intpart) != 0.0;
+    return Value_isNumber(this) && !tools_number_is_integer(this->number);
 }
 
 bool Value_isFunc(Value *this)
@@ -157,11 +155,9 @@ char *Value_toString(Value *this)
     if (this == NULL || this->type == UG_RTYPE_NIL) {
         return tools_format("%s", TVALUE_EMPTY);
     } if (this->type == UG_RTYPE_BOL) {
-        double value = this->boolean;
-        return tools_format("%s", value ? TVALUE_TRUE : TVALUE_FALSE);
+        return tools_boolean_to_string(this->boolean);
     } if (this->type == UG_RTYPE_NUM) {
-        double value = this->number;
-        return Value_isInt(this) ? tools_format("%i", (int)value) : tools_format("%.15g", (double)value);
+        return tools_number_to_string(this->number);
     } if (this->type == UG_RTYPE_STR) {
         return String_dump(this->string);
     } if (this->type == UG_RTYPE_FUN) {
@@ -181,7 +177,7 @@ Value *Value_toBoolean(Value *this)
     } else if (this->type == UG_RTYPE_NUM) {
         return Value_newBoolean(this->number > 0, NULL);
     } else if (this->type == UG_RTYPE_STR) {
-        return Value_newBoolean(is_equal(String_get(this->string), TVALUE_TRUE), NULL);
+        return Value_newBoolean(is_eq_string(String_get(this->string), TVALUE_TRUE), NULL);
     } else if (this->type == UG_RTYPE_BOL) {
         Object_retain(this);
         return this;

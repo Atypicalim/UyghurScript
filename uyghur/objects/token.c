@@ -58,54 +58,90 @@ Token *Token_key(char *keyType, char *keyValue, char *scope)
     return token;
 }
 
-bool Token_isName(Token *this)
+bool Token_isEmpty(Token *this)
 {
-    return is_equal(this->type, UG_TTYPE_NAM);
-}
-
-bool Token_isKey(Token *this)
-{
-    return is_equal(this->type, UG_TTYPE_KEY);
-}
-
-bool Token_isWord(Token *this)
-{
-    return is_equal(this->type, UG_TTYPE_WRD);
-}
-
-bool Token_isString(Token *this)
-{
-    return is_equal(this->type, UG_TTYPE_STR);
-}
-
-bool Token_isNumber(Token *this)
-{
-    return is_equal(this->type, UG_TTYPE_NUM);
+    return is_eq_string(this->type, UG_TTYPE_EMP);
 }
 
 bool Token_isBool(Token *this)
 {
-    return is_equal(this->type, UG_TTYPE_BOL);
+    return is_eq_string(this->type, UG_TTYPE_BOL);
 }
 
-bool Token_isEmpty(Token *this)
+bool Token_isNumber(Token *this)
 {
-    return is_equal(this->type, UG_TTYPE_EMP);
+    return is_eq_string(this->type, UG_TTYPE_NUM);
+}
+
+bool Token_isString(Token *this)
+{
+    return is_eq_string(this->type, UG_TTYPE_STR);
+}
+
+bool Token_isName(Token *this)
+{
+    return is_eq_string(this->type, UG_TTYPE_NAM);
+}
+
+bool Token_isWord(Token *this)
+{
+    return is_eq_string(this->type, UG_TTYPE_WRD);
+}
+
+bool Token_isKey(Token *this)
+{
+    return is_eq_string(this->type, UG_TTYPE_KEY);
+}
+
+bool Token_isKeyOfName(Token *this)
+{
+    return Token_isKey(this) && Token_isName(this->extra);
+}
+
+bool Token_isKeyOfString(Token *this)
+{
+    return Token_isKey(this) && Token_isString(this->extra);
+}
+
+bool Token_isKeyOfNumber(Token *this)
+{
+    return Token_isKey(this) && Token_isNumber(this->extra);
 }
 
 bool Token_isBox(Token *this)
 {
-    return is_equal(this->type, UG_TTYPE_BOX);
+    return is_eq_string(this->type, UG_TTYPE_BOX);
 }
 
 bool Token_isCalculation(Token *this)
 {
-    return is_equal(this->type, UG_TTYPE_CLC);
+    return is_eq_string(this->type, UG_TTYPE_CLC);
 }
 
 bool Token_isStatic(Token *this)
 {
     return Token_isString(this) || Token_isNumber(this) || Token_isBool(this) || Token_isEmpty(this);
+}
+
+char *_Token_toString(char *val, char *tp)
+{
+    if (is_eq_string(tp, UG_TTYPE_NUM)) {
+        return tools_number_to_string(atof(val));
+    } else if (is_eq_strings(tp, 4, UG_TTYPE_EMP, UG_TTYPE_BOL, UG_TTYPE_STR, UG_TTYPE_NAM)) {
+        return tools_format("%s", val);
+    } else {
+        tools_error(LANG_ERR_UYGHUR_EXCEPTION);
+    }
+}
+
+char *Token_toString(Token *this)
+{
+    if (Token_isKey(this)) {
+        Token *extra = (Token *)this->extra;
+        return _Token_toString(this->value, extra->type);
+    } else {
+        return _Token_toString(this->value, this->type);
+    }
 }
 
 void Token_print(Token *this)

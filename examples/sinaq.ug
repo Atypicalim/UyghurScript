@@ -12,4 +12,9 @@ fonkisiye func miqdar k v mezmuni
     netije quruq qayturulsun
 tamamlansun
 
-fonkisiye @sanduq[sanduqSinaq] bilen s func ishlitilsun we netije r bolsun
+# fonkisiye @sanduq[sanduqSinaq] bilen s func ishlitilsun we netije r bolsun
+
+@s[111] = [111str...]
+@s(111) = [111num...]
+ikrangha @s[111] yezilsun
+ikrangha @s(111) yezilsun

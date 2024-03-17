@@ -304,7 +304,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             Tokenizer_assert(this, isClosed, LANG_ERR_TOKENIZER_KEY_END_ERROR);
             Tokenizer_skipN(this, 1);
             // scoped key
-            Tokenizer_assert(this, is_values(typ, TTYPES_GROUP_KEYS), LANG_ERR_INVALID_TYPE);
+            Tokenizer_assert(this, is_eq_strings(typ, TTYPES_GROUP_KEYS), LANG_ERR_INVALID_TYPE);
             Tokenizer_assert(this, scopeObject != NULL, NULL);
             Token *token = Token_key(typ, String_get(txt), String_get(scopeObject));
             scopeObject = NULL;

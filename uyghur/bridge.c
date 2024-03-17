@@ -178,7 +178,7 @@ void *Bridge_send(Bridge *this)
     Value *v = Stack_next(this->stack, cursor);
     while(v != NULL)
     {
-        if (!is_base_type(v->type))
+        if (!is_bridge_type(v->type))
         {
             tools_error("invalid bridge status, type %c not available in c", v->type);
         }

@@ -126,59 +126,34 @@ bool is_base_type(char tp)
     return tp == UG_RTYPE_NIL || tp == UG_RTYPE_BOL || tp == UG_RTYPE_NUM || tp == UG_RTYPE_STR;
 }
 
-bool is_values(char *target, int num, char *s, ...)
+bool is_bridge_type(char tp)
 {
-    tools_assert(target != NULL, "invalid target in is values");
-    va_list valist;
-    int i;
-    va_start(valist, s);
-    for (i = 0; i < num; i++)
-    {
-        if (is_equal(target, s)) return true;
-        s = va_arg(valist, char *);
-    }
-    va_end(valist);
-    return false;
-}
-
-bool is_characters(char target, int num, char *s, ...)
-{
-    tools_assert(target != ' ', "invalid target in is characters");
-    va_list valist;
-    int i;
-    va_start(valist, s);
-    for (i = 0; i < num; i++)
-    {
-        if (is_character(s, target)) return true;
-        s = va_arg(valist, char *);
-    }
-    va_end(valist);
-    return false;
+    return is_base_type(tp) || tp == UG_RTYPE_CNT || tp == UG_RTYPE_FUN;
 }
 
 bool is_calculator_common(char c)
 {
-    return is_characters(c, TVAUE_GROUP_CALCULATION_ALL);
+    return is_eq_characters(c, TVAUE_GROUP_CALCULATION_ALL);
 }
 
 bool is_calculation_number(char c)
 {
-    return is_characters(c, TVAUE_GROUP_CALCULATION_NUM);
+    return is_eq_characters(c, TVAUE_GROUP_CALCULATION_NUM);
 }
 
 bool is_calculation_bool(char c)
 {
-    return is_characters(c, TVAUE_GROUP_CALCULATION_BOL);
+    return is_eq_characters(c, TVAUE_GROUP_CALCULATION_BOL);
 }
 
 bool is_calculation_string(char c)
 {
-    return is_characters(c, TVAUE_GROUP_CALCULATION_STR);
+    return is_eq_characters(c, TVAUE_GROUP_CALCULATION_STR);
 }
 
 bool is_calculation_logicals(char c)
 {
-    return is_characters(c, TVAUE_GROUP_CALCULATION_ALL) || is_characters(c, TVAUE_GROUP_CALCULATION_BOL);
+    return is_eq_characters(c, TVAUE_GROUP_CALCULATION_ALL) || is_eq_characters(c, TVAUE_GROUP_CALCULATION_BOL);
 }
 
 bool is_calculation_char(char c)
@@ -188,17 +163,17 @@ bool is_calculation_char(char c)
 
 bool is_calculation_str(char *target)
 {
-    return is_values(target, TVAUE_GROUP_CALCULATION_ALL)
-    || is_values(target, TVAUE_GROUP_CALCULATION_NUM)
-    || is_values(target, TVAUE_GROUP_CALCULATION_BOL)
-    || is_values(target, TVAUE_GROUP_CALCULATION_STR);
+    return is_eq_strings(target, TVAUE_GROUP_CALCULATION_ALL)
+    || is_eq_strings(target, TVAUE_GROUP_CALCULATION_NUM)
+    || is_eq_strings(target, TVAUE_GROUP_CALCULATION_BOL)
+    || is_eq_strings(target, TVAUE_GROUP_CALCULATION_STR);
 }
 
 bool is_higher_priority_calculation(char *target, char *than)
 {
-    if (is_values(target, TVAUE_GROUP_CALCULATION_3) && is_values(than, TVAUE_GROUP_CALCULATION_2)) return true;
-    if (is_values(target, TVAUE_GROUP_CALCULATION_3) && is_values(than, TVAUE_GROUP_CALCULATION_1)) return true;
-    if (is_values(target, TVAUE_GROUP_CALCULATION_2) && is_values(than, TVAUE_GROUP_CALCULATION_1)) return true;
+    if (is_eq_strings(target, TVAUE_GROUP_CALCULATION_3) && is_eq_strings(than, TVAUE_GROUP_CALCULATION_2)) return true;
+    if (is_eq_strings(target, TVAUE_GROUP_CALCULATION_3) && is_eq_strings(than, TVAUE_GROUP_CALCULATION_1)) return true;
+    if (is_eq_strings(target, TVAUE_GROUP_CALCULATION_2) && is_eq_strings(than, TVAUE_GROUP_CALCULATION_1)) return true;
     return false;
 }
 

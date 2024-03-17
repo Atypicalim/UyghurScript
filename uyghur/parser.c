@@ -99,7 +99,7 @@ Token *Parser_checkType(Parser *this, int indent, int num, char *s, ...)
     va_start(valist, s);
     for (i = 0; i < num; i++)
     {
-        if (is_equal(this->token->type, s))
+        if (is_eq_string(this->token->type, s))
         {
             isMatch = true;
             break;
@@ -121,7 +121,7 @@ Token *Parser_checkValue(Parser *this, int indent, int num, char *s, ...)
     va_start(valist, s);
     for (i = 0; i < num; i++)
     {
-        if (is_equal(this->token->value, s))
+        if (is_eq_string(this->token->value, s))
         {
             isMatch = true;
             break;
@@ -153,7 +153,7 @@ bool Parser_isTypes(Parser *this, int indent, int num, char *s, ...)
     va_start(valist, s);
     for (i = 0; i < num; i++)
     {
-        if (is_equal(token->type, s))
+        if (is_eq_string(token->type, s))
         {
             isMatch = true;
             break;
@@ -167,33 +167,33 @@ bool Parser_isTypes(Parser *this, int indent, int num, char *s, ...)
 bool Parser_isType(Parser *this, int indent, char *tp)
 {
     Token *token = Parser_getToken(this, indent);
-    return token != NULL && is_equal(token->type, tp);
+    return token != NULL && is_eq_string(token->type, tp);
 }
 
 bool Parser_isValue(Parser *this, int indent, char *value)
 {
     Token *token = Parser_getToken(this, indent);
-    return token != NULL && is_equal(token->value, value);
+    return token != NULL && is_eq_string(token->value, value);
 }
 
 bool Parser_isWord(Parser *this, int indent, char *value)
 {
     Token *token = Parser_getToken(this, indent);
-    return token != NULL && is_equal(token->type, UG_TTYPE_WRD) && is_equal(token->value, value);
+    return token != NULL && is_eq_string(token->type, UG_TTYPE_WRD) && is_eq_string(token->value, value);
 }
 
 Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
 {
     Parser_moveToken(this, indent);
     Parser_assert(this, this->token != NULL, LANG_ERR_INVALID_WORD);
-    Parser_assert(this, is_equal(this->token->type, UG_TTYPE_WRD), LANG_ERR_INVALID_WORD);
+    Parser_assert(this, is_eq_string(this->token->type, UG_TTYPE_WRD), LANG_ERR_INVALID_WORD);
     bool isMatch = false;
     va_list valist;
     int i;
     va_start(valist, s);
     for (i = 0; i < num; i++)
     {
-        if (is_equal(this->token->value, s))
+        if (is_eq_string(this->token->value, s))
         {
             isMatch = true;
             break;
@@ -221,12 +221,12 @@ void Parser_consumeAstOperate(Parser *this)
     Token *target = Parser_checkWord(this, 0, TTYPES_GROUP_TARGETS);
     Token *name = NULL;
     Token *action = NULL;
-    if (is_equal(this->token->value, TVALUE_TARGET_FROM))
+    if (is_eq_string(this->token->value, TVALUE_TARGET_FROM))
     {
         name = Parser_checkType(this, 1, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
         action = Parser_checkWord(this, 1, 1, TVALUE_INPUT);
     }
-    else if (is_equal(this->token->value, TVALUE_TARGET_TO))
+    else if (is_eq_string(this->token->value, TVALUE_TARGET_TO))
     {
         name = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
         action = Parser_checkWord(this, 1, 2, TVALUE_OUTPUT, UG_TTYPE_KEY);
@@ -422,7 +422,7 @@ void Parser_consumeAstCalculator(Parser *this)
     while (true) {
         current = (Foliage*)currents->tail->data;
         if (Parser_isTypes(this, 1, TTYPES_GROUP_VALUES)) {
-            if (lastType == NULL || is_equal(lastType, TVALUE_OPEN)) {
+            if (lastType == NULL || is_eq_string(lastType, TVALUE_OPEN)) {
                 tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
                 tempF = Foliage_new(tempT);
                 current->left = tempF;
@@ -436,7 +436,7 @@ void Parser_consumeAstCalculator(Parser *this)
             lastType = tempT->type;
             continue;
         } else if (Parser_isType(this, 1, UG_TTYPE_CLC)) {
-            Parser_assert(this, is_equal(lastType, TVALUE_CLOSE) || is_values(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
+            Parser_assert(this, is_eq_string(lastType, TVALUE_CLOSE) || is_eq_strings(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
             tempT = Parser_checkType(this, 1, 1, UG_TTYPE_CLC);
             if (current->data != NULL) {
                 tempF = Foliage_new(tempT);
@@ -454,7 +454,7 @@ void Parser_consumeAstCalculator(Parser *this)
             lastType = tempT->value;
             continue;
         } else if (Parser_isWord(this, 1, TVALUE_OPEN)) {
-            if (lastType == NULL || is_equal(lastType, TVALUE_OPEN)) {
+            if (lastType == NULL || is_eq_string(lastType, TVALUE_OPEN)) {
                 Parser_checkWord(this, 1, 1, TVALUE_OPEN);
                 tempF = Foliage_new(NULL);
                 current->left = tempF;
@@ -469,7 +469,7 @@ void Parser_consumeAstCalculator(Parser *this)
             lastType = TVALUE_OPEN;
             continue;
         } else if (Parser_isWord(this, 1, TVALUE_CLOSE)) {
-            Parser_assert(this, is_equal(lastType, TVALUE_CLOSE) || is_values(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
+            Parser_assert(this, is_eq_string(lastType, TVALUE_CLOSE) || is_eq_strings(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
             Parser_checkWord(this, 1, 1, TVALUE_CLOSE);
             Stack_pop(currents);
             lastType = TVALUE_CLOSE;
@@ -488,79 +488,79 @@ void Parser_consumeToken(Parser *this, Token *token)
     char *t = token->type;
     char *v = token->value;
     // VARIABLE
-    if (is_equal(t, UG_TTYPE_WRD) && is_equal(v, TVALUE_VARIABLE))
+    if (is_eq_string(t, UG_TTYPE_WRD) && is_eq_string(v, TVALUE_VARIABLE))
     {
         Parser_consumeAstVariable(this);
         return;
     }
     // END
-    if (is_equal(v, TVALUE_CODE_END))
+    if (is_eq_string(v, TVALUE_CODE_END))
     {
         Parser_consumeAstEnd(this);
         return;
     }
     // RESULT
-    if (is_equal(v, TVALUE_RESULT))
+    if (is_eq_string(v, TVALUE_RESULT))
     {
         Parser_consumeAstResult(this);
         return;
     }
     // FUNC
-    if (is_equal(v, TVALUE_FUNCTION) && (Parser_isValue(this, 2, TVALUE_VARIABLE) || Parser_isValue(this, 2, TVALUE_CONTENT)))
+    if (is_eq_string(v, TVALUE_FUNCTION) && (Parser_isValue(this, 2, TVALUE_VARIABLE) || Parser_isValue(this, 2, TVALUE_CONTENT)))
     {
         Parser_consumeAstFunc(this);
         return;
     }
     // CALL
-    if (is_equal(v, TVALUE_FUNCTION) && (Parser_isValue(this, 2, TVALUE_WITH) || Parser_isValue(this, 2, TVALUE_CALL)))
+    if (is_eq_string(v, TVALUE_FUNCTION) && (Parser_isValue(this, 2, TVALUE_WITH) || Parser_isValue(this, 2, TVALUE_CALL)))
     {
         Parser_consumeAstCall(this);
         return;
     }
     // IF_FIRST
-    if (is_equal(v, TVALUE_IF))
+    if (is_eq_string(v, TVALUE_IF))
     {
         Parser_consumeAstIfFirst(this);
         return;
     }
     // IF_MIDDLE
-    if (is_equal(v, TVALUE_IF_ELSE))
+    if (is_eq_string(v, TVALUE_IF_ELSE))
     {
         Parser_consumeAstIfMiddle(this);
         return;
     }
     // IF_LAST
-    if (is_equal(v, TVALUE_IF_NO))
+    if (is_eq_string(v, TVALUE_IF_NO))
     {
         Parser_consumeAstIfLast(this);
         return;
     }
     // WHILE
-    if (is_equal(v, TVALUE_WHILE))
+    if (is_eq_string(v, TVALUE_WHILE))
     {
         Parser_consumeAstWhile(this);
         return;
     }
     // exception
-    if (is_equal(v, TVALUE_EXCEPTION))
+    if (is_eq_string(v, TVALUE_EXCEPTION))
     {
         Parser_consumeAstException(this);
         return;
     }
     // EXPRESSION
-    if ((is_equal(t, UG_TTYPE_NAM) || is_equal(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_CONVERT))
+    if ((is_eq_string(t, UG_TTYPE_NAM) || is_eq_string(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_CONVERT))
     {
         Parser_consumeAstConvert(this);
         return;
     }
     // calculate
-    if ((is_equal(t, UG_TTYPE_NAM) || is_equal(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_CALCULATOR))
+    if ((is_eq_string(t, UG_TTYPE_NAM) || is_eq_string(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_CALCULATOR))
     {
         Parser_consumeAstCalculator(this);
         return;
     }
     // OPERATE
-    if (is_equal(t, UG_TTYPE_WRD) && (is_equal(v, TVALUE_TARGET_FROM) || is_equal(v, TVALUE_TARGET_TO)))
+    if (is_eq_string(t, UG_TTYPE_WRD) && (is_eq_string(v, TVALUE_TARGET_FROM) || is_eq_string(v, TVALUE_TARGET_TO)))
     {
         Parser_consumeAstOperate(this);
         return;
