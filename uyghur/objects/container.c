@@ -41,14 +41,11 @@ Container *Container_newModule()
     return Container_new(UG_CTYPE_MDL);
 }
 
-void *Container_set(Container *this, char *key, void *value)
+void *Container_del(Container *this, char *key)
 {
-    if (value != NULL) {
-        return Hashmap_set(this->map, key, value);
-    } else {
-        Hashmap_del(this->map, key);
-        return NULL;
-    }
+    void *deleted = Hashmap_del(this->map, key);
+    if (deleted != NULL) Object_release(deleted);
+    return deleted;
 }
 
 void *Container_get(Container *this, char *key)
@@ -56,9 +53,13 @@ void *Container_get(Container *this, char *key)
     return Hashmap_get(this->map, key);
 }
 
-void Container_del(Container *this, char *key)
+void *Container_set(Container *this, char *key, void *value)
 {
-    Hashmap_del(this->map, key);
+    if (value == NULL) return Container_del(this, key);
+    Object_retain(value);
+    void *replaced = Hashmap_set(this->map, key, value);
+    if (replaced != NULL) Object_release(replaced);
+    return replaced;
 }
 
 char *Container_toString(Container *this)
