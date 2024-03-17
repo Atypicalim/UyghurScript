@@ -8,7 +8,7 @@
 typedef struct _Hashmap {
     struct _Object;
     int size;
-    Entry *position;
+    Hashkey *position;
 } Hashmap;
 
 Hashmap* Hashmap_new() {
@@ -22,8 +22,8 @@ Hashmap* Hashmap_new() {
 // TODO: release removed value
 void Hashmap_free(Hashmap *this) {
     assert(this != NULL);
-    Entry *ptr;
-    Entry *head;
+    Hashkey *ptr;
+    Hashkey *head;
     for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
         ptr = this[i].position;
         while (ptr != NULL) {
@@ -43,23 +43,23 @@ void *Hashmap_set(Hashmap *this, char *_key, void *value) {
     int pos = String_hash(key) % HASHMAP_DEFAULT_CAPACITY;
     //
     void *tmp = NULL;
-    Entry *ptr = this[pos].position;
+    Hashkey *ptr = this[pos].position;
     if (ptr == NULL) {
-        this[pos].position = Entry_new(key, value);
+        this[pos].position = Hashkey_new(key, value);
         Object_release(key);
         return NULL;
     }
     while (ptr != NULL) {
         if (String_equal(key, ptr->key)) {
             tmp = ptr->value;
-            Entry_set(ptr, key, value);
+            Hashkey_set(ptr, value);
             Object_release(key);
             // TODO: release tmp
             return tmp;
         }
         ptr = ptr->next;
     }
-    Entry *pnode = Entry_new(key, value);
+    Hashkey *pnode = Hashkey_new(key, value);
     Object_release(key);
     pnode->next = this[pos].position;
     this[pos].position = pnode;
@@ -72,7 +72,7 @@ void *Hashmap_get(Hashmap *this, char *_key) {
     String *key = String_format(_key);
     int pos = String_hash(key) % HASHMAP_DEFAULT_CAPACITY;
     //
-    Entry *ptr = this[pos].position;
+    Hashkey *ptr = this[pos].position;
     while (ptr != NULL) {
         if (String_equal(key, ptr->key)) {
             Object_release(key);
@@ -85,25 +85,29 @@ void *Hashmap_get(Hashmap *this, char *_key) {
 }
 
 // TODO: release removed value
-void Hashmap_del(Hashmap *this, char *_key) {
+void *Hashmap_del(Hashmap *this, char *_key) {
     assert(this != NULL);
     assert(_key != NULL);
     String *key = String_format(_key);
     int pos = String_hash(key) % HASHMAP_DEFAULT_CAPACITY;
     //
-    Entry *ptr = this[pos].position;
+    void *tmp = NULL;
+    Hashkey *ptr = this[pos].position;
     if (ptr == NULL) {
         //
     } else if (ptr->next == NULL && String_equal(key, ptr->key)) {
         this[pos].position = NULL;
+        tmp = ptr->value;
         Object_release(ptr);
     } else {
-        Entry *pre = ptr;
+        Hashkey *pre = ptr;
         ptr = pre->next;
         while (ptr != NULL) {
             if (String_equal(key, ptr->key)) {
+                tmp = ptr->value;
                 pre->next = ptr->next;
-                Object_release(ptr);
+                tmp = ptr->value;
+                // Object_release(ptr);
                 break;
             }
             pre = ptr;
@@ -111,6 +115,7 @@ void Hashmap_del(Hashmap *this, char *_key) {
         }
     }
     Object_release(key);
+    return tmp;
 }
 
 #endif

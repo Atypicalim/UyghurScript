@@ -20,10 +20,10 @@
 #define PCT_OBJ_CURSOR 'C'
 #define PCT_OBJ_STACK 'S'
 #define PCT_OBJ_QUEUE 'Q'
+#define PCT_OBJ_HASHKEY 'h'
 #define PCT_OBJ_HASHMAP 'H'
 #define PCT_OBJ_FOLIAGE 'F'
 #define PCT_OBJ_BLOCK 'B'
-#define PCT_OBJ_ENTRY 'E'
 
 void *pct_mallloc(size_t size)
 {
@@ -43,7 +43,7 @@ void pct_free(void *object)
 #include "../tools/object.h"
 #include "../tools/string.h"
 #include "../tools/cursor.h"
-#include "../tools/entry.h"
+#include "../tools/hashkey.h"
 #include "../tools/hashmap.h"
 #include "../tools/foliage.h"
 #include "../tools/block.h"
