@@ -94,25 +94,23 @@ void *Hashmap_del(Hashmap *this, char *_key) {
     void *tmp = NULL;
     Hashkey *ptr = this[pos].position;
     if (ptr == NULL) {
-        //
-    } else if (ptr->next == NULL && String_equal(key, ptr->key)) {
-        this[pos].position = NULL;
-        tmp = ptr->value;
-        Object_release(ptr);
-    } else {
-        Hashkey *pre = ptr;
-        ptr = pre->next;
-        while (ptr != NULL) {
-            if (String_equal(key, ptr->key)) {
-                tmp = ptr->value;
+        Object_release(key);
+        return NULL;
+    }
+    Hashkey *pre = NULL;
+    while (ptr != NULL) {
+        if (String_equal(key, ptr->key)) {
+            if (pre == NULL) {
+                this[pos].position = NULL;
+            } else {
                 pre->next = ptr->next;
-                tmp = ptr->value;
-                // Object_release(ptr);
-                break;
             }
-            pre = ptr;
-            ptr = ptr->next;
+            tmp = ptr->value;
+            Object_release(ptr);
+            break;
         }
+        pre = ptr;
+        ptr = ptr->next;
     }
     Object_release(key);
     return tmp;
