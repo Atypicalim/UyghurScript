@@ -196,14 +196,30 @@ Value *convert_token_to_value(Token *token)
     return NULL;
 }
 
-Value *convert_token_to_key(Token *token)
+char convert_ttype_to_rtype(char *tType)
 {
-    if (Token_isEmpty(token)) return Value_newEmpty(token);
-    if (Token_isBool(token)) return Value_newBoolean(is_eq_string(token->value, TVALUE_TRUE), token);
-    if (Token_isNumber(token)) return Value_newNumber(atof(token->value), token);
-    if (Token_isString(token)) return Value_newString(String_format("%s", token->value), token);
-    if (Token_isName(token)) return Value_newString(String_format("%s", token->value), token);
-    if (Token_isKey(token)) return Value_newString(String_format("%s", token->value), token);
+    if (is_eq_string(tType, UG_TTYPE_EMP)) return UG_RTYPE_NIL;
+    if (is_eq_string(tType, UG_TTYPE_BOL)) return UG_RTYPE_BOL;
+    if (is_eq_string(tType, UG_TTYPE_NUM)) return UG_RTYPE_NUM;
+    if (is_eq_string(tType, UG_TTYPE_STR)) return UG_RTYPE_STR;
+    if (is_eq_string(tType, UG_TTYPE_NAM)) return UG_RTYPE_STR;
+    return UG_RTYPE_NON;
+}
+
+Value *convert_string_to_location(char *str, char rType)
+{
+    char *location = NULL;
+    if (rType == UG_RTYPE_NUM) {
+        return tools_format("n_%.15g", atof(str));
+    } else if (rType == UG_RTYPE_NIL) {
+        return tools_format("e_%s", str);
+    } else if (rType == UG_RTYPE_BOL) {
+        return tools_format("b_%s", str);
+    } else if (rType == UG_RTYPE_STR) {
+        return tools_format("s_%s", str);
+    } else {
+        tools_error(LANG_ERR_UYGHUR_EXCEPTION);
+    }
     return NULL;
 }
 
