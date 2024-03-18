@@ -4,8 +4,8 @@
 
 void test_box(Bridge *bridge)
 {
-    Value *box = Bridge_receiveValue(bridge, UG_RTYPE_CNT);
-    Value *fun = Bridge_receiveValue(bridge, UG_RTYPE_FUN);
+    Value *box = Bridge_receiveValue(bridge, UG_TYPE_CNT);
+    Value *fun = Bridge_receiveValue(bridge, UG_TYPE_FUN);
     
     printf("test:\n");
     Value_print(box);

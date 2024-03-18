@@ -13,7 +13,7 @@ int main(int argc, char const *argv[])
     //
     Uyghur *uyghur = Uyghur_new();
     register_internal_libraries(uyghur->bridge);
-    register_external_libraries(uyghur->bridge);
+    // register_external_libraries(uyghur->bridge);
     if (argc == 1) Uyghur_runCode(uyghur, code, NULL);
     if (argc >= 2) Uyghur_runArgs(uyghur, argc, argv);
     Uyghur_free(uyghur);

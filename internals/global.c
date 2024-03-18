@@ -23,7 +23,7 @@ void yezish(Bridge *bridge)
 void izlash(Bridge *bridge)
 {
     char *msg = "izlash";
-    if (Bridge_topType(bridge) == UG_RTYPE_STR) msg = Bridge_receiveString(bridge);
+    if (Bridge_topType(bridge) == UG_TYPE_STR) msg = Bridge_receiveString(bridge);
     printf("\n[%s] %s\n", LANG_LOG, msg);
     Debug_writeTrace(bridge->uyghur->debug);
     Bridge_returnEmpty(bridge);
@@ -33,7 +33,8 @@ void ekirish(Bridge *bridge)
 {
     char *path = Bridge_receiveString(bridge);
     Uyghur *uyghur = bridge->uyghur;
-    Value *box = Container_get(uyghur->executer->globalContainer, path);
+    Container *container = uyghur->executer->globalContainer;
+    Value *box = Container_getByStringLocation(container, path);
     if (box == NULL) box = Uyghur_runPath(uyghur, path);
     if (box == NULL) box = Value_newEmpty(NULL);
     Bridge_returnValue(bridge, box);

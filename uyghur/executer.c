@@ -113,7 +113,7 @@ Container *Executer_getCurrentBox(Executer *this, Token *token)
     while ((container =  Stack_next(this->containerStack, cursor)) != NULL)
     {
         if (!Container_isScope(container)) break;
-        Value *self = Container_get(container, SCOPE_ALIAS_BOX);
+        Value *self = Container_getByStringLocation(container, SCOPE_ALIAS_BOX);
         if (self != NULL) {
             container = self->object;
             break;
@@ -138,14 +138,14 @@ Container *Executer_getContainerByKey(Executer *this, char *key)
     while (value == NULL && block != NULL)
     {
         Container *container = block->data;
-        Value *v = Container_get(container, key);
+        Value *v = Container_getByStringLocation(container, key);
         if (v != NULL) value = v;
         if (v != NULL) break;
         if (Container_isModule(container)) break;
         block = block->last;
     }
     if (value != NULL) return block->data;
-    value = Container_get(this->globalContainer, key);
+    value = Container_getByStringLocation(this->globalContainer, key);
     if (value != NULL) return this->globalContainer;
     return NULL;
 }
@@ -161,9 +161,9 @@ Container *Executer_getContainerByToken(Executer *this, Token *token)
     if (is_eq_string(extra->value, SCOPE_ALIAS_BOX)) return Executer_getCurrentBox(this, token);
     Container *container = Executer_getContainerByKey(this, extra->value);
     if (container == NULL) return NULL;
-    Value *value = Container_get(container, extra->value);
+    Value *value = Container_getByStringLocation(container, extra->value);
     if (value == NULL) return NULL;
-    Executer_assert(this, value->type == UG_RTYPE_CNT, token, LANG_ERR_EXECUTER_INVALID_BOX_NAME);
+    Executer_assert(this, value->type == UG_TYPE_CNT, token, LANG_ERR_EXECUTER_INVALID_BOX_NAME);
     return value->object;
 }
 
@@ -173,7 +173,7 @@ char *Executer_getLocationByToken(Executer *this, Token *token)
     if (Token_isKeyOfName(token)) {
         Container *container = Executer_getContainerByKey(this, token->value);
         Executer_assert(this, container!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY_NAME);
-        Value *value = Container_get(container, token->value);
+        Value *value = Container_getByStringLocation(container, token->value);
         Executer_assert(this, value!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY_NAME);
         key = Value_toString(value);
     } else {
@@ -187,7 +187,7 @@ Value *Executer_getValueFromContainer(Executer *this, Container *container, Toke
     // printf("----------------------get:\n");
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     char *location = Executer_getLocationByToken(this, token);
-    Value *value = Container_get(container, location);
+    Value *value = Container_getByTypedLocation(container, UG_TYPE_NON, location);
     // Value_print(key);
     // Value_print(value);
     pct_free(location);
@@ -201,7 +201,7 @@ Value *Executer_setValueToContainer(Executer *this, Container *container, Token 
     char *location = Executer_getLocationByToken(this, token);
     // Value_print(key);
     // Value_print(value);
-    Value *replaced = Container_set(container, location, value);
+    Value *replaced = Container_setByTypedLocation(container, UG_TYPE_NON, location, value);
     pct_free(location);
     return replaced;
 }
@@ -293,24 +293,24 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
             result = Value_newBoolean(r, token);
         }
     } else if (sameType) {
-        if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_NUM) && lType == UG_RTYPE_NUM) {
+        if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_NUM) && lType == UG_TYPE_NUM) {
             double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);
             result = Value_newNumber(r, token);
-        } else if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_BOL) && lType == UG_RTYPE_NUM) {
+        } else if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_BOL) && lType == UG_TYPE_NUM) {
             double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);
             result = Value_newNumber(r, token);
-        } else if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_BOL) && lType == UG_RTYPE_BOL) {
+        } else if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_BOL) && lType == UG_TYPE_BOL) {
             bool r = Executer_calculateBooleans(this, left->boolean, sign, right->boolean, token);
             result = Value_newBoolean(r, token);
-        } else if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_STR) && lType == UG_RTYPE_STR) {
+        } else if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_STR) && lType == UG_TYPE_STR) {
             String *r = Executer_calculateStrings(this, left->string, sign, right->string, token);
             result = Value_newString(r, token);
         }
     } else {
-        bool bLeftStr = lType == UG_RTYPE_STR;
-        bool bRightStr = rType == UG_RTYPE_STR;
-        bool bLeftNum = lType == UG_RTYPE_NUM;
-        bool bRightNum = rType == UG_RTYPE_NUM;
+        bool bLeftStr = lType == UG_TYPE_STR;
+        bool bRightStr = rType == UG_TYPE_STR;
+        bool bLeftNum = lType == UG_TYPE_NUM;
+        bool bRightNum = rType == UG_TYPE_NUM;
         bool hasStr = bLeftStr || bRightStr;
         bool hasNum = bLeftNum || bRightNum;
         if (hasStr && hasNum && is_eq_string(sign, TVALUE_SIGN_RPT)) {
@@ -405,23 +405,23 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
         }
         else if (is_eq_string(act, TVALUE_NOT))
         {
-            if (value->type == UG_RTYPE_NUM)
+            if (value->type == UG_TYPE_NUM)
             {
                 r = Value_newBoolean(value->number <= 0, NULL);
             }
-            else if (value->type == UG_RTYPE_STR)
+            else if (value->type == UG_TYPE_STR)
             {
                 r = Value_newBoolean(!is_eq_string(String_get(value->string), TVALUE_TRUE), NULL);
             }
-            else if (value->type == UG_RTYPE_NIL)
+            else if (value->type == UG_TYPE_NIL)
             {
                 r = Value_newBoolean(true, NULL);
             }
-            else if (value->type == UG_RTYPE_BOL)
+            else if (value->type == UG_TYPE_BOL)
             {
                 r = Value_newBoolean(!value->boolean, NULL);
             }
-            else if (value->type == UG_RTYPE_FUN)
+            else if (value->type == UG_TYPE_FUN)
             {
                 r = Value_newBoolean(false, NULL);
             }
@@ -630,7 +630,7 @@ Value *Executer_runFunc(Executer *this, Value *funcValue)
     Value *selfValue = funcValue->extra;
     // 
     Executer_pushContainer(this, UG_CTYPE_SCP);
-    Container_set(this->currentContainer, SCOPE_ALIAS_BOX, selfValue);
+    Container_setByStringLocation(this->currentContainer, SCOPE_ALIAS_BOX, selfValue);
     Executer_consumeLeaf(this, codeNode);
     Executer_popContainer(this, UG_CTYPE_SCP);
     // 
@@ -687,9 +687,9 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     // run runnable
     Value *r = NULL;
     Debug_pushTrace(this->uyghur->debug, runnableName);
-    if (runnableValue->type == UG_RTYPE_FUN) {
+    if (runnableValue->type == UG_TYPE_FUN) {
         r = Executer_runFunc(this, runnableValue);
-    } else if (runnableValue->type == UG_RTYPE_NTV) {
+    } else if (runnableValue->type == UG_TYPE_NTV) {
         r = Executer_runNative(this, runnableValue);
     } else {
         Executer_error(this, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND);
@@ -862,7 +862,7 @@ Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
     if (this->containerStack->head == this->containerStack->tail) return NULL;
     Container *container = Executer_popContainer(this, UG_CTYPE_MDL);
     Value *module = Value_newContainer(container, NULL);
-    Container_set(this->globalContainer, path, module);
+    Container_setByStringLocation(this->globalContainer, path, module);
     return module;
 }
 

@@ -47,7 +47,7 @@ Bridge *Bridge_new(Uyghur *uyghur)
 char Bridge_topType(Bridge *this)
 {
     Block *tail = this->stack->tail;
-    return tail != NULL ? ((Value *)tail->data)->type : UG_RTYPE_NON;
+    return tail != NULL ? ((Value *)tail->data)->type : UG_TYPE_NON;
 }
 
 // pop next value, you should release the value object manually
@@ -152,13 +152,15 @@ void Bridge_register(Bridge *this)
     while (value != NULL)
     {
         Value *key = Stack_pop(this->stack);
-        Container_set(container, String_get(key->string), value);
+        char *_key =  String_get(key->string);
+        Container_setByStringLocation(container, _key, value);
         Object_release(key);
         value = Stack_pop(this->stack);
     }
     if (this->name != NULL)
     {
-        Container_set(this->uyghur->executer->globalContainer, this->name, Value_newContainer(container, NULL));
+        container = this->uyghur->executer->globalContainer;
+        Container_setByStringLocation(container, this->name, Value_newContainer(container, NULL));
     }
     this->name = NULL;
 }
@@ -210,7 +212,7 @@ Value *Bridge_receiveValue(Bridge *this, char tp)
 {
     Value *v = Bridge_nextValue(this);
     if (v == NULL) v = Value_newEmpty(NULL);
-    if (tp != UG_RTYPE_NON) {
+    if (tp != UG_TYPE_NON) {
         tools_assert(v->type == tp, "invalid bridge arguments, %c argument not found", tp);
     }
     return v;
@@ -218,24 +220,24 @@ Value *Bridge_receiveValue(Bridge *this, char tp)
 
 void Bridge_receiveEmpty(Bridge *this)
 {
-    Value *v = Bridge_receiveValue(this, UG_RTYPE_NIL);
+    Value *v = Bridge_receiveValue(this, UG_TYPE_NIL);
 }
 
 bool Bridge_receiveBoolean(Bridge *this)
 {
-    Value *v = Bridge_receiveValue(this, UG_RTYPE_BOL);
+    Value *v = Bridge_receiveValue(this, UG_TYPE_BOL);
     return v->boolean;
 }
 
 double Bridge_receiveNumber(Bridge *this)
 {
-    Value *v = Bridge_receiveValue(this, UG_RTYPE_NUM);
+    Value *v = Bridge_receiveValue(this, UG_TYPE_NUM);
     return v->number;
 }
 
 char *Bridge_receiveString(Bridge *this)
 {
-    Value *v = Bridge_receiveValue(this, UG_RTYPE_STR);
+    Value *v = Bridge_receiveValue(this, UG_TYPE_STR);
     return String_get(v->string);
 }
 

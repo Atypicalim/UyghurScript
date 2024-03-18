@@ -57,6 +57,26 @@ void *Container_set(Container *this, char *key, void *value)
     return replaced;
 }
 
+void *Container_getByStringLocation(Container *this, char *key)
+{
+    return Container_get(this, key);
+}
+
+void *Container_getByTypedLocation(Container *this, char tp, char *key)
+{
+    return Container_get(this, key);
+}
+
+void *Container_setByStringLocation(Container *this, char *key, void *value)
+{
+    return Container_set(this, key, value);
+}
+
+void *Container_setByTypedLocation(Container *this, char tp, char *key, void *value)
+{
+    return Container_set(this, key, value);
+}
+
 
 void *Container_getByValueKey(Container *this, Value *key)
 {

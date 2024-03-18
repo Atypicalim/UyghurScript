@@ -1,22 +1,27 @@
 
-miqdar s qimmiti sanduq bolsun
-# @s(1) = 111
-# @s(2) = [abc]
-# @s(3) = 333
+# miqdar s qimmiti sanduq bolsun
+# # @s(1) = 111
+# # @s(2) = [abc]
+# # @s(3) = 333
 
-# fonkisiye func miqdar k v mezmuni
-#     ikrangha k yezilsun
-#     ikrangha [:] yezilsun
-#     ikrangha v yezilsun
-#     ikrangha [\n] yezilsun
-#     netije quruq qayturulsun
-# tamamlansun
+# # fonkisiye func miqdar k v mezmuni
+# #     ikrangha k yezilsun
+# #     ikrangha [:] yezilsun
+# #     ikrangha v yezilsun
+# #     ikrangha [\n] yezilsun
+# #     netije quruq qayturulsun
+# # tamamlansun
 
-# fonkisiye @sanduq[sanduqSinaq] bilen s func ishlitilsun we netije r bolsun
+# # fonkisiye @sanduq[sanduqSinaq] bilen s func ishlitilsun we netije r bolsun
 
-@s[111] = [str...]
-@s(111) = [num...]
-ikrangha @s[111] yezilsun
-ikrangha @s(111) yezilsun
+# @s[111] = [str...]
+# @s(111) = [num...]
+# ikrangha @s[111] yezilsun
+# ikrangha @s(111) yezilsun
 
-ikrangha [END!] yezilsun
+# ikrangha [END!] yezilsun
+
+# running men
+
+ikrangha @san[pi] yezilsun
+

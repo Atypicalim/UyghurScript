@@ -123,12 +123,12 @@ void helper_print_btree(Foliage *root, char *_space)
 
 bool is_base_type(char tp)
 {
-    return tp == UG_RTYPE_NIL || tp == UG_RTYPE_BOL || tp == UG_RTYPE_NUM || tp == UG_RTYPE_STR;
+    return tp == UG_TYPE_NIL || tp == UG_TYPE_BOL || tp == UG_TYPE_NUM || tp == UG_TYPE_STR;
 }
 
 bool is_bridge_type(char tp)
 {
-    return is_base_type(tp) || tp == UG_RTYPE_CNT || tp == UG_RTYPE_FUN;
+    return is_base_type(tp) || tp == UG_TYPE_CNT || tp == UG_TYPE_FUN;
 }
 
 bool is_calculator_common(char c)
@@ -198,24 +198,24 @@ Value *convert_token_to_value(Token *token)
 
 char convert_ttype_to_rtype(char *tType)
 {
-    if (is_eq_string(tType, UG_TTYPE_EMP)) return UG_RTYPE_NIL;
-    if (is_eq_string(tType, UG_TTYPE_BOL)) return UG_RTYPE_BOL;
-    if (is_eq_string(tType, UG_TTYPE_NUM)) return UG_RTYPE_NUM;
-    if (is_eq_string(tType, UG_TTYPE_STR)) return UG_RTYPE_STR;
-    if (is_eq_string(tType, UG_TTYPE_NAM)) return UG_RTYPE_STR;
-    return UG_RTYPE_NON;
+    if (is_eq_string(tType, UG_TTYPE_EMP)) return UG_TYPE_NIL;
+    if (is_eq_string(tType, UG_TTYPE_BOL)) return UG_TYPE_BOL;
+    if (is_eq_string(tType, UG_TTYPE_NUM)) return UG_TYPE_NUM;
+    if (is_eq_string(tType, UG_TTYPE_STR)) return UG_TYPE_STR;
+    if (is_eq_string(tType, UG_TTYPE_NAM)) return UG_TYPE_STR;
+    return UG_TYPE_NON;
 }
 
-Value *convert_string_to_location(char *str, char rType)
+char *convert_string_to_location(char *str, char rType)
 {
     char *location = NULL;
-    if (rType == UG_RTYPE_NUM) {
+    if (rType == UG_TYPE_NUM) {
         return tools_format("n_%.15g", atof(str));
-    } else if (rType == UG_RTYPE_NIL) {
+    } else if (rType == UG_TYPE_NIL) {
         return tools_format("e_%s", str);
-    } else if (rType == UG_RTYPE_BOL) {
+    } else if (rType == UG_TYPE_BOL) {
         return tools_format("b_%s", str);
-    } else if (rType == UG_RTYPE_STR) {
+    } else if (rType == UG_TYPE_STR) {
         return tools_format("s_%s", str);
     } else {
         tools_error(LANG_ERR_UYGHUR_EXCEPTION);

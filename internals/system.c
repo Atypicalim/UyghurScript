@@ -10,7 +10,7 @@ void ug_system_get_name(Bridge *bridge)
 void ug_system_exit_program(Bridge *bridge)
 {
     int code = 0;
-    if (Bridge_topType(bridge) != UG_RTYPE_NON) code = Bridge_receiveNumber(bridge);
+    if (Bridge_topType(bridge) != UG_TYPE_NON) code = Bridge_receiveNumber(bridge);
     system_exit_program(code);
     Bridge_returnEmpty(bridge);
 }

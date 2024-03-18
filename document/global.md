@@ -26,4 +26,4 @@ fonkisiye tazilash bilen [../examples/hello.ug] ishlitilsun
 
 ```python
 ikrangha hello yezilsun
-# [RV => t:UG_RTYPE_CNT p:-613914656]
+# [RV => t:UG_TYPE_CNT p:-613914656]

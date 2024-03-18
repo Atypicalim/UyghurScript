@@ -3,16 +3,16 @@
 #define UG_VERSION_NAME "0.1" 
 #define UG_VERSION_CODE 0.1 
 
-// runtime type
-#define UG_RTYPE_NON ' '
-#define UG_RTYPE_NIL '~'
-#define UG_RTYPE_BOL 'b'
-#define UG_RTYPE_NUM 'n'
-#define UG_RTYPE_STR 's'
-#define UG_RTYPE_OBJ 'o'
-#define UG_RTYPE_FUN 'f'
-#define UG_RTYPE_NTV 't'
-#define UG_RTYPE_CNT '@'
+// common type
+#define UG_TYPE_NON ' '
+#define UG_TYPE_NIL '~'
+#define UG_TYPE_BOL 'b'
+#define UG_TYPE_NUM 'n'
+#define UG_TYPE_STR 's'
+#define UG_TYPE_OBJ 'o'
+#define UG_TYPE_FUN 'f'
+#define UG_TYPE_NTV 't'
+#define UG_TYPE_CNT '@'
 
 // token type
 #define UG_TTYPE_NAM "NAM"
