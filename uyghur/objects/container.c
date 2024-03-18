@@ -7,12 +7,6 @@
 #ifndef H_UG_BOX
 #define H_UG_BOX
 
-typedef struct _Container {
-    struct _Object;
-    Hashmap *map;
-    char type;
-} Container;
-
 Container *Container_new(char tp)
 {
     bool isBox = tp == UG_CTYPE_BOX;
@@ -22,6 +16,7 @@ Container *Container_new(char tp)
     Container *container = malloc(sizeof(Container));
     Object_init(container, PCT_OBJ_CNTNR);
     container->map = Hashmap_new();
+    container->array = Array_new();
     container->type = tp;
     return container;
 }
@@ -62,6 +57,29 @@ void *Container_set(Container *this, char *key, void *value)
     return replaced;
 }
 
+
+void *Container_getByValueKey(Container *this, Value *key)
+{
+    if (Value_isInt(key)) {
+
+    } else if (Value_isString(key)) {
+        Container_get(this, key->string->data);
+    } else {
+        tools_error(LANG_ERR_UYGHUR_EXCEPTION);
+    }
+}
+
+void *Container_setByValueKey(Container *this, Value *key, Value *value)
+{
+    if (Value_isInt(key)) {
+
+    } else if (Value_isString(key)) {
+        Container_set(this, key->string->data, value);
+    } else {
+        tools_error(LANG_ERR_UYGHUR_EXCEPTION);
+    }
+}
+
 char *Container_toString(Container *this)
 {
     return tools_format("[Container => type:%c]", this->type);
@@ -90,6 +108,7 @@ bool Container_isModule(Container *this)
 void Container_free(Container *this)
 {
     Object_release(this->map);
+    Object_release(this->array);
     Object_free(this);
 }
 

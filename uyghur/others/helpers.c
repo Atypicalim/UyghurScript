@@ -187,6 +187,26 @@ char *format_some_place(Token *token)
     tools_format(LANG_ERR_SOME_PLACE, token->file, token->line, token->column);
 }
 
+Value *convert_token_to_value(Token *token)
+{
+    if (Token_isEmpty(token)) return Value_newEmpty(token);
+    if (Token_isBool(token)) return Value_newBoolean(is_eq_string(token->value, TVALUE_TRUE), token);
+    if (Token_isNumber(token)) return Value_newNumber(atof(token->value), token);
+    if (Token_isString(token)) return Value_newString(String_format("%s", token->value), token);
+    return NULL;
+}
+
+Value *convert_token_to_key(Token *token)
+{
+    if (Token_isEmpty(token)) return Value_newEmpty(token);
+    if (Token_isBool(token)) return Value_newBoolean(is_eq_string(token->value, TVALUE_TRUE), token);
+    if (Token_isNumber(token)) return Value_newNumber(atof(token->value), token);
+    if (Token_isString(token)) return Value_newString(String_format("%s", token->value), token);
+    if (Token_isName(token)) return Value_newString(String_format("%s", token->value), token);
+    if (Token_isKey(token)) return Value_newString(String_format("%s", token->value), token);
+    return NULL;
+}
+
 void Object_initByType(char type, void *object)
 {
     //

@@ -167,7 +167,7 @@ Container *Executer_getContainerByToken(Executer *this, Token *token)
     return value->object;
 }
 
-char *Executer_getKeyByToken(Executer *this, Token *token)
+char *Executer_getLocationByToken(Executer *this, Token *token)
 {
     char *key;
     if (Token_isKeyOfName(token)) {
@@ -182,24 +182,43 @@ char *Executer_getKeyByToken(Executer *this, Token *token)
     return key;
 }
 
+Value *Executer_getValueFromContainer(Executer *this, Container *container, Token *token)
+{
+    // printf("----------------------get:\n");
+    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
+    char *location = Executer_getLocationByToken(this, token);
+    Value *value = Container_get(container, location);
+    // Value_print(key);
+    // Value_print(value);
+    pct_free(location);
+    return value;
+}
+
+Value *Executer_setValueToContainer(Executer *this, Container *container, Token *token, Value *value)
+{
+    // printf("----------------------set:\n");
+    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
+    char *location = Executer_getLocationByToken(this, token);
+    // Value_print(key);
+    // Value_print(value);
+    Value *replaced = Container_set(container, location, value);
+    pct_free(location);
+    return replaced;
+}
+
 Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
 {
-    if (Token_isEmpty(token)) return Value_newEmpty(token);
-    if (Token_isBool(token)) return Value_newBoolean(is_eq_string(token->value, TVALUE_TRUE), token);
-    if (Token_isNumber(token)) return Value_newNumber(atof(token->value), token);
-    if (Token_isString(token)) return Value_newString(String_format("%s", token->value), token);
-    if (Token_isBox(token)) return Value_newContainer(Container_newBox(), token);
-    //
-    char *key = Executer_getKeyByToken(this, token);
+    Value *result = convert_token_to_value(token);
+    if (result != NULL) return result;
     Container *container = Executer_getContainerByToken(this, token);
+    if (withEmpty && container == NULL) container = this->currentContainer;
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
-    Value *result = Container_get(container, key);
+    result = Executer_getValueFromContainer(this, container, token);
     if (result != NULL) {
         Object_retain(result);
     } else if (withEmpty) {
         result = Value_newEmpty(token);
     }
-    free(key);
     return result;
 }
 
@@ -208,11 +227,8 @@ void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool 
     Container *container = Executer_getContainerByToken(this, token);
     if (withDeclare && container == NULL) container = this->currentContainer;
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
-    char *key = Executer_getKeyByToken(this, token);
-    Value *replacedValue = Container_set(container, key, value);
-    pct_free(key);
+    Executer_setValueToContainer(this, container, token, value);
     Object_release(value);
-    // if (replacedValue != NULL) Object_release(replacedValue);
 }
 
 // TODO: remove to utils or value
@@ -323,13 +339,27 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     Token *name = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
     Container *container = Executer_getCurrentScope(this, name);
-    Value *old = Container_get(container, name->value);
-    Value *new = Executer_getValueByToken(this, token, true);
+    Value *old = Executer_getValueFromContainer(this, container, name);
     Executer_assert(this, old == NULL, name, LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED);
-    char *key = Executer_getKeyByToken(this, name);
-    Container_set(container, key, new);
+    // 
+    Value *new = NULL;
+    if (Token_isEmpty(token)) {
+        new = Value_newEmpty(token);
+    } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_LOGIC)) {
+        new = Value_newBoolean(false, token);
+    } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_NUM)) {
+        new = Value_newNumber(0, token);
+    } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_STR)) {
+        new = Value_newString(String_new(), token);
+    } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_BOX)) {
+        new = Value_newContainer(Container_newBox(), token);
+    } else {
+        new = Executer_getValueByToken(this, token, true); // todo
+    }
+    // 
+    Executer_assert(this, new != NULL, name, LANG_ERR_EXECUTER_VARIABLE_FAILURE_DEFINED);
+    Executer_setValueToContainer(this, container, name, new);
     Object_release(new);
-    pct_free(key);
 }
 
 void Executer_consumeOperate(Executer *this, Leaf *leaf)
@@ -406,7 +436,7 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
             r = Value_newString(String_format("%s", content), NULL);
             pct_free(content);
         }
-        else if (is_eq_string(act, TVALUE_BOOLEAN))
+        else if (is_eq_string(act, TVALUE_LOGIC))
         {
             r = Value_toBoolean(value);
         }
@@ -584,10 +614,8 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     while(arg != NULL)
     {
         Value *value = Stack_next(this->callStack, cursor1);
-        char *key = Executer_getKeyByToken(this, arg);
-        Container_set(this->currentContainer, key, value);
+        Executer_setValueToContainer(this, this->currentContainer, arg, value);
         arg = Stack_next(leaf->tokens, cursor2);
-        pct_free(key);
     }
     Cursor_free(cursor1);
     Cursor_free(cursor2);
@@ -668,7 +696,7 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     }
     Debug_popTrace(this->uyghur->debug, NULL);
     // return result
-    if (!is_eq_string(resultName->type, UG_TTYPE_EMP) && !is_eq_string(resultName->value, TVALUE_EMPTY)) {
+    if (!Token_isEmpty(resultName)) {
         Executer_setValueByToken(this, resultName, r, true);
     } else {
         Object_release(r);
@@ -720,7 +748,7 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
     Cursor_free(cursor);
     Foliage *root = (Foliage *)body->value;
     //
-    // helper_print_btree(root, " ");
+    // TODO:free r object
     Value *r = Executer_calculateBTree(this, root);
     //
     Executer_assert(this, r != NULL, target, LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);

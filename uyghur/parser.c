@@ -133,6 +133,29 @@ Token *Parser_checkValue(Parser *this, int indent, int num, char *s, ...)
     return this->token;
 }
 
+Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
+{
+    Parser_moveToken(this, indent);
+    Parser_assert(this, this->token != NULL, LANG_ERR_INVALID_WORD);
+    Parser_assert(this, is_eq_string(this->token->type, UG_TTYPE_WRD), LANG_ERR_INVALID_WORD);
+    bool isMatch = false;
+    va_list valist;
+    int i;
+    va_start(valist, s);
+    for (i = 0; i < num; i++)
+    {
+        if (is_eq_string(this->token->value, s))
+        {
+            isMatch = true;
+            break;
+        }
+        s = va_arg(valist, char *);
+    }
+    va_end(valist);
+    Parser_assert(this, isMatch, LANG_ERR_INVALID_WORD);
+    return this->token;
+}
+
 Token *Parser_getToken(Parser *this, int indent)
 {
     Token *token = this->token;
@@ -182,29 +205,6 @@ bool Parser_isWord(Parser *this, int indent, char *value)
     return token != NULL && is_eq_string(token->type, UG_TTYPE_WRD) && is_eq_string(token->value, value);
 }
 
-Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
-{
-    Parser_moveToken(this, indent);
-    Parser_assert(this, this->token != NULL, LANG_ERR_INVALID_WORD);
-    Parser_assert(this, is_eq_string(this->token->type, UG_TTYPE_WRD), LANG_ERR_INVALID_WORD);
-    bool isMatch = false;
-    va_list valist;
-    int i;
-    va_start(valist, s);
-    for (i = 0; i < num; i++)
-    {
-        if (is_eq_string(this->token->value, s))
-        {
-            isMatch = true;
-            break;
-        }
-        s = va_arg(valist, char *);
-    }
-    va_end(valist);
-    Parser_assert(this, isMatch, LANG_ERR_INVALID_WORD);
-    return this->token;
-}
-
 // TODO:relace calculation word
 void Parser_consumeAstVariable(Parser *this)
 {
@@ -228,7 +228,7 @@ void Parser_consumeAstOperate(Parser *this)
     }
     else if (is_eq_string(this->token->value, TVALUE_TARGET_TO))
     {
-        name = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
+        name = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
         action = Parser_checkWord(this, 1, 2, TVALUE_OUTPUT, UG_TTYPE_KEY);
     }
     Parser_pushLeaf(this, UG_ATYPE_OPRT, 3, target, name, action);
@@ -248,7 +248,7 @@ void Parser_consumeAstConvert(Parser *this)
         }
         else
         {
-            source = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
+            source = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
         }
         Parser_checkWord(this, 1, 1, TVALUE_MADE);
         Parser_pushLeaf(this, UG_ATYPE_CVT, 2, target, source);
@@ -344,7 +344,7 @@ void Parser_consumeAstException(Parser *this)
 void Parser_consumeAstResult(Parser *this)
 {
     Parser_checkWord(this, 0, 1, TVALUE_RESULT);
-    Token *name = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
+    Token *name = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
     Parser_checkWord(this, 1, 1, TVALUE_RETURN);
     Parser_pushLeaf(this, UG_ATYPE_RSLT, 1, name);
 }
@@ -385,11 +385,11 @@ void Parser_consumeAstCall(Parser *this)
     if (Parser_isValue(this, 1, TVALUE_WITH))
     {
         Parser_checkValue(this, 1, 1, TVALUE_WITH);
-        Token *variable = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
+        Token *variable = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
         while (variable != NULL)
         {
             Stack_push(leaf->tokens, variable);
-            variable = Parser_isValue(this, 1, TVALUE_CALL) ? NULL : Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
+            variable = Parser_isValue(this, 1, TVALUE_CALL) ? NULL : Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
         }
     }
     //

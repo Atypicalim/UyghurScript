@@ -7,23 +7,6 @@
 #ifndef H_UG_VALUE
 #define H_UG_VALUE
 
-Hashmap *valueCache = NULL;
-
-typedef struct ValueNode {
-    struct _Object;
-    char type;
-    bool boolean;
-    char character;
-    double number;
-    String *string;
-    void *object;
-    void *extra;
-} Value;
-
-Value *Value_EMPTY;
-Value *Value_TRUE;
-Value *Value_FALSE;
-
 char *_get_cache_tag(char type, bool boolean, double number, char *string)
 {
     if (type == UG_RTYPE_NIL) return tools_format("<R-VALUE:%c>", type);
@@ -92,6 +75,16 @@ Value *Value_newNative(void *function, void *extra)
     return Value_new(UG_RTYPE_NTV ,NULL, 0, NULL, function, extra);
 }
 
+bool Value_isEmpty(Value *this)
+{
+    return this != NULL && this->type == UG_RTYPE_NIL;
+}
+
+bool Value_isBoolean(Value *this)
+{
+    return this != NULL && this->type == UG_RTYPE_BOL;
+}
+
 bool Value_isNumber(Value *this)
 {
     return this != NULL && this->type == UG_RTYPE_NUM;
@@ -105,6 +98,11 @@ bool Value_isInt(Value *this)
 bool Value_isFlt(Value *this)
 {
     return Value_isNumber(this) && !tools_number_is_integer(this->number);
+}
+
+bool Value_isString(Value *this)
+{
+    return this != NULL && this->type == UG_RTYPE_STR;
 }
 
 bool Value_isFunc(Value *this)

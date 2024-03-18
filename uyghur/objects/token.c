@@ -108,11 +108,6 @@ bool Token_isKeyOfNumber(Token *this)
     return Token_isKey(this) && Token_isNumber(this->extra);
 }
 
-bool Token_isBox(Token *this)
-{
-    return is_eq_string(this->type, UG_TTYPE_BOX);
-}
-
 bool Token_isCalculation(Token *this)
 {
     return is_eq_string(this->type, UG_TTYPE_CLC);

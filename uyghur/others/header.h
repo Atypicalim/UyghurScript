@@ -44,6 +44,40 @@ void Object_freeByType(char, void *);
 void Object_printByType(char, void *);
 #include "../tools/header.h"
 
+// value
+
+typedef struct _Value {
+    struct _Object;
+    char type;
+    bool boolean;
+    char character;
+    double number;
+    String *string;
+    void *object;
+    void *extra;
+} Value;
+
+bool Value_isBoolean(Value*);
+bool Value_isNumber(Value*);
+bool Value_isInt(Value*);
+bool Value_isFlt(Value*);
+bool Value_isString(Value*);
+
+Value *Value_EMPTY;
+Value *Value_TRUE;
+Value *Value_FALSE;
+
+// container
+
+typedef struct _Container {
+    struct _Object;
+    Hashmap *map;
+    Array *array;
+    char type;
+} Container;
+
+Container *Container_new(char);
+
 // 
 
 #include "utils.c"
@@ -65,7 +99,7 @@ typedef struct Bridge Bridge;
 
 // 
 
-typedef struct Uyghur {
+typedef struct _Uyghur {
     bool running;
     Tokenizer *tokenizer;
     Parser *parser;

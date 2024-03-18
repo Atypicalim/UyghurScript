@@ -56,4 +56,5 @@
 #define LANG_ERR_EXECUTER_INVALID_KEY_NAME "achquch ismi inawetsiz"
 #define LANG_ERR_EXECUTER_INVALID_VARIABLE "nishanlanghan miqdar tepilmidi"
 #define LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED "miqdar alliburun iniqlanghan"
+#define LANG_ERR_EXECUTER_VARIABLE_FAILURE_DEFINED "miqdar muweppiqyetlik iniqlanmini"
 #define LANG_ERR_EXECUTER_STACK_OVERFLOW "saqlash boshluqi teship ketti"
