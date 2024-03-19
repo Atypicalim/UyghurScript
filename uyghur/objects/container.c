@@ -21,6 +21,13 @@ Container *Container_new(char tp)
     return container;
 }
 
+void Container_free(Container *this)
+{
+    Object_release(this->map);
+    Object_release(this->array);
+    Object_free(this);
+}
+
 Container *Container_newBox()
 {
     return Container_new(UG_CTYPE_BOX);
@@ -100,16 +107,6 @@ void *Container_setByValueKey(Container *this, Value *key, Value *value)
     }
 }
 
-char *Container_toString(Container *this)
-{
-    return tools_format("[Container => type:%c]", this->type);
-}
-
-void Container_print(Container *this)
-{
-    printf(Container_toString(this));
-}
-
 bool Container_isScope(Container *this)
 {
     return this->type == UG_CTYPE_SCP;
@@ -125,11 +122,9 @@ bool Container_isModule(Container *this)
     return this->type == UG_CTYPE_MDL;
 }
 
-void Container_free(Container *this)
+char *Container_toString(Container *this)
 {
-    Object_release(this->map);
-    Object_release(this->array);
-    Object_free(this);
+    return tools_format("[Container => p:%d t:%c]", this, this->type);
 }
 
 #endif

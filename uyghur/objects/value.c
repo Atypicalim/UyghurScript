@@ -105,6 +105,11 @@ bool Value_isString(Value *this)
     return this != NULL && this->type == UG_TYPE_STR;
 }
 
+bool Value_isContainer(Value *this)
+{
+    return this != NULL && this->type == UG_TYPE_CNT;
+}
+
 bool Value_isFunc(Value *this)
 {
     return this != NULL && this->type == UG_TYPE_FUN;

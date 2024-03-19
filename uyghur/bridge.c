@@ -147,7 +147,8 @@ void Bridge_register(Bridge *this)
 {
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, box expected for register");
     tools_assert(this->last == BRIDGE_ITEM_TP_VAL, "invalid bridge status");
-    Container *container = this->name == NULL ? this->uyghur->executer->globalContainer : Container_newBox();
+    Container *global = this->uyghur->executer->globalContainer;
+    Container *container = this->name == NULL ? global : Container_newBox();
     Value *value = Stack_pop(this->stack);
     while (value != NULL)
     {
@@ -159,8 +160,7 @@ void Bridge_register(Bridge *this)
     }
     if (this->name != NULL)
     {
-        container = this->uyghur->executer->globalContainer;
-        Container_setByStringLocation(container, this->name, Value_newContainer(container, NULL));
+        Container_setByStringLocation(global, this->name, Value_newContainer(container, NULL));
     }
     this->name = NULL;
 }

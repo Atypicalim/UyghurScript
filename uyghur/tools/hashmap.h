@@ -23,13 +23,13 @@ Hashmap* Hashmap_new() {
 void Hashmap_free(Hashmap *this) {
     assert(this != NULL);
     Hashkey *ptr;
-    Hashkey *head;
+    Hashkey *tmp;
     for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
         ptr = this[i].position;
         while (ptr != NULL) {
-            head = ptr;
+            tmp = ptr;
             ptr = ptr->next;
-            Object_release(head);
+            Object_release(tmp);
         }
     }
     Object_free(this);
@@ -114,6 +114,11 @@ void *Hashmap_del(Hashmap *this, char *_key) {
     }
     Object_release(key);
     return tmp;
+}
+
+char *Hashmap_toString(Hashmap *this)
+{
+    return tools_format("[Hashmap => p:%d s:%d]", this, this->size);
 }
 
 #endif

@@ -373,10 +373,16 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     {
         Value *value = Executer_getValueByToken(this, name, true);
         Executer_assert(this, value != NULL, name, LANG_ERR_NO_VALID_STATE);
-        char *content = Value_toString(value);
-        printf("%s", content);
+        //
+        if (Value_isContainer(value)) {
+            Container_print(value->object);
+        } else {
+            char *content = Value_toString(value);
+            printf("%s", content);
+            pct_free(content);
+        }
+        // 
         Object_release(value);
-        pct_free(content);
     }
     else if (is_eq_string(target->value, TVALUE_TARGET_FROM) && is_eq_string(action->value, TVALUE_INPUT))
     {

@@ -29,6 +29,23 @@ Array *Array_new()
     return array;
 }
 
+void Array_clear(Array *this)
+{
+    for (int i = 0; i < this->length; i++) {
+        Object_release(this->elements[i]);
+        this->elements[i] = NULL;
+    }
+    this->length = 0;
+}
+
+void Array_free(Array *this)
+{
+    Array_clear(this);
+    pct_free(this->elements);
+    this->elements = NULL;
+    Object_free(this);
+}
+
 bool _array_check_resize(Array *this, int length)
 {
     if (length <= this->capacity) return true;
@@ -206,26 +223,9 @@ Array *Array_slice(Array *this, int from, int to)
     return other;
 }
 
-void Array_clear(Array *this)
+char *Array_toString(Array *this)
 {
-    for (int i = 0; i < this->length; i++) {
-        Object_release(this->elements[i]);
-        this->elements[i] = NULL;
-    }
-    this->length = 0;
-}
-
-void Array_print(Array *this)
-{
-    printf("[(ARRAY) => p:%d, s:%d, c:%d]\n", this, this->length, this->capacity);
-}
-
-void Array_free(Array *this)
-{
-    Array_clear(this);
-    pct_free(this->elements);
-    this->elements = NULL;
-    Object_free(this);
+    return tools_format("[Array => p:%d s:%d]", this, this->length);
 }
 
 #endif

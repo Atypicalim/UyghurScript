@@ -251,4 +251,43 @@ void Object_printByType(char type, void *object)
     if (type == PCT_OBJ_VALUE) return Value_print(object);
 }
 
+// 
+
+void Array_print(Array *this, char *prefix)
+{
+    if (prefix == NULL) prefix = "";
+    printf("%s[Array => p:%d l:%d]\n", prefix, this, this->length);
+    for (int i = 0; i < this->length; i++) {
+        void *element = this->elements[i];
+        printf("%s[itm %d->%d ]\n", prefix, i, element);
+    }
+}
+
+void Hashkey_print(Hashkey *this, char *prefix)
+{
+    printf("%s[itm %s->%d ]\n", prefix, this->key->data, this->value);
+}
+
+void Hashmap_print(Hashmap *this, char *prefix)
+{
+    if (prefix == NULL) prefix = "";
+    printf("%s[Hashmap => p:%d s:%d]\n", prefix, this, this->size);
+    Hashkey *ptr;
+    for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
+        ptr = this[i].position;
+        while (ptr != NULL) {
+            Hashkey_print(ptr, prefix);
+            ptr = ptr->next;
+        }
+    }
+}
+
+void Container_print(Container *this)
+{
+    printf("[CONTAINER => t:%c p:%d]\n", this->type, this);
+    Hashmap_print(this->map, "| ");
+    Array_print(this->array, "| ");
+    printf("[CONTAINER]\n");
+}
+
 #endif
