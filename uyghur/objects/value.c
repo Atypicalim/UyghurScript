@@ -57,12 +57,14 @@ Value *Value_newNumber(double number, void *extra)
 
 Value *Value_newString(String *string, void *extra)
 {
+    // Object_retain(string);
     return Value_new(UG_TYPE_STR, NULL, 0, string, NULL, extra);
 }
 
-Value *Value_newContainer(Container *box, void *extra)
+Value *Value_newContainer(Container *container, void *extra)
 {
-    return Value_new(UG_TYPE_CNT, NULL, 0, NULL, box, extra);
+    // Object_retain(container);
+    return Value_new(UG_TYPE_CNT, NULL, 0, NULL, container, extra);
 }
 
 Value *Value_newFunction(void *function, void *extra)

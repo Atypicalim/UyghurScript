@@ -160,7 +160,9 @@ void Bridge_register(Bridge *this)
     }
     if (this->name != NULL)
     {
-        Container_setByStringLocation(global, this->name, Value_newContainer(container, NULL));
+        Object_retain(container);
+        Value *temp = Value_newContainer(container, NULL);
+        Container_setByStringLocation(global, this->name, temp);
     }
     this->name = NULL;
 }

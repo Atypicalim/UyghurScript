@@ -30,6 +30,7 @@ void Executer_reset(Executer *this)
     this->currentContainer = NULL;
     this->rootContainer = NULL;
     this->globalContainer = Container_newScope();
+    Object_retain(this->globalContainer);
     this->isReturn = false;
     this->isCatch = false;
     this->errorMsg = NULL;
@@ -167,6 +168,7 @@ Container *Executer_getContainerByToken(Executer *this, Token *token)
     return value->object;
 }
 
+// need free
 char *Executer_getLocationByToken(Executer *this, Token *token)
 {
     char *key;
@@ -182,12 +184,14 @@ char *Executer_getLocationByToken(Executer *this, Token *token)
     return key;
 }
 
+// need release
 Value *Executer_getValueFromContainer(Executer *this, Container *container, Token *token)
 {
     // printf("----------------------get:\n");
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     char *location = Executer_getLocationByToken(this, token);
     Value *value = Container_getByTypedLocation(container, UG_TYPE_NON, location);
+    if (value != NULL) Object_retain(value);
     // Value_print(key);
     // Value_print(value);
     pct_free(location);
@@ -215,7 +219,7 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     result = Executer_getValueFromContainer(this, container, token);
     if (result != NULL) {
-        Object_retain(result);
+        // Object_retain(result);
     } else if (withEmpty) {
         result = Value_newEmpty(token);
     }
@@ -372,10 +376,10 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     if (is_eq_string(target->value, TVALUE_OP_S_OUTPUT) && is_eq_string(action->value, TVALUE_OP_E_OUTPUT))
     {
         Value *value = NULL;
-        if (helper_token_is_values(name, TVAUES_GROUP_UTYPES)) {
+        if (!Token_isString(name) && helper_token_is_values(name, TVAUES_GROUP_UTYPES)) {
             printf("<Type n:%s>\n", name->value);
             if (is_eq_string(name->value, TVALUE_EMPTY)) {
-                value = Value_newContainer(this->globalContainer, NULL);
+                Container_print(this->globalContainer);
             } else {
                 value = Executer_getValueFromContainer(this, this->globalContainer, name);
             }
