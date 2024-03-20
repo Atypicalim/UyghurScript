@@ -7,11 +7,11 @@ struct Executer {
     Uyghur *uyghur;
     Leaf *tree;
     Leaf *leaf;
-    Stack *callStack;
+    Container *globalScope;
+    Container *rootModule;
+    Container *currContainer;
     Stack *containerStack;
-    Container *currentContainer;
-    Container *rootContainer;
-    Container *globalContainer;
+    Stack *callStack;
     bool isReturn;
     bool isCatch;
     char *errorMsg;
@@ -25,15 +25,15 @@ void Executer_reset(Executer *this)
     this->uyghur = NULL;
     this->tree = NULL;
     this->leaf = NULL;
-    this->callStack = Stack_new();
+    this->globalScope = Container_newScope();
+    this->rootModule = NULL;
+    this->currContainer = NULL;
     this->containerStack = Stack_new();
-    this->currentContainer = NULL;
-    this->rootContainer = NULL;
-    this->globalContainer = Container_newScope();
-    Object_retain(this->globalContainer);
+    this->callStack = Stack_new();
     this->isReturn = false;
     this->isCatch = false;
     this->errorMsg = NULL;
+    Object_retain(this->globalScope);
 }
 
 Executer *Executer_new(Uyghur *uyghur)
@@ -70,14 +70,14 @@ void Executer_pushContainer(Executer *this, char type)
     Executer_assert(this, this->containerStack->size < MAX_STACK_SIZE, NULL, LANG_ERR_EXECUTER_STACK_OVERFLOW);
     Container *container = Container_new(type);
     Stack_push(this->containerStack, container);
-    this->currentContainer = (Container *)this->containerStack->tail->data;
-    this->rootContainer = (Container *)this->containerStack->head->data;
+    this->currContainer = (Container *)this->containerStack->tail->data;
+    this->rootModule = (Container *)this->containerStack->head->data;
 }
 
 Container *Executer_popContainer(Executer *this, char type)
 {
     Container *container = Stack_pop(this->containerStack);
-    this->currentContainer = (Container *)this->containerStack->tail->data;
+    this->currContainer = (Container *)this->containerStack->tail->data;
     tools_assert(container != NULL && container->type == type, LANG_ERR_NO_VALID_STATE);
     if (type == UG_CTYPE_SCP) {
         Object_release(container);
@@ -89,7 +89,7 @@ Container *Executer_popContainer(Executer *this, char type)
 
 Container *Executer_getCurrentGlobal(Executer *this, Token *token)
 {
-    Container *container = this->globalContainer;
+    Container *container = this->globalScope;
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
     return container;
 }
@@ -127,7 +127,7 @@ Container *Executer_getCurrentBox(Executer *this, Token *token)
 
 Container *Executer_getCurrentScope(Executer *this, Token *token)
 {
-    Container *container = this->currentContainer;
+    Container *container = this->currContainer;
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
     return container;
 }
@@ -146,8 +146,8 @@ Container *Executer_getContainerByKey(Executer *this, char *key)
         block = block->last;
     }
     if (value != NULL) return block->data;
-    value = Container_getByStringLocation(this->globalContainer, key);
-    if (value != NULL) return this->globalContainer;
+    value = Container_getByStringLocation(this->globalScope, key);
+    if (value != NULL) return this->globalScope;
     return NULL;
 }
 
@@ -215,7 +215,7 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
     Value *result = convert_token_to_value(token);
     if (result != NULL) return result;
     Container *container = Executer_getContainerByToken(this, token);
-    if (withEmpty && container == NULL) container = this->globalContainer;
+    if (withEmpty && container == NULL) container = this->globalScope;
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     result = Executer_getValueFromContainer(this, container, token);
     if (result != NULL) {
@@ -229,7 +229,7 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
 void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool withDeclare)
 {
     Container *container = Executer_getContainerByToken(this, token);
-    if (withDeclare && container == NULL) container = this->currentContainer;
+    if (withDeclare && container == NULL) container = this->currContainer;
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     Executer_setValueToContainer(this, container, token, value);
     Object_release(value);
@@ -379,9 +379,9 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
         if (!Token_isString(name) && helper_token_is_values(name, TVAUES_GROUP_UTYPES)) {
             printf("<Type n:%s>\n", name->value);
             if (is_eq_string(name->value, TVALUE_EMPTY)) {
-                Container_print(this->globalContainer);
+                Container_print(this->globalScope);
             } else {
-                value = Executer_getValueFromContainer(this, this->globalContainer, name);
+                value = Executer_getValueFromContainer(this, this->globalScope, name);
             }
         } else {
             value = Executer_getValueByToken(this, name, true);
@@ -629,7 +629,7 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     while(arg != NULL)
     {
         Value *value = Stack_next(this->callStack, cursor1);
-        Executer_setValueToContainer(this, this->currentContainer, arg, value);
+        Executer_setValueToContainer(this, this->currContainer, arg, value);
         arg = Stack_next(leaf->tokens, cursor2);
     }
     Cursor_free(cursor1);
@@ -645,7 +645,7 @@ Value *Executer_runFunc(Executer *this, Value *funcValue)
     Value *selfValue = funcValue->extra;
     // 
     Executer_pushContainer(this, UG_CTYPE_SCP);
-    Container_setByStringLocation(this->currentContainer, SCOPE_ALIAS_BOX, selfValue);
+    Container_setByStringLocation(this->currContainer, SCOPE_ALIAS_BOX, selfValue);
     Executer_consumeLeaf(this, codeNode);
     Executer_popContainer(this, UG_CTYPE_SCP);
     // 
@@ -877,7 +877,7 @@ Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
     if (this->containerStack->head == this->containerStack->tail) return NULL;
     Container *container = Executer_popContainer(this, UG_CTYPE_MDL);
     Value *module = Value_newContainer(container, NULL);
-    Container_setByStringLocation(this->globalContainer, path, module);
+    Container_setByStringLocation(this->globalScope, path, module);
     return module;
 }
 

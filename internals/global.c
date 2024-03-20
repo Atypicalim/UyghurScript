@@ -33,7 +33,7 @@ void ekirish(Bridge *bridge)
 {
     char *path = Bridge_receiveString(bridge);
     Uyghur *uyghur = bridge->uyghur;
-    Container *container = uyghur->executer->globalContainer;
+    Container *container = uyghur->executer->globalScope;
     Value *box = Container_getByStringLocation(container, path);
     if (box == NULL) box = Uyghur_runPath(uyghur, path);
     if (box == NULL) box = Value_newEmpty(NULL);
@@ -43,7 +43,7 @@ void ekirish(Bridge *bridge)
 void tazilash(Bridge *bridge)
 {
     char *path = Bridge_receiveString(bridge);
-    Container_del(bridge->uyghur->executer->globalContainer, path);
+    Container_del(bridge->uyghur->executer->globalScope, path);
     Bridge_returnEmpty(bridge);
 }
 
