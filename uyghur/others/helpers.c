@@ -203,6 +203,8 @@ char convert_ttype_to_rtype(char *tType)
     if (is_eq_string(tType, UG_TTYPE_NUM)) return UG_TYPE_NUM;
     if (is_eq_string(tType, UG_TTYPE_STR)) return UG_TYPE_STR;
     if (is_eq_string(tType, UG_TTYPE_NAM)) return UG_TYPE_STR;
+    if (is_eq_string(tType, UG_TTYPE_WRD)) return UG_TYPE_STR;
+    tools_error("invalid token type for convert %s", tType);
     return UG_TYPE_NON;
 }
 

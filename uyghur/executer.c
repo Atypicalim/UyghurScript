@@ -19,6 +19,7 @@ struct Executer {
 
 void Executer_consumeLeaf(Executer *, Leaf *);
 bool Executer_consumeTree(Executer *, Leaf *);
+char *Executer_getLocationByToken(Executer *, Token *);
 
 void Executer_reset(Executer *this)
 {
@@ -154,17 +155,30 @@ Container *Executer_getContainerByKey(Executer *this, char *key)
 Container *Executer_getContainerByToken(Executer *this, Token *token)
 {
     // name
-    if (Token_isName(token)) return Executer_getContainerByKey(this, token->value);
+    if (Token_isName(token)) {
+        char *location = Executer_getLocationByToken(this, token);
+        Container *container = Executer_getContainerByKey(this, location);
+        pct_free(location);
+        return container;
+    }
     Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_KEY_INVALID_TOKEN);
     Token *extra = (Token *)token->extra;
     if (is_eq_string(extra->value, SCOPE_ALIAS_PRG)) return Executer_getCurrentGlobal(this, token);
     if (is_eq_string(extra->value, SCOPE_ALIAS_MDL)) return Executer_getCurrentModule(this, token);
     if (is_eq_string(extra->value, SCOPE_ALIAS_BOX)) return Executer_getCurrentBox(this, token);
-    Container *container = Executer_getContainerByKey(this, extra->value);
-    if (container == NULL) return NULL;
-    Value *value = Container_getByStringLocation(container, extra->value);
-    if (value == NULL) return NULL;
+    char *location = convert_string_to_location(extra->value, UG_TYPE_STR);
+    Container *container = Executer_getContainerByKey(this, location);
+    if (container == NULL) {
+        pct_free(location);
+        return NULL;
+    }
+    Value *value = Container_getByStringLocation(container, location);
+    if (value == NULL) {
+        pct_free(location);
+        return NULL;
+    }
     Executer_assert(this, value->type == UG_TYPE_CNT, token, LANG_ERR_EXECUTER_INVALID_BOX_NAME);
+    pct_free(location);
     return value->object;
 }
 
@@ -177,9 +191,16 @@ char *Executer_getLocationByToken(Executer *this, Token *token)
         Executer_assert(this, container!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY_NAME);
         Value *value = Container_getByStringLocation(container, token->value);
         Executer_assert(this, value!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY_NAME);
-        key = Value_toString(value);
+        char *text = Value_toString(value);
+        key = convert_string_to_location(text, value->type);
+        pct_free(text);
+    } else if (Token_isKeyOfName(token) || Token_isKeyOfString(token)) {
+        Token *extra = (Token *)token->extra;
+        char tp = convert_ttype_to_rtype(extra->type);
+        key = convert_string_to_location(token->value, tp);
     } else {
-        key = Token_toString(token);
+        char tp = convert_ttype_to_rtype(token->type);
+        key = convert_string_to_location(token->value, tp);
     }
     return key;
 }
@@ -187,23 +208,22 @@ char *Executer_getLocationByToken(Executer *this, Token *token)
 // need release
 Value *Executer_getValueFromContainer(Executer *this, Container *container, Token *token)
 {
-    // printf("----------------------get:\n");
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     char *location = Executer_getLocationByToken(this, token);
     Value *value = Container_getByTypedLocation(container, UG_TYPE_NON, location);
-    if (value != NULL) Object_retain(value);
-    // Value_print(key);
+    // printf("----------------------get: %s \n", location);
     // Value_print(value);
+    if (value != NULL) Object_retain(value);
     pct_free(location);
     return value;
 }
 
 Value *Executer_setValueToContainer(Executer *this, Container *container, Token *token, Value *value)
 {
-    // printf("----------------------set:\n");
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     char *location = Executer_getLocationByToken(this, token);
-    // Value_print(key);
+    // printf("----------------------set: %s \n", location);
+    // Token_print(token);
     // Value_print(value);
     Value *replaced = Container_setByTypedLocation(container, UG_TYPE_NON, location, value);
     pct_free(location);
