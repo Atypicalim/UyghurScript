@@ -4,7 +4,7 @@
 #define UG_VERSION_CODE 0.1 
 
 // common type
-#define UG_TYPE_NON ' '
+#define UG_TYPE_NON '?'
 #define UG_TYPE_NIL '~'
 #define UG_TYPE_BOL 'b'
 #define UG_TYPE_NUM 'n'

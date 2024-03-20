@@ -129,28 +129,39 @@ bool Value_isRunnable(Value *this)
 
 void Value_print(Value *this)
 {
-    if (this->type == UG_TYPE_NIL)
+    if (this == NULL) {
+        printf("<NULL>\n");
+    }
+    else if (this->type == UG_TYPE_NIL)
     {
-        printf("[RV => t:%c v:%s]\n", this->type, TVALUE_EMPTY);
+        printf("<Empty>\n", TVALUE_EMPTY);
     }
     else if (this->type == UG_TYPE_BOL)
     {
         bool value = this->boolean;
-        printf("[RV => t:%c v:%s]\n", this->type, value ? TVALUE_TRUE : TVALUE_FALSE);
+        printf("<Boolean => v:%s>\n", value ? TVALUE_TRUE : TVALUE_FALSE);
     }
     else if (this->type == UG_TYPE_NUM)
     {
         double value = this->number;
-        printf("[RV => t:%c v:%f]\n", this->type, value);
+        printf("<Number => v:%f>\n", value);
     }
     else if (this->type == UG_TYPE_STR)
     {
         char *value = String_get(this->string);
-        printf("[RV => t:%c v:%s]\n", this->type, value);
+        printf("<String => v:%s>\n", value);
+    }
+    else if (this->type == UG_TYPE_CNT)
+    {
+        printf("<Container => p:%p>\n", this->object);
+    }
+    else if (this->type == UG_TYPE_NTV)
+    {
+        printf("<Native => p:%p>\n", this->object);
     }
     else
     {
-        printf("[RV => t:%c]\n", this->type);
+        printf("<Value => t:%c>\n", this->type);
     }
 }
 

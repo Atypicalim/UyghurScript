@@ -208,19 +208,11 @@ char convert_ttype_to_rtype(char *tType)
 
 char *convert_string_to_location(char *str, char rType)
 {
-    char *location = NULL;
     if (rType == UG_TYPE_NUM) {
-        return tools_format("n_%.15g", atof(str));
-    } else if (rType == UG_TYPE_NIL) {
-        return tools_format("e_%s", str);
-    } else if (rType == UG_TYPE_BOL) {
-        return tools_format("b_%s", str);
-    } else if (rType == UG_TYPE_STR) {
-        return tools_format("s_%s", str);
+        return tools_format("%c_%.15g", rType, atof(str));
     } else {
-        tools_error(LANG_ERR_UYGHUR_EXCEPTION);
+        return tools_format("%c_%s", rType, str);
     }
-    return NULL;
 }
 
 void Object_initByType(char type, void *object)

@@ -139,7 +139,12 @@ char *Token_toString(Token *this)
 
 void Token_print(Token *this)
 {
-    printf("[(TOKEN) => type:%s, value:(%s) in (%d, %d %s)]\n", this->type, this->value, this->line, this->column, this->file);
+    if (this == NULL) {
+        printf("[NULL]\n");
+    } else {
+        char *fmt = "[(TOKEN) => type:%s, value:(%s) in (%d, %d %s)]\n";
+        printf(fmt, this->type, this->value, this->line, this->column, this->file);
+    }
 }
 
 void Token_free(Token *this)
