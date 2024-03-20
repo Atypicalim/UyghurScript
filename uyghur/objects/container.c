@@ -124,7 +124,11 @@ bool Container_isModule(Container *this)
 
 char *Container_toString(Container *this)
 {
-    return tools_format("[Container => p:%d t:%c]", this, this->type);
+    char *name = "Container";
+    if (Container_isScope(this)) name = "Scope";
+    if (Container_isBox(this)) name = "Box";
+    if (Container_isModule(this)) name = "Module";
+    return tools_format("<%s p:%p>", name, this);
 }
 
 #endif

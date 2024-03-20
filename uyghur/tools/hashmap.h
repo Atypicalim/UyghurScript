@@ -118,7 +118,7 @@ void *Hashmap_del(Hashmap *this, char *_key) {
 
 char *Hashmap_toString(Hashmap *this)
 {
-    return tools_format("[Hashmap => p:%d s:%d]", this, this->size);
+    return tools_format("[Hashmap => p:%p s:%i]", this, this->size);
 }
 
 #endif

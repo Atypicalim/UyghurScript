@@ -246,48 +246,120 @@ void Object_freeByType(char type, void *object)
     if (type == PCT_OBJ_LEAF) return Leaf_free(object);
 }
 
+// 
+
+bool helper_token_is_types_list(Token *token, int num, char *s, va_list valist)
+{
+    if (token == NULL) return false;
+    bool isMatch = false;
+    int i;
+    for (i = 0; i < num; i++)
+    {
+        if (is_eq_string(token->type, s))
+        {
+            isMatch = true;
+            break;
+        }
+        s = va_arg(valist, char *);
+    }
+    va_end(valist);
+    return isMatch;
+}
+
+bool helper_token_is_types(Token *token, int num, char *s, ...)
+{
+    va_list valist;
+    va_start(valist, s);
+    return helper_token_is_types_list(token, num, s, valist);
+}
+
+
+bool helper_token_is_values_list(Token *token, int num, char *s, va_list valist)
+{
+    if (token == NULL) return false;
+    bool isMatch = false;
+    int i;
+    for (i = 0; i < num; i++)
+    {
+        if (is_eq_string(token->value, s))
+        {
+            isMatch = true;
+            break;
+        }
+        s = va_arg(valist, char *);
+    }
+    va_end(valist);
+    return isMatch;
+}
+
+bool helper_token_is_values(Token *token, int num, char *s, ...)
+{
+    va_list valist;
+    va_start(valist, s);
+    return helper_token_is_values_list(token, num, s, valist);
+}
+
+// 
+
 void Object_printByType(char type, void *object)
 {
     if (type == PCT_OBJ_VALUE) return Value_print(object);
 }
 
-// 
+// printing
 
-void Array_print(Array *this, char *prefix)
-{
-    if (prefix == NULL) prefix = "";
-    printf("%s[Array => p:%d l:%d]\n", prefix, this, this->length);
-    for (int i = 0; i < this->length; i++) {
-        void *element = this->elements[i];
-        printf("%s[itm %d->%d ]\n", prefix, i, element);
-    }
+typedef void (*HASHKEY_PRINT_CALLBACK)(Hashkey *, char *);
+
+void _container_key_print_callback(Hashkey *this, char *prefix) {
+    printf("%s - %s -> %s \n", prefix, this->key->data, Value_toString(this->value));
 }
 
-void Hashkey_print(Hashkey *this, char *prefix)
-{
-    printf("%s[itm %s->%d ]\n", prefix, this->key->data, this->value);
+void _hashmap_key_print_callback(Hashkey *this, char *prefix) {
+    printf("%s - %s -> %i \n", prefix, this->key->data, this->value);
 }
 
-void Hashmap_print(Hashmap *this, char *prefix)
+void _hashmap_print_with_callback(Hashmap *this, char *prefix, HASHKEY_PRINT_CALLBACK callback)
 {
     if (prefix == NULL) prefix = "";
-    printf("%s[Hashmap => p:%d s:%d]\n", prefix, this, this->size);
     Hashkey *ptr;
     for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
         ptr = this[i].position;
         while (ptr != NULL) {
-            Hashkey_print(ptr, prefix);
+            callback(ptr, prefix);
             ptr = ptr->next;
         }
     }
 }
 
+void _array_print_without_callback(Array *this, char *prefix)
+{
+    if (prefix == NULL) prefix = "";
+    for (int i = 0; i < this->length; i++) {
+        void *element = this->elements[i];
+        printf("%s - %d => %i \n", prefix, i, element);
+    } 
+}
+
+void Array_print(Array *this)
+{
+    printf("[Array -> p:%p l:%i]\n", this, this->length);
+    _array_print_without_callback(this, "");
+    printf("[Array]\n");
+}
+
+void Hashmap_print(Hashmap *this)
+{
+    printf("[Hashmap -> p:%p s:%i]\n", this, this->size);
+    _hashmap_print_with_callback(this, "", _hashmap_key_print_callback);
+    printf("[Hashmap]\n");
+}
+
 void Container_print(Container *this)
 {
-    printf("[CONTAINER => t:%c p:%d]\n", this->type, this);
-    Hashmap_print(this->map, "| ");
-    Array_print(this->array, "| ");
-    printf("[CONTAINER]\n");
+    printf("[Container -> p:%p t:%c]\n", this, this->type);
+    _hashmap_print_with_callback(this->map, "|", _container_key_print_callback);
+    _array_print_without_callback(this->array, "|");
+    printf("[Container]\n");
 }
 
 #endif

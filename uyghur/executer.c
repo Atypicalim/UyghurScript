@@ -211,7 +211,7 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
     Value *result = convert_token_to_value(token);
     if (result != NULL) return result;
     Container *container = Executer_getContainerByToken(this, token);
-    if (withEmpty && container == NULL) container = this->currentContainer;
+    if (withEmpty && container == NULL) container = this->globalContainer;
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     result = Executer_getValueFromContainer(this, container, token);
     if (result != NULL) {
@@ -369,22 +369,27 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
     Token *name = Stack_next(leaf->tokens, cursor);
     Token *target = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
-    if (is_eq_string(target->value, TVALUE_TARGET_TO) && is_eq_string(action->value, TVALUE_OUTPUT))
+    if (is_eq_string(target->value, TVALUE_OP_S_OUTPUT) && is_eq_string(action->value, TVALUE_OP_E_OUTPUT))
     {
-        Value *value = Executer_getValueByToken(this, name, true);
-        Executer_assert(this, value != NULL, name, LANG_ERR_NO_VALID_STATE);
-        //
-        if (Value_isContainer(value)) {
-            Container_print(value->object);
+        Value *value = NULL;
+        if (helper_token_is_values(name, TVAUES_GROUP_UTYPES)) {
+            printf("<Type n:%s>\n", name->value);
+            if (is_eq_string(name->value, TVALUE_EMPTY)) {
+                value = Value_newContainer(this->globalContainer, NULL);
+            } else {
+                value = Executer_getValueFromContainer(this, this->globalContainer, name);
+            }
         } else {
+            value = Executer_getValueByToken(this, name, true);
+            Executer_assert(this, value != NULL, name, LANG_ERR_NO_VALID_STATE);
             char *content = Value_toString(value);
-            printf("%s", content);
+            printf("%s\n", content);
             pct_free(content);
         }
-        // 
-        Object_release(value);
+        if (Value_isContainer(value)) Container_print(value->object);
+        if (value != NULL) Object_release(value);
     }
-    else if (is_eq_string(target->value, TVALUE_TARGET_FROM) && is_eq_string(action->value, TVALUE_INPUT))
+    else if (is_eq_string(target->value, TVALUE_OP_S_INPUT) && is_eq_string(action->value, TVALUE_OP_E_INPUT))
     {
         char line[1024];
         scanf(" %[^\n]", line);

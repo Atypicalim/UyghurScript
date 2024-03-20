@@ -219,7 +219,7 @@ char *b2s(bool value)
 char *o2s(void *value)
 {
     if (value == NULL) return "<NULL>";
-    return tools_format("<Object => p:%d>", value);
+    return tools_format("<Object => p:%p>", value);
 }
 
 int p2i(void* value){

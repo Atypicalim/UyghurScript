@@ -122,10 +122,8 @@ char *_Token_toString(char *val, char *tp)
 {
     if (is_eq_string(tp, UG_TTYPE_NUM)) {
         return tools_number_to_string(atof(val));
-    } else if (is_eq_strings(tp, 4, UG_TTYPE_EMP, UG_TTYPE_BOL, UG_TTYPE_STR, UG_TTYPE_NAM)) {
-        return tools_format("%s", val);
     } else {
-        tools_error(LANG_ERR_UYGHUR_EXCEPTION);
+        return tools_format("%s", val);
     }
 }
 

@@ -163,13 +163,14 @@ char *Value_toString(Value *this)
         return tools_number_to_string(this->number);
     } if (this->type == UG_TYPE_STR) {
         return String_dump(this->string);
+    } if (this->type == UG_TYPE_CNT) {
+        return Container_toString(this->object);
     } if (this->type == UG_TYPE_FUN) {
-        return tools_format("<Function p:%d>\n",  this->object);
+        return tools_format("<Function p:%p>",  this->object);
     } if (this->type == UG_TYPE_NTV) {
-        return tools_format("<Native p:%d>\n",  this->object);
+        return tools_format("<Native p:%p>",  this->object);
     } else {
-        void *value = this->object;
-        return tools_format("<Object t:%c p:%d>\n", this->type, value != NULL ? value : 0);
+        return tools_format("<Object p:%p t:%c>", this->object, this->type);
     } 
 }
 

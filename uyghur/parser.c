@@ -43,7 +43,7 @@ void Parser_assert(Parser *this, bool value, char *msg)
     Parser_error(this, msg);
 }
 
-void Parser_moveToken(Parser *this, int indent)
+Token *Parser_moveToken(Parser *this, int indent)
 {
     if (indent == 1)
     {
@@ -61,6 +61,7 @@ void Parser_moveToken(Parser *this, int indent)
     {
         tools_error("invalid indent for parser");
     }
+    return this->token;
 }
 
 void Parser_pushLeaf(Parser *this, char tp, int num, Token *token, ...)
@@ -89,72 +90,7 @@ void Parser_closeBranch(Parser *this)
     this->leaf = this->leaf->parent;
 }
 
-Token *Parser_checkType(Parser *this, int indent, int num, char *s, ...)
-{
-    Parser_moveToken(this, indent);
-    Parser_assert(this, this->token != NULL, LANG_ERR_INVALID_TYPE);
-    bool isMatch = false;
-    va_list valist;
-    int i;
-    va_start(valist, s);
-    for (i = 0; i < num; i++)
-    {
-        if (is_eq_string(this->token->type, s))
-        {
-            isMatch = true;
-            break;
-        }
-        s = va_arg(valist, char *);
-    }
-    va_end(valist);
-    Parser_assert(this, isMatch, LANG_ERR_INVALID_TYPE);
-    return this->token;
-}
 
-Token *Parser_checkValue(Parser *this, int indent, int num, char *s, ...)
-{
-    Parser_moveToken(this, indent);
-    tools_assert(this->token != NULL, LANG_ERR_PARSER_DESIRED_VALUE_NOT_FOUND);
-    bool isMatch = false;
-    va_list valist;
-    int i;
-    va_start(valist, s);
-    for (i = 0; i < num; i++)
-    {
-        if (is_eq_string(this->token->value, s))
-        {
-            isMatch = true;
-            break;
-        }
-        s = va_arg(valist, char *);
-    }
-    va_end(valist);
-    Parser_assert(this, isMatch, NULL);
-    return this->token;
-}
-
-Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
-{
-    Parser_moveToken(this, indent);
-    Parser_assert(this, this->token != NULL, LANG_ERR_INVALID_WORD);
-    Parser_assert(this, is_eq_string(this->token->type, UG_TTYPE_WRD), LANG_ERR_INVALID_WORD);
-    bool isMatch = false;
-    va_list valist;
-    int i;
-    va_start(valist, s);
-    for (i = 0; i < num; i++)
-    {
-        if (is_eq_string(this->token->value, s))
-        {
-            isMatch = true;
-            break;
-        }
-        s = va_arg(valist, char *);
-    }
-    va_end(valist);
-    Parser_assert(this, isMatch, LANG_ERR_INVALID_WORD);
-    return this->token;
-}
 
 Token *Parser_getToken(Parser *this, int indent)
 {
@@ -165,26 +101,6 @@ Token *Parser_getToken(Parser *this, int indent)
         token = indent > 0 ? token->next : token->last;
     }
     return token;
-}
-
-bool Parser_isTypes(Parser *this, int indent, int num, char *s, ...)
-{
-    Token *token = Parser_getToken(this, indent);
-    bool isMatch = false;
-    va_list valist;
-    int i;
-    va_start(valist, s);
-    for (i = 0; i < num; i++)
-    {
-        if (is_eq_string(token->type, s))
-        {
-            isMatch = true;
-            break;
-        }
-        s = va_arg(valist, char *);
-    }
-    va_end(valist);
-    return isMatch;
 }
 
 bool Parser_isType(Parser *this, int indent, char *tp)
@@ -205,31 +121,92 @@ bool Parser_isWord(Parser *this, int indent, char *value)
     return token != NULL && is_eq_string(token->type, UG_TTYPE_WRD) && is_eq_string(token->value, value);
 }
 
+bool Parser_isTypes(Parser *this, int indent, int num, char *s, ...)
+{
+    Token *token = Parser_getToken(this, indent);
+    va_list valist;
+    va_start(valist, s);
+    return  token != NULL && helper_token_is_types_list(token, num, s, valist);
+}
+
+bool Parser_isValues(Parser *this, int indent, int num, char *s, ...)
+{
+    Token *token = Parser_getToken(this, indent);
+    va_list valist;
+    va_start(valist, s);
+    return token != NULL && helper_token_is_values_list(token, num, s, valist);
+}
+
+bool Parser_isWords(Parser *this, int indent, int num, char *s, ...)
+{
+    Token *token = Parser_getToken(this, indent);
+    va_list valist;
+    va_start(valist, s);
+    return token != NULL && is_eq_string(token->type, UG_TTYPE_WRD) && helper_token_is_values_list(token, num, s, valist);
+}
+
+Token *Parser_checkType(Parser *this, int indent, int num, char *s, ...)
+{
+    Token *token = Parser_moveToken(this, indent);
+    Parser_assert(this, token != NULL, LANG_ERR_INVALID_TYPE);
+    va_list valist;
+    va_start(valist, s);
+    bool isMatch = helper_token_is_types_list(token, num, s, valist);
+    Parser_assert(this, isMatch, LANG_ERR_INVALID_TYPE);
+    return token;
+}
+
+Token *Parser_checkValue(Parser *this, int indent, int num, char *s, ...)
+{
+    Token *token = Parser_moveToken(this, indent);
+    Parser_assert(this, token != NULL, LANG_ERR_PARSER_DESIRED_VALUE_NOT_FOUND);
+    va_list valist;
+    va_start(valist, s);
+    bool isMatch = helper_token_is_values_list(token, num, s, valist);
+    Parser_assert(this, isMatch, LANG_ERR_PARSER_DESIRED_VALUE_NOT_FOUND);
+    return token;
+}
+
+Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
+{
+    Token *token = Parser_moveToken(this, indent);
+    Parser_assert(this, token != NULL, LANG_ERR_INVALID_WORD);
+    Parser_assert(this, is_eq_string(token->type, UG_TTYPE_WRD), LANG_ERR_INVALID_WORD);
+    va_list valist;
+    va_start(valist, s);
+    bool isMatch = helper_token_is_values_list(token, num, s, valist);
+    Parser_assert(this, isMatch, LANG_ERR_INVALID_WORD);
+    return token;
+}
+
 // TODO:relace calculation word
 void Parser_consumeAstVariable(Parser *this)
 {
     Parser_checkWord(this, 0, 1, TVALUE_VARIABLE);
     Token *name = Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
     Parser_checkWord(this, 1, 1, TVALUE_INITIAL);
-    Token *token = Parser_checkType(this, 1, TTYPES_GROUP_DEFINE);
+    Token *token = Parser_moveToken(this, 1); 
+    if (!helper_token_is_values(token, TVAUES_GROUP_UTYPES) && !helper_token_is_types(token, TTYPES_GROUP_VALUES)) {
+        Parser_error(this, LANG_ERR_INVALID_TYPE);
+    }
     Parser_checkWord(this, 1, 1, TVALUE_MADE);
     Parser_pushLeaf(this, UG_ATYPE_VAR, 2, name, token);
 }
 
 void Parser_consumeAstOperate(Parser *this)
 {
-    Token *target = Parser_checkWord(this, 0, TTYPES_GROUP_TARGETS);
+    Token *target = Parser_checkWord(this, 0, TVALUE_OP_BGN);
     Token *name = NULL;
     Token *action = NULL;
-    if (is_eq_string(this->token->value, TVALUE_TARGET_FROM))
-    {
+    if (is_eq_string(this->token->value, TVALUE_OP_S_OUTPUT)) {
+        name = Parser_moveToken(this, 1); 
+        if (!helper_token_is_values(name, TVAUES_GROUP_UTYPES) && !helper_token_is_types(name, TTYPES_GROUP_VALUES)) {
+            Parser_error(this, LANG_ERR_INVALID_TYPE);
+        }
+        action = Parser_checkWord(this, 1, 1, TVALUE_OP_E_OUTPUT);
+    } else if (is_eq_string(this->token->value, TVALUE_OP_S_INPUT)) {
         name = Parser_checkType(this, 1, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
-        action = Parser_checkWord(this, 1, 1, TVALUE_INPUT);
-    }
-    else if (is_eq_string(this->token->value, TVALUE_TARGET_TO))
-    {
-        name = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
-        action = Parser_checkWord(this, 1, 2, TVALUE_OUTPUT, UG_TTYPE_KEY);
+        action = Parser_checkWord(this, 1, 1, TVALUE_OP_E_INPUT);
     }
     Parser_pushLeaf(this, UG_ATYPE_OPRT, 3, target, name, action);
 }
@@ -560,7 +537,7 @@ void Parser_consumeToken(Parser *this, Token *token)
         return;
     }
     // OPERATE
-    if (is_eq_string(t, UG_TTYPE_WRD) && (is_eq_string(v, TVALUE_TARGET_FROM) || is_eq_string(v, TVALUE_TARGET_TO)))
+    if (is_eq_string(t, UG_TTYPE_WRD) && is_eq_strings(v, TVALUE_OP_BGN))
     {
         Parser_consumeAstOperate(this);
         return;

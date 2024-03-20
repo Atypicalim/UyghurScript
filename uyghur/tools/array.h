@@ -225,7 +225,7 @@ Array *Array_slice(Array *this, int from, int to)
 
 char *Array_toString(Array *this)
 {
-    return tools_format("[Array => p:%d s:%d]", this, this->length);
+    return tools_format("<Array p:%p s:%i>", this, this->length);
 }
 
 #endif
