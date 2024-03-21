@@ -16,6 +16,7 @@ Container *Container_new(char tp)
     Container *container = malloc(sizeof(Container));
     Object_init(container, PCT_OBJ_CNTNR);
     container->map = Hashmap_new();
+    container->dict = Hashmap_new();
     container->array = Array_new();
     container->type = tp;
     return container;
@@ -24,6 +25,7 @@ Container *Container_new(char tp)
 void Container_free(Container *this)
 {
     Object_release(this->map);
+    Object_release(this->dict);
     Object_release(this->array);
     Object_free(this);
 }

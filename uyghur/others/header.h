@@ -29,7 +29,7 @@ typedef struct {
     const char* key;
     const char* val;
 } UG_PAIRS;
-
+void *INVALID_PTR = NULL;
 // 
 
 #include "language.h"
@@ -72,6 +72,7 @@ Value *Value_FALSE;
 typedef struct _Container {
     struct _Object;
     Hashmap *map;
+    Hashmap *dict;
     Array *array;
     char type;
 } Container;

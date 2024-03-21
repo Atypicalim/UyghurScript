@@ -272,7 +272,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                 scopeObject = Tokenizer_readLetter(this);
             }
             char t = Tokenizer_getchar(this, 0);
-            Tokenizer_assert(this, is_border_open(t), LANG_ERR_TOKENIZER_SCOPE_INVALID_NAME);
+            Tokenizer_assert(this, is_border_open(t), LANG_ERR_TOKENIZER_INVALID_BOX);
             continue;
         }
         // key
@@ -290,7 +290,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             if (openChar == '{') {
                 txt = Tokenizer_readLetter(this);
                 Token *_tkn = Tokenizer_parseLetter(this, txt, false);
-                Tokenizer_assert(this, _tkn == NULL, LANG_ERR_TOKENIZER_WORD_CANNOT_BE_KEY);
+                Tokenizer_assert(this, _tkn == NULL, LANG_ERR_TOKENIZER_INVALID_KEY);
                 typ = UG_TTYPE_NAM;
             } else if (openChar == '[') {
                 txt = Tokenizer_readString(this, false);
@@ -379,7 +379,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue; 
         }
         // unsupported
-        Tokenizer_error(this, LANG_ERR_TOKENIZER_TKN_INVALID_SIGN);
+        Tokenizer_error(this, LANG_ERR_TOKENIZER_INVALID_SIGN);
         break;
     }
     return this->head;

@@ -24,13 +24,13 @@
 
 // tokenizer
 #define LANG_ERR_TOKENIZER_EXCEPTION "imla xataliqi kuruldi"
-#define LANG_ERR_TOKENIZER_TKN_INVALID_SIGN "inawetsiz herip uchritildi"
+#define LANG_ERR_TOKENIZER_INVALID_SIGN "uchritilghan herip inawetsiz"
+#define LANG_ERR_TOKENIZER_INVALID_KEY "achquch ismi inawetsiz"
+#define LANG_ERR_TOKENIZER_INVALID_BOX "sanduq ismi inawetsiz"
 #define LANG_ERR_TOKENIZER_STRING_START_ERROR "xet beshi xata"
 #define LANG_ERR_TOKENIZER_STRING_END_ERROR "xet axiri xata"
-#define LANG_ERR_TOKENIZER_SCOPE_INVALID_NAME "sanduq ismi inawetsiz"
 #define LANG_ERR_TOKENIZER_KEY_START_ERROR "achquch beshi xata"
 #define LANG_ERR_TOKENIZER_KEY_END_ERROR "achquch axiri xata"
-#define LANG_ERR_TOKENIZER_WORD_CANNOT_BE_KEY "sozlerni achquch ornida ishlitishke bolmaydu"
 
 // parser
 #define LANG_ERR_PARSER_EXCEPTION "logika xataliqi kuruldi"
@@ -52,9 +52,9 @@
 #define LANG_ERR_EXECUTER_BRIDGE_INVALID_RESULT "kowruk qayturghan qimmet inawetsiz"
 #define LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND "ijra qilinghuchi tepilmidi"
 #define LANG_ERR_EXECUTER_INVALID_DEVIDE "bolguchi san nol bolsa bolmaydu"
-#define LANG_ERR_EXECUTER_INVALID_BOX_NAME "sanduq ismi inawetsiz"
-#define LANG_ERR_EXECUTER_INVALID_KEY_NAME "achquch ismi inawetsiz"
-#define LANG_ERR_EXECUTER_INVALID_VARIABLE "nishanlanghan miqdar tepilmidi"
+#define LANG_ERR_EXECUTER_INVALID_NAME "inawetsiz isim uchritildi"
+#define LANG_ERR_EXECUTER_INVALID_KEY "inawetsiz achquch uchritildi"
+#define LANG_ERR_EXECUTER_INVALID_VARIABLE "inawetsiz miqdar uchritildi"
 #define LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED "miqdar alliburun iniqlanghan"
 #define LANG_ERR_EXECUTER_VARIABLE_FAILURE_DEFINED "miqdar muweppiqyetlik iniqlanmini"
 #define LANG_ERR_EXECUTER_STACK_OVERFLOW "saqlash boshluqi teship ketti"
