@@ -52,12 +52,12 @@ void *Container_del(Container *this, char *key)
     return deleted;
 }
 
-void *Container_get(Container *this, char *key)
+void *_Container_get(Container *this, char *key)
 {
     return Hashmap_get(this->map, key);
 }
 
-void *Container_set(Container *this, char *key, void *value)
+void *_Container_set(Container *this, char *key, void *value)
 {
     if (value == NULL) return Container_del(this, key);
     Object_retain(value);
@@ -68,22 +68,22 @@ void *Container_set(Container *this, char *key, void *value)
 
 void *Container_getByStringLocation(Container *this, char *key)
 {
-    return Container_get(this, key);
+    return _Container_get(this, key);
 }
 
 void *Container_getByTypedLocation(Container *this, char tp, char *key)
 {
-    return Container_get(this, key);
+    return _Container_get(this, key);
 }
 
 void *Container_setByStringLocation(Container *this, char *key, void *value)
 {
-    return Container_set(this, key, value);
+    return _Container_set(this, key, value);
 }
 
 void *Container_setByTypedLocation(Container *this, char tp, char *key, void *value)
 {
-    return Container_set(this, key, value);
+    return _Container_set(this, key, value);
 }
 
 
@@ -92,7 +92,7 @@ void *Container_getByValueKey(Container *this, Value *key)
     if (Value_isInt(key)) {
 
     } else if (Value_isString(key)) {
-        Container_get(this, key->string->data);
+        _Container_get(this, key->string->data);
     } else {
         tools_error(LANG_ERR_UYGHUR_EXCEPTION);
     }
@@ -103,7 +103,7 @@ void *Container_setByValueKey(Container *this, Value *key, Value *value)
     if (Value_isInt(key)) {
 
     } else if (Value_isString(key)) {
-        Container_set(this, key->string->data, value);
+        _Container_set(this, key->string->data, value);
     } else {
         tools_error(LANG_ERR_UYGHUR_EXCEPTION);
     }

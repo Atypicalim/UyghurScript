@@ -1,5 +1,5 @@
 
-# miqdar s qimmiti sanduq bolsun
+miqdar s qimmiti sanduq bolsun
 # # @s(1) = 111
 # # @s(2) = [abc]
 # # @s(3) = 333
@@ -14,14 +14,14 @@
 
 # # fonkisiye @sanduq[sanduqSinaq] bilen s func ishlitilsun we netije r bolsun
 
-# @s[111] = [str...]
-# @s(111) = [num...]
+miqdar k qimmiti [var] bolsun
+
+@s[abc] = [str...]
+@s(123) = [num...]
+@s{k} = [var...]
 # ikrangha @s[111] yezilsun
 # ikrangha @s(111) yezilsun
 
-# ikrangha [END!] yezilsun
-
-# running men
-
-ikrangha @san[pi] yezilsun
+ikrangha s yezilsun
+ikrangha [END!] yezilsun
 

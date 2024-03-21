@@ -290,7 +290,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             if (openChar == '{') {
                 txt = Tokenizer_readLetter(this);
                 Token *_tkn = Tokenizer_parseLetter(this, txt, false);
-                Tokenizer_assert(this, _tkn == NULL, LANG_ERR_TOKENIZER_INVALID_KEY);
+                Tokenizer_assert(this, _tkn == NULL || Token_isName(_tkn), LANG_ERR_TOKENIZER_INVALID_KEY);
                 typ = UG_TTYPE_NAM;
             } else if (openChar == '[') {
                 txt = Tokenizer_readString(this, false);

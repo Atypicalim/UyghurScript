@@ -203,7 +203,7 @@ char *Executer_getLocationByToken(Executer *this, Token *token)
         char *text = Value_toString(value);
         key = convert_string_to_location(text, value->type);
         pct_free(text);
-    } else if (Token_isKeyOfName(token) || Token_isKeyOfString(token)) {
+    } else if (Token_isKeyOfNumber(token) || Token_isKeyOfString(token)) {
         Token *extra = (Token *)token->extra;
         char tp = convert_ttype_to_rtype(extra->type);
         key = convert_string_to_location(token->value, tp);
