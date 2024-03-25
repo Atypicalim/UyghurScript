@@ -29,7 +29,7 @@ typedef struct {
     const char* key;
     const char* val;
 } UG_PAIRS;
-void *INVALID_PTR = NULL;
+
 // 
 
 #include "language.h"
@@ -62,6 +62,7 @@ bool Value_isNumber(Value*);
 bool Value_isInt(Value*);
 bool Value_isFlt(Value*);
 bool Value_isString(Value*);
+char *Value_toString(Value*);
 
 Value *Value_EMPTY;
 Value *Value_TRUE;
@@ -72,8 +73,6 @@ Value *Value_FALSE;
 typedef struct _Container {
     struct _Object;
     Hashmap *map;
-    Hashmap *dict;
-    Array *array;
     char type;
 } Container;
 
@@ -89,6 +88,9 @@ Container *Container_new(char);
 #include "../objects/value.c"
 
 #include "helpers.c"
+void *INVALID_PTR = NULL;
+Container *INVALID_CTN = NULL;
+Value *INVALID_VAL = NULL;
 
 // 
 

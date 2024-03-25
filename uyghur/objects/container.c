@@ -16,8 +16,6 @@ Container *Container_new(char tp)
     Container *container = malloc(sizeof(Container));
     Object_init(container, PCT_OBJ_CNTNR);
     container->map = Hashmap_new();
-    container->dict = Hashmap_new();
-    container->array = Array_new();
     container->type = tp;
     return container;
 }
@@ -25,8 +23,6 @@ Container *Container_new(char tp)
 void Container_free(Container *this)
 {
     Object_release(this->map);
-    Object_release(this->dict);
-    Object_release(this->array);
     Object_free(this);
 }
 
@@ -45,69 +41,32 @@ Container *Container_newModule()
     return Container_new(UG_CTYPE_MDL);
 }
 
-void *Container_del(Container *this, char *key)
+// 
+
+void *Container_delLocation(Container *this, char *key)
 {
     void *deleted = Hashmap_del(this->map, key);
     if (deleted != NULL) Object_release(deleted);
     return deleted;
 }
 
-void *_Container_get(Container *this, char *key)
+// 
+
+void *Container_getLocation(Container *this, char *key)
 {
     return Hashmap_get(this->map, key);
 }
 
-void *_Container_set(Container *this, char *key, void *value)
+void *Container_setLocation(Container *this, char *key, void *value)
 {
-    if (value == NULL) return Container_del(this, key);
+    if (value == NULL) return Container_delLocation(this, key);
     Object_retain(value);
-    void *replaced = Hashmap_set(this->map, key, value);
-    if (replaced != NULL) Object_release(replaced);
-    return replaced;
+    void *r = Hashmap_set(this->map, key, value);
+    if (r != NULL) Object_release(r);
+    return r;
 }
 
-void *Container_getByStringLocation(Container *this, char *key)
-{
-    return _Container_get(this, key);
-}
-
-void *Container_getByTypedLocation(Container *this, char tp, char *key)
-{
-    return _Container_get(this, key);
-}
-
-void *Container_setByStringLocation(Container *this, char *key, void *value)
-{
-    return _Container_set(this, key, value);
-}
-
-void *Container_setByTypedLocation(Container *this, char tp, char *key, void *value)
-{
-    return _Container_set(this, key, value);
-}
-
-
-void *Container_getByValueKey(Container *this, Value *key)
-{
-    if (Value_isInt(key)) {
-
-    } else if (Value_isString(key)) {
-        _Container_get(this, key->string->data);
-    } else {
-        tools_error(LANG_ERR_UYGHUR_EXCEPTION);
-    }
-}
-
-void *Container_setByValueKey(Container *this, Value *key, Value *value)
-{
-    if (Value_isInt(key)) {
-
-    } else if (Value_isString(key)) {
-        _Container_set(this, key->string->data, value);
-    } else {
-        tools_error(LANG_ERR_UYGHUR_EXCEPTION);
-    }
-}
+//
 
 bool Container_isScope(Container *this)
 {
@@ -123,6 +82,8 @@ bool Container_isModule(Container *this)
 {
     return this->type == UG_CTYPE_MDL;
 }
+
+// 
 
 char *Container_toString(Container *this)
 {

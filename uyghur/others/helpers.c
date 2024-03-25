@@ -305,11 +305,11 @@ void Object_printByType(char type, void *object)
 typedef void (*HASHKEY_PRINT_CALLBACK)(Hashkey *, char *);
 
 void _container_key_print_callback(Hashkey *this, char *prefix) {
-    printf("%s - %s -> %s \n", prefix, this->key->data, Value_toString(this->value));
+    printf("%s %s -> %s \n", prefix, this->key->data, Value_toString(this->value));
 }
 
 void _hashmap_key_print_callback(Hashkey *this, char *prefix) {
-    printf("%s - %s -> %i \n", prefix, this->key->data, this->value);
+    printf("%s %s -> %i \n", prefix, this->key->data, this->value);
 }
 
 void _hashmap_print_with_callback(Hashmap *this, char *prefix, HASHKEY_PRINT_CALLBACK callback)
@@ -352,7 +352,6 @@ void Container_print(Container *this)
 {
     printf("[Container -> p:%p t:%c]\n", this, this->type);
     _hashmap_print_with_callback(this->map, "|", _container_key_print_callback);
-    _array_print_without_callback(this->array, "|");
     printf("[Container]\n");
 }
 

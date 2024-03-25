@@ -19,7 +19,7 @@ struct Executer {
 
 void Executer_consumeLeaf(Executer *, Leaf *);
 bool Executer_consumeTree(Executer *, Leaf *);
-char *Executer_getLocationByToken(Executer *, Token *);
+char *Executer_getLocationOfToken(Executer *, Token *);
 
 void Executer_reset(Executer *this)
 {
@@ -115,7 +115,7 @@ Container *Executer_getCurrentBox(Executer *this, Token *token)
     while ((container =  Stack_next(this->containerStack, cursor)) != NULL)
     {
         if (!Container_isScope(container)) break;
-        Value *self = Container_getByStringLocation(container, SCOPE_ALIAS_BOX);
+        Value *self = Container_getLocation(container, SCOPE_ALIAS_BOX);
         if (self != NULL) {
             container = self->object;
             break;
@@ -133,13 +133,13 @@ Container *Executer_getCurrentScope(Executer *this, Token *token)
     return container;
 }
 
-void Executer_findContainerAndValue(Executer *this, char *key, Container **rContainer, Value **rValue)
+void Executer_findValueByLocation(Executer *this, char *key, Container **rContainer, Value **rValue)
 {
     *rContainer = NULL;
-    *rContainer = NULL;
+    *rValue = NULL;
     Block *block = this->containerStack->tail;
     while (block != NULL) {
-        Value *value = Container_getByStringLocation(block->data, key);
+        Value *value = Container_getLocation(block->data, key);
         if (value != NULL) {
             *rContainer = block->data;
             *rValue = value;
@@ -150,7 +150,7 @@ void Executer_findContainerAndValue(Executer *this, char *key, Container **rCont
         block = block->last;
     }
     if (*rContainer == NULL || *rValue == NULL) {
-        Value *value = Container_getByStringLocation(this->globalScope, key);
+        Value *value = Container_getLocation(this->globalScope, key);
         if (value != NULL) {
             *rContainer = this->globalScope;
             *rValue = value;
@@ -158,14 +158,14 @@ void Executer_findContainerAndValue(Executer *this, char *key, Container **rCont
     }
 }
 
-void Executer_findContainerByToken(Executer *this, Token *token, Container **rContainer, Value **rValue)
+void Executer_findValueByToken(Executer *this, Token *token, Container **rContainer, Value **rValue)
 {
     *rContainer = NULL;
-    *rContainer = NULL;
+    *rValue = NULL;
     // name
     if (Token_isName(token)) {
         char *location = convert_string_to_location(token->value, UG_TYPE_STR);
-        Executer_findContainerAndValue(this, location, rContainer, rValue);
+        Executer_findValueByLocation(this, location, rContainer, rValue);
         pct_free(location);
         return;
     }
@@ -179,25 +179,26 @@ void Executer_findContainerByToken(Executer *this, Token *token, Container **rCo
     if (*rContainer == NULL) {
         Value *value;
         char *location = convert_string_to_location(extra->value, UG_TYPE_STR);
-        Executer_findContainerAndValue(this, location, &INVALID_PTR, &value);
+        Executer_findValueByLocation(this, location, &INVALID_CTN, &value);
         pct_free(location);
         if (value != NULL) *rContainer = value->object;
     }
     if (rContainer == NULL) return NULL;
     // key
     char *location = convert_string_to_location(token->value, UG_TYPE_STR);
-    *rValue = Container_getByStringLocation(*rContainer, location);
+    *rValue = Container_getLocation(*rContainer, location);
     pct_free(location);
 }
 
 // need free
-char *Executer_getLocationByToken(Executer *this, Token *token)
+char *Executer_getLocationOfToken(Executer *this, Token *token)
 {
     char *key;
     if (Token_isKeyOfName(token)) {
         char *location = convert_string_to_location(token->value, UG_TYPE_STR);
-        Container *container; Value *value;
-        Executer_findContainerAndValue(this, location, &container, &value);
+        Container *container;
+        Value *value;
+        Executer_findValueByLocation(this, location, &container, &value);
         pct_free(location);
         Executer_assert(this, container!= NULL && value!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
         char *text = Value_toString(value);
@@ -214,14 +215,14 @@ char *Executer_getLocationByToken(Executer *this, Token *token)
     return key;
 }
 
+// 
+
 // need release
 Value *Executer_getValueFromContainer(Executer *this, Container *container, Token *token)
 {
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
-    char *location = Executer_getLocationByToken(this, token);
-    Value *value = Container_getByTypedLocation(container, UG_TYPE_NON, location);
-    // printf("----------------------get: %s \n", location);
-    // Value_print(value);
+    char *location = Executer_getLocationOfToken(this, token);
+    Value *value = Container_getLocation(container, location);
     if (value != NULL) Object_retain(value);
     pct_free(location);
     return value;
@@ -230,33 +231,32 @@ Value *Executer_getValueFromContainer(Executer *this, Container *container, Toke
 Value *Executer_setValueToContainer(Executer *this, Container *container, Token *token, Value *value)
 {
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
-    char *location = Executer_getLocationByToken(this, token);
-    // printf("----------------------set: %s \n", location);
-    // Token_print(token);
-    // Value_print(value);
-    Value *replaced = Container_setByTypedLocation(container, UG_TYPE_NON, location, value);
+    char *location = Executer_getLocationOfToken(this, token);
+    Value *replaced = Container_setLocation(container, location, value);
     pct_free(location);
     return replaced;
 }
 
+// 
+
+// need release
 Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
 {
-    Value *result = convert_token_to_value(token);
-    if (result != NULL) return result;
-    Container *container;
-    Executer_findContainerByToken(this, token, &INVALID_PTR, &result);
-    if (result != NULL) {
-        Object_retain(result);
+    Value *value = convert_token_to_value(token);
+    if (value != NULL) return value;
+    Executer_findValueByToken(this, token, &INVALID_CTN, &value);
+    if (value != NULL) {
+        Object_retain(value);
     } else if (withEmpty) {
-        result = Value_newEmpty(token);
+        value = Value_newEmpty(token);
     }
-    return result;
+    return value;
 }
 
 void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool withDeclare)
 {
     Container *container;
-    Executer_findContainerByToken(this, token, &container, &INVALID_PTR);
+    Executer_findValueByToken(this, token, &container, &INVALID_VAL);
     if (withDeclare && container == NULL) container = this->currContainer;
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     Executer_setValueToContainer(this, container, token, value);
@@ -370,9 +370,6 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     Token *token = Stack_next(leaf->tokens, cursor);
     Token *name = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
-    Container *container = Executer_getCurrentScope(this, name);
-    Value *old = Executer_getValueFromContainer(this, container, name);
-    Executer_assert(this, old == NULL, name, LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED);
     // 
     Value *new = NULL;
     if (Token_isEmpty(token)) {
@@ -389,8 +386,10 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
         new = Executer_getValueByToken(this, token, true); // todo
     }
     // 
+    Value *old = Executer_getValueFromContainer(this, this->currContainer, name);
+    Executer_assert(this, old == NULL, name, LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED);
     Executer_assert(this, new != NULL, name, LANG_ERR_EXECUTER_VARIABLE_FAILURE_DEFINED);
-    Executer_setValueToContainer(this, container, name, new);
+    Executer_setValueToContainer(this, this->currContainer, name, new);
     Object_release(new);
 }
 
@@ -637,7 +636,7 @@ void Executer_consumeFunction(Executer *this, Leaf *leaf)
     Value *self = NULL;
     if (Token_isKey(function)) {
         Container *container;
-        Executer_findContainerByToken(this, function, &container, &INVALID_PTR);
+        Executer_findValueByToken(this, function, &container, &INVALID_VAL);
         Executer_assert(this, container != NULL, function, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
         if (Container_isBox(container)) {
             self = Value_newContainer(container, NULL);
@@ -674,7 +673,7 @@ Value *Executer_runFunc(Executer *this, Value *funcValue)
     Value *selfValue = funcValue->extra;
     // 
     Executer_pushContainer(this, UG_CTYPE_SCP);
-    Container_setByStringLocation(this->currContainer, SCOPE_ALIAS_BOX, selfValue);
+    Container_setLocation(this->currContainer, SCOPE_ALIAS_BOX, selfValue);
     Executer_consumeLeaf(this, codeNode);
     Executer_popContainer(this, UG_CTYPE_SCP);
     // 
@@ -906,7 +905,7 @@ Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
     if (this->containerStack->head == this->containerStack->tail) return NULL;
     Container *container = Executer_popContainer(this, UG_CTYPE_MDL);
     Value *module = Value_newContainer(container, NULL);
-    Container_setByStringLocation(this->globalScope, path, module);
+    Container_setLocation(this->globalScope, path, module);
     return module;
 }
 

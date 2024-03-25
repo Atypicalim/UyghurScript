@@ -155,7 +155,7 @@ void Bridge_register(Bridge *this)
         Value *key = Stack_pop(this->stack);
         char *_key =  String_get(key->string);
         char *location = convert_string_to_location(_key, UG_TYPE_STR);
-        Container_setByStringLocation(container, location, value);
+        Container_setLocation(container, location, value);
         pct_free(location);
         Object_release(key);
         value = Stack_pop(this->stack);
@@ -165,7 +165,7 @@ void Bridge_register(Bridge *this)
         Object_retain(container);
         Value *temp = Value_newContainer(container, NULL);
         char *location = convert_string_to_location(this->name, UG_TYPE_STR);
-        Container_setByStringLocation(global, location, temp);
+        Container_setLocation(global, location, temp);
         pct_free(location);
     }
     this->name = NULL;
