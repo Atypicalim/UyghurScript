@@ -414,7 +414,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
             value = Executer_getValueByToken(this, name, true);
             Executer_assert(this, value != NULL, name, LANG_ERR_NO_VALID_STATE);
             char *content = Value_toString(value);
-            printf("%s\n", content);
+            printf("%s", content);
             pct_free(content);
         }
         if (Value_isContainer(value)) Container_print(value->object);
@@ -707,6 +707,16 @@ Value *Executer_runNative(Executer *this, Value *funcValue)
     return r;
 }
 
+Value *Executer_clearStack(Executer *this)
+{
+    Stack_clear(this->callStack);
+}
+
+Value *Executer_pushStack(Executer *this, Value *value)
+{
+    Stack_push(this->callStack, value);
+}
+
 void Executer_consumeCall(Executer *this, Leaf *leaf)
 {
     Stack_clear(this->callStack);
@@ -719,7 +729,7 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     while(arg != NULL)
     {
         Value *value = Executer_getValueByToken(this, arg, true);
-        Stack_push(this->callStack, value);
+        Executer_pushStack(this, value);
         Object_release(value);
         arg = Stack_next(leaf->tokens, cursor);
     }
@@ -756,7 +766,7 @@ void Executer_consumeResult(Executer *this, Leaf *leaf)
     Cursor_free(cursor);
     Value *value = Executer_getValueByToken(this, result, true);
     Stack_clear(this->callStack);
-    Stack_push(this->callStack, value);
+    Executer_pushStack(this, value);
     this->isReturn = true;
 }
 

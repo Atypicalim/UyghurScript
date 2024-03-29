@@ -1,27 +1,23 @@
 
 miqdar s qimmiti sanduq bolsun
-# # @s(1) = 111
-# # @s(2) = [abc]
-# # @s(3) = 333
+miqdar k qimmiti [key] bolsun
 
-# # fonkisiye func miqdar k v mezmuni
-# #     ikrangha k yezilsun
-# #     ikrangha [:] yezilsun
-# #     ikrangha v yezilsun
-# #     ikrangha [\n] yezilsun
-# #     netije quruq qayturulsun
-# # tamamlansun
-
-# # fonkisiye @sanduq[sanduqSinaq] bilen s func ishlitilsun we netije r bolsun
-
-miqdar k qimmiti [var] bolsun
-
+@s(1) = 111
+@s(2) = [abc]
+@s(3) = 333
 @s[abc] = [str...]
 @s(123) = [num...]
-@s{k} = [var...]
-# ikrangha @s[111] yezilsun
-# ikrangha @s(111) yezilsun
+@s{k} = [val...]
 
-ikrangha s yezilsun
+fonkisiye func miqdar k v mezmuni
+    ikrangha k yezilsun
+    ikrangha [-----------] yezilsun
+    ikrangha v yezilsun
+    ikrangha [\n] yezilsun
+tamamlansun
+
+fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun we netije r bolsun
+
+# ikrangha s yezilsun
 ikrangha [END!] yezilsun
 

@@ -6,12 +6,12 @@
 // common type
 #define UG_TYPE_NON '?'
 #define UG_TYPE_NIL '~'
-#define UG_TYPE_BOL 'b'
-#define UG_TYPE_NUM 'n'
-#define UG_TYPE_STR 's'
-#define UG_TYPE_OBJ 'o'
-#define UG_TYPE_FUN 'f'
-#define UG_TYPE_NTV 't'
+#define UG_TYPE_BOL '!'
+#define UG_TYPE_NUM '0'
+#define UG_TYPE_STR '['
+#define UG_TYPE_OBJ '*'
+#define UG_TYPE_FUN '&'
+#define UG_TYPE_NTV '#'
 #define UG_TYPE_CNT '@'
 
 // token type

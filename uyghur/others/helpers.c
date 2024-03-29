@@ -211,9 +211,11 @@ char convert_ttype_to_rtype(char *tType)
 char *convert_string_to_location(char *str, char rType)
 {
     if (rType == UG_TYPE_NUM) {
-        return tools_format("%c_%.15g", rType, atof(str));
+        return tools_number_to_string(atof(str));
+    } else if (rType == UG_TYPE_STR) {
+        return tools_format("%c%s", UG_TYPE_NON, str);
     } else {
-        return tools_format("%c_%s", rType, str);
+        return tools_format("%s", str);
     }
 }
 
