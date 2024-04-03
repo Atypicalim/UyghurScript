@@ -24,10 +24,10 @@ void ug_control_show_label(Bridge *bridge)
 void lib_raylib_control_register(Bridge *bridge)
 {
     //
-    Bridge_startBox(bridge, "zapchas");
+    Bridge_startBox(bridge);
     //
     Bridge_bindNative(bridge, "kunupkaKorsitish", ug_control_show_button);
     Bridge_bindNative(bridge, "xetKorsitish", ug_control_show_label);
     //
-    Bridge_register(bridge);
+    Bridge_register(bridge, "zapchas");
 }

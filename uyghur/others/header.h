@@ -123,7 +123,6 @@ struct Bridge
     Uyghur *uyghur;
     Stack *stack;
     Cursor *cursor;
-    char *name;
     int type;
     char *last;
 };
@@ -133,7 +132,7 @@ void Bridge_startArgument(Bridge *);
 void *Bridge_send(Bridge *);
 void Bridge_startResult(Bridge *);
 void *Bridge_return(Bridge *);
-void Bridge_call(Bridge *);
+void Bridge_call(Bridge *, char *);
 void Bridge_run(Bridge *, Value *);
 
 typedef void (*NATIVE)(Bridge *);

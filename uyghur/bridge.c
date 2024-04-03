@@ -23,10 +23,6 @@ void Bridge_reset(Bridge *this)
         free(this->cursor);
         this->cursor = NULL;
     }
-    if (this->name != NULL)
-    {
-        this->name = NULL;
-    }
     this->type = 0;
     this->last = NULL;
 }
@@ -37,7 +33,6 @@ Bridge *Bridge_new(Uyghur *uyghur)
     bridge->uyghur = uyghur;
     bridge->stack = Stack_new();
     bridge->cursor = NULL;
-    bridge->name = NULL;
     bridge->type = 0;
     bridge->last = NULL;
     return bridge;
@@ -112,10 +107,9 @@ void Bridge_pushString(Bridge *this, char *value)
 
 // rgister box or globals to script
 
-void Bridge_startBox(Bridge *this, char *name)
+void Bridge_startBox(Bridge *this)
 {
     Bridge_reset(this);
-    this->name = name;
     this->type = BRIDGE_STACK_TP_BOX;
 }
 
@@ -143,12 +137,12 @@ void Bridge_bindNative(Bridge *this, UG_NAMES name, NATIVE fun)
     Bridge_pushValue(this, Value_newNative(fun, NULL));
 }
 
-void Bridge_register(Bridge *this)
+void Bridge_register(Bridge *this, char *boxName)
 {
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, box expected for register");
     tools_assert(this->last == BRIDGE_ITEM_TP_VAL, "invalid bridge status");
     Container *global = this->uyghur->executer->globalScope;
-    Container *container = this->name == NULL ? global : Container_newBox();
+    Container *container = boxName == NULL ? global : Container_newBox();
     Value *value = Stack_pop(this->stack);
     while (value != NULL)
     {
@@ -160,15 +154,14 @@ void Bridge_register(Bridge *this)
         Object_release(key);
         value = Stack_pop(this->stack);
     }
-    if (this->name != NULL)
+    if (boxName != NULL)
     {
         Object_retain(container);
         Value *temp = Value_newContainer(container, NULL);
-        char *location = convert_string_to_location(this->name, UG_TYPE_STR);
+        char *location = convert_string_to_location(boxName, UG_TYPE_STR);
         Container_setLocation(global, location, temp);
         pct_free(location);
     }
-    this->name = NULL;
 }
 
 // send native call arguments from script
@@ -326,18 +319,20 @@ void Bridge_returnStrings(Bridge *this, int num, char *val, ...)
 
 // call script func fom c
 
-void Bridge_startFunc(Bridge *this, char *name)
+void Bridge_startFunc(Bridge *this)
 {
     Bridge_reset(this);
-    this->name = name;
     this->type = BRIDGE_STACK_TP_FUN;
 }
 
-void Bridge_call(Bridge *this)
+void Bridge_call(Bridge *this, char *funcName)
 {
+    tools_assert(funcName != NULL, "invalid bridge status, func name unnecessary for call");
+    Token *funcToken = Token_key(UG_TTYPE_STR, funcName, "*");
+    Value *funcValue = Executer_getValueByToken(this->uyghur->executer, funcToken, true);
+    tools_assert(funcValue != NULL, "invalid bridge status, func value unnecessary for call");
     tools_assert(this->type == BRIDGE_STACK_TP_FUN, "invalid bridge status, func expected for call");
     tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key unnecessary for call");
-    tools_assert(this->name != NULL, "invalid bridge status, func name unnecessary for call");
     Cursor *cursor = Stack_reset(this->stack);
     // arguments
     Executer *executer = this->uyghur->executer;
@@ -346,25 +341,20 @@ void Bridge_call(Bridge *this)
     Value *item = Stack_next(this->stack, cursor);
     while (item != NULL)
     {
-        Stack_push(stack, item);
+        Executer_pushStack(executer, item);
         Object *o = (Object *)item;
         item = Stack_next(this->stack, cursor);
     }
     Cursor_free(cursor);
     // execute
-    Token *funcName = Token_key(UG_TTYPE_STR, this->name, "*");
-    Value *funcValue = Executer_getValueByToken(executer, funcName, true);
     Value *r = NULL;
     if (Value_isFunc(funcValue)) {
         r = Executer_runFunc(executer, funcValue);
     } else {
-        tools_warning("function not found for func name: %s", this->name);
+        tools_warning("invalid bridge status, func value is not a function");
         r = Value_newEmpty(NULL);
     }
-    if (this->name != NULL) {
-        this->name = NULL;
-    }
-    Object_release(funcName);
+    Object_release(funcToken);
     Object_release(funcValue);
     Stack_clear(stack);
     // result

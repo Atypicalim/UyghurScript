@@ -75,7 +75,7 @@ void ug_file_create_directory(Bridge *bridge)
 
 void lib_file_register(Bridge *bridge)
 {
-    Bridge_startBox(bridge, "xojjet");
+    Bridge_startBox(bridge);
     //
     Bridge_bindNative(bridge, "yezish", ug_write_file);
     Bridge_bindNative(bridge, "oqush", ug_read_file);
@@ -87,5 +87,5 @@ void lib_file_register(Bridge *bridge)
     Bridge_bindNative(bridge, "buSomkimu", ug_file_is_directory);
     Bridge_bindNative(bridge, "somkaQurush", ug_file_create_directory);
     //
-    Bridge_register(bridge);
+    Bridge_register(bridge, "xojjet");
 }

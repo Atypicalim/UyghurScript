@@ -32,9 +32,9 @@ void ug_box_loop(Bridge *bridge)
 
 void lib_box_register(Bridge *bridge)
 {
-    Bridge_startBox(bridge, "sanduq");
+    Bridge_startBox(bridge);
     //
     Bridge_bindNative(bridge, "dewriylesh", ug_box_loop);
     //
-    Bridge_register(bridge);
+    Bridge_register(bridge, "sanduq");
 }

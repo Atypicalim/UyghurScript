@@ -49,7 +49,7 @@ void tazilash(Bridge *bridge)
 
 void lib_global_register(Bridge *bridge)
 {
-    Bridge_startBox(bridge, NULL);
+    Bridge_startBox(bridge);
     // variables
     Bridge_bindString(bridge, "NESHIR_ISMI", UG_VERSION_NAME);
     Bridge_bindNumber(bridge, "NESHIR_NUMIRI", UG_VERSION_CODE);
@@ -61,5 +61,5 @@ void lib_global_register(Bridge *bridge)
     Bridge_bindNative(bridge, "ekirish", ekirish);
     Bridge_bindNative(bridge, "tazilash", tazilash);
     //
-    Bridge_register(bridge);
+    Bridge_register(bridge, NULL);
 }

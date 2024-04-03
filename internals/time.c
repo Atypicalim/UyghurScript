@@ -45,7 +45,7 @@ void ug_time_sleep_seconds(Bridge *bridge)
 
 void lib_time_register(Bridge *bridge)
 {
-    Bridge_startBox(bridge, "waqit");
+    Bridge_startBox(bridge);
     //
     Bridge_bindNative(bridge, "rayunElish", ug_time_get_zone);
     Bridge_bindNative(bridge, "sikuntElish", ug_time_get_seconds);
@@ -55,5 +55,5 @@ void lib_time_register(Bridge *bridge)
     Bridge_bindNative(bridge, "sanaqElish", ug_time_get_clock);
     Bridge_bindNative(bridge, "programminiUxlitish", ug_time_sleep_seconds);
     //
-    Bridge_register(bridge);
+    Bridge_register(bridge, "waqit");
 }

@@ -141,7 +141,7 @@ void ug_board_music_set_position(Bridge *bridge)
 void lib_raylib_music_register(Bridge *bridge)
 {
     //
-    Bridge_startBox(bridge, "muzika");
+    Bridge_startBox(bridge);
     //
     Bridge_bindNative(bridge, "ekirish", ug_board_music_load);
     Bridge_bindNative(bridge, "tazilash", ug_board_music_unload);
@@ -156,5 +156,5 @@ void lib_raylib_music_register(Bridge *bridge)
     Bridge_bindNative(bridge, "orniniElish", ug_board_music_get_position);
     Bridge_bindNative(bridge, "orniniBikitish", ug_board_music_set_position);
     //
-    Bridge_register(bridge);
+    Bridge_register(bridge, "muzika");
 }

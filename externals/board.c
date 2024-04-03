@@ -18,14 +18,14 @@ Texture2D defaultTexture;
 void raylib_on_show()
 {
     // SetTargetFPS(60);
-    Bridge_startFunc(uyghurBridge, "doska_korsitish_qayturmisi");
-    Bridge_call(uyghurBridge);
+    Bridge_startFunc(uyghurBridge);
+    Bridge_call(uyghurBridge, "doska_korsitish_qayturmisi");
 }
 
 void raylib_on_frame()
 {
-    Bridge_startFunc(uyghurBridge, "doska_sizish_qayturmisi");
-    Bridge_call(uyghurBridge);
+    Bridge_startFunc(uyghurBridge);
+    Bridge_call(uyghurBridge, "doska_sizish_qayturmisi");
     // DrawFPS(10, 10);
 }
 
@@ -326,7 +326,7 @@ void lib_raylib_main_register(Bridge *bridge)
     uyghurBridge = bridge;
     resourcesMap = Hashmap_new(NULL);
     //
-    Bridge_startBox(bridge, "doska");
+    Bridge_startBox(bridge);
     // settings
     Bridge_bindNative(bridge, "logDerijisiniBikitish", ug_baord_set_log);
     Bridge_bindNative(bridge, "fpsBikitish", ug_baord_set_fps);
@@ -367,5 +367,5 @@ void lib_raylib_main_register(Bridge *bridge)
     Bridge_bindNative(bridge, "ikranniResimgeTartipSaxlash", ug_baord_save_screenshot);
     Bridge_bindNative(bridge, "programmaAwaziniBikitish", ug_board_audio_set_volume);
     //
-    Bridge_register(bridge);
+    Bridge_register(bridge, "doska");
 }

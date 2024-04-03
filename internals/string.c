@@ -133,7 +133,7 @@ void ug_str_fill(Bridge *bridge)
 
 void lib_string_register(Bridge *bridge)
 {
-    Bridge_startBox(bridge, "xet");
+    Bridge_startBox(bridge);
     //
     Bridge_bindNative(bridge, "almashturush", ug_string_replace);
     Bridge_bindNative(bridge, "birinchisiniAlmashturush", ug_string_replace_first);
@@ -152,5 +152,5 @@ void lib_string_register(Bridge *bridge)
     Bridge_bindNative(bridge, "formatlash", ug_str_format);
     Bridge_bindNative(bridge, "toldurush", ug_str_fill);
     //
-    Bridge_register(bridge);
+    Bridge_register(bridge, "xet");
 }

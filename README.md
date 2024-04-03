@@ -193,20 +193,35 @@ tamamlansun
 
 > u can get the bridge objet and communicate between c and script, just check `main.c` for more information
 
+*  register a box to script
 ```c
-// register c values to script (NULL in start function to global scope)
-Bridge_startBox(bridge, NULL);
-Bridge_bindValue(bridge, "keyName", NULL);
-Bridge_register(bridge);
+Bridge_startBox(bridge);
+Bridge_bindValue(bridge, "num", "text...");
+Bridge_bindValue(bridge, "str", "text...");
+Bridge_register(bridge, "boxName"); // NULL for global scope
 ```
 
+* call script function from c, and get the result
 ```c
-// call script function from c, and get the result
-Bridge_startFunc(bridge, "functionName");
-Bridge_pushValue(bridge, NULL);
-Bridge_call(bridge);
+Bridge_startFunc(bridge);
+Bridge_pushValue(bridge, "argument");
+Bridge_call(bridge, "functionName");
 char resultType = Bridge_topType(bridge);
 void *resultValue = Bridge_receiveValue(bridge);
+```
+
+* call c function from script, and return result
+```c
+void testFunc(Bridge *bridge)
+{
+    int a = Bridge_receiveNumber(bridge);
+    int b = Bridge_receiveNumber(bridge);
+    int c = a + b;
+    Bridge_returnNumber(bridge, c);
+}
+Bridge_startBox(bridge);
+Bridge_bindNative(bridge, "sinaqFonkisiye", testFunc);
+Bridge_register(bridge, NULL);
 ```
 
 ## 13. import

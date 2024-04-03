@@ -490,7 +490,7 @@ void ug_baord_draw_texture_by_tag(Bridge *bridge)
 void lib_raylib_painter_register(Bridge *bridge)
 {
     //
-    Bridge_startBox(bridge, "ressam");
+    Bridge_startBox(bridge);
     // draw
     Bridge_bindNative(bridge, "sizishniBashlash", ug_baord_draw_start);
     Bridge_bindNative(bridge, "sizishniTamamlash", ug_baord_draw_end);
@@ -522,5 +522,5 @@ void lib_raylib_painter_register(Bridge *bridge)
     Bridge_bindNative(bridge, "xetEkirish", ug_baord_create_texture_from_text);
     Bridge_bindNative(bridge, "tamghaBesish", ug_baord_draw_texture_by_tag);
     //
-    Bridge_register(bridge);
+    Bridge_register(bridge, "ressam");
 }

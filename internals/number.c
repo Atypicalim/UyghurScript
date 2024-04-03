@@ -157,7 +157,7 @@ void ug_number_dec_part(Bridge *bridge)
 
 void lib_number_register(Bridge *bridge)
 {
-    Bridge_startBox(bridge, "san");
+    Bridge_startBox(bridge);
     //
     Bridge_bindNumber(bridge, "pi", acos(-1));
     Bridge_bindNumber(bridge, "e", exp(1));
@@ -191,5 +191,5 @@ void lib_number_register(Bridge *bridge)
     Bridge_bindNative(bridge, "putunQismighaIrishish", ug_number_int_part);
     Bridge_bindNative(bridge, "parcheQismighaIrishish", ug_number_dec_part);
     // 
-    Bridge_register(bridge);
+    Bridge_register(bridge, "san");
 }

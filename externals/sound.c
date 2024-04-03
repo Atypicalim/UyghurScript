@@ -108,7 +108,7 @@ void ug_board_sound_set_volume(Bridge *bridge)
 void lib_raylib_sound_register(Bridge *bridge)
 {
     //
-    Bridge_startBox(bridge, "awaz");
+    Bridge_startBox(bridge);
     //
     Bridge_bindNative(bridge, "ekirish", ug_board_sound_load);
     Bridge_bindNative(bridge, "tazilash", ug_board_sound_unload);
@@ -119,5 +119,5 @@ void lib_raylib_sound_register(Bridge *bridge)
     Bridge_bindNative(bridge, "quyuliwatamdu", ug_board_sound_is_playing);
     Bridge_bindNative(bridge, "yuqiriliqiniBikitish", ug_board_sound_set_volume);
     //
-    Bridge_register(bridge);
+    Bridge_register(bridge, "awaz");
 }

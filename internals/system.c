@@ -40,7 +40,7 @@ void ug_system_get_env(Bridge *bridge)
 
 void lib_system_register(Bridge *bridge)
 {
-    Bridge_startBox(bridge, "sestima");
+    Bridge_startBox(bridge);
     //
     Bridge_bindNative(bridge, "isminiElish", ug_system_get_name);
     Bridge_bindNative(bridge, "programmidinChikinish", ug_system_exit_program);
@@ -48,5 +48,5 @@ void lib_system_register(Bridge *bridge)
     Bridge_bindNative(bridge, "muhitQimmitiYezish", ug_system_set_env);
     Bridge_bindNative(bridge, "muhitQimmitiOqush", ug_system_get_env);
     //
-    Bridge_register(bridge);
+    Bridge_register(bridge, "sestima");
 }
