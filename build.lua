@@ -27,9 +27,4 @@ builder:setLibs("incbin", "raylib", "raygui")
 builder:setOutput(DST_ALIAS)
 builder:setIcon('./resources/icon.ico')
 builder:start(false)
-
-if tools.is_windows() then
-    os.execute(string.format([[cd %s & %s.exe]], DST_DIR, DST_NAME))
-else
-    builder:run()
-end
+builder:run()
