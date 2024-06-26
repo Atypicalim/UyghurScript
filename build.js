@@ -26,3 +26,5 @@ task.setOutput(DST_ALIAS)
 task.setIcon('./resources/icon.ico')
 task.start(false)
 task.run()
+
+// test
