@@ -1,0 +1,122 @@
+LANG_ERR:
+  en: ERROR
+  ug: XATALIQ
+  tr: XATALIQ_TR
+LANG_WAR:
+  en: WARING
+  ug: ESKERTME
+  tr: ESKERTME_TR
+LANG_LOG:
+  en: LOG
+  ug: UCHUR
+  tr: UCHUR_TR
+LANG_TRACE:
+  en: TRACE
+  ug: IZLAR
+  tr: IZLAR_TR
+LANG_UNKNOWN:
+  en: UNKNOWN
+  ug: NAMELUM
+  tr: NAMELUM_TR
+
+# common
+LANG_ERR_UYGHUR_EXCEPTION:
+  ug: "programma xataliqi kuruldi"
+LANG_ERR_NO_INPUT_FILE:
+  ug: "programma hojjiti tepilmidi"
+LANG_ERR_NO_VALID_STATE:
+  ug: "programma haliti inawetsiz"
+LANG_ERR_NO_INPUT_NAME:
+  ug: "programma ismi birilmidi"
+
+
+#  common
+LANG_ERR_INVALID_TYPE:
+  ug: "inawetsiz tip uchritildi"
+LANG_ERR_INVALID_LTTR:
+  ug: "inawetsiz xet uchritildi"
+LANG_ERR_INVALID_WORD:
+  ug: "inawetsiz soz uchritildi"
+LANG_ERR_INVALID_NAME:
+  ug: "inawetsiz nam uchritildi"
+LANG_ERR_INVALID_NMBR:
+  ug: "inawetsiz san uchritildi"
+LANG_ERR_INVALID_STRG:
+  ug: "inawetsiz xet uchritildi"
+LANG_ERR_CANNOT_BE_FLOAT:
+  ug: "parche san bolsa bolmaydu"
+
+#  tokenizer
+LANG_ERR_TOKENIZER_EXCEPTION:
+  ug: "imla xataliqi kuruldi"
+LANG_ERR_TOKENIZER_INVALID_SIGN:
+  ug: "uchritilghan herip inawetsiz"
+LANG_ERR_TOKENIZER_INVALID_KEY:
+  ug: "achquch ismi inawetsiz"
+LANG_ERR_TOKENIZER_INVALID_BOX:
+  ug: "sanduq ismi inawetsiz"
+LANG_ERR_TOKENIZER_STRING_START_ERROR:
+  ug: "xet beshi xata"
+LANG_ERR_TOKENIZER_STRING_END_ERROR:
+  ug: "xet axiri xata"
+LANG_ERR_TOKENIZER_KEY_START_ERROR:
+  ug: "achquch beshi xata"
+LANG_ERR_TOKENIZER_KEY_END_ERROR:
+  ug: "achquch axiri xata"
+
+
+#  parser
+LANG_ERR_PARSER_EXCEPTION:
+  ug: "logika xataliqi kuruldi"
+LANG_ERR_PARSER_DESIRED_VALUE_NOT_FOUND:
+  ug: "keynidin umut qilinghan qimmet tepilmidi"
+LANG_ERR_PARSER_INVALID_IF:
+  ug: "eger jumlisi inawetsiz"
+LANG_ERR_PARSER_INVALID_CALCULATOR:
+  ug: "hisablash jumlisi inawetsiz"
+
+
+# executer
+LANG_ERR_EXECUTER_EXCEPTION:
+  ug: "ijra xataliqi kuruldi"
+LANG_ERR_EXECUTER_NOT_IMPLEMENTED:
+  ug: "ijra qilish qollanmidi"
+LANG_ERR_EXECUTER_EXP_INVALID_TYPE:
+  ug: "oxshashmighan miqdar tipi arisida xisablash elip barghili bolmaydu"
+LANG_ERR_EXECUTER_KEY_INVALID_TOKEN:
+  ug: "inawetsiz achquch uchritildi"
+# 
+
+LANG_ERR_EXECUTER_CALCULATION_INVALID:
+  ug: "hisablash meshghulati inawetsiz"
+LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN:
+  ug: "hisablash belgisi qollanmidi"
+LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS:
+  ug: "hisablash miqtarliri qollanmidi"
+LANG_ERR_EXECUTER_CALCULATION_INVALID_STAT:
+  ug: "hisablash haliti inawetsiz"
+#
+LANG_ERR_EXECUTER_INVALID_DEVIDE:
+  ug: "bolguchi san nol bolsa bolmaydu"
+LANG_ERR_EXECUTER_INVALID_NAME:
+  ug: "inawetsiz isim uchritildi"
+LANG_ERR_EXECUTER_INVALID_KEY:
+  ug: "inawetsiz achquch uchritildi"
+LANG_ERR_EXECUTER_INVALID_VARIABLE:
+  ug: "inawetsiz miqdar uchritildi"
+LANG_ERR_EXECUTER_INVALID_IF:
+  ug: "eger jumlisi inawetsiz"
+# 
+LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED:
+  ug: "miqdar alliburun iniqlanghan"
+LANG_ERR_EXECUTER_VARIABLE_FAILURE_DEFINED:
+  ug: "miqdar muweppiqyetlik iniqlanmini"
+#
+LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND:
+  ug: "nishanlanghan sanduq tepilmidi"
+LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND:
+  ug: "ijra qilinghuchi tepilmidi"
+LANG_ERR_EXECUTER_BRIDGE_INVALID_RESULT:
+  ug: "kowruk qayturghan qimmet inawetsiz"
+LANG_ERR_EXECUTER_STACK_OVERFLOW:
+  ug: "saqlash boshluqi teship ketti"

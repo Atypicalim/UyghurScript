@@ -495,7 +495,7 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
     {
         r = Executer_getValueByToken(this, action, true);
     }
-    tools_assert(r != NULL, LANG_ERR_EXECUTER_CALCULATION_INVALID, act);
+    tools_assert(r != NULL, "%s:[%s]", LANG_ERR_EXECUTER_CALCULATION_INVALID, act);
     Executer_setValueByToken(this, target, r, false);
     Object_release(value);
 }
@@ -891,7 +891,7 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     helper_print_leaf(leaf, " ");
     printf("--->\n");
     //
-    tools_error(LANG_ERR_EXECUTER_NOT_IMPLEMENTED, tp);
+    tools_error("%s:[%c]", LANG_ERR_EXECUTER_NOT_IMPLEMENTED, tp);
 }
 
 bool Executer_consumeTree(Executer *this, Leaf *tree)

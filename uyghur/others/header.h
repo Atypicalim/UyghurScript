@@ -29,10 +29,16 @@ typedef struct {
     const char* key;
     const char* val;
 } UG_PAIRS;
+typedef struct {
+    const char** key;
+    const char* val;
+} YAML_PAIRS;
 
 // 
 
-#include "language.h"
+#include "../../build/tokens.yaml.h"
+#include "../../build/languages.yaml.h"
+#include "languages.h"
 #include "constant.h"
 #include "tools.c"
 

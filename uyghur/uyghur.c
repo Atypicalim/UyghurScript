@@ -13,7 +13,7 @@
 
 void Uyghur_init(Uyghur *this)
 {
-    //
+    languages_set_type(NULL);
 }
 
 Uyghur *Uyghur_new()
@@ -31,6 +31,7 @@ Uyghur *Uyghur_new()
 Value *Uyghur_runCode(Uyghur *this, char *code, char *path)
 {
     if (path == NULL) path = "*.ug";
+    languages_set_type(path);
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
     Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
     Value *moduleBox = Executer_executeTree(this->executer, path, headLeaf);
@@ -49,7 +50,7 @@ Value *Uyghur_runArgs(Uyghur *this, int argc, char const *argv[])
     if (argc <= 1) return NULL;
     char *path = (char *)argv[1];
     bool exist = file_exist(path);
-    tools_assert(exist, LANG_ERR_UYGHUR_FILE_NOT_FOUND, path);
+    tools_assert(exist, "%s:[%s]", LANG_ERR_NO_INPUT_FILE, path);
     Uyghur_runPath(this, path);
 
 }
