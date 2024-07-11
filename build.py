@@ -113,9 +113,14 @@ else:
 
 # task
 task = builder.c()
-task.setDebug(False)
+task.setDebug(True)
 task.setInput('./main.c')
-task.setLibs("incbin", "raylib", "raygui")
+task.setLibs([
+    "incbin",
+    "string",
+    "raylib",
+    "raygui",
+])
 task.setOutput(DST_ALIAS)
 # task.setIcon('./resources/icon.ico')
 task.start()

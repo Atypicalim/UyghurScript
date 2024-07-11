@@ -13,7 +13,7 @@
 
 void Uyghur_init(Uyghur *this)
 {
-    utils_set_languages(NULL);
+    //
 }
 
 Uyghur *Uyghur_new()
@@ -31,7 +31,8 @@ Uyghur *Uyghur_new()
 Value *Uyghur_runCode(Uyghur *this, char *code, char *path)
 {
     if (path == NULL) path = "*.ug";
-    utils_set_languages(path);
+    utils_set_languages(this, path);
+    utils_add_tokens(this, path);
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
     Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
     Value *moduleBox = Executer_executeTree(this->executer, path, headLeaf);

@@ -2,20 +2,6 @@
 
 #include "others/header.h"
 
-struct Tokenizer{
-    Uyghur *uyghur;
-    int line;
-    int column;
-    int position;
-    int length;
-    const char *path;
-    const char *code;
-    Token *head;
-    Token *tail;
-    Hashmap *aliasMap;
-    Hashmap *wordsMap;
-};
-
 void Tokenizer_reset(Tokenizer *this)
 {
     this->line = 1;
@@ -48,12 +34,6 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
         char *val = (char *)UG_ALIAS_MAP[i].val;
         Hashmap_set(aliasMap, key, String_format(val));
     }
-    // languages
-    for (int i = 0; i < YAML_SIZE_TOKENS_UG; i++) {
-        UG_PAIRS pair = YAML_MAP_TOKENS_UG[i];
-        Hashmap_set(aliasMap, pair.val, String_format(pair.key));
-    }
-    Hashmap_print(aliasMap);
     // words
     Hashmap *wordsMap = Hashmap_new();
     size_t wSize = sizeof(UG_WORDS_MAP) / sizeof(UG_WORDS_MAP[0]);

@@ -18,6 +18,9 @@
 #include <limits.h>
 #include <setjmp.h>
 
+#define STDSTRING_IMPLEMENTATION
+#include "stdstring.h"
+
 // 
 
 bool isTest = false;
@@ -88,20 +91,28 @@ Container *Container_new(char);
 #include "../objects/container.c"
 #include "../objects/value.c"
 
-#include "helpers.c"
-void *INVALID_PTR = NULL;
-Container *INVALID_CTN = NULL;
-Value *INVALID_VAL = NULL;
+////////////////////////////////////////////////////////////////////////////
 
-// 
+typedef struct _Uyghur Uyghur;
 
-typedef struct Tokenizer Tokenizer;
+typedef struct _Tokenizer {
+    Uyghur *uyghur;
+    int line;
+    int column;
+    int position;
+    int length;
+    const char *path;
+    const char *code;
+    Token *head;
+    Token *tail;
+    Hashmap *aliasMap;
+    Hashmap *wordsMap;
+ } Tokenizer;
+
 typedef struct Parser Parser;
 typedef struct Executer Executer;
 typedef struct Debug Debug;
 typedef struct Bridge Bridge;
-
-// 
 
 typedef struct _Uyghur {
     bool running;
@@ -111,6 +122,14 @@ typedef struct _Uyghur {
     Debug *debug;
     Bridge *bridge;
 } Uyghur;
+
+////////////////////////////////////////////////////////////////////////////
+
+#include "helpers.c"
+
+void *INVALID_PTR = NULL;
+Container *INVALID_CTN = NULL;
+Value *INVALID_VAL = NULL;
 
 // 
 
