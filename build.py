@@ -29,17 +29,6 @@ static const {2} YAML_MAP_{0}_{1}[YAML_SIZE_{0}_{1}] = {{
 {4}
 }};
 """
-# 
-cConfContent = """
-#ifndef YAML_MAP_{0}
-#define YAML_MAP_{0}
-//
-{1}
-//
-{2}
-//
-#endif // YAML_MAP_{0}
-"""
 
 def readYaml(fromPath):
     _configs = tools.files.read(fromPath, 'utf-8')
@@ -77,24 +66,37 @@ def formatLanguages(template, name, laguages, typ):
         bodies.append(body)
     return "\n".join(bodies)
 
-# dump yaml
-def writeYaml(name, toPath, variables, bodies):
-    _content = cConfContent.format(name, variables, bodies)
-    tools.files.write(toPath, _content, "utf-8")
-
 # languages
 name = "LANGUAGES"
 aliases, laguages = readYaml("./uyghur/others/languages.yml")
-variables = formatAliases(cConfDeclare, aliases)
-bodies = formatLanguages(cConfLanguageLine, name, laguages, "LANGUAGE_PAIRS")
-writeYaml(name, DST_DIR + "languages.yaml.h", variables, bodies)
+langaugeVariables = formatAliases(cConfDeclare, aliases)
+languageBodies = formatLanguages(cConfLanguageLine, name, laguages, "LANGUAGE_PAIRS")
 
-# tokens
+# # tokens
 name = "TOKENS"
 aliases, laguages = readYaml("./uyghur/others/tokens.yml")
-variables = formatAliases(cConfDefine, aliases)
-bodies = formatLanguages(cConfTokenLine, name, laguages, "UG_PAIRS")
-writeYaml(name, DST_DIR + "tokens.yaml.h", variables, bodies)
+tokenVariables = formatAliases(cConfDefine, aliases)
+tokenBodies = formatLanguages(cConfTokenLine, name, laguages, "UG_PAIRS")
+
+###############################################################################
+
+# languages
+bldr = builder.code()
+bldr.setInput("./uyghur/others/languages.yaml.h")
+bldr.setComment("//")
+bldr.setOutput(DST_DIR + "languages.yaml.h")
+bldr.onMacro(lambda code, command, argument = None: langaugeVariables if command == "VARIABLES" else languageBodies)
+bldr.onLine(lambda line: line)
+bldr.start()
+
+# tokens
+bldr = builder.code()
+bldr.setInput("./uyghur/others/tokens.yaml.h")
+bldr.setComment("//")
+bldr.setOutput(DST_DIR + "tokens.yaml.h")
+bldr.onMacro(lambda code, command, argument = None: tokenVariables if command == "VARIABLES" else tokenBodies)
+bldr.onLine(lambda line: line)
+bldr.start()
 
 ###############################################################################
 

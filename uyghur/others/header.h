@@ -29,10 +29,6 @@ typedef struct {
     const char* key;
     const char* val;
 } UG_PAIRS;
-typedef struct {
-    char** key;
-    char* val;
-} LANGUAGE_PAIRS;
 
 // 
 
