@@ -55,26 +55,8 @@
 #define PCT_OBJ_LEAF 'l'
 
 // token value of keywords
-//
-#define TVALUE_EMPTY "quruq"
-#define TVALUE_LOGIC "logika"
-#define TVALUE_NUM "san"
-#define TVALUE_STR "xet"
-#define TVALUE_BOX "sanduq"
-//
-#define TVALUE_WHILE "nawada"
-#define TVALUE_IF "eger"
-#define TVALUE_IF_ELSE "egerde"
-#define TVALUE_IF_OK "bolsa"
-#define TVALUE_IF_NO "bolmisa"
-#define TVALUE_CODE_END "tamamlansun"
-// 
 #define TVALUE_DOT "."
 #define TVALUE_AT "@"
-//
-#define TVALUE_TRUE "rast"
-#define TVALUE_FALSE "yalghan"
-#define TVALUE_NOT "ekische"
 
 // calculate
 #define TVALUE_CALCULATOR "="
@@ -100,27 +82,8 @@
 #define TVALUE_OPEN "("
 #define TVALUE_CLOSE ")"
 
-#define TVALUE_OP_S_OUTPUT "ikrangha"
-#define TVALUE_OP_E_OUTPUT "yezilsun"
-#define TVALUE_OP_S_INPUT "ikrandin"
-#define TVALUE_OP_E_INPUT "oqulsun"
 # define TVALUE_OP_BGN 2, TVALUE_OP_S_OUTPUT, TVALUE_OP_S_INPUT
 # define TVALUE_OP_END 2, TVALUE_OP_E_OUTPUT, TVALUE_OP_E_INPUT
-//
-#define TVALUE_VARIABLE "miqdar"
-#define TVALUE_INITIAL "qimmiti" // beshida
-#define TVALUE_CONVERT "qimmiti" // tipi
-#define TVALUE_MADE "bolsun"
-// 
-#define TVALUE_EXCEPTION "xataliq"
-// 
-#define TVALUE_FUNCTION "fonkisiye"
-#define TVALUE_CONTENT "mezmuni"
-#define TVALUE_WITH "bilen"
-#define TVALUE_CALL "ishlitilsun"
-#define TVALUE_RETURN "qayturulsun"
-#define TVALUE_FURTHER "we"
-#define TVALUE_RESULT "netije"
 
 const UG_PAIRS UG_ALIAS_MAP[] = {
     // 
@@ -140,7 +103,7 @@ const UG_PAIRS UG_ALIAS_MAP[] = {
 
 const UG_PAIRS UG_WORDS_MAP[] = {
     {TVALUE_VARIABLE, 0},
-    {TVALUE_INITIAL, 0},
+    {TVALUE_VALUE, 0},
     {TVALUE_MADE, 0},
     {TVALUE_CODE_END, 0},
     {TVALUE_IF_OK, 0},
@@ -222,3 +185,7 @@ const UG_PAIRS UG_WORDS_MAP[] = {
 #define CODE_TRUE 1
 #define CODE_NONE 0
 #define CODE_FAIL -2
+
+#define LANG_ERR_SOME_PLACE "hojjet:[%s], qur:[%d], qatar:[%d]"
+#define LANG_ERR_SIGN_PLACE LANG_ERR_SOME_PLACE ", herip:[%c]"
+#define LANG_ERR_TOKEN_PLACE LANG_ERR_SOME_PLACE ", belge:[%s]"

@@ -357,4 +357,11 @@ void Container_print(Container *this)
     printf("[Container]\n");
 }
 
+void utils_set_languages(char *tp) {
+    // for (int i = 0; i < YAML_SIZE_LANGUAGES_UG; i++) {
+    //     LANGUAGE_PAIRS pair = YAML_MAP_LANGUAGES_UG[i];
+    //     *pair.key = pair.val;
+    // }
+}
+
 #endif

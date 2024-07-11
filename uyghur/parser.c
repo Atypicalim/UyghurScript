@@ -184,7 +184,7 @@ void Parser_consumeAstVariable(Parser *this)
 {
     Parser_checkWord(this, 0, 1, TVALUE_VARIABLE);
     Token *name = Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
-    Parser_checkWord(this, 1, 1, TVALUE_INITIAL);
+    Parser_checkWord(this, 1, 1, TVALUE_VALUE);
     Token *token = Parser_moveToken(this, 1); 
     if (!helper_token_is_values(token, TVAUES_GROUP_UTYPES) && !helper_token_is_types(token, TTYPES_GROUP_VALUES)) {
         Parser_error(this, LANG_ERR_INVALID_TYPE);
@@ -214,7 +214,7 @@ void Parser_consumeAstOperate(Parser *this)
 void Parser_consumeAstConvert(Parser *this)
 {
     Token *target = Parser_checkType(this, 0, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
-    Parser_checkWord(this, 1, 1, TVALUE_CONVERT);
+    Parser_checkWord(this, 1, 1, TVALUE_VALUE);
     // single
     if (Parser_isWord(this, 2, TVALUE_MADE))
     {
@@ -525,7 +525,7 @@ void Parser_consumeToken(Parser *this, Token *token)
         return;
     }
     // EXPRESSION
-    if ((is_eq_string(t, UG_TTYPE_NAM) || is_eq_string(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_CONVERT))
+    if ((is_eq_string(t, UG_TTYPE_NAM) || is_eq_string(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_VALUE))
     {
         Parser_consumeAstConvert(this);
         return;

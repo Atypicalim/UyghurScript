@@ -17,14 +17,19 @@ DST_SCRIPT = DST_ALIAS + ".ug"
 ###############################################################################
 
 # c conf
-cConfLine = """{{&{0}, "{1}"}},"""
-cConfDefine = """char* {0} = \"\";"""
+cConfDeclare = """char* {0} = \"{0}\";"""
+cConfDefine = """#define {0} \"{0}\""""
+#
+cConfLanguageLine = """{{&{0}, "{1}"}},"""
+cConfTokenLine = """{{"{0}", "{1}"}},"""
+# 
 cConfBody = """
-#define YAML_SIZE_{0}_{1} {2}
-static const YAML_PAIRS YAML_MAP_{0}_{1}[YAML_SIZE_{0}_{1}] = {{
-{3}
+#define YAML_SIZE_{0}_{1} {3}
+static const {2} YAML_MAP_{0}_{1}[YAML_SIZE_{0}_{1}] = {{
+{4}
 }};
 """
+# 
 cConfContent = """
 #ifndef YAML_MAP_{0}
 #define YAML_MAP_{0}
@@ -36,48 +41,60 @@ cConfContent = """
 #endif // YAML_MAP_{0}
 """
 
-# dump yaml
-def dumpYaml(name, fromPath, toPath):
+def readYaml(fromPath):
     _configs = tools.files.read(fromPath, 'utf-8')
     configs = yaml.safe_load(_configs)
-    defines = []
-    bodies = []
-    _map = {}
-    # parse
-    count = 1000
+    aliasesArr = []
+    languagesMap = {}
     for alias, pairs in configs.items():
-        count = count + 1
-        define = cConfDefine.format(alias, count)
-        defines.append(define)
-        # english
-        lang = 'en'
-        if lang not in _map:
-            _map[lang] = {}
-        _map[lang][alias] = alias.lower().replace('_', " ")
+        # aliases
+        aliasesArr.append(alias)
         # languages
         for lang, value in pairs.items():
-            if lang not in _map:
-                _map[lang] = {}
-            _map[lang][alias] = value
-    # body
-    for lang, pairs in _map.items():
+            if lang not in languagesMap:
+                languagesMap[lang] = {}
+            languagesMap[lang][alias] = value
+    return aliasesArr, languagesMap
+
+def formatAliases(template, aliases):
+    variables = []
+    for alias in aliases:
+        variable = template.format(alias)
+        variables.append(variable)
+    return "\n".join(variables)
+
+def formatLanguages(template, name, laguages, typ):
+    bodies = []
+    for lang, pairs in laguages.items():
         lang = lang.upper()
         lines = []
         for alias, value in pairs.items():
-            line = cConfLine.format(alias, value)
+            line = template.format(alias, value)
             lines.append(line)
         _length = len(lines)
         _lines = "\n    ".join(lines)
-        body = cConfBody.format(name, lang, _length, "    " + _lines)
+        body = cConfBody.format(name, lang, typ, _length, "    " + _lines)
         bodies.append(body)
-    # content
-    _defines = "\n".join(defines)
-    _bodies = "\n".join(bodies)
-    _content = cConfContent.format(name, _defines, _bodies)
+    return "\n".join(bodies)
+
+# dump yaml
+def writeYaml(name, toPath, variables, bodies):
+    _content = cConfContent.format(name, variables, bodies)
     tools.files.write(toPath, _content, "utf-8")
 
-dumpYaml("LANGUAGES", "./uyghur/others/languages.yml", DST_DIR + "languages.yaml.h")
-# dumpYaml("TOKENS", "./uyghur/others/tokens.yml", DST_DIR + "tokens.yaml.h")
+# languages
+name = "LANGUAGES"
+aliases, laguages = readYaml("./uyghur/others/languages.yml")
+variables = formatAliases(cConfDeclare, aliases)
+bodies = formatLanguages(cConfLanguageLine, name, laguages, "LANGUAGE_PAIRS")
+writeYaml(name, DST_DIR + "languages.yaml.h", variables, bodies)
+
+# tokens
+name = "TOKENS"
+aliases, laguages = readYaml("./uyghur/others/tokens.yml")
+variables = formatAliases(cConfDefine, aliases)
+bodies = formatLanguages(cConfTokenLine, name, laguages, "UG_PAIRS")
+writeYaml(name, DST_DIR + "tokens.yaml.h", variables, bodies)
 
 ###############################################################################
 

@@ -30,15 +30,14 @@ typedef struct {
     const char* val;
 } UG_PAIRS;
 typedef struct {
-    const char** key;
-    const char* val;
-} YAML_PAIRS;
+    char** key;
+    char* val;
+} LANGUAGE_PAIRS;
 
 // 
 
 #include "../../build/tokens.yaml.h"
 #include "../../build/languages.yaml.h"
-#include "languages.h"
 #include "constant.h"
 #include "tools.c"
 

@@ -1,21 +1,16 @@
 LANG_ERR:
-  en: ERROR
   ug: XATALIQ
   tr: XATALIQ_TR
 LANG_WAR:
-  en: WARING
   ug: ESKERTME
   tr: ESKERTME_TR
 LANG_LOG:
-  en: LOG
   ug: UCHUR
   tr: UCHUR_TR
 LANG_TRACE:
-  en: TRACE
   ug: IZLAR
   tr: IZLAR_TR
 LANG_UNKNOWN:
-  en: UNKNOWN
   ug: NAMELUM
   tr: NAMELUM_TR
 

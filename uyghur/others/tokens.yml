@@ -1,0 +1,68 @@
+
+#
+TVALUE_EMPTY:
+  ug: "quruq"
+  tr: "quruq_tr"
+TVALUE_LOGIC:
+  ug: "logika"
+TVALUE_NUM:
+  ug: "san"
+TVALUE_STR:
+  ug: "xet"
+TVALUE_BOX:
+  ug: "sanduq"
+#
+TVALUE_WHILE:
+  ug: "nawada"
+TVALUE_IF:
+  ug: "eger"
+TVALUE_IF_ELSE:
+  ug: "egerde"
+TVALUE_IF_OK:
+  ug: "bolsa"
+TVALUE_IF_NO:
+  ug: "bolmisa"
+TVALUE_CODE_END:
+  ug: "tamamlansun"
+
+#
+TVALUE_TRUE:
+  ug: "rast"
+TVALUE_FALSE:
+  ug: "yalghan"
+TVALUE_NOT:
+  ug: "ekische"
+
+TVALUE_OP_S_OUTPUT:
+  ug: "ikrangha"
+TVALUE_OP_E_OUTPUT:
+  ug: "yezilsun"
+TVALUE_OP_S_INPUT:
+  ug: "ikrandin"
+TVALUE_OP_E_INPUT:
+  ug: "oqulsun"
+#
+TVALUE_VARIABLE:
+  ug: "miqdar"
+TVALUE_VALUE:
+  ug: "qimmiti"
+TVALUE_MADE:
+  ug: "bolsun"
+# 
+TVALUE_EXCEPTION:
+  ug: "xataliq"
+# 
+TVALUE_FUNCTION:
+  ug: "fonkisiye"
+TVALUE_CONTENT:
+  ug: "mezmuni"
+TVALUE_WITH:
+  ug: "bilen"
+TVALUE_CALL:
+  ug: "ishlitilsun"
+TVALUE_RETURN:
+  ug: "qayturulsun"
+TVALUE_FURTHER:
+  ug: "we"
+TVALUE_RESULT:
+  ug: "netije"

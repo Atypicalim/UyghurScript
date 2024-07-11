@@ -48,6 +48,12 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
         char *val = (char *)UG_ALIAS_MAP[i].val;
         Hashmap_set(aliasMap, key, String_format(val));
     }
+    // languages
+    for (int i = 0; i < YAML_SIZE_TOKENS_UG; i++) {
+        UG_PAIRS pair = YAML_MAP_TOKENS_UG[i];
+        Hashmap_set(aliasMap, pair.val, String_format(pair.key));
+    }
+    Hashmap_print(aliasMap);
     // words
     Hashmap *wordsMap = Hashmap_new();
     size_t wSize = sizeof(UG_WORDS_MAP) / sizeof(UG_WORDS_MAP[0]);
@@ -70,7 +76,12 @@ Token *Tokenizer_parseLetter(Tokenizer *this, String *letter, bool isGetName)
 {   
     // alias 
     String *alias = Hashmap_get(this->aliasMap, String_get(letter));
-    if (alias != NULL) letter = alias;
+    if (alias != NULL) {
+        // printf("-----------------------\n");
+        // String_print(letter);
+        // String_print(alias);
+        letter = alias;
+    }
     // name
     String *val = Hashmap_get(this->wordsMap, String_get(letter));
     if (val == NULL) return Token_new(UG_TTYPE_NAM, String_get(letter));
