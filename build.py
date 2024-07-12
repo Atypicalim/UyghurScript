@@ -164,5 +164,12 @@ task.setLibs([
 ])
 task.setOutput(DST_ALIAS)
 # task.setIcon('./resources/icon.ico')
+task.addWarnings(False, [
+    "unused-result",
+    "discarded-qualifiers",
+    "attributes",
+    "incompatible-pointer-types"
+])
+task.addFlags([])
 task.start()
 task.run()
