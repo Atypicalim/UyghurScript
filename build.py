@@ -17,15 +17,20 @@ DST_SCRIPT = DST_ALIAS + ".ug"
 ###############################################################################
 
 # c conf
-cConfDeclare = """char* {0} = \"{0}\";"""
-cConfDefine = """#define {0} \"{0}\""""
+tplYamlDeclare = """char* {0} = \"{0}\";"""
+tplYamlDefine = """#define {0} \"{0}\""""
 #
-cConfLanguageLine = """{{&{0}, "{1}"}},"""
-cConfTokenLine = """{{"{0}", "{1}"}},"""
+tplYamlLineLanguage = """{{&{0}, "{1}"}},"""
+tplYamlLineToken = """{{"{0}", "{1}"}},"""
+#
+tmplYamlNameSize = "YAML_SIZE_{0}_{1}"
+tmplYamlNameConf = "YAML_CONF_{0}_{1}"
 # 
-cConfBody = """
-#define YAML_SIZE_{0}_{1} {3}
-static const {2} YAML_MAP_{0}_{1}[YAML_SIZE_{0}_{1}] = {{
+tplYamlFilter = """    if (strend(tp, "{0}") == 0) {{return {1};}}"""
+#
+tplYamlBody = """
+#define {0} {2}
+static const PAIR_{3} {1}[{0}] = {{
 {4}
 }};
 """
@@ -52,7 +57,7 @@ def formatAliases(template, aliases):
         variables.append(variable)
     return "\n".join(variables)
 
-def formatLanguages(template, name, laguages, typ):
+def formatLanguages(template, name, laguages):
     bodies = []
     for lang, pairs in laguages.items():
         lang = lang.upper()
@@ -62,30 +67,66 @@ def formatLanguages(template, name, laguages, typ):
             lines.append(line)
         _length = len(lines)
         _lines = "\n    ".join(lines)
-        body = cConfBody.format(name, lang, typ, _length, "    " + _lines)
+        #
+        txtYamlNameSize = tmplYamlNameSize.format(name, lang) 
+        txtYamlNameConf = tmplYamlNameConf.format(name, lang) 
+        #
+        body = tplYamlBody.format(txtYamlNameSize, txtYamlNameConf, _length, name, "    " + _lines)
         bodies.append(body)
-    return "\n".join(bodies)
+    _bodies = "\n".join(bodies)
+    return _bodies
+
+def formatFilters(name, laguages):
+    filterSizes = []
+    filterConfs = []
+    for lang, pairs in laguages.items():
+        lang = lang.upper()
+        #
+        txtYamlNameSize = tmplYamlNameSize.format(name, lang) 
+        txtYamlNameConf = tmplYamlNameConf.format(name, lang) 
+        #
+        filterSize = tplYamlFilter.format(lang, txtYamlNameSize)
+        filterConf = tplYamlFilter.format(lang, txtYamlNameConf)
+        filterSizes.append(filterSize)
+        filterConfs.append(filterConf)
+    _filterSizes = "\n".join(filterSizes)
+    _filterConfs = "\n".join(filterConfs)
+    return [_filterSizes, _filterConfs]
 
 # languages
 name = "LANGUAGES"
 aliases, laguages = readYaml("./uyghur/others/languages.yml")
-langaugeVariables = formatAliases(cConfDeclare, aliases)
-languageBodies = formatLanguages(cConfLanguageLine, name, laguages, "LANGUAGE_PAIRS")
+langaugeVariables = formatAliases(tplYamlDeclare, aliases)
+languageBodies = formatLanguages(tplYamlLineLanguage, name, laguages)
+[languageFilterSize, languageFilterConf] = formatFilters(name, laguages)
 
 # # tokens
 name = "TOKENS"
 aliases, laguages = readYaml("./uyghur/others/tokens.yml")
-tokenVariables = formatAliases(cConfDefine, aliases)
-tokenBodies = formatLanguages(cConfTokenLine, name, laguages, "UG_PAIRS")
+tokenVariables = formatAliases(tplYamlDefine, aliases)
+tokenBodies = formatLanguages(tplYamlLineToken, name, laguages)
+[tokenFilterSize, tokenFilterConf] = formatFilters(name, laguages)
 
 ###############################################################################
+
+def _onMacro(arg1, arg2, arg3, arg4):
+    def onMacro(code, command, argument = None):
+        if command == "VARIABLES":
+            return arg1
+        elif command == "BODIES":
+            return arg2
+        elif command == "FILTER_SIZE":
+            return arg3
+        elif command == "FILTER_CONF":
+            return arg4
+    return onMacro
 
 # languages
 bldr = builder.code()
 bldr.setInput("./uyghur/others/languages.yaml.h")
 bldr.setComment("//")
 bldr.setOutput(DST_DIR + "languages.yaml.h")
-bldr.onMacro(lambda code, command, argument = None: langaugeVariables if command == "VARIABLES" else languageBodies)
+bldr.onMacro(_onMacro(langaugeVariables, languageBodies, languageFilterSize, languageFilterConf))
 bldr.onLine(lambda line: line)
 bldr.start()
 
@@ -94,7 +135,7 @@ bldr = builder.code()
 bldr.setInput("./uyghur/others/tokens.yaml.h")
 bldr.setComment("//")
 bldr.setOutput(DST_DIR + "tokens.yaml.h")
-bldr.onMacro(lambda code, command, argument = None: tokenVariables if command == "VARIABLES" else tokenBodies)
+bldr.onMacro(_onMacro(tokenVariables, tokenBodies, tokenFilterSize, tokenFilterConf))
 bldr.onLine(lambda line: line)
 bldr.start()
 

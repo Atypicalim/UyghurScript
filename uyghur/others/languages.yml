@@ -14,17 +14,6 @@ LANG_UNKNOWN:
   ug: NAMELUM
   tr: NAMELUM_TR
 
-# common
-LANG_ERR_UYGHUR_EXCEPTION:
-  ug: "programma xataliqi kuruldi"
-LANG_ERR_NO_INPUT_FILE:
-  ug: "programma hojjiti tepilmidi"
-LANG_ERR_NO_VALID_STATE:
-  ug: "programma haliti inawetsiz"
-LANG_ERR_NO_INPUT_NAME:
-  ug: "programma ismi birilmidi"
-
-
 #  common
 LANG_ERR_INVALID_TYPE:
   ug: "inawetsiz tip uchritildi"
@@ -76,12 +65,13 @@ LANG_ERR_EXECUTER_EXCEPTION:
   ug: "ijra xataliqi kuruldi"
 LANG_ERR_EXECUTER_NOT_IMPLEMENTED:
   ug: "ijra qilish qollanmidi"
+LANG_ERR_EXECUTER_INVALID_STATE:
+  ug: "ijra haliti inawetsiz"
 LANG_ERR_EXECUTER_EXP_INVALID_TYPE:
-  ug: "oxshashmighan miqdar tipi arisida xisablash elip barghili bolmaydu"
+  ug: "inawetsiz hisablash tipi"
 LANG_ERR_EXECUTER_KEY_INVALID_TOKEN:
   ug: "inawetsiz achquch uchritildi"
 # 
-
 LANG_ERR_EXECUTER_CALCULATION_INVALID:
   ug: "hisablash meshghulati inawetsiz"
 LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN:
@@ -107,10 +97,12 @@ LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED:
 LANG_ERR_EXECUTER_VARIABLE_FAILURE_DEFINED:
   ug: "miqdar muweppiqyetlik iniqlanmini"
 #
+LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND:
+  ug: "nishanlanghan miqtar tepilmidi"
 LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND:
   ug: "nishanlanghan sanduq tepilmidi"
 LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND:
-  ug: "ijra qilinghuchi tepilmidi"
+  ug: "nishanlanghan ijrachi tepilmidi"
 LANG_ERR_EXECUTER_BRIDGE_INVALID_RESULT:
   ug: "kowruk qayturghan qimmet inawetsiz"
 LANG_ERR_EXECUTER_STACK_OVERFLOW:

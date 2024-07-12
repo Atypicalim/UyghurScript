@@ -186,6 +186,10 @@ const UG_PAIRS UG_WORDS_MAP[] = {
 #define CODE_NONE 0
 #define CODE_FAIL -2
 
+// languages
+#define LANG_ERR_UYGHUR_EXCEPTION "programma xataliqi kuruldi"
+#define LANG_ERR_NO_INPUT_FILE "programma hojjiti tepilmidi"
+//
 #define LANG_ERR_SOME_PLACE "hojjet:[%s], qur:[%d], qatar:[%d]"
 #define LANG_ERR_SIGN_PLACE LANG_ERR_SOME_PLACE ", herip:[%c]"
 #define LANG_ERR_TOKEN_PLACE LANG_ERR_SOME_PLACE ", belge:[%s]"

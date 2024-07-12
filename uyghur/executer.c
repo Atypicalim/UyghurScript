@@ -79,7 +79,7 @@ Container *Executer_popContainer(Executer *this, char type)
 {
     Container *container = Stack_pop(this->containerStack);
     this->currContainer = (Container *)this->containerStack->tail->data;
-    tools_assert(container != NULL && container->type == type, LANG_ERR_NO_VALID_STATE);
+    tools_assert(container != NULL && container->type == type, LANG_ERR_EXECUTER_INVALID_STATE);
     if (type == UG_CTYPE_SCP) {
         Object_release(container);
         return NULL;
@@ -412,7 +412,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
             }
         } else {
             value = Executer_getValueByToken(this, name, true);
-            Executer_assert(this, value != NULL, name, LANG_ERR_NO_VALID_STATE);
+            Executer_assert(this, value != NULL, name, LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND);
             char *content = Value_toString(value);
             printf("%s", content);
             pct_free(content);

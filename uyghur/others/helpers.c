@@ -358,47 +358,23 @@ void Container_print(Container *this)
 }
 
 void utils_set_languages(Uyghur *uyghur, char *tp) {
-    if (tp == NULL) return;
-    int size = 0;
-    LANGUAGE_PAIRS *pairs = NULL;
-    // 
-    if (strend(tp, "ug")) {
-        size = YAML_SIZE_LANGUAGES_UG;
-        pairs = &YAML_MAP_LANGUAGES_UG;
-    }
-    if (strend(tp, "tr")) {
-        size = YAML_SIZE_LANGUAGES_TR;
-        pairs = &YAML_MAP_LANGUAGES_TR;
-    }
-    // 
-    if (pairs != NULL && size >= 0) {
-        for (int i = 0; i < size; i++) {
-            LANGUAGE_PAIRS pair = pairs[i];
-            *pair.key = pair.val;
-        }
+    int size = languages_get_size(tp);
+    PAIR_LANGUAGES* pairs = languages_get_conf(tp);
+    for (size_t i = 0; i < size; i++)
+    {
+        PAIR_LANGUAGES pair = pairs[i];
+        *pair.key = pair.val;
     }
 }
 
 void utils_add_tokens(Uyghur *uyghur, char *tp) {
-    if (tp == NULL) return;
-    int size = 0;
-    TOKEN_PAIRS *pairs = NULL;
-    // 
-    if (strend(tp, "ug")) {
-        size = YAML_SIZE_TOKENS_UG;
-        pairs = &YAML_MAP_TOKENS_UG;
-    }
-    if (strend(tp, "tr")) {
-        size = YAML_SIZE_TOKENS_TR;
-        pairs = &YAML_MAP_TOKENS_TR;
-    }
-    //
     void *aliasMap = uyghur->tokenizer->aliasMap;
-    if (pairs != NULL && size >= 0) {
-        for (int i = 0; i < size; i++) {
-            TOKEN_PAIRS pair = pairs[i];
-            Hashmap_set(aliasMap, pair.val, String_format(pair.key));
-        }
+    int size = tokens_get_size(tp);
+    PAIR_TOKENS* pairs = tokens_get_conf(tp);
+    for (size_t i = 0; i < size; i++)
+    {
+        PAIR_TOKENS pair = pairs[i];
+        Hashmap_set(aliasMap, pair.val, String_format(pair.key));
     }
 }
 
