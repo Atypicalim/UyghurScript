@@ -159,11 +159,11 @@ Token *Parser_checkType(Parser *this, int indent, int num, char *s, ...)
 Token *Parser_checkValue(Parser *this, int indent, int num, char *s, ...)
 {
     Token *token = Parser_moveToken(this, indent);
-    Parser_assert(this, token != NULL, LANG_ERR_PARSER_DESIRED_VALUE_NOT_FOUND);
+    Parser_assert(this, token != NULL, LANG_ERR_PARSER_INVALID_VARIABLE);
     va_list valist;
     va_start(valist, s);
     bool isMatch = helper_token_is_values_list(token, num, s, valist);
-    Parser_assert(this, isMatch, LANG_ERR_PARSER_DESIRED_VALUE_NOT_FOUND);
+    Parser_assert(this, isMatch, LANG_ERR_PARSER_INVALID_VARIABLE);
     return token;
 }
 

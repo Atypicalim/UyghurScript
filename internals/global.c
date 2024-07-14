@@ -24,7 +24,7 @@ void izlash(Bridge *bridge)
 {
     char *msg = "izlash";
     if (Bridge_topType(bridge) == UG_TYPE_STR) msg = Bridge_receiveString(bridge);
-    printf("\n[%s] %s\n", LANG_LOG, msg);
+    printf("\n[%s] %s\n", UG_TAG_LOG, msg);
     Debug_writeTrace(bridge->uyghur->debug);
     Bridge_returnEmpty(bridge);
 }

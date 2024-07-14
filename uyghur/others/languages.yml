@@ -1,109 +1,136 @@
-LANG_ERR:
-  ug: XATALIQ
-  tr: XATALIQ_TR
-LANG_WAR:
-  ug: ESKERTME
-  tr: ESKERTME_TR
-LANG_LOG:
-  ug: UCHUR
-  tr: UCHUR_TR
-LANG_TRACE:
-  ug: IZLAR
-  tr: IZLAR_TR
-LANG_UNKNOWN:
-  ug: NAMELUM
-  tr: NAMELUM_TR
+
+# letter -> harf
+# string -> xet(tiziq)
+# word -> soz(kelime)
+# name -> isim
+# key -> achquch
 
 #  common
 LANG_ERR_INVALID_TYPE:
+  en: "found invalid type"
   ug: "inawetsiz tip uchritildi"
 LANG_ERR_INVALID_LTTR:
-  ug: "inawetsiz xet uchritildi"
+  en: "found invalid letter"
+  ug: "inawetsiz herip uchritildi"
 LANG_ERR_INVALID_WORD:
+  en: "found invalid word"
   ug: "inawetsiz soz uchritildi"
 LANG_ERR_INVALID_NAME:
+  en: "found invalid name"
   ug: "inawetsiz nam uchritildi"
 LANG_ERR_INVALID_NMBR:
+  en: "found invalid number"
   ug: "inawetsiz san uchritildi"
 LANG_ERR_INVALID_STRG:
+  en: "found invalid string"
   ug: "inawetsiz xet uchritildi"
 LANG_ERR_CANNOT_BE_FLOAT:
+  en: "can not be float number"
   ug: "parche san bolsa bolmaydu"
 
 #  tokenizer
 LANG_ERR_TOKENIZER_EXCEPTION:
+  en: "occured tokenizer exception"
   ug: "imla xataliqi kuruldi"
 LANG_ERR_TOKENIZER_INVALID_SIGN:
+  en: "found invalid sign"
   ug: "uchritilghan herip inawetsiz"
 LANG_ERR_TOKENIZER_INVALID_KEY:
-  ug: "achquch ismi inawetsiz"
+  en: "found invalid key"
+  ug: "uchritilghan achquch ismi inawetsiz"
 LANG_ERR_TOKENIZER_INVALID_BOX:
-  ug: "sanduq ismi inawetsiz"
+  en: "found invlaid box"
+  ug: "uchritilghan sanduq ismi inawetsiz"
 LANG_ERR_TOKENIZER_STRING_START_ERROR:
+  en: "string starting error"
   ug: "xet beshi xata"
 LANG_ERR_TOKENIZER_STRING_END_ERROR:
+  en: "string ending error"
   ug: "xet axiri xata"
 LANG_ERR_TOKENIZER_KEY_START_ERROR:
+  en: "key starting error"
   ug: "achquch beshi xata"
 LANG_ERR_TOKENIZER_KEY_END_ERROR:
+  en: "key ending error"
   ug: "achquch axiri xata"
 
 
 #  parser
 LANG_ERR_PARSER_EXCEPTION:
+  en: "occured parser exception"
   ug: "logika xataliqi kuruldi"
-LANG_ERR_PARSER_DESIRED_VALUE_NOT_FOUND:
-  ug: "keynidin umut qilinghan qimmet tepilmidi"
+LANG_ERR_PARSER_INVALID_VARIABLE:
+  en: "invalid desired value"
+  ug: "kutken qimmet inawetsiz"
 LANG_ERR_PARSER_INVALID_IF:
+  en: "found invalid if"
   ug: "eger jumlisi inawetsiz"
 LANG_ERR_PARSER_INVALID_CALCULATOR:
+  en: "found invalid calculator"
   ug: "hisablash jumlisi inawetsiz"
 
 
 # executer
 LANG_ERR_EXECUTER_EXCEPTION:
+  en: "occured executer exception"
   ug: "ijra xataliqi kuruldi"
+LANG_ERR_EXECUTER_STACK_OVERFLOW:
+  en: "occured stack overflow"
+  ug: "boshluq teship ketti"
 LANG_ERR_EXECUTER_NOT_IMPLEMENTED:
+  en: "execute not implemented"
   ug: "ijra qilish qollanmidi"
 LANG_ERR_EXECUTER_INVALID_STATE:
+  en: "found invalid state"
   ug: "ijra haliti inawetsiz"
-LANG_ERR_EXECUTER_EXP_INVALID_TYPE:
-  ug: "inawetsiz hisablash tipi"
-LANG_ERR_EXECUTER_KEY_INVALID_TOKEN:
+LANG_ERR_EXECUTER_INVALID_KEY:
+  en: "found invalid key"
   ug: "inawetsiz achquch uchritildi"
-# 
+LANG_ERR_EXECUTER_INVALID_NAME:
+  en: "found invalid name"
+  ug: "inawetsiz isim uchritildi"
+LANG_ERR_EXECUTER_INVALID_VARIABLE:
+  en: "found invalid variable"
+  ug: "inawetsiz miqdar uchritildi"
+LANG_ERR_EXECUTER_INVALID_BOX:
+  en: "found invalid box"
+  ug: "inawetsiz sanduq uchritildi"
+# calculate
 LANG_ERR_EXECUTER_CALCULATION_INVALID:
+  en: "found invalid calculation"
   ug: "hisablash meshghulati inawetsiz"
 LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN:
+  en: "found invalid calculation sign"
   ug: "hisablash belgisi qollanmidi"
 LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS:
+  en: "found invalid calculation args"
   ug: "hisablash miqtarliri qollanmidi"
-LANG_ERR_EXECUTER_CALCULATION_INVALID_STAT:
-  ug: "hisablash haliti inawetsiz"
 #
 LANG_ERR_EXECUTER_INVALID_DEVIDE:
+  en: "devider can not be zero"
   ug: "bolguchi san nol bolsa bolmaydu"
-LANG_ERR_EXECUTER_INVALID_NAME:
-  ug: "inawetsiz isim uchritildi"
-LANG_ERR_EXECUTER_INVALID_KEY:
-  ug: "inawetsiz achquch uchritildi"
-LANG_ERR_EXECUTER_INVALID_VARIABLE:
-  ug: "inawetsiz miqdar uchritildi"
+#
 LANG_ERR_EXECUTER_INVALID_IF:
+  en: "found invalid if"
   ug: "eger jumlisi inawetsiz"
 # 
 LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED:
+  en: "variable already defined"
   ug: "miqdar alliburun iniqlanghan"
 LANG_ERR_EXECUTER_VARIABLE_FAILURE_DEFINED:
+  en: "variable failure defined"
   ug: "miqdar muweppiqyetlik iniqlanmini"
 #
 LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND:
+  en: "target variable not found"
   ug: "nishanlanghan miqtar tepilmidi"
 LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND:
+  en: "target box not found"
   ug: "nishanlanghan sanduq tepilmidi"
 LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND:
+  en: "target runnable not found"
   ug: "nishanlanghan ijrachi tepilmidi"
+#
 LANG_ERR_EXECUTER_BRIDGE_INVALID_RESULT:
+  en: "bridge returned invalid result"
   ug: "kowruk qayturghan qimmet inawetsiz"
-LANG_ERR_EXECUTER_STACK_OVERFLOW:
-  ug: "saqlash boshluqi teship ketti"

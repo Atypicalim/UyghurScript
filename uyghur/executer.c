@@ -48,13 +48,13 @@ Executer *Executer_new(Uyghur *uyghur)
 void Executer_error(Executer *this, Token *token, char *msg)
 {
     char *m = msg != NULL ? msg : LANG_ERR_EXECUTER_EXCEPTION;
-    char *s = token == NULL ? LANG_UNKNOWN : format_token_place(token);
+    char *s = token == NULL ? UG_TAG_UNKNOWN : format_token_place(token);
     char *err = tools_format("Executer: %s, %s", m, s);
     if (this->isCatch) {
         this->errorMsg = err;
         longjmp(jump_buffer, 1);
     } else {
-        printf("[%s] => %s\n", LANG_ERR, err);
+        printf("[%s] => %s\n", PCT_TAG_ERROR, err);
         Debug_writeTrace(this->uyghur->debug);
         exit(1);
     }
@@ -170,7 +170,7 @@ void Executer_findValueByToken(Executer *this, Token *token, Container **rContai
         return;
     }
     // const
-    Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_KEY_INVALID_TOKEN);
+    Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_INVALID_KEY);
     Token *extra = (Token *)token->extra;
     if (is_eq_string(extra->value, SCOPE_ALIAS_PRG)) *rContainer = Executer_getCurrentGlobal(this, token);
     if (is_eq_string(extra->value, SCOPE_ALIAS_MDL)) *rContainer = Executer_getCurrentModule(this, token);
@@ -200,7 +200,7 @@ char *Executer_getLocationOfToken(Executer *this, Token *token)
         Value *value;
         Executer_findValueByLocation(this, location, &container, &value);
         pct_free(location);
-        Executer_assert(this, container!= NULL && value!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
+        Executer_assert(this, container!= NULL && value!= NULL, token, LANG_ERR_EXECUTER_INVALID_BOX);
         char *text = Value_toString(value);
         key = convert_string_to_location(text, value->type);
         pct_free(text);

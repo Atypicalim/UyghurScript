@@ -3,36 +3,6 @@
 #ifndef H_TOOLS
 #define H_TOOLS
 
-void tools_error(const char* msg, ...) {
-    va_list lst;
-    va_start(lst, msg);
-    printf("[%s] => ", LANG_ERR);
-    vfprintf(stdout, msg, lst);
-    printf("\n");
-    va_end(lst);
-    exit(1);
-}
-
-void tools_assert(bool value, const char *msg, ...)
-{
-    if (value == true) return;
-    va_list lst;
-    va_start(lst, msg);
-    printf("[%s] => ", LANG_ERR);
-    vfprintf(stdout, msg, lst);
-    printf("\n");
-    va_end(lst);
-    exit(1);
-}
-
-void tools_warning(const char* msg, ...) {
-    va_list lst;
-    va_start(lst, msg);
-    printf("[%s] => ", LANG_WAR);
-    vfprintf(stdout, msg, lst);
-    printf("\n");
-    va_end(lst);
-}
 
 double _toolsIntPart;
 bool tools_number_is_integer(double num)

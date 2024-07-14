@@ -187,6 +187,11 @@ const UG_PAIRS UG_WORDS_MAP[] = {
 #define CODE_FAIL -2
 
 // languages
+
+#define UG_TAG_LOG "~~~"
+#define UG_TAG_TRACE "---"
+#define UG_TAG_UNKNOWN "???"
+// 
 #define LANG_ERR_UYGHUR_EXCEPTION "programma xataliqi kuruldi"
 #define LANG_ERR_NO_INPUT_FILE "programma hojjiti tepilmidi"
 //
