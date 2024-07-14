@@ -26,7 +26,7 @@ tplYamlLineToken = """{{"{0}", "{1}"}},"""
 tmplYamlNameSize = "YAML_SIZE_{0}_{1}"
 tmplYamlNameConf = "YAML_CONF_{0}_{1}"
 # 
-tplYamlFilter = """    if (strend(tp, "{0}") == 0) {{return {1};}}"""
+tplYamlFilter = """    if (pct_cstr_ends_with(tp, "{0}") == 0) {{return {1};}}"""
 #
 tplYamlBody = """
 #define {0} {2}
@@ -85,8 +85,8 @@ def formatFilters(name, laguages):
         txtYamlNameSize = tmplYamlNameSize.format(name, lang) 
         txtYamlNameConf = tmplYamlNameConf.format(name, lang) 
         #
-        filterSize = tplYamlFilter.format(lang, txtYamlNameSize)
-        filterConf = tplYamlFilter.format(lang, txtYamlNameConf)
+        filterSize = tplYamlFilter.format(lang.lower(), txtYamlNameSize)
+        filterConf = tplYamlFilter.format(lang.lower(), txtYamlNameConf)
         filterSizes.append(filterSize)
         filterConfs.append(filterConf)
     _filterSizes = "\n".join(filterSizes)
@@ -158,7 +158,7 @@ task.setDebug(True)
 task.setInput('./main.c')
 task.setLibs([
     "incbin",
-    "string",
+    # "string",
     "raylib",
     "raygui",
 ])
@@ -170,6 +170,6 @@ task.addWarnings(False, [
     "attributes",
     "incompatible-pointer-types"
 ])
-task.addFlags([])
+# task.addFlags(["-I ../pure-c-tools/"])
 task.start()
 task.run()

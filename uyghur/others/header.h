@@ -18,8 +18,8 @@
 #include <limits.h>
 #include <setjmp.h>
 
-#define STDSTRING_IMPLEMENTATION
-#include "stdstring.h"
+// #define STDSTRING_IMPLEMENTATION
+// #include "stdstring.h"
 
 // 
 
@@ -35,18 +35,18 @@ typedef struct {
 
 // 
 
-#include "../../build/tokens.yaml.h"
-#include "../../build/languages.yaml.h"
-#include "constant.h"
-#include "tools.c"
-
-// 
-
 #define H_PCT_OBJECT_CALLBACKS
 void Object_initByType(char, void *);
 void Object_freeByType(char, void *);
 void Object_printByType(char, void *);
-#include "../tools/header.h"
+#include "../../../pure-c-tools/tools.h"
+
+// 
+
+#include "../../build/tokens.yaml.h"
+#include "../../build/languages.yaml.h"
+#include "constant.h"
+#include "tools.c"
 
 // value
 
