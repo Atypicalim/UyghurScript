@@ -233,6 +233,11 @@ void Object_freeByType(char type, void *object)
     pct_object_free_by_type(type, object);
 }
 
+void Object_printByType(char type, void *object)
+{
+    if (type == PCT_OBJ_VALUE) return Value_print(object);
+}
+
 // 
 
 bool helper_token_is_types_list(Token *token, int num, char *s, va_list valist)
@@ -284,13 +289,6 @@ bool helper_token_is_values(Token *token, int num, char *s, ...)
     va_list valist;
     va_start(valist, s);
     return helper_token_is_values_list(token, num, s, valist);
-}
-
-// 
-
-void Object_printByType(char type, void *object)
-{
-    if (type == PCT_OBJ_VALUE) return Value_print(object);
 }
 
 // printing
