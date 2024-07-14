@@ -226,20 +226,11 @@ void Object_initByType(char type, void *object)
 
 void Object_freeByType(char type, void *object)
 {
-    if (type == PCT_OBJ_OBJECT) return Object_free(object);
-    if (type == PCT_OBJ_STRING) return String_free(object);
-    if (type == PCT_OBJ_ARRAY) return Array_free(object);
-    if (type == PCT_OBJ_CURSOR) return Cursor_free(object);
-    if (type == PCT_OBJ_STACK) return Stack_free(object);
-    if (type == PCT_OBJ_QUEUE) return Queue_free(object);
-    if (type == PCT_OBJ_HASHKEY) return Hashkey_free(object);
-    if (type == PCT_OBJ_HASHMAP) return Hashmap_free(object);
-    if (type == PCT_OBJ_FOLIAGE) return Foliage_free(object);
-    if (type == PCT_OBJ_BLOCK) return Block_free(object);
     if (type == PCT_OBJ_VALUE) return Value_free(object);
     if (type == PCT_OBJ_CNTNR) return Container_free(object);
     if (type == PCT_OBJ_TOKEN) return Token_free(object);
     if (type == PCT_OBJ_LEAF) return Leaf_free(object);
+    pct_object_free_by_type(type, object);
 }
 
 // 
