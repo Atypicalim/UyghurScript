@@ -5,6 +5,16 @@
 # name -> isim
 # key -> achquch
 
+# tags
+LANG_TAG_DEBUG:
+  ug: SINAQ
+LANG_TAG_INFO:
+  ug: UCHUR
+LANG_TAG_WARN:
+  ug: AGAHLAN
+LANG_TAG_ERROR:
+  ug: XATALIQ
+
 #  common
 LANG_ERR_INVALID_TYPE:
   en: "found invalid type"

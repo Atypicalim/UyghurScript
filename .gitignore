@@ -3,3 +3,4 @@ build
 pure-lua-tools/
 my-build-tools/
 /*.exe
+/*.log
