@@ -9,7 +9,7 @@ int main(int argc, char const *argv[])
 {
     INCBIN(Script, "./build/uyghur.ug");
     //
-    log_set_file("./test.log", 0);
+    log_set_file("./test.log");
     log_set_level(0);
     log_set_color(true);
     log_set_quiet(false);
