@@ -60,19 +60,16 @@ TVALUE_OPPOSITE:
   ug: "ekische"
   tr: "karşı"
 
-TVALUE_OP_S_OUTPUT:
-  en: "to_console"
-  ug: "ikrangha"
-  tr: "ekrana"
-TVALUE_OP_E_OUTPUT:
+# 
+TVALUE_COMMAND:
+  en: "$command"
+  ug: "$buyruq"
+  tr: "$buyruk"
+TVALUE_CMD_OUTPUT:
   en: "write"
   ug: "yezilsun"
   tr: "yaz"
-TVALUE_OP_S_INPUT:
-  en: "from_console"
-  ug: "ikrandin"
-  tr: "ekrandan"
-TVALUE_OP_E_INPUT:
+TVALUE_CMD_INPUT:
   en: "read"
   ug: "oqulsun"
   tr: "oku"

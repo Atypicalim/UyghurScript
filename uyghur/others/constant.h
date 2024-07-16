@@ -40,7 +40,7 @@
 #define UG_ATYPE_WHL 'W'
 #define UG_ATYPE_EXC 'X'
 #define UG_ATYPE_CVT 'C'
-#define UG_ATYPE_OPRT '%'
+#define UG_ATYPE_CMD '%'
 #define UG_ATYPE_CLC '='
 
 // container type
@@ -82,8 +82,7 @@
 #define TVALUE_OPEN "("
 #define TVALUE_CLOSE ")"
 
-# define TVALUE_OP_BGN 2, TVALUE_OP_S_OUTPUT, TVALUE_OP_S_INPUT
-# define TVALUE_OP_END 2, TVALUE_OP_E_OUTPUT, TVALUE_OP_E_INPUT
+# define TVALUE_COMMANDS 2, TVALUE_CMD_OUTPUT, TVALUE_CMD_INPUT
 
 const UG_PAIRS UG_ALIAS_MAP[] = {
     // 
@@ -99,6 +98,9 @@ const UG_PAIRS UG_ALIAS_MAP[] = {
     {"ekische", TVALUE_SIGN_NOT},
     {"hemde", TVALUE_SIGN_AND},
     {"yaki", TVALUE_SIGN_ORR},
+    // 
+    {"ikrangha", TVALUE_COMMAND},
+    {"ikrandin", TVALUE_COMMAND},
 };
 
 const UG_PAIRS UG_WORDS_MAP[] = {
@@ -107,10 +109,9 @@ const UG_PAIRS UG_WORDS_MAP[] = {
     {TVALUE_MADE, 0},
     {TVALUE_CODE_END, 0},
     // 
-    {TVALUE_OP_S_OUTPUT, 0},
-    {TVALUE_OP_E_OUTPUT, 0},
-    {TVALUE_OP_S_INPUT, 0},
-    {TVALUE_OP_E_INPUT, 0},
+    {TVALUE_COMMAND, 0},
+    {TVALUE_CMD_OUTPUT, 0},
+    {TVALUE_CMD_INPUT, 0},
     // 
     {TVALUE_WHILE, 0},
     {TVALUE_IF, 0},

@@ -393,14 +393,13 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     Object_release(new);
 }
 
-void Executer_consumeOperate(Executer *this, Leaf *leaf)
+void Executer_consumeCommand(Executer *this, Leaf *leaf)
 {
     Cursor *cursor = Stack_reset(leaf->tokens);
     Token *action = Stack_next(leaf->tokens, cursor);
     Token *name = Stack_next(leaf->tokens, cursor);
-    Token *target = Stack_next(leaf->tokens, cursor);
     Cursor_free(cursor);
-    if (is_eq_string(target->value, TVALUE_OP_S_OUTPUT) && is_eq_string(action->value, TVALUE_OP_E_OUTPUT))
+    if (is_eq_string(action->value, TVALUE_CMD_OUTPUT))
     {
         Value *value = NULL;
         if (!Token_isString(name) && helper_token_is_values(name, TVAUES_GROUP_UTYPES)) {
@@ -420,7 +419,7 @@ void Executer_consumeOperate(Executer *this, Leaf *leaf)
         if (Value_isContainer(value)) Container_print(value->object);
         if (value != NULL) Object_release(value);
     }
-    else if (is_eq_string(target->value, TVALUE_OP_S_INPUT) && is_eq_string(action->value, TVALUE_OP_E_INPUT))
+    else if (is_eq_string(action->value, TVALUE_CMD_INPUT))
     {
         char line[1024];
         scanf(" %[^\n]", line);
@@ -821,10 +820,10 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
         Executer_consumeVariable(this, leaf);
         return;
     }
-    // operate
-    if (tp == UG_ATYPE_OPRT)
+    // command
+    if (tp == UG_ATYPE_CMD)
     {
-        Executer_consumeOperate(this, leaf);
+        Executer_consumeCommand(this, leaf);
         return;
     }
     // expression

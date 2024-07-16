@@ -193,22 +193,24 @@ void Parser_consumeAstVariable(Parser *this)
     Parser_pushLeaf(this, UG_ATYPE_VAR, 2, name, token);
 }
 
-void Parser_consumeAstOperate(Parser *this)
+void Parser_consumeAstCommand(Parser *this)
 {
-    Token *target = Parser_checkWord(this, 0, TVALUE_OP_BGN);
-    Token *name = NULL;
-    Token *action = NULL;
-    if (is_eq_string(this->token->value, TVALUE_OP_S_OUTPUT)) {
-        name = Parser_moveToken(this, 1); 
+    Token *target = Parser_checkWord(this, 0, 1, TVALUE_COMMAND);
+    Token *name = Parser_moveToken(this, 1); 
+    Token *action = Parser_checkWord(this, 1, TVALUE_COMMANDS);
+    Token_print(target);
+    Token_print(name);
+    Token_print(action);
+    if (is_eq_string(action->value, TVALUE_CMD_OUTPUT)) {
         if (!helper_token_is_values(name, TVAUES_GROUP_UTYPES) && !helper_token_is_types(name, TTYPES_GROUP_VALUES)) {
             Parser_error(this, LANG_ERR_INVALID_TYPE);
         }
-        action = Parser_checkWord(this, 1, 1, TVALUE_OP_E_OUTPUT);
-    } else if (is_eq_string(this->token->value, TVALUE_OP_S_INPUT)) {
-        name = Parser_checkType(this, 1, 2, UG_TTYPE_NAM, UG_TTYPE_KEY);
-        action = Parser_checkWord(this, 1, 1, TVALUE_OP_E_INPUT);
+    } else if (is_eq_string(action->value, TVALUE_CMD_INPUT)) {
+        if (!helper_token_is_types(name, 2, UG_TTYPE_NAM, UG_TTYPE_KEY)) {
+            Parser_error(this, LANG_ERR_INVALID_TYPE);
+        }
     }
-    Parser_pushLeaf(this, UG_ATYPE_OPRT, 3, target, name, action);
+    Parser_pushLeaf(this, UG_ATYPE_CMD, 2, name, action);
 }
 
 void Parser_consumeAstConvert(Parser *this)
@@ -536,10 +538,10 @@ void Parser_consumeToken(Parser *this, Token *token)
         Parser_consumeAstCalculator(this);
         return;
     }
-    // OPERATE
-    if (is_eq_string(t, UG_TTYPE_WRD) && is_eq_strings(v, TVALUE_OP_BGN))
+    // command
+    if (is_eq_string(t, UG_TTYPE_WRD) && is_eq_string(v, TVALUE_COMMAND))
     {
-        Parser_consumeAstOperate(this);
+        Parser_consumeAstCommand(this);
         return;
     }
     //
