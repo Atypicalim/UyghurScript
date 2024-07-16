@@ -180,5 +180,5 @@ LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND:
 #
 LANG_ERR_EXECUTER_BRIDGE_INVALID_RESULT:
   en: "bridge returned invalid result"
-  ug: "kowruk qayturghan qimmet inawetsiz"
-  tr: "köprü döndürülen kıymet geçersiz"
+  ug: "kowruk qayturghan netije inawetsiz"
+  tr: "köprü geriverılen netice geçersiz"

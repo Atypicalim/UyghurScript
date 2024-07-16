@@ -1,68 +1,125 @@
 
 #
 TVALUE_EMPTY:
+  en: "empty"
   ug: "quruq"
-  tr: "quruq_tr"
+  tr: "boş"
 TVALUE_LOGIC:
+  en: "logic"
   ug: "logika"
+  tr: "mantık"
 TVALUE_NUM:
+  en: "num"
   ug: "san"
+  tr: "sayı"
 TVALUE_STR:
+  en: "str"
   ug: "xet"
+  tr: "dize"
 TVALUE_BOX:
+  en: "box"
   ug: "sanduq"
+  tr: "sandık"
 #
 TVALUE_WHILE:
+  en: "while"
   ug: "nawada"
+  tr: "nawada"
 TVALUE_IF:
+  en: "if"
   ug: "eger"
+  tr: "eğer"
 TVALUE_IF_ELSE:
+  en: "elif"
   ug: "egerde"
-TVALUE_IF_OK:
+  tr: "eğerde"
+TVALUE_THEN:
+  en: "then"
   ug: "bolsa"
-TVALUE_IF_NO:
+  tr: "olsa"
+TVALUE_ELSE:
+  en: "else"
   ug: "bolmisa"
+  tr: "olmasa"
 TVALUE_CODE_END:
+  en: "finish"
   ug: "tamamlansun"
+  tr: "tamamlansin"
 
 #
 TVALUE_TRUE:
+  en: "true"
   ug: "rast"
+  tr: "gerçek"
 TVALUE_FALSE:
+  en: "false"
   ug: "yalghan"
-TVALUE_NOT:
+  tr: "yanlış"
+TVALUE_OPPOSITE:
+  en: "opposite"
   ug: "ekische"
+  tr: "karşı"
 
 TVALUE_OP_S_OUTPUT:
+  en: "to_console"
   ug: "ikrangha"
+  tr: "ekrana"
 TVALUE_OP_E_OUTPUT:
+  en: "write"
   ug: "yezilsun"
+  tr: "yaz"
 TVALUE_OP_S_INPUT:
+  en: "from_console"
   ug: "ikrandin"
+  tr: "ekrandan"
 TVALUE_OP_E_INPUT:
+  en: "read"
   ug: "oqulsun"
+  tr: "oku"
 #
 TVALUE_VARIABLE:
+  en: "variable"
   ug: "miqdar"
+  tr: "değişken"
 TVALUE_VALUE:
+  en: "value"
   ug: "qimmiti"
+  tr: "kıymeti"
 TVALUE_MADE:
+  en: "made"
   ug: "bolsun"
+  tr: "olsun"
 # 
 TVALUE_EXCEPTION:
+  en: "exception"
   ug: "xataliq"
+  tr: "hatalık"
 # 
 TVALUE_FUNCTION:
+  en: "function"
   ug: "fonkisiye"
+  tr: "fonksiyon"
 TVALUE_CONTENT:
+  en: "content"
   ug: "mezmuni"
+  tr: "mezmuni"
 TVALUE_WITH:
+  en: "with"
   ug: "bilen"
+  tr: "ile"
 TVALUE_CALL:
+  en: "applied"
   ug: "ishlitilsun"
+  tr: "kullanılsın"
 TVALUE_RETURN:
+  en: "returned"
   ug: "qayturulsun"
+  tr: "geriverılsın"
 TVALUE_FURTHER:
+  en: "and"
   ug: "we"
+  tr: "ve"
 TVALUE_RESULT:
+  en: "result"
   ug: "netije"
+  tr: "netice"

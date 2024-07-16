@@ -104,7 +104,7 @@ ikrangha a yezilsun
 ```powershell
 eger 0 bolsa
     ikrangha [if] yezilsun
-egerde rast bolmisa
+egerde rast bosa
     ikrangha [elif] yezilsun
 bolmisa
     ikrangha [else] yezilsun

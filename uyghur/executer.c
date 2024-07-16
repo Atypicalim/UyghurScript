@@ -445,7 +445,7 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
             // TODO free object
             r = Value_newEmpty(NULL);
         }
-        else if (is_eq_string(act, TVALUE_NOT))
+        else if (is_eq_string(act, TVALUE_OPPOSITE))
         {
             if (value->type == UG_TYPE_NUM)
             {
@@ -524,7 +524,7 @@ bool Executer_checkJudge(Executer *this, Leaf *leaf)
         resultV = Executer_calculateValues(this, firstV, clcltn, secondV);
     }
     // 
-    bool shouldOk = is_eq_string(judge->value, TVALUE_IF_OK);
+    bool shouldOk = is_eq_string(judge->value, TVALUE_THEN);
     bool isOk = Value_isTrue(resultV);
     // 
     if (firstV != NULL) Object_release(firstV);
@@ -567,9 +567,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     if (ifNode->type == UG_ATYPE_IF_L)
     {
         Cursor *cursor2 = Stack_reset(ifNode->tokens);
-        Token *judge = Stack_next(ifNode->tokens, cursor2);
+        Token *token = Stack_next(ifNode->tokens, cursor2);
         Cursor_free(cursor2);
-        tools_assert(is_eq_string(judge->value, TVALUE_IF_NO), LANG_ERR_EXECUTER_INVALID_IF);
+        tools_assert(is_eq_string(token->value, TVALUE_ELSE), LANG_ERR_EXECUTER_INVALID_IF);
         if (!isFinish)
         {
             Executer_pushContainer(this, UG_CTYPE_SCP);

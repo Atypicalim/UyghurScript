@@ -240,10 +240,10 @@ void Parser_consumeAstJudge(Parser *this, char aType)
     if (Parser_isType(this, 1, UG_TTYPE_CLC)) {
         Token *clcltn = Parser_checkType(this, 1, 1, UG_TTYPE_CLC);
         Token *second = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
-        Token *action = Parser_checkWord(this, 1, 2, TVALUE_IF_OK, TVALUE_IF_NO);
+        Token *action = Parser_checkWord(this, 1, 2, TVALUE_THEN, TVALUE_ELSE);
         Parser_pushLeaf(this, aType, 4, second, clcltn, first, action);
     } else {
-        Token *action = Parser_checkWord(this, 1, 2, TVALUE_IF_OK, TVALUE_IF_NO);
+        Token *action = Parser_checkWord(this, 1, 2, TVALUE_THEN, TVALUE_ELSE);
         Parser_pushLeaf(this, aType, 2, first, action);
     }
 }
@@ -279,7 +279,7 @@ void Parser_consumeAstIfLast(Parser *this)
     Parser_assert(this, curType == UG_ATYPE_IF_F || curType == UG_ATYPE_IF_M, LANG_ERR_PARSER_INVALID_IF);
     Parser_closeBranch(this);
     // open UG_ATYPE_IF_L
-    Token *token = Parser_checkWord(this, 0, 1, TVALUE_IF_NO);
+    Token *token = Parser_checkWord(this, 0, 1, TVALUE_ELSE);
     Parser_pushLeaf(this, UG_ATYPE_IF_L, 1, token);
     Parser_openBranch(this);
 }
@@ -507,7 +507,7 @@ void Parser_consumeToken(Parser *this, Token *token)
         return;
     }
     // IF_LAST
-    if (is_eq_string(v, TVALUE_IF_NO))
+    if (is_eq_string(v, TVALUE_ELSE))
     {
         Parser_consumeAstIfLast(this);
         return;
