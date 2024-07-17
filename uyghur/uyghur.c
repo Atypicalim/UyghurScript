@@ -30,7 +30,7 @@ Uyghur *Uyghur_new()
 
 Value *Uyghur_runCode(Uyghur *this, char *code, char *path)
 {
-    if (path == NULL) path = "*.ug";
+    if (path == NULL) path = UG_SCRIPT_NAME;
     utils_set_languages(this, path);
     utils_add_tokens(this, path);
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);

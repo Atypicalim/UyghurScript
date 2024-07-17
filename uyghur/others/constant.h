@@ -1,8 +1,5 @@
 // constant
 
-#define UG_VERSION_NAME "0.1" 
-#define UG_VERSION_CODE 0.1 
-
 // common type
 #define UG_TYPE_NON '?'
 #define UG_TYPE_NIL '~'

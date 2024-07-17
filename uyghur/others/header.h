@@ -43,8 +43,9 @@ void Object_printByType(char, void *);
 
 // 
 
-#include "../../build/tokens.yaml.h"
-#include "../../build/languages.yaml.h"
+#include "../../build/tokens.h"
+#include "../../build/languages.h"
+#include "../../build/configs.h"
 #include "constant.h"
 #include "tools.c"
 

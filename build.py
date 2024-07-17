@@ -4,15 +4,19 @@ import yaml
 sys.path.append('../my-build-tools/')
 
 from builder import builder
-
 tools = builder.tools
 
+###############################################################################
+
+VERSION_CODE = 0.2
 SCRIPT_PATH = "./examples/yuguresh.ug"
+SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
+
+###############################################################################
 
 DST_DIR = "./build/"
-DST_NAME = "uyghur"
-DST_ALIAS = DST_DIR + DST_NAME
-DST_SCRIPT = DST_ALIAS + ".ug"
+DST_ALIAS = DST_DIR + "script"
+DST_SCRIPT = DST_ALIAS + "." + SCRIPT_EXT
 
 ###############################################################################
 
@@ -123,21 +127,45 @@ def _onMacro(arg1, arg2, arg3, arg4):
 
 # languages
 bldr = builder.code()
-bldr.setInput("./uyghur/others/languages.yaml.h")
+bldr.setInput("./uyghur/others/languages.tpl.h")
 bldr.setComment("//")
-bldr.setOutput(DST_DIR + "languages.yaml.h")
+bldr.setOutput(DST_DIR + "languages.h")
 bldr.onMacro(_onMacro(langaugeVariables, languageBodies, languageFilterSize, languageFilterConf))
 bldr.onLine(lambda line: line)
 bldr.start()
 
 # tokens
 bldr = builder.code()
-bldr.setInput("./uyghur/others/tokens.yaml.h")
+bldr.setInput("./uyghur/others/tokens.tpl.h")
 bldr.setComment("//")
-bldr.setOutput(DST_DIR + "tokens.yaml.h")
+bldr.setOutput(DST_DIR + "tokens.h")
 bldr.onMacro(_onMacro(tokenVariables, tokenBodies, tokenFilterSize, tokenFilterConf))
 bldr.onLine(lambda line: line)
 bldr.start()
+
+###############################################################################
+
+def _onMacro():
+    def onMacro(code, command, argument = None):
+        if command == "VERSION_CODE":
+            return code.format(VERSION_CODE)
+        elif command == "VERSION_NAME":
+            return code.format(VERSION_CODE)
+        elif command == "SCRIPT_PATH":
+            return code.format(DST_SCRIPT)
+        elif command == "SCRIPT_NAME":
+            return code.format("*." + SCRIPT_EXT)
+    return onMacro
+
+# configs
+bldr = builder.code()
+bldr.setInput("./uyghur/others/configs.tpl.h")
+bldr.setComment("//")
+bldr.setOutput(DST_DIR + "configs.h")
+bldr.onMacro(_onMacro())
+bldr.onLine(lambda line: line)
+bldr.start()
+
 
 ###############################################################################
 
