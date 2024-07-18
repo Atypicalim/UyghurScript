@@ -9,7 +9,7 @@ tools = builder.tools
 ###############################################################################
 
 VERSION_CODE = 0.2
-SCRIPT_PATH = "./examples/yuguresh.ug"
+SCRIPT_PATH = "./examples/sınav.tr"
 SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
 
 ###############################################################################
@@ -187,6 +187,7 @@ task.setInput('./main.c')
 task.setLibs([
     "incbin",
     # "string",
+    "utf8",
     "raylib",
     "raygui",
 ])
