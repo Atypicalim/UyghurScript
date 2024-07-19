@@ -36,12 +36,12 @@ Value *Uyghur_runCode(Uyghur *this, char *code, char *path)
     utils_add_tokens(this, path);
     log_warn("uyghur·tokenize");
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
-    // log_warn("uyghur·parse");
-    // Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
-    // log_warn("uyghur·execute");
-    // Value *moduleBox = Executer_executeTree(this->executer, path, headLeaf);
-    // log_warn("uyghur·runned!");
-    // return moduleBox;
+    log_warn("uyghur·parse");
+    Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
+    log_warn("uyghur·execute");
+    Value *moduleBox = Executer_executeTree(this->executer, path, headLeaf);
+    log_warn("uyghur·runned!");
+    return moduleBox;
     return NULL;
 }
 
@@ -49,7 +49,9 @@ Value *Uyghur_runPath(Uyghur *this, char *path)
 {
     char *code = file_read(path);
     if (code == NULL) return NULL;
-    return Uyghur_runCode(this, code, path);
+    Value *value = Uyghur_runCode(this, code, path);
+    free(code);
+    return value;
 }
 
 Value *Uyghur_runArgs(Uyghur *this, int argc, char const *argv[])

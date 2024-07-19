@@ -810,7 +810,7 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
     char tp = leaf->type;
-    log_debug("executer·next: %s", tp);
+    log_debug("executer·next: %c", tp);
     // throwing
     if (setjmp(jump_buffer) != 0 || (this->errorMsg != NULL && tp != UG_ATYPE_EXC)) {
         return;

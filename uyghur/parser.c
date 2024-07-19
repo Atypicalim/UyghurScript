@@ -199,9 +199,6 @@ void Parser_consumeAstCommand(Parser *this)
     Token *target = Parser_checkWord(this, 0, 1, TVALUE_COMMAND);
     Token *name = Parser_moveToken(this, 1); 
     Token *action = Parser_checkWord(this, 1, TVALUE_COMMANDS);
-    Token_print(target);
-    Token_print(name);
-    Token_print(action);
     if (is_eq_string(action->value, TVALUE_CMD_OUTPUT)) {
         if (!helper_token_is_values(name, TVAUES_GROUP_UTYPES) && !helper_token_is_types(name, TTYPES_GROUP_VALUES)) {
             Parser_error(this, LANG_ERR_INVALID_TYPE);

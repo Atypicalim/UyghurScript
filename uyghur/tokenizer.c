@@ -252,11 +252,13 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
     utf8_iter ITER;
     utf8_init(this->iterStatic, code);
     utf8_init(this->iterDynamic, code);
+    utf8_next(this->iterStatic);
+    utf8_next(this->iterDynamic);
     while (this->iterStatic->next < this->iterStatic->length) {
         UCHAR _currentChar = Tokenizer_getchar(this, 0);
         if (!currentChar) free_uchar(currentChar);
         currentChar = clone_uchar(_currentChar);
-        log_debug("tokenizer·next:%d %u %s", this->iterStatic->position, this->iterStatic->codepoint, currentChar);
+        // log_debug("tokenizer·next:%d %u [%s]", this->iterStatic->position, this->iterStatic->codepoint, currentChar);
         // empty
         if (is_space(currentChar) || is_cntrl(currentChar))
         {
@@ -420,6 +422,16 @@ void Tokenizer_free(Tokenizer *this)
         Token_free(current);
         current = temp;
     }
+    //
+    if (this->iterStatic) {
+        this->iterStatic->ptr = NULL;
+        free(this->iterStatic);
+    }
+    if (this->iterDynamic) {
+        this->iterDynamic->ptr = NULL;
+        free(this->iterDynamic);
+    }
+    // 
     if (this->aliasMap != NULL)
     {
         Object_release(this->aliasMap);
@@ -430,6 +442,7 @@ void Tokenizer_free(Tokenizer *this)
         Object_release(this->wordsMap);
         this->wordsMap = NULL;
     }
+    //
     this->uyghur = NULL;
     Tokenizer_reset(this);
     free(this);

@@ -17,6 +17,7 @@ int main(int argc, char const *argv[])
     log_set_color(true);
     log_set_quiet(false);
     // 
+    popen("chcp 65001", "r");
     setlocale(LC_ALL, "en_US.utf8");
     printf("-----------------------------\n");
 
