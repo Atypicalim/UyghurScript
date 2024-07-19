@@ -191,6 +191,11 @@ task.setLibs([
     "raylib",
     "raygui",
 ])
+task.addLib("utf8iter", {
+    "URL": "git@github.com:adrianwk94/utf8-iterator.git",
+    "BRANCH": "master",
+    "DIR_I": "./source/",
+})
 task.setOutput(DST_ALIAS)
 # task.setIcon('./resources/icon.ico')
 task.addWarnings(False, [

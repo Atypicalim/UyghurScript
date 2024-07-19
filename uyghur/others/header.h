@@ -18,6 +18,9 @@
 #include <limits.h>
 #include <setjmp.h>
 
+#include "utf8.h"
+#include "utf-8.c"
+
 // #define STDSTRING_IMPLEMENTATION
 // #include "stdstring.h"
 
@@ -28,6 +31,7 @@ bool isTest = false;
 #define MAX_TRACE_SIZE 5
 
 typedef char* UG_NAMES;
+typedef const char* UCHAR;
 typedef struct {
     const char* key;
     const char* val;
@@ -108,6 +112,8 @@ typedef struct _Tokenizer {
     Token *tail;
     Hashmap *aliasMap;
     Hashmap *wordsMap;
+    utf8_iter *iterStatic;
+    utf8_iter *iterDynamic;
  } Tokenizer;
 
 typedef struct Parser Parser;

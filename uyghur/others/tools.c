@@ -25,10 +25,57 @@ bool is_eq_string(char *this, char* other)
     return strcmp(this, other) == 0;
 }
 
-bool is_eq_character(char *str, char ch)
+bool is_eq_to_char(char *str, char c)
 {
-    return strlen(str) == 1 && str[0] == ch;
+    return strlen(str) == 1 && str[0] == c;
 }
+
+bool is_eq_to_uchar(char *str, UCHAR ch)
+{
+    return utf8cmp(str, ch) == 0;
+}
+
+////////////////////////////////////////////////////////////////////////
+
+bool is_uchar_eq_char(UCHAR ch, char c) {
+    if (ch[1] != '\0') return false;
+    return ch[0] == c;
+}
+
+bool is_char_eq_char(char c1, char c2) {
+    return c1 == c2;
+}
+
+bool is_uchar_eq_uchar(UCHAR ch1, UCHAR ch2) {
+    return utf8cmp(ch1, ch2) == 0;
+}
+
+bool is_space(UCHAR uChar) {
+    if (uChar[1] != '\0') return false;
+    return !!isspace(uChar[0]);
+}
+
+bool is_cntrl(UCHAR uChar) {
+    if (uChar[1] != '\0') return false;
+    return !!iscntrl(uChar[0]);
+}
+
+bool is_alnum(UCHAR uChar) {
+    if (uChar[1] != '\0') return false;
+    return !!isalnum(uChar[0]);
+}
+
+bool is_alpha(UCHAR uChar) {
+    if (uChar[1] != '\0') return false;
+    return !!isalpha(uChar[0]);
+}
+
+bool is_digit(UCHAR uChar) {
+    if (uChar[1] != '\0') return false;
+    return !!isdigit(uChar[0]);
+}
+
+////////////////////////////////////////////////////////////////////////
 
 bool is_eq_strings(char *target, int num, char *s, ...)
 {
@@ -53,89 +100,113 @@ bool is_eq_characters(char target, int num, char *s, ...)
     va_start(valist, s);
     for (i = 0; i < num; i++)
     {
-        if (is_eq_character(s, target)) return true;
+        if (is_eq_to_char(s, target)) return true;
         s = va_arg(valist, char *);
     }
     va_end(valist);
     return false;
 }
 
-bool is_number_begin(char c, char n)
+bool is_number_begin(UCHAR c, UCHAR n)
 {
-    if (isdigit(c)) return true;
-    if ((c == '+' || c == '-') && isdigit(n)) return true;
+    if (is_digit(c)) return true;
+    if ((is_uchar_eq_uchar(c, SIGN_ADD) || is_uchar_eq_uchar(c, SIGN_SUB)) && is_digit(n)) return true;
     return false;
 
 }
 
-bool is_number_body(char c)
+bool is_number_body(UCHAR c)
 {
-    return isdigit(c) || c == '.';
+    return is_digit(c) || is_uchar_eq_char(c, '.');
 }
 
-bool is_letter_begin(char c, char n)
+bool is_letter_begin(UCHAR c, UCHAR n)
 {
-    if (isalpha(c)) return true;
-    if ((c == '_' || c == '$') && isalpha(n)) return true;
+    if (is_alpha(c)) return true;
+    if ((is_uchar_eq_char(c, '_') || is_uchar_eq_char(c, '$')) && is_alpha(n)) return true;
     return false;
 }
 
-bool is_letter_body(char c)
+bool is_letter_body(UCHAR c)
 {
-    return isalnum(c) || c == '_';
+    return is_alnum(c) || is_uchar_eq_char(c, '_');
 }
 
 bool is_letter_valid(const char* str)
 {
-    char c;
-    char n;
+    UCHAR c;
+    UCHAR n;
     for (int i = 0; str[i] != '\0'; i++) {
-        c = str[i];
-        n = str[i + 1];
+        c = ""; // str[i];
+        n = ""; // str[i + 1];
         if (i == 0 && !is_letter_begin(c, n)) return false;
         if (i != 0 && !is_letter_body(c)) return false;
     }
     return true;
 }
 
-bool is_string_open(char c) {
-    return c == '[';
+bool is_string_open(UCHAR c) {
+    return is_uchar_eq_char(c, '[');
 }
 
-bool is_string_body(char c) {
-    return c != '[' && c != ']';
+bool is_string_body(UCHAR c) {
+    return !is_uchar_eq_char(c, '[') && !is_uchar_eq_char(c, ']');
 }
 
-bool is_string_close(char c) {
-    return c == ']';
+bool is_string_close(UCHAR c) {
+    return is_uchar_eq_char(c, ']');
 }
 
-char convert_border_pair(char c) {
-    if (c == '{') return '}';
-    if (c == '}') return '{';
-    if (c == '[') return ']';
-    if (c == ']') return '[';
-    if (c == '(') return ')';
-    if (c == ')') return '(';
-    return ' ';
+UCHAR convert_border_pair(UCHAR c) {
+    char r = ' ';
+    switch (c[0])
+    {
+    case '{':
+        r = '}';
+        break;
+    case '}':
+        r = '{';
+        break;
+    case '[':
+        r = ']';
+        break;
+    case ']':
+        r = '[';
+        break;
+    case '(':
+        r = ')';
+        break;
+    case ')':
+        r = '(';
+        break;
+    default:
+        break;
+    }
+    char *s = " ";
+    s[0] = r;
+    return s;
 }
 
-bool is_border_open(char c) {
-    return c == '{' || c == '[' || c == '(';
+bool is_border_open(UCHAR c) {
+    // return c == '{' || c == '[' || c == '(';
+    return false;
 }
 
-bool is_border_close(char c) {
-    return c == '}' || c == ']' || c == ')';
+bool is_border_close(UCHAR c) {
+    // return c == '}' || c == ']' || c == ')';
+    return false;
 }
 
-bool is_calculator(char c)
+bool is_calculator(UCHAR c)
 {
-    return c == '=';
+    // return c == '=';
+    return false;
 }
 
-bool is_scope(char c)
+bool is_scope(UCHAR c)
 {
-    return c == '*' || c == '+' || c == '-';
+    // return c == '*' || c == '+' || c == '-';
+    return false;
 }
 
 // 
@@ -157,44 +228,54 @@ int p2i(void* value){
     return *((int*) value);
 }
 
-char decode_escape(char c)
+UCHAR decode_escape(UCHAR c)
 {
-    switch (c)
+    char r = ' ';
+    switch (c[0])
     {
     case '[':
-        return '[';
+        r = '[';
         break;
     case ']':
-        return ']';
+        r = ']';
         break;
     case '\\':
-        return '\\';
+        r = '\\';
         break;
     case 'n':
-        return '\n';
+        r = '\n';
         break;
     case 'a':
-        return '\a';
+        r = '\a';
         break;
     case 'b':
-        return '\b';
+        r = '\b';
         break;
     case 'f':
-        return '\f';
+        r = '\f';
         break;
     case 'v':
-        return '\v';
+        r = '\v';
         break;
     case 'r':
-        return '\r';
+        r = '\r';
         break;
     case 't':
-        return '\t';
+        r = '\t';
         break;
     default:
-        return '\0';  
         break;
-    }       
+    }
+    bool valid = r != ' ';
+    int size = valid ? 1 : 2;
+    char *s = (char*) malloc(sizeof(char) * size);
+    if (valid) {
+        s[0] = r;
+        s[1] = '\n';
+    } else {
+        s[0] = '\n';
+    }
+    return s;
 }
 
 #endif

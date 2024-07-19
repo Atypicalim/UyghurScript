@@ -11,6 +11,31 @@
 #define UG_TYPE_NTV '#'
 #define UG_TYPE_CNT '@'
 
+// sign values
+#define SIGN_LINE "\n"
+#define SIGN_CARRIAGE "\r"
+#define SIGN_TERMINATE "\0"
+#define SIGN_ESCAPE "\\"
+#define SIGN_SLASH "/"
+#define SIGN_LOCK "#"
+#define SIGN_DOT "0"
+#define SIGN_AT "@"
+#define SIGN_EQ "="
+// 
+#define SIGN_ADD "+"
+#define SIGN_SUB "-"
+#define SIGN_MUL "*"
+#define SIGN_DIV "/"
+#define SIGN_POW "^"
+// 
+#define SIGN_OPEN_SMALL "("
+#define SIGN_CLOSE_SMALL ")"
+#define SIGN_OPEN_MIDDLE "{"
+#define SIGN_CLOSE_MIDDLE "}"
+#define SIGN_OPEN_BIG "["
+#define SIGN_CLOSE_BIG "]"
+#define SIGN_ ""
+
 // token type
 #define UG_TTYPE_NAM "NAM"
 #define UG_TTYPE_KEY "KEY"
@@ -194,5 +219,5 @@ const UG_PAIRS UG_WORDS_MAP[] = {
 #define LANG_ERR_NO_INPUT_FILE "programma hojjiti tepilmidi"
 //
 #define LANG_ERR_SOME_PLACE "hojjet:[%s], qur:[%d], qatar:[%d]"
-#define LANG_ERR_SIGN_PLACE LANG_ERR_SOME_PLACE ", herip:[%c]"
+#define LANG_ERR_SIGN_PLACE LANG_ERR_SOME_PLACE ", herip:[%s]"
 #define LANG_ERR_TOKEN_PLACE LANG_ERR_SOME_PLACE ", belge:[%s]"

@@ -131,32 +131,32 @@ bool is_bridge_type(char tp)
     return is_base_type(tp) || tp == UG_TYPE_CNT || tp == UG_TYPE_FUN;
 }
 
-bool is_calculator_common(char c)
+bool is_calculator_common(UCHAR c)
 {
-    return is_eq_characters(c, TVAUE_GROUP_CALCULATION_ALL);
+    return is_eq_strings(c, TVAUE_GROUP_CALCULATION_ALL);
 }
 
-bool is_calculation_number(char c)
+bool is_calculation_number(UCHAR c)
 {
-    return is_eq_characters(c, TVAUE_GROUP_CALCULATION_NUM);
+    return is_eq_strings(c, TVAUE_GROUP_CALCULATION_NUM);
 }
 
-bool is_calculation_bool(char c)
+bool is_calculation_bool(UCHAR c)
 {
-    return is_eq_characters(c, TVAUE_GROUP_CALCULATION_BOL);
+    return is_eq_strings(c, TVAUE_GROUP_CALCULATION_BOL);
 }
 
-bool is_calculation_string(char c)
+bool is_calculation_string(UCHAR c)
 {
-    return is_eq_characters(c, TVAUE_GROUP_CALCULATION_STR);
+    return is_eq_strings(c, TVAUE_GROUP_CALCULATION_STR);
 }
 
-bool is_calculation_logicals(char c)
+bool is_calculation_logicals(UCHAR c)
 {
-    return is_eq_characters(c, TVAUE_GROUP_CALCULATION_ALL) || is_eq_characters(c, TVAUE_GROUP_CALCULATION_BOL);
+    return is_eq_strings(c, TVAUE_GROUP_CALCULATION_ALL) || is_eq_strings(c, TVAUE_GROUP_CALCULATION_BOL);
 }
 
-bool is_calculation_char(char c)
+bool is_calculation_char(UCHAR c)
 {
     return is_calculator_common(c) || is_calculation_number(c) || is_calculation_bool(c) || is_calculation_string(c);
 }
