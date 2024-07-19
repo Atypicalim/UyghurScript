@@ -49,12 +49,12 @@ void Executer_error(Executer *this, Token *token, char *msg)
 {
     char *m = msg != NULL ? msg : LANG_ERR_EXECUTER_EXCEPTION;
     char *s = token == NULL ? UG_TAG_UNKNOWN : format_token_place(token);
-    char *err = tools_format("Executer: %s, %s", m, s);
+    char *err = tools_format("%s, %s", m, s);
     if (this->isCatch) {
         this->errorMsg = err;
         longjmp(jump_buffer, 1);
     } else {
-        printf("[%s] => %s\n", PCT_TAG_ERROR, err);
+        log_error("Executer: %s, %s", m, s);
         Debug_writeTrace(this->uyghur->debug);
         exit(1);
     }
@@ -810,6 +810,7 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
     char tp = leaf->type;
+    log_debug("executer·next: %s", tp);
     // throwing
     if (setjmp(jump_buffer) != 0 || (this->errorMsg != NULL && tp != UG_ATYPE_EXC)) {
         return;
@@ -886,10 +887,8 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
         return;
     }
     //
-    printf("--->\n");
+    log_error("executer·error: %s", tp);
     helper_print_leaf(leaf, " ");
-    printf("--->\n");
-    //
     tools_error("%s:[%c]", LANG_ERR_EXECUTER_NOT_IMPLEMENTED, tp);
 }
 

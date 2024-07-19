@@ -77,6 +77,18 @@ bool is_digit(UCHAR uChar) {
 
 ////////////////////////////////////////////////////////////////////////
 
+UCHAR clone_uchar(UCHAR ch) {
+    char *_ch = malloc(sizeof(char) * 10);
+    strcpy(_ch, ch);
+    return _ch;
+}
+
+bool free_uchar(UCHAR _ch) {
+    free(_ch);
+}
+
+////////////////////////////////////////////////////////////////////////
+
 bool is_eq_strings(char *target, int num, char *s, ...)
 {
     tools_assert(target != NULL, "invalid target in is values");
@@ -129,7 +141,7 @@ bool is_letter_begin(UCHAR c, UCHAR n)
 
 bool is_letter_body(UCHAR c)
 {
-    return is_alnum(c) || is_uchar_eq_char(c, '_');
+    return is_uchar_eq_char(c, '_') || (!is_space(c) && !is_cntrl(c));
 }
 
 bool is_letter_valid(const char* str)

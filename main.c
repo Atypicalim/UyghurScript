@@ -40,8 +40,8 @@ int main(int argc, char const *argv[])
             if (indent > 0) utf8_next(dynamicITER);
             if (indent < 0) utf8_previous(dynamicITER);
         }
-        // char *str = utf8_getchar(dynamicITER);
-        // printf("Character%i-%u-------------[%s]\n", n, dynamicITER->codepoint, str);
+        char *str = utf8_getchar(dynamicITER);
+        printf("Character%i-%u-------------[%s]\n", n, dynamicITER->codepoint, str);
     }
 
     printf("-----------------------------\n");

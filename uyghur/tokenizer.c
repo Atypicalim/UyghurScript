@@ -26,16 +26,21 @@ void _fill_keyword(Hashmap *map, char *tvalue)
 
 Tokenizer *Tokenizer_new(Uyghur *uyghur)
 {
+    // init
+    Tokenizer *tokenizer = malloc(sizeof(Tokenizer));
+    tokenizer->uyghur = uyghur;
     // alias
     Hashmap *aliasMap = Hashmap_new();
+    tokenizer->aliasMap = aliasMap;
     size_t aSize = sizeof(UG_ALIAS_MAP) / sizeof(UG_ALIAS_MAP[0]);
     for (size_t i = 0; i < aSize; i++) {
         char *key = (char *)UG_ALIAS_MAP[i].key;
         char *val = (char *)UG_ALIAS_MAP[i].val;
         Hashmap_set(aliasMap, key, String_format(val));
     }
-    // words
+    // hashmap
     Hashmap *wordsMap = Hashmap_new();
+    tokenizer->wordsMap = wordsMap;
     size_t wSize = sizeof(UG_WORDS_MAP) / sizeof(UG_WORDS_MAP[0]);
     for (size_t i = 0; i < wSize; i++) {
         char *key = (char *)UG_WORDS_MAP[i].key;
@@ -43,11 +48,6 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
         if (val == NULL) val = key;
         Hashmap_set(wordsMap, key, String_format(val));
     }
-    // init
-    Tokenizer *tokenizer = malloc(sizeof(Tokenizer));
-    tokenizer->uyghur = uyghur;
-    tokenizer->aliasMap = aliasMap;
-    tokenizer->wordsMap = wordsMap;
     // iters
     tokenizer->iterStatic = malloc(sizeof(utf8_iter));
     tokenizer->iterDynamic = malloc(sizeof(utf8_iter));
@@ -61,9 +61,7 @@ Token *Tokenizer_parseLetter(Tokenizer *this, String *letter, bool isGetName)
     // alias 
     String *alias = Hashmap_get(this->aliasMap, String_get(letter));
     if (alias != NULL) {
-        // printf("-----------------------\n");
-        // String_print(letter);
-        // String_print(alias);
+        // log_debug("tokenizer.replaced: %s -> %s", String_get(letter), String_get(alias));
         letter = alias;
     }
     // name
@@ -116,10 +114,11 @@ UCHAR Tokenizer_skipN(Tokenizer *this, int n)
 }
 
 void Tokenizer_error(Tokenizer *this, char *msg) {
-    char *m = msg != NULL ? msg : LANG_ERR_TOKENIZER_EXCEPTION;
     UCHAR c = Tokenizer_getchar(this, 0);
+    char *m = msg != NULL ? msg : LANG_ERR_TOKENIZER_EXCEPTION;
     char *s = tools_format(LANG_ERR_SIGN_PLACE, this->path, this->line, this->column, c);
-    tools_error("Tokenizer: %s, %s", m, s);
+    log_error("Tokenizer: %s, %s", m, s);
+    exit(1);
 }
 
 void Tokenizer_assert(Tokenizer *this, bool value, char *msg)
@@ -128,7 +127,7 @@ void Tokenizer_assert(Tokenizer *this, bool value, char *msg)
 }
 
 void Token_addToken(Tokenizer *this, Token *token) {
-    // printf("addToken:%s->%s\n", token->type, token->value);
+    log_debug("tokenizer·add_token: %s->%s", token->type, token->value);
     Token_bindInfo(token, this->path, this->line, this->column);
     //
     if (this->head == NULL)
@@ -151,11 +150,17 @@ void Tokenizer_addLetter(Tokenizer *this, String *value) {
 
 String *Tokenizer_readLetter(Tokenizer *this) {
     String *str = String_new();
-    UCHAR c = Tokenizer_getchar(this, 0);
-    UCHAR n = Tokenizer_getchar(this, 1);
+    UCHAR _c = Tokenizer_getchar(this, 0);
+    UCHAR c = clone_uchar(_c);
+    UCHAR _n = Tokenizer_getchar(this, 1);
+    UCHAR n = clone_uchar(_n);
     //
     Tokenizer_assert(this, is_letter_begin(c, n), LANG_ERR_INVALID_LTTR);
     String_appendStr(str, c);
+    //
+    free_uchar(c);
+    free_uchar(n);
+    //
     Tokenizer_skipN(this, 1);
     c = Tokenizer_getchar(this, 0);
     //
@@ -233,27 +238,30 @@ String *Tokenizer_readString(Tokenizer *this, bool isContainBorder) {
     return str;
 }
 
+bool test = true;
 Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
 {
     Tokenizer_reset(this);
     this->path = path;
     this->code = code;
     this->length = strlen(code);
-    UCHAR currentChar;
+    UCHAR currentChar = NULL;
     bool isCalculator = false;
     String *scopeObject = NULL;
 
     utf8_iter ITER;
     utf8_init(this->iterStatic, code);
     utf8_init(this->iterDynamic, code);
-    while (utf8_next(this->iterStatic)) {
-
-        currentChar = Tokenizer_getchar(this, 0);
-        printf("-->TKNZR: Character: [%s]\n", currentChar);
+    while (this->iterStatic->next < this->iterStatic->length) {
+        UCHAR _currentChar = Tokenizer_getchar(this, 0);
+        if (!currentChar) free_uchar(currentChar);
+        currentChar = clone_uchar(_currentChar);
+        log_debug("tokenizer·next:%d %u %s", this->iterStatic->position, this->iterStatic->codepoint, currentChar);
         // empty
         if (is_space(currentChar) || is_cntrl(currentChar))
         {
             Tokenizer_skipN(this, 1);
+            test = true;
             continue;
         }
         // line
@@ -366,8 +374,6 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         // calculation
         if (is_calculation_logicals(currentChar))
         {
-            UCHAR lastC = Tokenizer_getchar(this, -1);
-            UCHAR nextC = Tokenizer_getchar(this, 1);
             Tokenizer_addLetter(this, String_format("%c", currentChar));
             Tokenizer_skipN(this, 1);
             continue;
@@ -396,6 +402,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue; 
         }
         // unsupported
+        log_error("tokenizer·error: %s", currentChar);
         Tokenizer_error(this, LANG_ERR_TOKENIZER_INVALID_SIGN);
         break;
     }

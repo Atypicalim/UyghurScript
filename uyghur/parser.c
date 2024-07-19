@@ -33,7 +33,8 @@ void Parser_error(Parser *this, char *msg)
     Token *token = this->token;
     char *m = msg != NULL ? msg : LANG_ERR_PARSER_EXCEPTION;
     char *s = tools_format(LANG_ERR_TOKEN_PLACE, token->file, token->line, token->column, token->value);
-    tools_error("Parser: %s, %s", m, s);
+    log_error("Parser: %s, %s", m, s);
+    exit(1);
 }
 
 void Parser_assert(Parser *this, bool value, char *msg)
@@ -466,6 +467,7 @@ void Parser_consumeToken(Parser *this, Token *token)
     //
     char *t = token->type;
     char *v = token->value;
+    log_debug("parser·next: %s | %s", t, v);
     // VARIABLE
     if (is_eq_string(t, UG_TTYPE_WRD) && is_eq_string(v, TVALUE_VARIABLE))
     {
@@ -545,6 +547,7 @@ void Parser_consumeToken(Parser *this, Token *token)
         return;
     }
     //
+    log_error("parser·error: %s | %s", t, v);
     Parser_error(this, NULL);
     Token_print(token);
 }

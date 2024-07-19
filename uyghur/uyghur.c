@@ -31,11 +31,16 @@ Uyghur *Uyghur_new()
 Value *Uyghur_runCode(Uyghur *this, char *code, char *path)
 {
     if (path == NULL) path = UG_SCRIPT_NAME;
+    log_warn("uyghur·run: %s", path);
     utils_set_languages(this, path);
     utils_add_tokens(this, path);
+    log_warn("uyghur·tokenize");
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
+    // log_warn("uyghur·parse");
     // Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
+    // log_warn("uyghur·execute");
     // Value *moduleBox = Executer_executeTree(this->executer, path, headLeaf);
+    // log_warn("uyghur·runned!");
     // return moduleBox;
     return NULL;
 }
