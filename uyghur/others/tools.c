@@ -75,6 +75,12 @@ bool is_digit(UCHAR uChar) {
     return !!isdigit(uChar[0]);
 }
 
+int is_sign(UCHAR uChar) {
+    if (uChar[1] != '\0') return false;
+    char c = uChar[0];
+    return isprint(c) && !isalpha(c);
+}
+
 ////////////////////////////////////////////////////////////////////////
 
 UCHAR clone_uchar(UCHAR ch) {
@@ -141,20 +147,7 @@ bool is_letter_begin(UCHAR c, UCHAR n)
 
 bool is_letter_body(UCHAR c)
 {
-    return is_uchar_eq_char(c, '_') || (!is_space(c) && !is_cntrl(c));
-}
-
-bool is_letter_valid(const char* str)
-{
-    UCHAR c;
-    UCHAR n;
-    for (int i = 0; str[i] != '\0'; i++) {
-        c = ""; // str[i];
-        n = ""; // str[i + 1];
-        if (i == 0 && !is_letter_begin(c, n)) return false;
-        if (i != 0 && !is_letter_body(c)) return false;
-    }
-    return true;
+    return !is_space(c) && !is_cntrl(c) && !is_sign(c);
 }
 
 bool is_string_open(UCHAR c) {
@@ -170,55 +163,49 @@ bool is_string_close(UCHAR c) {
 }
 
 UCHAR convert_border_pair(UCHAR c) {
-    char r = ' ';
+    UCHAR r = " ";
     switch (c[0])
     {
     case '{':
-        r = '}';
+        r = SIGN_CLOSE_MIDDLE;
         break;
     case '}':
-        r = '{';
+        r = SIGN_OPEN_MIDDLE;
         break;
     case '[':
-        r = ']';
+        r = SIGN_CLOSE_BIG;
         break;
     case ']':
-        r = '[';
+        r = SIGN_OPEN_BIG;
         break;
     case '(':
-        r = ')';
+        r = SIGN_CLOSE_SMALL;
         break;
     case ')':
-        r = '(';
+        r = SIGN_OPEN_SMALL;
         break;
     default:
         break;
     }
-    char *s = " ";
-    s[0] = r;
-    return s;
+    return r;
 }
 
 bool is_border_open(UCHAR c) {
-    // return c == '{' || c == '[' || c == '(';
-    return false;
+    return is_uchar_eq_char(c, '{') || is_uchar_eq_char(c, '[') || is_uchar_eq_char(c, '(');
 }
 
 bool is_border_close(UCHAR c) {
-    // return c == '}' || c == ']' || c == ')';
-    return false;
+    return is_uchar_eq_char(c, '}') || is_uchar_eq_char(c, ']') || is_uchar_eq_char(c, ')');
 }
 
 bool is_calculator(UCHAR c)
 {
-    // return c == '=';
-    return false;
+    return is_uchar_eq_char(c, '=');
 }
 
 bool is_scope(UCHAR c)
 {
-    // return c == '*' || c == '+' || c == '-';
-    return false;
+    return is_uchar_eq_char(c, '*') || is_uchar_eq_char(c, '+') || is_uchar_eq_char(c, '-');
 }
 
 // 

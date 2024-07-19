@@ -290,7 +290,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             UCHAR c = Tokenizer_getchar(this, 0);
             if (is_scope(c)) {
                 Tokenizer_skipN(this, 1);
-                scopeObject = String_format("%c", c);
+                scopeObject = String_format("%s", c);
             } else {
                 scopeObject = Tokenizer_readLetter(this);
             }

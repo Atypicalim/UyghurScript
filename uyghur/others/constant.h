@@ -18,7 +18,7 @@
 #define SIGN_ESCAPE "\\"
 #define SIGN_SLASH "/"
 #define SIGN_LOCK "#"
-#define SIGN_DOT "0"
+#define SIGN_DOT "."
 #define SIGN_AT "@"
 #define SIGN_EQ "="
 // 
