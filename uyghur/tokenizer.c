@@ -268,9 +268,12 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         // comment
         if (is_uchar_eq_uchar(currentChar, SIGN_LOCK))
         {
-            int i = 1;
-            while(!is_uchar_eq_uchar(Tokenizer_getchar(this, i), SIGN_LINE)) i++;
-            Tokenizer_skipN(this, 1 + i - 1);
+            Tokenizer_skipN(this, 1);
+            UCHAR c = Tokenizer_getchar(this, 0);
+            while(!is_line(c) && !is_empty(c)) {
+                Tokenizer_skipN(this, 1);
+                c = Tokenizer_getchar(this, 0);
+            }
             continue;
         }
         // scope

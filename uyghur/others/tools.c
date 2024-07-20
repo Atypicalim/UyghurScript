@@ -55,6 +55,10 @@ bool is_line(UCHAR uChar) {
     return uChar[0] == '\n';
 }
 
+bool is_empty(UCHAR uChar) {
+    return strlen(uChar) == 0 && uChar[0] == '\0';
+}
+
 bool is_space(UCHAR uChar) {
     if (uChar[1] != '\0') return false;
     return !!isspace(uChar[0]);
