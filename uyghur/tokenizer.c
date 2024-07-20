@@ -6,8 +6,6 @@ void Tokenizer_reset(Tokenizer *this)
 {
     this->line = 1;
     this->column = 1;
-    this->position = 0;
-    this->length = 0;
     this->head = NULL;
     this->tail = NULL;
     this->path = NULL;
@@ -107,7 +105,6 @@ UCHAR Tokenizer_getValidChar(Tokenizer *this, int indent)
 UCHAR Tokenizer_skipN(Tokenizer *this, int n)
 {
     this->column = this->column + n;
-    this->position = this->position + n;
     for (size_t i = 0; i < n; i++) {
         utf8_next(this->iterStatic);
     }
@@ -233,7 +230,6 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
     Tokenizer_reset(this);
     this->path = path;
     this->code = code;
-    this->length = strlen(code);
     UCHAR tempChar = NULL;
     UCHAR currChar = NULL;
     bool isCalculator = false;

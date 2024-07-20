@@ -5,7 +5,6 @@
 struct Parser
 {
     Uyghur *uyghur;
-    int position;
     Token *tokens;
     Token *token;
     Leaf *tree;
@@ -14,7 +13,6 @@ struct Parser
 
 void Parser_reset(Parser *this)
 {
-    this->position = 1;
     this->tokens = NULL;
     this->token = NULL;
     this->tree = NULL;

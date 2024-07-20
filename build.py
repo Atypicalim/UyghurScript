@@ -99,14 +99,14 @@ def formatFilters(name, laguages):
 
 # languages
 name = "LANGUAGES"
-aliases, laguages = readYaml("./uyghur/others/languages.yml")
+aliases, laguages = readYaml("./uyghur/others/multilangs/languages.yml")
 langaugeVariables = formatAliases(tplYamlDeclare, aliases)
 languageBodies = formatLanguages(tplYamlLineLanguage, name, laguages)
 [languageFilterSize, languageFilterConf] = formatFilters(name, laguages)
 
 # # tokens
 name = "TOKENS"
-aliases, laguages = readYaml("./uyghur/others/tokens.yml")
+aliases, laguages = readYaml("./uyghur/others/multilangs/tokens.yml")
 tokenVariables = formatAliases(tplYamlDefine, aliases)
 tokenBodies = formatLanguages(tplYamlLineToken, name, laguages)
 [tokenFilterSize, tokenFilterConf] = formatFilters(name, laguages)
@@ -127,7 +127,7 @@ def _onMacro(arg1, arg2, arg3, arg4):
 
 # languages
 bldr = builder.code()
-bldr.setInput("./uyghur/others/languages.tpl.h")
+bldr.setInput("./uyghur/others/templates/languages.tpl.h")
 bldr.setComment("//")
 bldr.setOutput(DST_DIR + "languages.h")
 bldr.onMacro(_onMacro(langaugeVariables, languageBodies, languageFilterSize, languageFilterConf))
@@ -136,7 +136,7 @@ bldr.start()
 
 # tokens
 bldr = builder.code()
-bldr.setInput("./uyghur/others/tokens.tpl.h")
+bldr.setInput("./uyghur/others/templates/tokens.tpl.h")
 bldr.setComment("//")
 bldr.setOutput(DST_DIR + "tokens.h")
 bldr.onMacro(_onMacro(tokenVariables, tokenBodies, tokenFilterSize, tokenFilterConf))
@@ -159,7 +159,7 @@ def _onMacro():
 
 # configs
 bldr = builder.code()
-bldr.setInput("./uyghur/others/configs.tpl.h")
+bldr.setInput("./uyghur/others/templates/configs.tpl.h")
 bldr.setComment("//")
 bldr.setOutput(DST_DIR + "configs.h")
 bldr.onMacro(_onMacro())

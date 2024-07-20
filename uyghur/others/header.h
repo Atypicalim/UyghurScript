@@ -105,7 +105,6 @@ typedef struct _Tokenizer {
     int line;
     int column;
     int position;
-    int length;
     const char *path;
     const char *code;
     Token *head;
@@ -114,7 +113,7 @@ typedef struct _Tokenizer {
     Hashmap *wordsMap;
     utf8_iter *iterStatic;
     utf8_iter *iterDynamic;
- } Tokenizer;
+} Tokenizer;
 
 typedef struct Parser Parser;
 typedef struct Executer Executer;
@@ -138,7 +137,7 @@ void *INVALID_PTR = NULL;
 Container *INVALID_CTN = NULL;
 Value *INVALID_VAL = NULL;
 
-// 
+////////////////////////////////////////////////////////////////////////////
 
 #define BRIDGE_STACK_TP_BOX 1
 #define BRIDGE_STACK_TP_FUN 2
@@ -164,7 +163,7 @@ void Bridge_run(Bridge *, Value *);
 
 typedef void (*NATIVE)(Bridge *);
 
-// 
+////////////////////////////////////////////////////////////////////////////
 
 struct Debug
 {
