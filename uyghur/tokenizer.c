@@ -228,14 +228,14 @@ String *Tokenizer_readString(Tokenizer *this) {
     return str;
 }
 
-bool test = true;
 Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
 {
     Tokenizer_reset(this);
     this->path = path;
     this->code = code;
     this->length = strlen(code);
-    UCHAR currentChar = NULL;
+    UCHAR tempChar = NULL;
+    UCHAR currChar = NULL;
     bool isCalculator = false;
     String *scopeObject = NULL;
 
@@ -245,13 +245,25 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
     utf8_next(this->iterStatic);
     utf8_next(this->iterDynamic);
     while (this->iterStatic->next < this->iterStatic->length) {
-        UCHAR _currentChar = Tokenizer_getchar(this, 0);
-        if (!currentChar) free_uchar(currentChar);
-        currentChar = clone_uchar(_currentChar);
-        // log_debug("tokenizer.next:%d %u [%s]", this->iterStatic->position, this->iterStatic->codepoint, currentChar);
+        // 
+        tempChar = Tokenizer_getchar(this, 0);
+        if (!currChar) free_uchar(currChar);
+        currChar = clone_uchar(tempChar);
+        // 
+        // log_debug(
+        //     "tokenizer.next: [%i.%i] %u [%s]",
+        //     this->iterStatic->length, this->iterStatic->position,
+        //     this->iterStatic->codepoint, currChar
+        // );
+        // end
+        if (is_empty(currChar)) {
+            // log_debug("tokenizer.end");
+            break;
+        }
         // line
-        if (is_line(currentChar))
+        if (is_line(currChar))
         {
+            // log_debug("tokenizer.line");
             this->line++;
             this->column = 1;
             Tokenizer_skipN(this, 1);
@@ -259,14 +271,14 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue;
         }
         // empty
-        if (is_space(currentChar) || is_cntrl(currentChar))
+        if (is_space(currChar) || is_cntrl(currChar))
         {
+            // log_debug("tokenizer.empty");
             Tokenizer_skipN(this, 1);
-            test = true;
             continue;
         }
         // comment
-        if (is_uchar_eq_uchar(currentChar, SIGN_LOCK))
+        if (is_uchar_eq_uchar(currChar, SIGN_LOCK))
         {
             Tokenizer_skipN(this, 1);
             UCHAR c = Tokenizer_getchar(this, 0);
@@ -277,7 +289,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue;
         }
         // scope
-        if (is_uchar_eq_uchar(currentChar, SIGN_AT))
+        if (is_uchar_eq_uchar(currChar, SIGN_AT))
         {
             Tokenizer_skipN(this, 1);
             UCHAR c = Tokenizer_getchar(this, 0);
@@ -293,8 +305,8 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         }
         // key
         if (scopeObject != NULL) {
-            Tokenizer_assert(this, is_border_open(currentChar), LANG_ERR_TOKENIZER_KEY_START_ERROR);
-            UCHAR openChar = currentChar;
+            Tokenizer_assert(this, is_border_open(currChar), LANG_ERR_TOKENIZER_KEY_START_ERROR);
+            UCHAR openChar = currChar;
             UCHAR closeChar = convert_border_pair(openChar);
             // not empty
             Tokenizer_skipN(this, 1);
@@ -329,7 +341,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue;
         }
         // calculator
-        if (is_calculator(currentChar))
+        if (is_calculator(currChar))
         {
             Tokenizer_addLetter(this, String_format("%s", TVALUE_CALCULATOR));
             Tokenizer_skipN(this, 1);
@@ -337,7 +349,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue;
         }
         // calculation
-        if (isCalculator && is_calculation_char(currentChar))
+        if (isCalculator && is_calculation_char(currChar))
         {
             UCHAR lastC = Tokenizer_getValidChar(this, -1);
             UCHAR nextC = Tokenizer_getValidChar(this, 1);
@@ -347,34 +359,34 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                 && !is_uchar_eq_uchar(lastC, SIGN_EQ)
                 && !is_uchar_eq_uchar(lastC, SIGN_OPEN_SMALL)
             ) {
-                Tokenizer_addLetter(this, String_format("%s", currentChar));
+                Tokenizer_addLetter(this, String_format("%s", currChar));
                 Tokenizer_skipN(this, 1);
                 continue;
             }
         }
         // open
-        if (isCalculator && is_uchar_eq_uchar(currentChar, SIGN_OPEN_SMALL))
+        if (isCalculator && is_uchar_eq_uchar(currChar, SIGN_OPEN_SMALL))
         {
             Tokenizer_addLetter(this, String_format("%s", TVALUE_OPEN));
             Tokenizer_skipN(this, 1);
             continue;
         }
         // close
-        if (isCalculator && is_uchar_eq_uchar(currentChar, SIGN_CLOSE_SMALL))
+        if (isCalculator && is_uchar_eq_uchar(currChar, SIGN_CLOSE_SMALL))
         {
             Tokenizer_addLetter(this, String_format("%s", TVALUE_CLOSE));
             Tokenizer_skipN(this, 1);
             continue;
         }
         // calculation
-        if (is_calculation_logicals(currentChar))
+        if (is_calculation_logicals(currChar))
         {
-            Tokenizer_addLetter(this, String_format("%s", currentChar));
+            Tokenizer_addLetter(this, String_format("%s", currChar));
             Tokenizer_skipN(this, 1);
             continue;
         }
         // string
-        if (is_string_open(currentChar))
+        if (is_string_open(currChar))
         {
             Tokenizer_skipN(this, 1);
             //
@@ -388,7 +400,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue;
         }
         // number
-        if (is_number_begin(currentChar, Tokenizer_getchar(this, 1)))
+        if (is_number_begin(currChar, Tokenizer_getchar(this, 1)))
         {
             String *num = Tokenizer_readNumber(this, true);
             Token *tkn = Token_new(UG_TTYPE_NUM, String_get(num));
@@ -396,17 +408,18 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue; 
         }
         // letter
-        if (is_letter_begin(currentChar, Tokenizer_getchar(this, 1)))
+        if (is_letter_begin(currChar, Tokenizer_getchar(this, 1)))
         {
             String *ltr = Tokenizer_readLetter(this);
             Tokenizer_addLetter(this, ltr);
             continue; 
         }
         // unsupported
-        log_error("tokenizer.error: %s", currentChar);
+        log_error("tokenizer.error: %s", currChar);
         Tokenizer_error(this, LANG_ERR_TOKENIZER_INVALID_SIGN);
         break;
     }
+    if (!currChar) free_uchar(currChar);
     return this->head;
 }
 

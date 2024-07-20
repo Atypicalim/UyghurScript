@@ -351,7 +351,7 @@ void Bridge_call(Bridge *this, char *funcName)
     if (Value_isFunc(funcValue)) {
         r = Executer_runFunc(executer, funcValue);
     } else {
-        tools_warn("invalid bridge status, func value is not a function");
+        log_warn("%s:%s", LANG_ERR_BRIDGE_FUNCTION_NOT_FOUND, funcToken->value);
         r = Value_newEmpty(NULL);
     }
     Object_release(funcToken);
