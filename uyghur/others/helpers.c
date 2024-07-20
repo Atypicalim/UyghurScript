@@ -364,7 +364,7 @@ void utils_add_tokens(Uyghur *uyghur, char *tp) {
     for (size_t i = 0; i < size; i++)
     {
         PAIR_TOKENS pair = pairs[i];
-        log_debug("helper·token %s %s", pair.key, pair.val);
+        log_debug("helper.lang %s %s", pair.key, pair.val);
         Hashmap_set(aliasMap, pair.val, String_format(pair.key));
     }
 }

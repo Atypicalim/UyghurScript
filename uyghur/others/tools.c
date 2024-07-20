@@ -50,6 +50,11 @@ bool is_uchar_eq_uchar(UCHAR ch1, UCHAR ch2) {
     return utf8cmp(ch1, ch2) == 0;
 }
 
+bool is_line(UCHAR uChar) {
+    if (uChar[1] != '\0') return false;
+    return uChar[0] == '\n';
+}
+
 bool is_space(UCHAR uChar) {
     if (uChar[1] != '\0') return false;
     return !!isspace(uChar[0]);
@@ -227,10 +232,10 @@ int p2i(void* value){
     return *((int*) value);
 }
 
-UCHAR decode_escape(UCHAR c)
+char decode_escape(char c)
 {
-    char r = ' ';
-    switch (c[0])
+    char r = CHAR_QUESSION;
+    switch (c)
     {
     case '[':
         r = '[';
@@ -265,16 +270,7 @@ UCHAR decode_escape(UCHAR c)
     default:
         break;
     }
-    bool valid = r != ' ';
-    int size = valid ? 1 : 2;
-    char *s = (char*) malloc(sizeof(char) * size);
-    if (valid) {
-        s[0] = r;
-        s[1] = '\n';
-    } else {
-        s[0] = '\n';
-    }
-    return s;
+    return r;
 }
 
 #endif

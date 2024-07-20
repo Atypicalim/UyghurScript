@@ -810,7 +810,7 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
     char tp = leaf->type;
-    log_debug("executer·next: %c", tp);
+    // log_debug("executer.next: %c", tp);
     // throwing
     if (setjmp(jump_buffer) != 0 || (this->errorMsg != NULL && tp != UG_ATYPE_EXC)) {
         return;
@@ -887,7 +887,7 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
         return;
     }
     //
-    log_error("executer·error: %s", tp);
+    log_error("executer.error: %s", tp);
     helper_print_leaf(leaf, " ");
     tools_error("%s:[%c]", LANG_ERR_EXECUTER_NOT_IMPLEMENTED, tp);
 }

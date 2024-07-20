@@ -67,6 +67,7 @@ Token *Parser_moveToken(Parser *this, int indent)
 
 void Parser_pushLeaf(Parser *this, char tp, int num, Token *token, ...)
 {
+    log_debug("parser.ast: %c", tp);
     Leaf *leaf = Leaf_new(tp);
     va_list valist;
     int i;
@@ -464,7 +465,7 @@ void Parser_consumeToken(Parser *this, Token *token)
     //
     char *t = token->type;
     char *v = token->value;
-    log_debug("parser·next: %s | %s", t, v);
+    // log_debug("parser.next: %s | %s", t, v);
     // VARIABLE
     if (is_eq_string(t, UG_TTYPE_WRD) && is_eq_string(v, TVALUE_VARIABLE))
     {
@@ -544,7 +545,7 @@ void Parser_consumeToken(Parser *this, Token *token)
         return;
     }
     //
-    log_error("parser·error: %s | %s", t, v);
+    log_error("parser.error: %s | %s", t, v);
     Parser_error(this, NULL);
     Token_print(token);
 }

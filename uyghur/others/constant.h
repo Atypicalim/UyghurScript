@@ -11,6 +11,10 @@
 #define UG_TYPE_NTV '#'
 #define UG_TYPE_CNT '@'
 
+// char values
+#define CHAR_EMPTY ' '
+#define CHAR_QUESSION '?'
+
 // sign values
 #define SIGN_LINE "\n"
 #define SIGN_CARRIAGE "\r"
