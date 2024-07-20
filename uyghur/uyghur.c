@@ -34,6 +34,7 @@ Value *Uyghur_runCode(Uyghur *this, char *code, char *path)
     log_warn("uyghur.run: %s", path);
     utils_set_languages(this, path);
     utils_add_tokens(this, path);
+    utils_test_aliases(this, path);
     log_warn("uyghur.tokenize");
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
     log_warn("uyghur.parse");

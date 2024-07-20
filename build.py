@@ -9,7 +9,7 @@ tools = builder.tools
 ###############################################################################
 
 VERSION_CODE = 0.2
-SCRIPT_PATH = "./examples/yuguresh.ug"
+SCRIPT_PATH = "./examples/sınav.tr"
 SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
 
 ###############################################################################
@@ -26,6 +26,7 @@ tplYamlDefine = """#define {0} \"{0}\""""
 #
 tplYamlLineLanguage = """{{&{0}, "{1}"}},"""
 tplYamlLineToken = """{{"{0}", "{1}"}},"""
+tplYamlLineAlias = """{{&{0}, "{1}"}},"""
 #
 tmplYamlNameSize = "YAML_SIZE_{0}_{1}"
 tmplYamlNameConf = "YAML_CONF_{0}_{1}"
@@ -54,14 +55,14 @@ def readYaml(fromPath):
             languagesMap[lang][alias] = value
     return aliasesArr, languagesMap
 
-def formatAliases(template, aliases):
+def formatVariables(template, aliases):
     variables = []
     for alias in aliases:
         variable = template.format(alias)
         variables.append(variable)
     return "\n".join(variables)
 
-def formatLanguages(template, name, laguages):
+def formatBodies(template, name, laguages):
     bodies = []
     for lang, pairs in laguages.items():
         lang = lang.upper()
@@ -97,20 +98,6 @@ def formatFilters(name, laguages):
     _filterConfs = "\n".join(filterConfs)
     return [_filterSizes, _filterConfs]
 
-# languages
-name = "LANGUAGES"
-aliases, laguages = readYaml("./uyghur/others/multilangs/languages.yml")
-langaugeVariables = formatAliases(tplYamlDeclare, aliases)
-languageBodies = formatLanguages(tplYamlLineLanguage, name, laguages)
-[languageFilterSize, languageFilterConf] = formatFilters(name, laguages)
-
-# # tokens
-name = "TOKENS"
-aliases, laguages = readYaml("./uyghur/others/multilangs/tokens.yml")
-tokenVariables = formatAliases(tplYamlDefine, aliases)
-tokenBodies = formatLanguages(tplYamlLineToken, name, laguages)
-[tokenFilterSize, tokenFilterConf] = formatFilters(name, laguages)
-
 ###############################################################################
 
 def _onMacro(arg1, arg2, arg3, arg4):
@@ -125,23 +112,29 @@ def _onMacro(arg1, arg2, arg3, arg4):
             return arg4
     return onMacro
 
-# languages
-bldr = builder.code()
-bldr.setInput("./uyghur/others/templates/languages.tpl.h")
-bldr.setComment("//")
-bldr.setOutput(DST_DIR + "languages.h")
-bldr.onMacro(_onMacro(langaugeVariables, languageBodies, languageFilterSize, languageFilterConf))
-bldr.onLine(lambda line: line)
-bldr.start()
+###############################################################################
 
-# tokens
-bldr = builder.code()
-bldr.setInput("./uyghur/others/templates/tokens.tpl.h")
-bldr.setComment("//")
-bldr.setOutput(DST_DIR + "tokens.h")
-bldr.onMacro(_onMacro(tokenVariables, tokenBodies, tokenFilterSize, tokenFilterConf))
-bldr.onLine(lambda line: line)
-bldr.start()
+def _Yaml2Template(name, varTpl, lineTpl):
+    _name = name.lower()
+    aliases, laguages = readYaml(f"./uyghur/others/multilangs/{_name}.yml")
+    #
+    variables = formatVariables(varTpl, aliases)
+    bodies = formatBodies(lineTpl, name, laguages)
+    [filterSize, filterConf] = formatFilters(name, laguages)
+    # 
+    bldr = builder.code()
+    bldr.setInput(f"./uyghur/others/templates/{_name}.tpl.h")
+    bldr.setComment("//")
+    bldr.setOutput(f"{DST_DIR}{_name}.h")
+    bldr.onMacro(_onMacro(variables, bodies, filterSize, filterConf))
+    bldr.start()
+    pass
+
+###############################################################################
+
+_Yaml2Template("LANGUAGES", tplYamlDeclare, tplYamlLineLanguage)
+_Yaml2Template("TOKENS", tplYamlDefine, tplYamlLineToken)
+_Yaml2Template("ALIASES", tplYamlDeclare, tplYamlLineAlias)
 
 ###############################################################################
 

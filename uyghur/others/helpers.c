@@ -347,16 +347,19 @@ void Container_print(Container *this)
 }
 
 void utils_set_languages(Uyghur *uyghur, char *tp) {
+    log_warn("helper.laguages:");
     int size = languages_get_size(tp);
     PAIR_LANGUAGES* pairs = languages_get_conf(tp);
     for (size_t i = 0; i < size; i++)
     {
         PAIR_LANGUAGES pair = pairs[i];
+        log_debug("helper.lang %s", pair.val);
         *pair.key = pair.val;
     }
 }
 
 void utils_add_tokens(Uyghur *uyghur, char *tp) {
+    log_warn("helper.tokens:");
     void *aliasMap = uyghur->tokenizer->aliasMap;
     void *wordsMap = uyghur->tokenizer->wordsMap;
     int size = tokens_get_size(tp);
@@ -366,6 +369,18 @@ void utils_add_tokens(Uyghur *uyghur, char *tp) {
         PAIR_TOKENS pair = pairs[i];
         log_debug("helper.lang %s %s", pair.key, pair.val);
         Hashmap_set(aliasMap, pair.val, String_format(pair.key));
+    }
+}
+
+void utils_test_aliases(Uyghur *uyghur, char *tp) {
+    log_warn("helper.aliases:");
+    int size = aliases_get_size(tp);
+    PAIR_ALIASES* pairs = aliases_get_conf(tp);
+    for (size_t i = 0; i < size; i++)
+    {
+        PAIR_ALIASES pair = pairs[i];
+        log_debug("helper.lang %s", pair.val);
+        // *pair.key = pair.val;
     }
 }
 
