@@ -1,12 +1,6 @@
 
-# types
-ALIAS_NUM:
-  en: num
-  ug: san
-  tr: sayı
-
-# global
-## console
+############################# global ##########################################
+# console
 ALIAS_read:
   en: read
   ug: oqush
@@ -15,12 +9,12 @@ ALIAS_write:
   en: write
   ug: yezish
   tr: yazmak
-## trace
+# trace
 ALIAS_trace:
   en: trace
   ug: izlash
   tr: izlamak
-## module
+# module
 ALIAS_import:
   en: import
   ug: ekirish
@@ -30,7 +24,9 @@ ALIAS_clean:
   ug: tazilash
   tr: temizlemek
 
-# time
+############################## time #########################################
+ALIAS_TIME:
+  ug: "waqit"
 ALIAS_time_get_zone:
   ug: "rayunElish"
 ALIAS_time_get_seconds:
@@ -46,7 +42,9 @@ ALIAS_time_get_clock:
 ALIAS_time_sleep_seconds:
   ug: "programminiUxlitish"
 
-# system
+################################ system #######################################
+ALIAS_SYSTEM:
+  ug: "sestima"
 ALIAS_system_get_name:
   ug: "isminiElish"
 ALIAS_system_exit_program:
@@ -58,7 +56,12 @@ ALIAS_system_set_env:
 ALIAS_system_get_env:
   ug: "muhitQimmitiOqush"
 
-# string
+################################# string ######################################
+ALIAS_STRING:
+  en: str
+  ug: xet
+  tr: dize
+# 
 ALIAS_string_replace:
   ug: "almashturush"
 ALIAS_string_replace_first:
@@ -86,24 +89,29 @@ ALIAS_string_format:
 ALIAS_string_fill:
   ug: "toldurush"
 
-# number
+############################ number ###########################################
+ALIAS_NUMBER:
+  en: num
+  ug: san
+  tr: sayı
+#
 ALIAS_number_ceil:
   ug: "ustigePutunlesh"
 ALIAS_number_floor:
   ug: "astighaPutunlesh"
 ALIAS_number_round:
   ug: "texminiyPutunlesh"
-## 
+#
 ALIAS_number_seed:
   ug: "ixtiyariyUruqBikitish"
 ALIAS_number_random:
   ug: "ixtiyariySanHasillash"
-## 
+#
 ALIAS_number_radian:
   ug: "radianghaAylandurush"
 ALIAS_number_degree:
   ug: "gradusqaAylandurush"
-## 
+#
 ALIAS_number_sin:
   ug: "sinosHisablash"
 ALIAS_number_cos:
@@ -116,31 +124,33 @@ ALIAS_number_acos:
   ug: "teturCosinosHisablash"
 ALIAS_number_atan:
   ug: "teturTanginosHisablash"
-## 
+#
 ALIAS_number_power:
   ug: "derijigeKurutush"
 ALIAS_number_square:
   ug: "yiltizdinChiqirish"
-## 
+#
 ALIAS_number_log_e:
   ug: "logarifmaEHisablash"
 ALIAS_number_log_10:
   ug: "logarifma10Hisablash"
-## 
+#
 ALIAS_number_quotient:
   ug: "bulunminiHisablash"
 ALIAS_number_reminder:
   ug: "qalduqniHisablash"
-## 
+#
 ALIAS_number_int_part:
   ug: "putunQismighaIrishish"
 ALIAS_number_dec_part:
   ug: "parcheQismighaIrishish"
 
-# file
-ALIAS_write_file:
+############################# file ##########################################
+ALIAS_FILE:
+  ug: "xojjet"
+ALIAS_file_write:
   ug: "yezish"
-ALIAS_read_file:
+ALIAS_file_read:
   ug: "oqush"
 ALIAS_file_copy:
   ug: "kuchurush"
@@ -157,11 +167,13 @@ ALIAS_file_is_directory:
 ALIAS_file_create_directory:
   ug: "somkaQurush"
 
-# box
+############################## box #########################################
+ALIAS_BOX:
+  ug: "sanduq"
 ALIAS_box_loop:
   ug: "dewriylesh"
 
-# baord
+############################## baord #########################################
 ALIAS_BOARD:
   en: board
   ug: doska
@@ -170,3 +182,5 @@ ALIAS_BOARD_SHOW:
   en: show
   ug: korsitish
   tr: göstermek
+
+#######################################################################

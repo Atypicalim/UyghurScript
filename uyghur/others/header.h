@@ -169,7 +169,7 @@ typedef void (*NATIVE)(Bridge *);
 
 // push alias -> func to bridge
 #define BRIDGE_BIND_NATIVE(name) \
-    Bridge_bindNative(bridge, ALIAS_ ## name, ug_ ## name);
+    Bridge_bindNative(bridge, ALIAS_ ## name, native_ ## name);
 
 ////////////////////////////////////////////////////////////////////////////
 

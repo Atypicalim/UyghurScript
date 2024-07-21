@@ -2,7 +2,7 @@
 
 #include "../uyghur/uyghur.c"
 
-void ug_string_replace(Bridge *bridge)
+void native_string_replace(Bridge *bridge)
 {
     char *origin = Bridge_receiveString(bridge);
     char *from =Bridge_receiveString(bridge);
@@ -13,7 +13,7 @@ void ug_string_replace(Bridge *bridge)
     Bridge_returnString(bridge, result);
 }
 
-void ug_string_replace_first(Bridge *bridge)
+void native_string_replace_first(Bridge *bridge)
 {
     char *origin = Bridge_receiveString(bridge);
     char *from =Bridge_receiveString(bridge);
@@ -22,7 +22,7 @@ void ug_string_replace_first(Bridge *bridge)
     Bridge_returnString(bridge, result);
 }
 
-void ug_string_replace_last(Bridge *bridge)
+void native_string_replace_last(Bridge *bridge)
 {
     char *origin = Bridge_receiveString(bridge);
     char *from =Bridge_receiveString(bridge);
@@ -31,7 +31,7 @@ void ug_string_replace_last(Bridge *bridge)
     Bridge_returnString(bridge, result);
 }
 
-void ug_string_replace_all(Bridge *bridge)
+void native_string_replace_all(Bridge *bridge)
 {
     char *origin = Bridge_receiveString(bridge);
     char *from =Bridge_receiveString(bridge);
@@ -40,7 +40,7 @@ void ug_string_replace_all(Bridge *bridge)
     Bridge_returnString(bridge, result);
 }
 
-void ug_string_find(Bridge *bridge)
+void native_string_find(Bridge *bridge)
 {
     char *origin = Bridge_receiveString(bridge);
     char *find =Bridge_receiveString(bridge);
@@ -51,7 +51,7 @@ void ug_string_find(Bridge *bridge)
     Bridge_returnNumber(bridge, result);
 }
 
-void ug_string_find_first(Bridge *bridge)
+void native_string_find_first(Bridge *bridge)
 {
     char *origin = Bridge_receiveString(bridge);
     char *find =Bridge_receiveString(bridge);
@@ -59,7 +59,7 @@ void ug_string_find_first(Bridge *bridge)
     Bridge_returnNumber(bridge, result);
 }
 
-void ug_string_find_last(Bridge *bridge)
+void native_string_find_last(Bridge *bridge)
 {
     char *origin = Bridge_receiveString(bridge);
     char *find =Bridge_receiveString(bridge);
@@ -67,7 +67,7 @@ void ug_string_find_last(Bridge *bridge)
     Bridge_returnNumber(bridge, result);
 }
 
-void ug_string_cut(Bridge *bridge)
+void native_string_cut(Bridge *bridge)
 {
     char *origin = Bridge_receiveString(bridge);
     double from = Bridge_receiveNumber(bridge);
@@ -76,14 +76,14 @@ void ug_string_cut(Bridge *bridge)
     Bridge_returnString(bridge, result);
 }
 
-void ug_string_count(Bridge *bridge)
+void native_string_count(Bridge *bridge)
 {
     char *origin = Bridge_receiveString(bridge);
     int result = strlen(origin);
     Bridge_returnNumber(bridge, result);
 }
 
-void ug_string_link(Bridge *bridge)
+void native_string_link(Bridge *bridge)
 {
     char *origin = Bridge_receiveString(bridge);
     char *other = Bridge_receiveString(bridge);
@@ -91,7 +91,7 @@ void ug_string_link(Bridge *bridge)
     Bridge_returnString(bridge, result);
 }
 
-void ug_string_format(Bridge *bridge)
+void native_string_format(Bridge *bridge)
 {
     char *f = Bridge_receiveString(bridge);
     Value *v = Bridge_receiveValue(bridge, UG_TYPE_NON);
@@ -106,7 +106,7 @@ void ug_string_format(Bridge *bridge)
     Object_release(r);
 }
 
-void ug_string_fill(Bridge *bridge)
+void native_string_fill(Bridge *bridge)
 {
     char *f = Bridge_receiveString(bridge);
     String *r = String_format("%s", f);
@@ -150,5 +150,5 @@ void lib_string_register(Bridge *bridge)
     BRIDGE_BIND_NATIVE(string_format);
     BRIDGE_BIND_NATIVE(string_fill);
     //
-    Bridge_register(bridge, "xet");
+    Bridge_register(bridge, ALIAS_STRING);
 }

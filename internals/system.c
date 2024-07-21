@@ -2,12 +2,12 @@
 
 #include "../uyghur/uyghur.c"
 
-void ug_system_get_name(Bridge *bridge)
+void native_system_get_name(Bridge *bridge)
 {
     Bridge_returnString(bridge, system_get_name());
 }
 
-void ug_system_exit_program(Bridge *bridge)
+void native_system_exit_program(Bridge *bridge)
 {
     int code = 0;
     if (Bridge_topType(bridge) != UG_TYPE_NON) code = Bridge_receiveNumber(bridge);
@@ -15,7 +15,7 @@ void ug_system_exit_program(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-void ug_system_execute_command(Bridge *bridge)
+void native_system_execute_command(Bridge *bridge)
 {
     char *command = Bridge_receiveString(bridge);
     char *r = system_execute_command(command);
@@ -23,7 +23,7 @@ void ug_system_execute_command(Bridge *bridge)
     pct_free(r);
 }
 
-void ug_system_set_env(Bridge *bridge)
+void native_system_set_env(Bridge *bridge)
 {
     char *name = Bridge_receiveString(bridge);
     char *value = Bridge_receiveString(bridge);
@@ -31,7 +31,7 @@ void ug_system_set_env(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-void ug_system_get_env(Bridge *bridge)
+void native_system_get_env(Bridge *bridge)
 {
     char *name = Bridge_receiveString(bridge);
     char *value = system_get_env(name);
@@ -48,5 +48,5 @@ void lib_system_register(Bridge *bridge)
     BRIDGE_BIND_NATIVE(system_set_env);
     BRIDGE_BIND_NATIVE(system_get_env);
     //
-    Bridge_register(bridge, "sestima");
+    Bridge_register(bridge, ALIAS_SYSTEM);
 }

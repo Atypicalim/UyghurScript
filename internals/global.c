@@ -2,14 +2,14 @@
 
 #include "../uyghur/uyghur.c"
 
-void ug_read(Bridge *bridge)
+void native_read(Bridge *bridge)
 {
     char *r = system_read_terminal();
     Bridge_returnString(bridge, r);
     pct_free(r);
 }
 
-void ug_write(Bridge *bridge)
+void native_write(Bridge *bridge)
 {
     Value *v = Bridge_nextValue(bridge);
     while (v != NULL)
@@ -20,7 +20,7 @@ void ug_write(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-void ug_trace(Bridge *bridge)
+void native_trace(Bridge *bridge)
 {
     char *msg = "TRACE";
     if (Bridge_topType(bridge) == UG_TYPE_STR) msg = Bridge_receiveString(bridge);
@@ -29,7 +29,7 @@ void ug_trace(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-void ug_import(Bridge *bridge)
+void native_import(Bridge *bridge)
 {
     char *path = Bridge_receiveString(bridge);
     Uyghur *uyghur = bridge->uyghur;
@@ -40,7 +40,7 @@ void ug_import(Bridge *bridge)
     Bridge_returnValue(bridge, box);
 }
 
-void ug_clean(Bridge *bridge)
+void native_clean(Bridge *bridge)
 {
     char *path = Bridge_receiveString(bridge);
     Container_delLocation(bridge->uyghur->executer->globalScope, path);
