@@ -26,7 +26,7 @@ tplYamlDefine = """#define {0} \"{0}\""""
 #
 tplYamlLineLanguage = """{{&{0}, "{1}"}},"""
 tplYamlLineToken = """{{"{0}", "{1}"}},"""
-tplYamlLineAlias = """{{&{0}, "{1}"}},"""
+tplYamlLineAlias = """{{"{0}", "{1}"}},"""
 #
 tmplYamlNameSize = "YAML_SIZE_{0}_{1}"
 tmplYamlNameConf = "YAML_CONF_{0}_{1}"
@@ -133,8 +133,8 @@ def _Yaml2Template(name, varTpl, lineTpl):
 ###############################################################################
 
 _Yaml2Template("LANGUAGES", tplYamlDeclare, tplYamlLineLanguage)
-_Yaml2Template("TOKENS", tplYamlDefine, tplYamlLineToken)
-_Yaml2Template("ALIASES", tplYamlDeclare, tplYamlLineAlias)
+_Yaml2Template("LETTERS", tplYamlDefine, tplYamlLineToken)
+_Yaml2Template("ALIASES", tplYamlDefine, tplYamlLineAlias)
 
 ###############################################################################
 

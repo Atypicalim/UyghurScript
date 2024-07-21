@@ -110,7 +110,7 @@
 
 # define TVALUE_COMMANDS 2, TVALUE_CMD_OUTPUT, TVALUE_CMD_INPUT
 
-const UG_PAIRS UG_ALIAS_MAP[] = {
+const UG_PAIRS UG_LETTERS_MAP[] = {
     // 
     {"qushulghan", TVALUE_SIGN_ADD},
     {"elinghan", TVALUE_SIGN_SUB},

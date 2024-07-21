@@ -1,6 +1,38 @@
 
-#
-ALIAS_EMPTY:
-  en: "test_alias_en"
-  ug: "test_alias_ug"
-  tr: "test_alias_tr"
+# types
+ALIAS_NUM:
+  en: num
+  us: san
+  tr: sayı
+
+# global
+ALIAS_READ:
+  en: read
+  ug: oqush
+  tr: okumak
+ALIAS_WRITE:
+  en: write
+  ug: yezish
+  tr: yazmak
+ALIAS_TRACE:
+  en: trace
+  ug: izlash
+  tr: izlamak
+ALIAS_IMPORT:
+  en: import
+  ug: ekirish
+  tr: içermek
+ALIAS_CLEAN:
+  en: clean
+  ug: tazilash
+  tr: temizlemek
+
+# baord
+ALIAS_BOARD:
+  en: board
+  ug: doska
+  tr: sahne
+ALIAS_BOARD_SHOW:
+  en: show
+  ug: korsitish
+  tr: göstermek

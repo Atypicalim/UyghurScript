@@ -48,7 +48,7 @@ void Object_printByType(char, void *);
 // 
 
 #include "../../build/languages.h"
-#include "../../build/tokens.h"
+#include "../../build/letters.h"
 #include "../../build/aliases.h"
 #include "../../build/configs.h"
 #include "constant.h"
@@ -110,7 +110,7 @@ typedef struct _Tokenizer {
     const char *code;
     Token *head;
     Token *tail;
-    Hashmap *aliasMap;
+    Hashmap *lettersMap;
     Hashmap *wordsMap;
     utf8_iter *iterStatic;
     utf8_iter *iterDynamic;

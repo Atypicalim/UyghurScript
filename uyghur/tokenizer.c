@@ -28,13 +28,13 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     Tokenizer *tokenizer = malloc(sizeof(Tokenizer));
     tokenizer->uyghur = uyghur;
     // alias
-    Hashmap *aliasMap = Hashmap_new();
-    tokenizer->aliasMap = aliasMap;
-    size_t aSize = sizeof(UG_ALIAS_MAP) / sizeof(UG_ALIAS_MAP[0]);
+    Hashmap *lettersMap = Hashmap_new();
+    tokenizer->lettersMap = lettersMap;
+    size_t aSize = sizeof(UG_LETTERS_MAP) / sizeof(UG_LETTERS_MAP[0]);
     for (size_t i = 0; i < aSize; i++) {
-        char *key = (char *)UG_ALIAS_MAP[i].key;
-        char *val = (char *)UG_ALIAS_MAP[i].val;
-        Hashmap_set(aliasMap, key, String_format(val));
+        char *key = (char *)UG_LETTERS_MAP[i].key;
+        char *val = (char *)UG_LETTERS_MAP[i].val;
+        Hashmap_set(lettersMap, key, String_format(val));
     }
     // hashmap
     Hashmap *wordsMap = Hashmap_new();
@@ -57,7 +57,7 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
 Token *Tokenizer_parseLetter(Tokenizer *this, String *letter, bool isGetName)
 {   
     // alias 
-    String *alias = Hashmap_get(this->aliasMap, String_get(letter));
+    String *alias = Hashmap_get(this->lettersMap, String_get(letter));
     if (alias != NULL) {
         // log_debug("tokenizer.replaced: %s -> %s", String_get(letter), String_get(alias));
         letter = alias;
@@ -440,10 +440,10 @@ void Tokenizer_free(Tokenizer *this)
         free(this->iterDynamic);
     }
     // 
-    if (this->aliasMap != NULL)
+    if (this->lettersMap != NULL)
     {
-        Object_release(this->aliasMap);
-        this->aliasMap = NULL;
+        Object_release(this->lettersMap);
+        this->lettersMap = NULL;
     }
     if (this->wordsMap != NULL)
     {
