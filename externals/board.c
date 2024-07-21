@@ -333,7 +333,7 @@ void lib_raylib_main_register(Bridge *bridge)
     Bridge_bindNative(bridge, "fpsElish", ug_baord_get_fps);
     Bridge_bindNative(bridge, "fpsSizish", ug_baord_draw_fps);
     // window
-    Bridge_bindNative(bridge, "korsitish", ug_board_show_window);
+    Bridge_bindNative(bridge, ALIAS_BOARD_SHOW, ug_board_show_window);
     Bridge_bindNative(bridge, "yushurush", ug_baord_hide_window);
     Bridge_bindNative(bridge, "putunIkranmu", ug_baord_is_fullscreen);
     Bridge_bindNative(bridge, "yushurunghanmu", ug_baord_is_hidden);
@@ -367,5 +367,5 @@ void lib_raylib_main_register(Bridge *bridge)
     Bridge_bindNative(bridge, "ikranniResimgeTartipSaxlash", ug_baord_save_screenshot);
     Bridge_bindNative(bridge, "programmaAwaziniBikitish", ug_board_audio_set_volume);
     //
-    Bridge_register(bridge, "doska");
+    Bridge_register(bridge, ALIAS_BOARD);
 }

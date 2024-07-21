@@ -13,9 +13,11 @@
 
 void Uyghur_init(Uyghur *this)
 {
+    log_warn("uyghur.init:");
     this->aliasesMap = Hashmap_new();
     this->lettersMap = Hashmap_new();
     this->wordsMap = Hashmap_new();
+    utils_add_aliases(this);
 }
 
 Uyghur *Uyghur_new()

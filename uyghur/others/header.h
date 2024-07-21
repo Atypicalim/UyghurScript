@@ -32,6 +32,7 @@ bool isTest = false;
 
 typedef char* UG_NAMES;
 typedef const char* UCHAR;
+typedef const char* USTRING;
 typedef struct {
     const char* key;
     const char* val;
@@ -124,6 +125,7 @@ typedef struct _Uyghur {
     Hashmap *aliasesMap;
     Hashmap *lettersMap;
     Hashmap *wordsMap;
+    USTRING language;
     Tokenizer *tokenizer;
     Parser *parser;
     Executer *executer;

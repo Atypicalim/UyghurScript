@@ -9,6 +9,7 @@ tools = builder.tools
 ###############################################################################
 
 VERSION_CODE = 0.2
+SUPPORT_LANG = set()
 SCRIPT_PATH = "./examples/sınav.tr"
 SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
 
@@ -121,6 +122,9 @@ def _Yaml2Template(name, varTpl, lineTpl):
     variables = formatVariables(varTpl, aliases)
     bodies = formatBodies(lineTpl, name, laguages)
     [filterSize, filterConf] = formatFilters(name, laguages)
+    #
+    for lang in laguages:
+        SUPPORT_LANG.add(lang)
     # 
     bldr = builder.code()
     bldr.setInput(f"./uyghur/others/templates/{_name}.tpl.h")
@@ -148,6 +152,10 @@ def _onMacro():
             return code.format(DST_SCRIPT)
         elif command == "SCRIPT_NAME":
             return code.format("*." + SCRIPT_EXT)
+        elif command == "LANGUAGE_COUNT":
+            return code.format(len(SUPPORT_LANG))
+        elif command == "LANGUAGE_ARRAY":
+            return code.format('", "'.join(SUPPORT_LANG))
     return onMacro
 
 # configs
