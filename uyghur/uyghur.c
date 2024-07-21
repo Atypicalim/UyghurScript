@@ -13,7 +13,9 @@
 
 void Uyghur_init(Uyghur *this)
 {
-    //
+    this->aliasesMap = Hashmap_new();
+    this->lettersMap = Hashmap_new();
+    this->wordsMap = Hashmap_new();
 }
 
 Uyghur *Uyghur_new()
@@ -69,6 +71,18 @@ void Uyghur_free(Uyghur *this)
     Executer_free(this->executer);
     Parser_free(this->parser);
     Tokenizer_free(this->tokenizer);
+    // 
+    if (this->lettersMap != NULL)
+    {
+        Object_release(this->lettersMap);
+        this->lettersMap = NULL;
+    }
+    if (this->wordsMap != NULL)
+    {
+        Object_release(this->wordsMap);
+        this->wordsMap = NULL;
+    }
+    //
     free(this);
 }
 

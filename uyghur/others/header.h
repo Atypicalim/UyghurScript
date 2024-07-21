@@ -110,8 +110,6 @@ typedef struct _Tokenizer {
     const char *code;
     Token *head;
     Token *tail;
-    Hashmap *lettersMap;
-    Hashmap *wordsMap;
     utf8_iter *iterStatic;
     utf8_iter *iterDynamic;
 } Tokenizer;
@@ -123,6 +121,9 @@ typedef struct Bridge Bridge;
 
 typedef struct _Uyghur {
     bool running;
+    Hashmap *aliasesMap;
+    Hashmap *lettersMap;
+    Hashmap *wordsMap;
     Tokenizer *tokenizer;
     Parser *parser;
     Executer *executer;

@@ -359,8 +359,24 @@ void utils_set_languages(Uyghur *uyghur, char *tp) {
 }
 
 void utils_add_languages(Uyghur *uyghur, char *tp) {
-    void *lettersMap = uyghur->tokenizer->lettersMap;
-    void *wordsMap = uyghur->tokenizer->wordsMap;
+    void *aliasesMap = uyghur->aliasesMap;
+    void *lettersMap = uyghur->lettersMap;
+    void *wordsMap = uyghur->wordsMap;
+    // letters
+    size_t aSize = sizeof(UG_LETTERS_MAP) / sizeof(UG_LETTERS_MAP[0]);
+    for (size_t i = 0; i < aSize; i++) {
+        char *key = (char *)UG_LETTERS_MAP[i].key;
+        char *val = (char *)UG_LETTERS_MAP[i].val;
+        Hashmap_set(lettersMap, key, String_format(val));
+    }
+    // hashmap
+    size_t wSize = sizeof(UG_WORDS_MAP) / sizeof(UG_WORDS_MAP[0]);
+    for (size_t i = 0; i < wSize; i++) {
+        char *key = (char *)UG_WORDS_MAP[i].key;
+        char *val = (char *)UG_WORDS_MAP[i].val;
+        if (val == NULL) val = key;
+        Hashmap_set(wordsMap, key, String_format(val));
+    }
     // 
     log_warn("helper.letters:");
     int sizeLetters = letters_get_size(tp);
@@ -379,7 +395,7 @@ void utils_add_languages(Uyghur *uyghur, char *tp) {
     {
         PAIR_ALIASES pair = pairAliases[i];
         log_debug("helper.lang %s %s", pair.key, pair.val);
-        Hashmap_set(aliasMap, pair.val, String_format(pair.key));
+        Hashmap_set(aliasesMap, pair.val, String_format(pair.key));
     }
 }
 

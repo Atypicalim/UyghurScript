@@ -27,25 +27,6 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     // init
     Tokenizer *tokenizer = malloc(sizeof(Tokenizer));
     tokenizer->uyghur = uyghur;
-    // alias
-    Hashmap *lettersMap = Hashmap_new();
-    tokenizer->lettersMap = lettersMap;
-    size_t aSize = sizeof(UG_LETTERS_MAP) / sizeof(UG_LETTERS_MAP[0]);
-    for (size_t i = 0; i < aSize; i++) {
-        char *key = (char *)UG_LETTERS_MAP[i].key;
-        char *val = (char *)UG_LETTERS_MAP[i].val;
-        Hashmap_set(lettersMap, key, String_format(val));
-    }
-    // hashmap
-    Hashmap *wordsMap = Hashmap_new();
-    tokenizer->wordsMap = wordsMap;
-    size_t wSize = sizeof(UG_WORDS_MAP) / sizeof(UG_WORDS_MAP[0]);
-    for (size_t i = 0; i < wSize; i++) {
-        char *key = (char *)UG_WORDS_MAP[i].key;
-        char *val = (char *)UG_WORDS_MAP[i].val;
-        if (val == NULL) val = key;
-        Hashmap_set(wordsMap, key, String_format(val));
-    }
     // iters
     tokenizer->iterStatic = malloc(sizeof(utf8_iter));
     tokenizer->iterDynamic = malloc(sizeof(utf8_iter));
@@ -56,14 +37,14 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
 
 Token *Tokenizer_parseLetter(Tokenizer *this, String *letter, bool isGetName)
 {   
-    // alias 
-    String *alias = Hashmap_get(this->lettersMap, String_get(letter));
-    if (alias != NULL) {
+    // letters 
+    String *_letter = Hashmap_get(this->uyghur->lettersMap, String_get(letter));
+    if (_letter != NULL) {
         // log_debug("tokenizer.replaced: %s -> %s", String_get(letter), String_get(alias));
-        letter = alias;
+        letter = _letter;
     }
     // name
-    String *val = Hashmap_get(this->wordsMap, String_get(letter));
+    String *val = Hashmap_get(this->uyghur->wordsMap, String_get(letter));
     if (val == NULL) return Token_new(UG_TTYPE_NAM, String_get(letter));
     // word
     char *type = String_equal(letter, val) ? UG_TTYPE_WRD : String_get(val);
@@ -438,17 +419,6 @@ void Tokenizer_free(Tokenizer *this)
     if (this->iterDynamic) {
         this->iterDynamic->ptr = NULL;
         free(this->iterDynamic);
-    }
-    // 
-    if (this->lettersMap != NULL)
-    {
-        Object_release(this->lettersMap);
-        this->lettersMap = NULL;
-    }
-    if (this->wordsMap != NULL)
-    {
-        Object_release(this->wordsMap);
-        this->wordsMap = NULL;
     }
     //
     this->uyghur = NULL;
