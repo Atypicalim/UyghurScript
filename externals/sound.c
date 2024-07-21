@@ -39,7 +39,7 @@ void raylib_unload_sound_by_tag(char *tag)
 
 // api
 
-void ug_board_sound_load(Bridge *bridge)
+void native_sound_load(Bridge *bridge)
 {
     char *path = Bridge_receiveString(bridge);
     char *tag = get_audio_tag_for_sound(path);
@@ -47,14 +47,14 @@ void ug_board_sound_load(Bridge *bridge)
     Bridge_returnString(bridge, tag);
 }
 
-void ug_board_sound_unload(Bridge *bridge)
+void native_sound_unload(Bridge *bridge)
 {
     char *tag = Bridge_receiveString(bridge);
     raylib_unload_sound_by_tag(tag);
     Bridge_returnEmpty(bridge);
 }
 
-void ug_board_sound_play(Bridge *bridge)
+void native_sound_play(Bridge *bridge)
 {
     char *tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
@@ -62,7 +62,7 @@ void ug_board_sound_play(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-void ug_board_sound_stop(Bridge *bridge)
+void native_sound_stop(Bridge *bridge)
 {
     char *tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
@@ -70,7 +70,7 @@ void ug_board_sound_stop(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-void ug_board_sound_resume(Bridge *bridge)
+void native_sound_resume(Bridge *bridge)
 {
     char *tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
@@ -78,7 +78,7 @@ void ug_board_sound_resume(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-void ug_board_sound_pause(Bridge *bridge)
+void native_sound_pause(Bridge *bridge)
 {
     char *tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
@@ -86,7 +86,7 @@ void ug_board_sound_pause(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-void ug_board_sound_is_playing(Bridge *bridge)
+void native_sound_is_playing(Bridge *bridge)
 {
     char *tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
@@ -94,7 +94,7 @@ void ug_board_sound_is_playing(Bridge *bridge)
     Bridge_returnBoolean(bridge, r);
 }
 
-void ug_board_sound_set_volume(Bridge *bridge)
+void native_sound_set_volume(Bridge *bridge)
 {
     char *tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
@@ -105,19 +105,19 @@ void ug_board_sound_set_volume(Bridge *bridge)
 
 // other
 
-void lib_raylib_sound_register(Bridge *bridge)
+void lib_sound_register(Bridge *bridge)
 {
     //
     Bridge_startBox(bridge);
     //
-    Bridge_bindNative(bridge, "ekirish", ug_board_sound_load);
-    Bridge_bindNative(bridge, "tazilash", ug_board_sound_unload);
-    Bridge_bindNative(bridge, "quyush", ug_board_sound_play);
-    Bridge_bindNative(bridge, "toxtitish", ug_board_sound_stop);
-    Bridge_bindNative(bridge, "turghuzush", ug_board_sound_pause);
-    Bridge_bindNative(bridge, "mangghuzush", ug_board_sound_resume);
-    Bridge_bindNative(bridge, "quyuliwatamdu", ug_board_sound_is_playing);
-    Bridge_bindNative(bridge, "yuqiriliqiniBikitish", ug_board_sound_set_volume);
+    BRIDGE_BIND_NATIVE(sound_load);
+    BRIDGE_BIND_NATIVE(sound_unload);
+    BRIDGE_BIND_NATIVE(sound_play);
+    BRIDGE_BIND_NATIVE(sound_stop);
+    BRIDGE_BIND_NATIVE(sound_pause);
+    BRIDGE_BIND_NATIVE(sound_resume);
+    BRIDGE_BIND_NATIVE(sound_is_playing);
+    BRIDGE_BIND_NATIVE(sound_set_volume);
     //
-    Bridge_register(bridge, "awaz");
+    Bridge_register(bridge, ALIAS_SOUND);
 }

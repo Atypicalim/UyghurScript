@@ -3,7 +3,7 @@
 #include "raylib.h"
 #include "../uyghur/uyghur.c"
 
-void ug_control_show_button(Bridge *bridge)
+void native_control_show_button(Bridge *bridge)
 {
     Rectangle rectangle = rectangle_from_bridge(bridge);
     char *text = Bridge_receiveString(bridge);
@@ -11,7 +11,7 @@ void ug_control_show_button(Bridge *bridge)
     Bridge_returnBoolean(bridge, r);
 }
 
-void ug_control_show_label(Bridge *bridge)
+void native_control_show_label(Bridge *bridge)
 {
     Rectangle rectangle = rectangle_from_bridge(bridge);
     char *text = Bridge_receiveString(bridge);
@@ -21,13 +21,13 @@ void ug_control_show_label(Bridge *bridge)
 
 // other
 
-void lib_raylib_control_register(Bridge *bridge)
+void lib_control_register(Bridge *bridge)
 {
     //
     Bridge_startBox(bridge);
     //
-    Bridge_bindNative(bridge, "kunupkaKorsitish", ug_control_show_button);
-    Bridge_bindNative(bridge, "xetKorsitish", ug_control_show_label);
+    BRIDGE_BIND_NATIVE(control_show_button);
+    BRIDGE_BIND_NATIVE(control_show_label);
     //
-    Bridge_register(bridge, "zapchas");
+    Bridge_register(bridge, ALIAS_CONTROL);
 }

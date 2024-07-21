@@ -1,5 +1,7 @@
 
-############################# global ##########################################
+############################# internals #############################
+
+############################# global
 # console
 ALIAS_read:
   en: read
@@ -24,7 +26,7 @@ ALIAS_clean:
   ug: tazilash
   tr: temizlemek
 
-############################## time #########################################
+############################# time
 ALIAS_TIME:
   ug: "waqit"
 ALIAS_time_get_zone:
@@ -42,7 +44,7 @@ ALIAS_time_get_clock:
 ALIAS_time_sleep_seconds:
   ug: "programminiUxlitish"
 
-################################ system #######################################
+############################# system
 ALIAS_SYSTEM:
   ug: "sestima"
 ALIAS_system_get_name:
@@ -56,7 +58,7 @@ ALIAS_system_set_env:
 ALIAS_system_get_env:
   ug: "muhitQimmitiOqush"
 
-################################# string ######################################
+############################# string
 ALIAS_STRING:
   en: str
   ug: xet
@@ -89,7 +91,7 @@ ALIAS_string_format:
 ALIAS_string_fill:
   ug: "toldurush"
 
-############################ number ###########################################
+############################# number
 ALIAS_NUMBER:
   en: num
   ug: san
@@ -145,7 +147,7 @@ ALIAS_number_int_part:
 ALIAS_number_dec_part:
   ug: "parcheQismighaIrishish"
 
-############################# file ##########################################
+############################# file
 ALIAS_FILE:
   ug: "xojjet"
 ALIAS_file_write:
@@ -167,20 +169,206 @@ ALIAS_file_is_directory:
 ALIAS_file_create_directory:
   ug: "somkaQurush"
 
-############################## box #########################################
+############################# box
 ALIAS_BOX:
   ug: "sanduq"
 ALIAS_box_loop:
   ug: "dewriylesh"
 
-############################## baord #########################################
-ALIAS_BOARD:
-  en: board
+############################# external #############################
+
+############################# stage
+ALIAS_STAGE:
+  en: stage
   ug: doska
   tr: sahne
-ALIAS_BOARD_SHOW:
+# ALIAS_STAGE_ON_SHOW:
+#   ug: doska_korsitish_qayturmisi
+# ALIAS_STAGE_ON_DRAW:
+#   ug: doska_sizish_qayturmisi
+ALIAS_stage_set_log:
+  ug: logDerijisiniBikitish
+ALIAS_stage_set_fps:
+  ug: fpsBikitish
+ALIAS_stage_get_fps:
+  ug: fpsElish
+ALIAS_stage_draw_fps:
+  ug: fpsSizish
+ALIAS_stage_show_window:
   en: show
   ug: korsitish
   tr: göstermek
+ALIAS_stage_hide_window:
+  ug: yushurush
+ALIAS_stage_is_fullscreen:
+  ug: putunIkranmu
+ALIAS_stage_is_hidden:
+  ug: yushurunghanmu
+ALIAS_stage_is_minimized:
+  ug: kichiklitilgenmu
+ALIAS_stage_is_maximized:
+  ug: chongaytilghanmu
+ALIAS_stage_toggle_fullscreen:
+  ug: putunIkranHalitiniAlmashturush
+ALIAS_stage_set_minimize:
+  ug: kichiklitish
+ALIAS_stage_set_maximize:
+  ug: chongaytish
+ALIAS_stage_set_normalize:
+  ug: normallashturush
+ALIAS_stage_set_title:
+  ug: temaBikitish
+ALIAS_stage_set_icon:
+  ug: sibelgeBikitish
+ALIAS_stage_set_position:
+  ug: orniniBikitish
+ALIAS_stage_get_position:
+  ug: orniniElish
+ALIAS_stage_set_size:
+  ug: chongliqiniBikitish
+ALIAS_stage_get_size:
+  ug: chongliqiniElish
+ALIAS_stage_set_min_size:
+  ug: engKichikChongliqiniBikitish
+ALIAS_stage_show_cursor:
+  ug: istirilkaKorsitish
+ALIAS_stage_enable_cursor:
+  ug: istirilkaQozghitish
+ALIAS_stage_have_cursor:
+  ug: istirilkaIchidimu
+ALIAS_stage_set_clipboard:
+  ug: chaplashTaxtisiniBikitish
+ALIAS_stage_get_clipboard:
+  ug: chaplashTaxtisiniElish
+ALIAS_stage_set_mourse_cursor:
+  ug: mausIstirilkaBelgisiniBikitish
+ALIAS_stage_get_mouse_position:
+  ug: mausIstirilkaOrniniElish
+ALIAS_stage_get_mouse_wheel:
+  ug: mausAylanmaOrniniElish
+ALIAS_stage_get_mouse_key_action:
+  ug: mausKunupkisiHerkitiniElish
+ALIAS_stage_get_mouse_key_state:
+  ug: mausKunupkisiHalitiniElish
+ALIAS_stage_get_keyboard_key_action:
+  ug: tahtayKunupkisiHerkitiniElish
+ALIAS_stage_get_keyboard_key_state:
+  ug: tahtayKunupkisiHalitiniElish
+ALIAS_stage_save_screenshot:
+  ug: ikranniResimgeTartipSaxlash
+ALIAS_stage_audio_set_volume:
+  ug: programmaAwaziniBikitish
 
-#######################################################################
+############################# baord
+ALIAS_BOARD:
+  en: board
+  ug: ressam
+  tr: tahta
+ALIAS_board_draw_start:
+  ug: sizishniBashlash
+ALIAS_board_draw_end:
+  ug: sizishniTamamlash
+# draw point & line
+ALIAS_board_draw_pixel:
+  ug: nuqtaSizish
+ALIAS_board_draw_line_no_controll:
+  ug: siziqSizish
+ALIAS_board_draw_line_one_controll:
+  ug: siziqSizishBirKontrolluq
+ALIAS_board_draw_line_two_controll:
+  ug: siziqSizishIkkiKontirolluq
+# draw rectangle
+ALIAS_board_draw_rectangle_fill_transformed:
+  ug: rayunToldurushAylandurulghan
+ALIAS_board_draw_rectangle_fill_colorful:
+  ug: rayunToldurushRenggareng
+ALIAS_board_draw_rectangle_fill_round:
+  ug: rayunToldurushSiliqlanghan
+ALIAS_board_draw_rectangle_stroke:
+  ug: rayunSizishSiliqlanghan
+# draw circle & ring
+ALIAS_board_draw_circle_fill:
+  ug: chemberToldurush
+ALIAS_board_draw_circle_stroke:
+  ug: chemberSizish
+ALIAS_board_draw_ring_fill:
+  ug: uzukToldurush
+ALIAS_board_draw_ring_stroke:
+  ug: uzukSizish
+# draw triangle & polygon
+ALIAS_board_draw_triangle_fill:
+  ug: uchTereplikToldurush
+ALIAS_board_draw_triangle_stroke:
+  ug: uchTereplikSizish
+ALIAS_board_draw_polygon_fill:
+  ug: kopTereplikToldurush
+ALIAS_board_draw_polygon_stroke:
+  ug: kopTereplikSizish
+# font
+ALIAS_board_draw_text:
+  ug: xetYezish
+ALIAS_board_measure_text:
+  ug: xetMolcherlesh
+# texture
+ALIAS_board_create_texture_from_image:
+  ug: resimEkirish
+ALIAS_board_create_texture_from_text:
+  ug: xetEkirish
+ALIAS_board_draw_texture_by_tag:
+  ug: tamghaBesish
+
+############################# music
+ALIAS_MUSIC:
+  ug: muzika
+ALIAS_music_load:
+  ug: ekirish
+ALIAS_music_unload:
+  ug: tazilash
+ALIAS_music_play:
+  ug: quyush
+ALIAS_music_stop:
+  ug: toxtitish
+ALIAS_music_pause:
+  ug: turghuzush
+ALIAS_music_resume:
+  ug: mangghuzush
+ALIAS_music_is_playing:
+  ug: quyuliwatamdu
+ALIAS_music_set_volume:
+  ug: yuqiriliqiniBikitish
+ALIAS_music_update:
+  ug: yingilash
+ALIAS_music_get_length:
+  ug: uzunliqiniElish
+ALIAS_music_get_position:
+  ug: orniniElish
+ALIAS_music_set_position:
+  ug: orniniBikitish
+
+############################# sound
+ALIAS_SOUND:
+  ug: awaz
+ALIAS_sound_load:
+  ug: ekirish
+ALIAS_sound_unload:
+  ug: tazilash
+ALIAS_sound_play:
+  ug: quyush
+ALIAS_sound_stop:
+  ug: toxtitish
+ALIAS_sound_pause:
+  ug: turghuzush
+ALIAS_sound_resume:
+  ug: mangghuzush
+ALIAS_sound_is_playing:
+  ug: quyuliwatamdu
+ALIAS_sound_set_volume:
+  ug: yuqiriliqiniBikitish
+
+############################# control
+ALIAS_CONTROL:
+  ug: zapchas
+ALIAS_control_show_button:
+  ug: kunupkaKorsitish
+ALIAS_control_show_label:
+  ug: xetKorsitish

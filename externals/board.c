@@ -1,371 +1,526 @@
 // baord
 
 #include "raylib.h"
-#define RAYGUI_IMPLEMENTATION
-#include "src/raygui.h"  
-#include "styles/ashes/ashes.h"  
 #include "../uyghur/uyghur.c"
-
-// data
-Bridge *uyghurBridge;
-Hashmap *resourcesMap;
-Font defaultFont;
-Image defaultImage;
-Texture2D defaultTexture;
-
-// callback
-
-void raylib_on_show()
-{
-    // SetTargetFPS(60);
-    Bridge_startFunc(uyghurBridge);
-    Bridge_call(uyghurBridge, "doska_korsitish_qayturmisi");
-}
-
-void raylib_on_frame()
-{
-    Bridge_startFunc(uyghurBridge);
-    Bridge_call(uyghurBridge, "doska_sizish_qayturmisi");
-    // DrawFPS(10, 10);
-}
-
-void raylib_on_focus()
-{
-    // RLAPI bool IsWindowFocused(void);
-}
-
-void raylib_on_resize()
-{
-    // RLAPI bool IsWindowResized(void); 
-}
-
-void raylib_on_drop()
-{
-    // RLAPI bool IsFileDropped(void);                                   // Check if a file has been dropped into window
-    // RLAPI char **GetDroppedFiles(int *count);                         // Get dropped files names (memory should be freed)
-    // RLAPI void ClearDroppedFiles(void); 
-
-}
-
-void raylib_on_hide()
-{
-
-}
 
 // tool
 
-void raylib_run_program(int width, int height, char *title, int mode)
+Color color_from_bridge(Bridge *bridge)
 {
-    if (IsWindowReady()) return;
-    if (width < 0) width = 500;
-    if (height < 0) height = 500;
-    if (strlen(title) == 0) title = "Uyghur Script!";
-    if (mode < 0) mode = FLAG_WINDOW_RESIZABLE;
-    SetConfigFlags(mode);
-    InitWindow(width, height, title);
-    InitAudioDevice();
-    GuiLoadStyleAshes();
-    defaultFont = GetFontDefault();
-    defaultImage = GenImageGradientRadial(300, 300, 0, (Color){255, 255, 255, 50}, (Color){0, 0, 0, 50});
-    defaultTexture = LoadTextureFromImage(defaultImage);
-    raylib_on_show();
-    while (!WindowShouldClose())
-    {
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-        raylib_on_frame();
-        EndDrawing();
+    char *str = Bridge_receiveString(bridge);
+    int len = strlen(str);
+    if (len != 6 && len != 8) return BLACK;
+    int r = char_to_int(str[0]) * 16 + char_to_int(str[1]);
+    int g = char_to_int(str[2]) * 16 + char_to_int(str[3]);
+    int b = char_to_int(str[4]) * 16 + char_to_int(str[5]);
+    int a = len == 6 ? 255 : char_to_int(str[6]) * 16 + char_to_int(str[7]);;
+    return (Color){r, g, b, a};
+}
+
+Vector2 vector_from_bridge(Bridge *bridge)
+{
+    float x = Bridge_receiveNumber(bridge);
+    float y = Bridge_receiveNumber(bridge);
+    return (Vector2){x, y};
+}
+
+Rectangle rectangle_from_bridge(Bridge *bridge)
+{
+    float x = Bridge_receiveNumber(bridge);
+    float y = Bridge_receiveNumber(bridge);
+    float w = Bridge_receiveNumber(bridge);
+    float h = Bridge_receiveNumber(bridge);
+    return (Rectangle){x, y, w, h};
+}
+
+Image raylib_load_image(char *path)
+{
+    if (path == NULL) path = "";
+    if (strlen(path) == 0) return defaultImage;
+    Image *img;
+    img = Hashmap_get(resourcesMap, path);
+    if (img != NULL) {
+        return img[0];
     }
-    CloseAudioDevice();
-    CloseWindow();
-    raylib_on_hide();
-}
-
-// api
-
-void ug_baord_set_log(Bridge *bridge)
-{
-    int level = Bridge_receiveNumber(bridge);
-    SetTraceLogLevel(level);
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_baord_set_fps(Bridge *bridge)
-{
-    SetTargetFPS(Bridge_receiveNumber(bridge));
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_baord_get_fps(Bridge *bridge)
-{
-    Bridge_returnNumber(bridge, GetFPS());
-}
-
-void ug_baord_draw_fps(Bridge *bridge)
-{
-    int x = Bridge_receiveNumber(bridge);
-    int y = Bridge_receiveNumber(bridge);
-    DrawFPS(x, y);
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_board_show_window(Bridge *bridge)
-{
-    int w = Bridge_receiveNumber(bridge);
-    int h = Bridge_receiveNumber(bridge);
-    char *title = Bridge_receiveString(bridge);
-    int mode = Bridge_receiveNumber(bridge);
-    raylib_run_program(w, h, title, mode);
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_baord_hide_window(Bridge *bridge)
-{
-    if (IsWindowReady()) CloseWindow();
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_baord_is_fullscreen(Bridge *bridge)
-{
-    Bridge_returnBoolean(bridge, IsWindowFullscreen());
-}
-
-void ug_baord_is_hidden(Bridge *bridge)
-{
-    Bridge_returnBoolean(bridge, IsWindowHidden());
-}
-
-void ug_baord_is_minimized(Bridge *bridge)
-{
-    Bridge_returnBoolean(bridge, IsWindowMinimized());
-}
-
-void ug_baord_is_maximized(Bridge *bridge)
-{
-    Bridge_returnBoolean(bridge, IsWindowMaximized());
-}
-
-void ug_baord_toggle_fullscreen(Bridge *bridge)
-{
-    ToggleFullscreen();
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_baord_set_minimize(Bridge *bridge)
-{
-    MinimizeWindow();
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_baord_set_maximize(Bridge *bridge)
-{
-    MaximizeWindow();
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_baord_set_normalize(Bridge *bridge)
-{
-    RestoreWindow();
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_baord_set_title(Bridge *bridge)
-{
-    SetWindowTitle(Bridge_receiveString(bridge));
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_baord_set_icon(Bridge *bridge)
-{
-    char *path = Bridge_receiveString(bridge);
     Image image = LoadImage(path);
-    SetWindowIcon(image);
+    if (!image.data) image = defaultImage;
+    img = (Image *)malloc(sizeof(image));
+    img[0] = image;
+    Hashmap_set(resourcesMap, path, img);
+    return image;
+}
+
+void raylib_unload_image(char *path)
+{
+    if (path == NULL) path = "";
+    Image *img = Hashmap_get(resourcesMap, path);
+    if (img == NULL) return;
+    Hashmap_del(resourcesMap, path);
+    Image image = img[0];
+    UnloadImage(image);
+    free(img);
+}
+
+Font raylib_load_font(char *path)
+{
+    if (path == NULL) path = "";
+    if (strlen(path) == 0) return defaultFont;
+    Font *fnt;
+    fnt = Hashmap_get(resourcesMap, path);
+    if (fnt != NULL) {
+        return fnt[0];
+    }
+    Font font = LoadFont(path);
+    fnt = (Font *)malloc(sizeof(font));
+    fnt[0] = font;
+    Hashmap_set(resourcesMap, path, fnt);
+    return font;
+}
+
+void raylib_unload_font(char *path)
+{
+    if (path == NULL) path = "";
+    Font *fnt = Hashmap_get(resourcesMap, path);
+    if (fnt == NULL) return;
+    Hashmap_del(resourcesMap, path);
+    Font image = fnt[0];
+    UnloadFont(image);
+    free(fnt);
+}
+
+typedef struct ImgInfo {
+    char *path;
+    int x;
+    int y;
+    int w;
+    int h;
+    bool flipX;
+    bool flipY;
+} ImgInfo;
+
+char *get_texture_tag_for_image(ImgInfo info)
+{
+    int x = info.x;
+    int y = info.y;
+    int w = info.w;
+    int h = info.h;
+    return tools_format(
+        "<R-IMAGE:%s:%d,%d:%d,%d:%s,%s>",
+        info.path,
+        x, y, w, h,
+        b2s(info.flipX), b2s(info.flipY)
+    );
+}
+
+Texture raylib_create_texture_from_image(ImgInfo info, char *tag)
+{
+    Texture *tex = Hashmap_get(resourcesMap, tag);
+    if (tex != NULL) {
+        return tex[0];
+    }
+    //
+    int x = info.x;
+    int y = info.y;
+    int w = info.w;
+    int h = info.h;
+    //
+    Image img = raylib_load_image(info.path);
+    int imgW = img.width;
+    int imgH = img.height;
+    x = MAX(0, MIN(x, imgW - 1));
+    y = MAX(0, MIN(y, imgH - 1));
+    int leftX = imgW - x;
+    int leftY = imgH - y;
+    w = MAX(1, MIN((w <= 0 ? imgW : w), leftX));
+    h = MAX(1, MIN((h <= 0 ? imgH : h), leftY));
+    img = ImageFromImage(img, (Rectangle){x, y, w, h});
+    //
+    if (info.flipX) ImageFlipHorizontal(&img);
+    if (info.flipY) ImageFlipVertical(&img);
+    //
+    Texture texture = LoadTextureFromImage(img);
+    tex = (Texture *)malloc(sizeof(texture));
+    tex[0] = texture;
+    Hashmap_set(resourcesMap, tag, tex);
+    UnloadImage(img);
+    return texture;
+}
+
+typedef struct TxtInfo {
+    char *path;
+    char *text;
+    float size;
+    float spacing;
+} TxtInfo;
+
+char *get_texture_tag_for_text(TxtInfo info)
+{
+    return tools_format(
+        "<R-TEXT:%s:%s:%d:%d>",
+        info.path,
+        info.text,
+        info.size,
+        info.spacing
+    );
+}
+
+Texture raylib_create_texture_from_text(TxtInfo info, char *tag)
+{
+    Texture *tex = Hashmap_get(resourcesMap, tag);
+    if (tex != NULL) {
+        return tex[0];
+    }
+    Font font = raylib_load_font(info.path);
+    Image img = ImageTextEx(font, info.text, info.size, info.spacing, WHITE);
+    Texture texture = LoadTextureFromImage(img);
+    tex = (Texture *)malloc(sizeof(texture));
+    tex[0] = texture;
+    Hashmap_set(resourcesMap, tag, tex);
+    UnloadImage(img);
+    return texture;
+}
+
+Texture ralib_get_texture_by_tag(char *tag)
+{
+    Texture *tex = Hashmap_get(resourcesMap, tag);
+    if (tex == NULL) return defaultTexture;
+    return tex[0];
+}
+
+void raylib_draw_texture_by_texture(
+    Texture texture,
+    int x, int y,
+    float anchorX, float anchorY,
+    Color color,
+    int fromX, int fromY, int width, int height,
+    float rotation,
+    float scale
+)
+{
+    //
+    fromX = MAX(0, MIN(fromX, texture.width - 1));
+    fromY = MAX(0, MIN(fromY, texture.height - 1));
+    int leftX = texture.width - fromX;
+    int leftY = texture.height - fromY;
+    width = MAX(1, MIN((width <= 0 ? texture.width : width), leftX));
+    height = MAX(1, MIN((height <= 0 ? texture.height : height), leftY));
+    //
+    Rectangle source = (Rectangle){fromX, fromY, width, height};
+    float destW = width * scale;
+    float destH = height * scale;
+    float destX = x;
+    float destY = y;
+    Rectangle dest = (Rectangle){destX, destY, destW, destH};
+    Vector2 origin = (Vector2){destW * anchorX, destH * anchorY};
+    DrawTextureTiled(texture, source, dest, origin, rotation, scale, color);
+}
+
+// draw
+
+void native_board_draw_start(Bridge *bridge)
+{
+    BeginDrawing();
     Bridge_returnEmpty(bridge);
 }
 
-void ug_baord_set_position(Bridge *bridge)
+void native_board_draw_end(Bridge *bridge)
 {
+    EndDrawing();
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_pixel(Bridge *bridge)
+{
+    Vector2 poit = vector_from_bridge(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawPixelV(poit, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_line_no_controll(Bridge *bridge)
+{
+    Vector2 poit1 = vector_from_bridge(bridge);
+    Vector2 poit2 = vector_from_bridge(bridge);
+    int thickness = Bridge_receiveNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawLineEx(poit1, poit2, thickness, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_line_one_controll(Bridge *bridge)
+{
+    Vector2 poit1 = vector_from_bridge(bridge);
+    Vector2 poit2 = vector_from_bridge(bridge);
+    int thickness = Bridge_receiveNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    Vector2 controll1 = vector_from_bridge(bridge);
+    DrawLineEx(poit1, poit2, thickness, color);
+    DrawLineBezierQuad(poit1, poit2, controll1, thickness, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_line_two_controll(Bridge *bridge)
+{
+    Vector2 poit1 = vector_from_bridge(bridge);
+    Vector2 poit2 = vector_from_bridge(bridge);
+    int thickness = Bridge_receiveNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    Vector2 controll1 = vector_from_bridge(bridge);
+    Vector2 controll2 = vector_from_bridge(bridge);
+    DrawLineEx(poit1, poit2, thickness, color);
+    DrawLineBezierCubic(poit1, poit2, controll1, controll1, thickness, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_rectangle_fill_transformed(Bridge *bridge)
+{
+    Rectangle rectangle = rectangle_from_bridge(bridge);
+    Color color = color_from_bridge(bridge);
+    Vector2 anchor = vector_from_bridge(bridge);
+    anchor.x = anchor.x * rectangle.width;
+    anchor.y = anchor.y * rectangle.height;
+    float rotation = Bridge_receiveNumber(bridge);
+    DrawRectanglePro(rectangle, anchor, rotation, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_rectangle_fill_colorful(Bridge *bridge)
+{
+    Rectangle rectangle = rectangle_from_bridge(bridge);
+    Color leftTop = color_from_bridge(bridge);
+    Color leftBottom = color_from_bridge(bridge);
+    Color rightBottom = color_from_bridge(bridge);
+    Color rightTop = color_from_bridge(bridge);
+    DrawRectangleGradientEx(rectangle, leftTop, leftBottom, rightBottom, rightTop);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_rectangle_fill_round(Bridge *bridge)
+{
+    Rectangle rectangle = rectangle_from_bridge(bridge);
+    Color color = color_from_bridge(bridge);
+    int roundness = Bridge_receiveNumber(bridge);
+    DrawRectangleRounded(rectangle, roundness, 0, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_rectangle_stroke(Bridge *bridge)
+{
+    Rectangle rectangle = rectangle_from_bridge(bridge);
+    Color color = color_from_bridge(bridge);
+    double roundness = Bridge_receiveNumber(bridge);
+    double thickness = Bridge_receiveNumber(bridge);
+    DrawRectangleRoundedLines(rectangle, roundness, 0, thickness, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_circle_fill(Bridge *bridge)
+{
+    int centerX = Bridge_receiveNumber(bridge);
+    int centerY = Bridge_receiveNumber(bridge);
+    int radiusH = Bridge_receiveNumber(bridge);
+    int radiusV = Bridge_receiveNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawEllipse(centerX, centerY, radiusH, radiusV, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_circle_stroke(Bridge *bridge)
+{
+    int centerX = Bridge_receiveNumber(bridge);
+    int centerY = Bridge_receiveNumber(bridge);
+    int radiusH = Bridge_receiveNumber(bridge);
+    int radiusV = Bridge_receiveNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawEllipseLines(centerX, centerY, radiusH, radiusV, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_ring_fill(Bridge *bridge)
+{
+    Vector2 center = vector_from_bridge(bridge);
+    double innerRadius = Bridge_receiveNumber(bridge);
+    double outerRadius = Bridge_receiveNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    double startAngle = Bridge_receiveNumber(bridge);
+    double endAngle = Bridge_receiveNumber(bridge);
+    DrawRing(center, innerRadius, outerRadius, startAngle, endAngle, 0, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_ring_stroke(Bridge *bridge)
+{
+    Vector2 center = vector_from_bridge(bridge);
+    double innerRadius = Bridge_receiveNumber(bridge);
+    double outerRadius = Bridge_receiveNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    double startAngle = Bridge_receiveNumber(bridge);
+    double endAngle = Bridge_receiveNumber(bridge);
+    DrawRingLines(center, innerRadius, outerRadius, startAngle, endAngle, 0, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_triangle_fill(Bridge *bridge)
+{
+    Vector2 point1 = vector_from_bridge(bridge);
+    Vector2 point2 = vector_from_bridge(bridge);
+    Vector2 point3 = vector_from_bridge(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawTriangle(point1, point2, point3, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_triangle_stroke(Bridge *bridge)
+{
+    Vector2 point1 = vector_from_bridge(bridge);
+    Vector2 point2 = vector_from_bridge(bridge);
+    Vector2 point3 = vector_from_bridge(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawTriangleLines(point1, point2, point3, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_polygon_fill(Bridge *bridge)
+{
+    Vector2 center = vector_from_bridge(bridge);
+    int sides = Bridge_receiveNumber(bridge);
+    double radius = Bridge_receiveNumber(bridge);
+    double rotation = Bridge_receiveNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawPoly(center, sides, radius, rotation, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_draw_polygon_stroke(Bridge *bridge)
+{
+    Vector2 center = vector_from_bridge(bridge);
+    int sides = Bridge_receiveNumber(bridge);
+    double radius = Bridge_receiveNumber(bridge);
+    double rotation = Bridge_receiveNumber(bridge);
+    double thickness = Bridge_receiveNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    DrawPolyLinesEx(center, sides, radius, rotation, thickness, color);
+    Bridge_returnEmpty(bridge);
+}
+
+// text
+
+void native_board_draw_text(Bridge *bridge)
+{
+    char *font = Bridge_receiveString(bridge);
+    char *text = Bridge_receiveString(bridge);
+    float size = Bridge_receiveNumber(bridge);
+    float spacing = Bridge_receiveNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    Vector2 position = vector_from_bridge(bridge);
+    Font fnt = raylib_load_font(font);
+    DrawTextEx(fnt, text, position, size, spacing, color);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_board_measure_text(Bridge *bridge)
+{
+    char *font = Bridge_receiveString(bridge);
+    char *text = Bridge_receiveString(bridge);
+    float size = Bridge_receiveNumber(bridge);
+    float spacing = Bridge_receiveNumber(bridge);
+    Font fnt = raylib_load_font(font);
+    Vector2 space = MeasureTextEx(fnt, text, size, spacing);
+    Bridge_returnNumber(bridge, space.x);
+}
+
+// image texture
+
+void native_board_create_texture_from_image(Bridge *bridge)
+{
+    char *image = Bridge_receiveString(bridge);
     int x = Bridge_receiveNumber(bridge);
     int y = Bridge_receiveNumber(bridge);
-    SetWindowPosition(x, y);
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_baord_get_position(Bridge *bridge)
-{
-    Vector2 vector2 = GetWindowPosition();
-    Bridge_returnNumbers(bridge, 2, vector2.x, vector2.y);
-}
-
-void ug_baord_set_size(Bridge *bridge)
-{
     int w = Bridge_receiveNumber(bridge);
     int h = Bridge_receiveNumber(bridge);
-    SetWindowSize(w, h); 
-    Bridge_returnEmpty(bridge);
+    bool flipX = Bridge_receiveBoolean(bridge);
+    bool flipY = Bridge_receiveBoolean(bridge);
+    ImgInfo info = (ImgInfo) {image, x, y, w, h, flipX, flipY};
+    char *tag = get_texture_tag_for_image(info);
+    Texture texture = raylib_create_texture_from_image(info, tag);
+    Bridge_returnString(bridge, tag);
+    free(tag);
 }
 
-void ug_baord_get_size(Bridge *bridge)
+// text texture
+
+void native_board_create_texture_from_text(Bridge *bridge)
 {
-    Bridge_returnNumbers(bridge, 2, GetScreenWidth(), GetScreenHeight());
+    char *font = Bridge_receiveString(bridge);
+    char *text = Bridge_receiveString(bridge);
+    float size = Bridge_receiveNumber(bridge);
+    float spacing = Bridge_receiveNumber(bridge);
+    TxtInfo info = (TxtInfo) {font, text, size, spacing};
+    char *tag = get_texture_tag_for_text(info);
+    Texture texture = raylib_create_texture_from_text(info, tag);
+    Bridge_returnString(bridge, tag);
+    free(tag);
 }
 
-void ug_baord_set_min_size(Bridge *bridge)
-{
-    int w = Bridge_receiveNumber(bridge);
-    int h = Bridge_receiveNumber(bridge);
-    SetWindowMinSize(w, h);
-    Bridge_returnEmpty(bridge);
-}
+// texture
 
-void ug_baord_show_cursor(Bridge *bridge)
+void native_board_draw_texture_by_tag(Bridge *bridge)
 {
-    bool b = Bridge_receiveBoolean(bridge);
-    if (b) ShowCursor();
-    if (!b) HideCursor();
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_baord_enable_cursor(Bridge *bridge)
-{
-    bool b = Bridge_receiveBoolean(bridge);
-    if (b) EnableCursor();
-    if (!b) DisableCursor();
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_baord_have_cursor(Bridge *bridge)
-{
-    Bridge_returnBoolean(bridge, IsCursorOnScreen());
-} 
-
-void ug_baord_set_clipboard(Bridge *bridge)
-{
-    char *c = Bridge_receiveString(bridge);
-    SetClipboardText(c);
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_baord_get_clipboard(Bridge *bridge)
-{
-    char *r = (char*)GetClipboardText();
-    Bridge_returnString(bridge, r);
-}
-
-void ug_baord_set_mourse_cursor(Bridge *bridge)
-{
-    int c = Bridge_receiveNumber(bridge);
-    SetMouseCursor(c);
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_baord_get_mouse_position(Bridge *bridge)
-{
-    Bridge_returnNumbers(bridge, 2, GetMouseX(), GetMouseY());
-}
-
-void ug_baord_get_mouse_wheel(Bridge *bridge)
-{
-    Bridge_returnNumber(bridge, GetMouseWheelMove());
-}
-
-void ug_baord_get_mouse_key_action(Bridge *bridge)
-{
-    int keyCode = Bridge_receiveNumber(bridge);
-    int action = 0;
-    if (IsMouseButtonPressed(keyCode)) action = 1;
-    if (IsMouseButtonReleased(keyCode)) action = -1;
-    Bridge_returnNumber(bridge, action);
-}
-
-void ug_baord_get_mouse_key_state(Bridge *bridge)
-{
-    int keyCode = Bridge_receiveNumber(bridge);
-    int action = 0;
-    if (IsMouseButtonDown(keyCode)) action = 1;
-    if (IsMouseButtonUp(keyCode)) action = -1;
-    Bridge_returnNumber(bridge, action);
-}
-
-void ug_baord_get_keyboard_key_action(Bridge *bridge)
-{
-    int keyCode = Bridge_receiveNumber(bridge);
-    int action = 0;
-    if (IsKeyPressed(keyCode)) action = 1;
-    if (IsKeyReleased(keyCode)) action = -1;
-    Bridge_returnNumber(bridge, action);
-}
-
-void ug_baord_get_keybaord_key_state(Bridge *bridge)
-{
-    int keyCode = Bridge_receiveNumber(bridge);
-    int action = 0;
-    if (IsKeyDown(keyCode)) action = 1;
-    if (IsKeyUp(keyCode)) action = -1;
-    Bridge_returnNumber(bridge, action);
-}
-
-void ug_baord_save_screenshot(Bridge *bridge)
-{
-    char *path = Bridge_receiveString(bridge);
-    TakeScreenshot(path);
-    Bridge_returnEmpty(bridge);
-}
-
-void ug_board_audio_set_volume(Bridge *bridge)
-{
-    float v = Bridge_receiveNumber(bridge);
-    SetMasterVolume(v);
+    char *tag = Bridge_receiveString(bridge);
+    int x = Bridge_receiveNumber(bridge);
+    int y = Bridge_receiveNumber(bridge);
+    float anchorX = Bridge_receiveNumber(bridge);
+    float anchorY = Bridge_receiveNumber(bridge);
+    Color color = color_from_bridge(bridge);
+    int fromX = Bridge_receiveNumber(bridge);
+    int fromY = Bridge_receiveNumber(bridge);
+    int width = Bridge_receiveNumber(bridge);
+    int height = Bridge_receiveNumber(bridge);
+    float rotation = Bridge_receiveNumber(bridge);
+    float scale = Bridge_receiveNumber(bridge);
+    //
+    Texture texture = ralib_get_texture_by_tag(tag);
+    raylib_draw_texture_by_texture(texture, x, y, anchorX, anchorY, color, fromX, fromY, width, height, rotation, scale);
+    //
     Bridge_returnEmpty(bridge);
 }
 
 // other
 
-void lib_raylib_main_register(Bridge *bridge)
+void lib_board_register(Bridge *bridge)
 {
-    uyghurBridge = bridge;
-    resourcesMap = Hashmap_new(NULL);
     //
     Bridge_startBox(bridge);
-    // settings
-    Bridge_bindNative(bridge, "logDerijisiniBikitish", ug_baord_set_log);
-    Bridge_bindNative(bridge, "fpsBikitish", ug_baord_set_fps);
-    Bridge_bindNative(bridge, "fpsElish", ug_baord_get_fps);
-    Bridge_bindNative(bridge, "fpsSizish", ug_baord_draw_fps);
-    // window
-    Bridge_bindNative(bridge, "korsitish", ug_board_show_window);
-    Bridge_bindNative(bridge, "yushurush", ug_baord_hide_window);
-    Bridge_bindNative(bridge, "putunIkranmu", ug_baord_is_fullscreen);
-    Bridge_bindNative(bridge, "yushurunghanmu", ug_baord_is_hidden);
-    Bridge_bindNative(bridge, "kichiklitilgenmu", ug_baord_is_minimized);
-    Bridge_bindNative(bridge, "chongaytilghanmu", ug_baord_is_maximized);
-    Bridge_bindNative(bridge, "putunIkranHalitiniAlmashturush", ug_baord_toggle_fullscreen);
-    Bridge_bindNative(bridge, "kichiklitish", ug_baord_set_minimize);
-    Bridge_bindNative(bridge, "chongaytish", ug_baord_set_maximize);
-    Bridge_bindNative(bridge, "normallashturush", ug_baord_set_normalize);
-    Bridge_bindNative(bridge, "temaBikitish", ug_baord_set_title);
-    Bridge_bindNative(bridge, "sibelgeBikitish", ug_baord_set_icon);
-    Bridge_bindNative(bridge, "orniniBikitish", ug_baord_set_position);
-    Bridge_bindNative(bridge, "orniniElish", ug_baord_get_position);
-    Bridge_bindNative(bridge, "chongliqiniBikitish", ug_baord_set_size);
-    Bridge_bindNative(bridge, "chongliqiniElish", ug_baord_get_size);
-    Bridge_bindNative(bridge, "engKichikChongliqiniBikitish", ug_baord_set_min_size);
-    Bridge_bindNative(bridge, "istirilkaKorsitish", ug_baord_show_cursor);
-    Bridge_bindNative(bridge, "istirilkaQozghitish", ug_baord_enable_cursor);
-    Bridge_bindNative(bridge, "istirilkaIchidimu", ug_baord_have_cursor);
-    // system
-    Bridge_bindNative(bridge, "chaplashTaxtisiniBikitish", ug_baord_set_clipboard);
-    Bridge_bindNative(bridge, "chaplashTaxtisiniElish", ug_baord_get_clipboard);
-    Bridge_bindNative(bridge, "mausIstirilkaBelgisiniBikitish", ug_baord_set_mourse_cursor);
-    Bridge_bindNative(bridge, "mausIstirilkaOrniniElish", ug_baord_get_mouse_position);
-    Bridge_bindNative(bridge, "mausAylanmaOrniniElish", ug_baord_get_mouse_wheel);
-    Bridge_bindNative(bridge, "mausKunupkisiHerkitiniElish", ug_baord_get_mouse_key_action);
-    Bridge_bindNative(bridge, "mausKunupkisiHalitiniElish", ug_baord_get_mouse_key_state);
-    Bridge_bindNative(bridge, "tahtayKunupkisiHerkitiniElish", ug_baord_get_keyboard_key_action);
-    Bridge_bindNative(bridge, "tahtayKunupkisiHalitiniElish", ug_baord_get_keybaord_key_state);
-    // other
-    Bridge_bindNative(bridge, "ikranniResimgeTartipSaxlash", ug_baord_save_screenshot);
-    Bridge_bindNative(bridge, "programmaAwaziniBikitish", ug_board_audio_set_volume);
+    // draw
+    BRIDGE_BIND_NATIVE(board_draw_start);
+    BRIDGE_BIND_NATIVE(board_draw_end);
+    // draw point & line
+    BRIDGE_BIND_NATIVE(board_draw_pixel);
+    BRIDGE_BIND_NATIVE(board_draw_line_no_controll);
+    BRIDGE_BIND_NATIVE(board_draw_line_one_controll);
+    BRIDGE_BIND_NATIVE(board_draw_line_two_controll);
+    // draw rectangle
+    BRIDGE_BIND_NATIVE(board_draw_rectangle_fill_transformed);
+    BRIDGE_BIND_NATIVE(board_draw_rectangle_fill_colorful);
+    BRIDGE_BIND_NATIVE(board_draw_rectangle_fill_round);
+    BRIDGE_BIND_NATIVE(board_draw_rectangle_stroke);
+    // draw circle & ring
+    BRIDGE_BIND_NATIVE(board_draw_circle_fill);
+    BRIDGE_BIND_NATIVE(board_draw_circle_stroke);
+    BRIDGE_BIND_NATIVE(board_draw_ring_fill);
+    BRIDGE_BIND_NATIVE(board_draw_ring_stroke);
+    // draw triangle & polygon
+    BRIDGE_BIND_NATIVE(board_draw_triangle_fill);
+    BRIDGE_BIND_NATIVE(board_draw_triangle_stroke);
+    BRIDGE_BIND_NATIVE(board_draw_polygon_fill);
+    BRIDGE_BIND_NATIVE(board_draw_polygon_stroke);
+    // font
+    BRIDGE_BIND_NATIVE(board_draw_text);
+    BRIDGE_BIND_NATIVE(board_measure_text);
+    // texture
+    BRIDGE_BIND_NATIVE(board_create_texture_from_image);
+    BRIDGE_BIND_NATIVE(board_create_texture_from_text);
+    BRIDGE_BIND_NATIVE(board_draw_texture_by_tag);
     //
-    Bridge_register(bridge, "doska");
+    Bridge_register(bridge, ALIAS_BOARD);
 }
