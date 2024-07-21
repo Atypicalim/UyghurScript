@@ -1,0 +1,17 @@
+
+miqdar s qimmiti sanduq bolsun
+miqdar k qimmiti [key] bolsun
+
+@s[abc] = [str...]
+@s(123) = 456
+
+fonkisiye func miqdar k v mezmuni
+    ikrangha k yezilsun
+    ikrangha [-----------] yezilsun
+    ikrangha v yezilsun
+    ikrangha [\n] yezilsun
+tamamlansun
+
+fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun we netije r bolsun
+
+ikrangha [END!\n] yezilsun

@@ -6,26 +6,160 @@ ALIAS_NUM:
   tr: sayı
 
 # global
-ALIAS_READ:
+## console
+ALIAS_read:
   en: read
   ug: oqush
   tr: okumak
-ALIAS_WRITE:
+ALIAS_write:
   en: write
   ug: yezish
   tr: yazmak
-ALIAS_TRACE:
+## trace
+ALIAS_trace:
   en: trace
   ug: izlash
   tr: izlamak
-ALIAS_IMPORT:
+## module
+ALIAS_import:
   en: import
   ug: ekirish
   tr: içermek
-ALIAS_CLEAN:
+ALIAS_clean:
   en: clean
   ug: tazilash
   tr: temizlemek
+
+# time
+ALIAS_time_get_zone:
+  ug: "rayunElish"
+ALIAS_time_get_seconds:
+  ug: "sikuntElish"
+ALIAS_time_create_seconds:
+  ug: "sikuntqaAylandurush"
+ALIAS_time_format_seconds:
+  ug: "sikuntniAylandurush"
+ALIAS_time_get_date:
+  ug: "chislaElish"
+ALIAS_time_get_clock:
+  ug: "sanaqElish"
+ALIAS_time_sleep_seconds:
+  ug: "programminiUxlitish"
+
+# system
+ALIAS_system_get_name:
+  ug: "isminiElish"
+ALIAS_system_exit_program:
+  ug: "programmidinChikinish"
+ALIAS_system_execute_command:
+  ug: "ijraQilish"
+ALIAS_system_set_env:
+  ug: "muhitQimmitiYezish"
+ALIAS_system_get_env:
+  ug: "muhitQimmitiOqush"
+
+# string
+ALIAS_string_replace:
+  ug: "almashturush"
+ALIAS_string_replace_first:
+  ug: "birinchisiniAlmashturush"
+ALIAS_string_replace_last:
+  ug: "axirqisiniAlmashturush"
+ALIAS_string_replace_all:
+  ug: "hemmisiniAlmashturush"
+# 
+ALIAS_string_find:
+  ug: "tepish"
+ALIAS_string_find_first:
+  ug: "birinchisiniTepish"
+ALIAS_string_find_last:
+  ug: "axirqisiniTepish"
+# 
+ALIAS_string_count:
+  ug: "sanash"
+ALIAS_string_cut:
+  ug: "kisish"
+ALIAS_string_link:
+  ug: "ulash"
+ALIAS_string_format:
+  ug: "formatlash"
+ALIAS_string_fill:
+  ug: "toldurush"
+
+# number
+ALIAS_number_ceil:
+  ug: "ustigePutunlesh"
+ALIAS_number_floor:
+  ug: "astighaPutunlesh"
+ALIAS_number_round:
+  ug: "texminiyPutunlesh"
+## 
+ALIAS_number_seed:
+  ug: "ixtiyariyUruqBikitish"
+ALIAS_number_random:
+  ug: "ixtiyariySanHasillash"
+## 
+ALIAS_number_radian:
+  ug: "radianghaAylandurush"
+ALIAS_number_degree:
+  ug: "gradusqaAylandurush"
+## 
+ALIAS_number_sin:
+  ug: "sinosHisablash"
+ALIAS_number_cos:
+  ug: "kosinosHisablash"
+ALIAS_number_tan:
+  ug: "tanginosHisablash"
+ALIAS_number_asin:
+  ug: "teturSinosHisablash"
+ALIAS_number_acos:
+  ug: "teturCosinosHisablash"
+ALIAS_number_atan:
+  ug: "teturTanginosHisablash"
+## 
+ALIAS_number_power:
+  ug: "derijigeKurutush"
+ALIAS_number_square:
+  ug: "yiltizdinChiqirish"
+## 
+ALIAS_number_log_e:
+  ug: "logarifmaEHisablash"
+ALIAS_number_log_10:
+  ug: "logarifma10Hisablash"
+## 
+ALIAS_number_quotient:
+  ug: "bulunminiHisablash"
+ALIAS_number_reminder:
+  ug: "qalduqniHisablash"
+## 
+ALIAS_number_int_part:
+  ug: "putunQismighaIrishish"
+ALIAS_number_dec_part:
+  ug: "parcheQismighaIrishish"
+
+# file
+ALIAS_write_file:
+  ug: "yezish"
+ALIAS_read_file:
+  ug: "oqush"
+ALIAS_file_copy:
+  ug: "kuchurush"
+ALIAS_file_rename:
+  ug: "yotkesh"
+ALIAS_file_remove:
+  ug: "uchurush"
+ALIAS_file_exist:
+  ug: "buMewjutmu"
+ALIAS_file_is_file:
+  ug: "buXojjetmu"
+ALIAS_file_is_directory:
+  ug: "buSomkimu"
+ALIAS_file_create_directory:
+  ug: "somkaQurush"
+
+# box
+ALIAS_box_loop:
+  ug: "dewriylesh"
 
 # baord
 ALIAS_BOARD:

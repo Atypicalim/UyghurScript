@@ -162,34 +162,34 @@ void lib_number_register(Bridge *bridge)
     Bridge_bindNumber(bridge, "pi", acos(-1));
     Bridge_bindNumber(bridge, "e", exp(1));
     //
-    Bridge_bindNative(bridge, "ustigePutunlesh", ug_number_ceil);
-    Bridge_bindNative(bridge, "astighaPutunlesh", ug_number_floor);
-    Bridge_bindNative(bridge, "texminiyPutunlesh", ug_number_round);
+    BRIDGE_BIND_NATIVE(number_ceil);
+    BRIDGE_BIND_NATIVE(number_floor);
+    BRIDGE_BIND_NATIVE(number_round);
     //
-    Bridge_bindNative(bridge, "ixtiyariyUruqBikitish", ug_number_seed);
-    Bridge_bindNative(bridge, "ixtiyariySanHasillash", ug_number_random);
+    BRIDGE_BIND_NATIVE(number_seed);
+    BRIDGE_BIND_NATIVE(number_random);
     // 
-    Bridge_bindNative(bridge, "radianghaAylandurush", ug_number_radian);
-    Bridge_bindNative(bridge, "gradusqaAylandurush", ug_number_degree);
+    BRIDGE_BIND_NATIVE(number_radian);
+    BRIDGE_BIND_NATIVE(number_degree);
     //
-    Bridge_bindNative(bridge, "sinosHisablash", ug_number_sin);
-    Bridge_bindNative(bridge, "kosinosHisablash", ug_number_cos);
-    Bridge_bindNative(bridge, "tanginosHisablash", ug_number_tan);
-    Bridge_bindNative(bridge, "teturSinosHisablash", ug_number_asin);
-    Bridge_bindNative(bridge, "teturCosinosHisablash", ug_number_acos);
-    Bridge_bindNative(bridge, "teturTanginosHisablash", ug_number_atan);
+    BRIDGE_BIND_NATIVE(number_sin);
+    BRIDGE_BIND_NATIVE(number_cos);
+    BRIDGE_BIND_NATIVE(number_tan);
+    BRIDGE_BIND_NATIVE(number_asin);
+    BRIDGE_BIND_NATIVE(number_acos);
+    BRIDGE_BIND_NATIVE(number_atan);
     //
-    Bridge_bindNative(bridge, "derijigeKurutush", ug_number_power);
-    Bridge_bindNative(bridge, "yiltizdinChiqirish", ug_number_square);
+    BRIDGE_BIND_NATIVE(number_power);
+    BRIDGE_BIND_NATIVE(number_square);
     //
-    Bridge_bindNative(bridge, "logarifmaEHisablash", ug_number_log_e);
-    Bridge_bindNative(bridge, "logarifma10Hisablash", ug_number_log_10);
+    BRIDGE_BIND_NATIVE(number_log_e);
+    BRIDGE_BIND_NATIVE(number_log_10);
     //
-    Bridge_bindNative(bridge, "bulunminiHisablash", ug_number_quotient);
-    Bridge_bindNative(bridge, "qalduqniHisablash", ug_number_reminder);
+    BRIDGE_BIND_NATIVE(number_quotient);
+    BRIDGE_BIND_NATIVE(number_reminder);
     //
-    Bridge_bindNative(bridge, "putunQismighaIrishish", ug_number_int_part);
-    Bridge_bindNative(bridge, "parcheQismighaIrishish", ug_number_dec_part);
+    BRIDGE_BIND_NATIVE(number_int_part);
+    BRIDGE_BIND_NATIVE(number_dec_part);
     // 
     Bridge_register(bridge, "san");
 }

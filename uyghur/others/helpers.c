@@ -392,7 +392,7 @@ void utils_add_languages(Uyghur *uyghur, char *tp) {
     }
 }
 
-utils_add_aliases(Uyghur *uyghur) {
+void utils_add_aliases(Uyghur *uyghur) {
     void *aliasesMap = uyghur->aliasesMap;
     //
     for (size_t i = 0; i < UG_LANGUAGE_COUNT; i++)
@@ -411,7 +411,7 @@ utils_add_aliases(Uyghur *uyghur) {
     }
 }
 
-helper_set_aliased_key(Uyghur *uyghur, Container *container, char *_key, Value *value) {
+void helper_set_aliased_key(Uyghur *uyghur, Container *container, char *_key, Value *value) {
     //
     // log_warn("helper.aliased: %s", _key);
     char *location = convert_string_to_location(_key, UG_TYPE_STR);

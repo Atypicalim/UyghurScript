@@ -42,11 +42,11 @@ void lib_system_register(Bridge *bridge)
 {
     Bridge_startBox(bridge);
     //
-    Bridge_bindNative(bridge, "isminiElish", ug_system_get_name);
-    Bridge_bindNative(bridge, "programmidinChikinish", ug_system_exit_program);
-    Bridge_bindNative(bridge, "ijraQilish", ug_system_execute_command);
-    Bridge_bindNative(bridge, "muhitQimmitiYezish", ug_system_set_env);
-    Bridge_bindNative(bridge, "muhitQimmitiOqush", ug_system_get_env);
+    BRIDGE_BIND_NATIVE(system_get_name);
+    BRIDGE_BIND_NATIVE(system_exit_program);
+    BRIDGE_BIND_NATIVE(system_execute_command);
+    BRIDGE_BIND_NATIVE(system_set_env);
+    BRIDGE_BIND_NATIVE(system_get_env);
     //
     Bridge_register(bridge, "sestima");
 }

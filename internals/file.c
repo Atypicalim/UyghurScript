@@ -77,15 +77,15 @@ void lib_file_register(Bridge *bridge)
 {
     Bridge_startBox(bridge);
     //
-    Bridge_bindNative(bridge, "yezish", ug_write_file);
-    Bridge_bindNative(bridge, "oqush", ug_read_file);
-    Bridge_bindNative(bridge, "kuchurush", ug_file_copy);
-    Bridge_bindNative(bridge, "yotkesh", ug_file_rename);
-    Bridge_bindNative(bridge, "uchurush", ug_file_remove);
-    Bridge_bindNative(bridge, "buMewjutmu", ug_file_exist);
-    Bridge_bindNative(bridge, "buXojjetmu", ug_file_is_file);
-    Bridge_bindNative(bridge, "buSomkimu", ug_file_is_directory);
-    Bridge_bindNative(bridge, "somkaQurush", ug_file_create_directory);
+    BRIDGE_BIND_NATIVE(write_file);
+    BRIDGE_BIND_NATIVE(read_file);
+    BRIDGE_BIND_NATIVE(file_copy);
+    BRIDGE_BIND_NATIVE(file_rename);
+    BRIDGE_BIND_NATIVE(file_remove);
+    BRIDGE_BIND_NATIVE(file_exist);
+    BRIDGE_BIND_NATIVE(file_is_file);
+    BRIDGE_BIND_NATIVE(file_is_directory);
+    BRIDGE_BIND_NATIVE(file_create_directory);
     //
     Bridge_register(bridge, "xojjet");
 }

@@ -68,7 +68,7 @@ fonkisiye belgilerniElish miqdar x mezmuni
     egerde x ? 15 bolsa
         r qimmiti [=] bolsun
     bolmisa
-        fonkisiye @xet[formatlash] bilen [%f] x ishlitilsun we netije r bolsun # str_format bug
+        fonkisiye @xet[formatlash] bilen [%f] x ishlitilsun we netije r bolsun # string_format bug
     tamamlansun
     netije r qayturulsun
 tamamlansun

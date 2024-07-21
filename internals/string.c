@@ -91,7 +91,7 @@ void ug_string_link(Bridge *bridge)
     Bridge_returnString(bridge, result);
 }
 
-void ug_str_format(Bridge *bridge)
+void ug_string_format(Bridge *bridge)
 {
     char *f = Bridge_receiveString(bridge);
     Value *v = Bridge_receiveValue(bridge, UG_TYPE_NON);
@@ -106,7 +106,7 @@ void ug_str_format(Bridge *bridge)
     Object_release(r);
 }
 
-void ug_str_fill(Bridge *bridge)
+void ug_string_fill(Bridge *bridge)
 {
     char *f = Bridge_receiveString(bridge);
     String *r = String_format("%s", f);
@@ -135,22 +135,20 @@ void lib_string_register(Bridge *bridge)
 {
     Bridge_startBox(bridge);
     //
-    Bridge_bindNative(bridge, "almashturush", ug_string_replace);
-    Bridge_bindNative(bridge, "birinchisiniAlmashturush", ug_string_replace_first);
-    Bridge_bindNative(bridge, "axirqisiniAlmashturush", ug_string_replace_last);
-    Bridge_bindNative(bridge, "hemmisiniAlmashturush", ug_string_replace_all);
+    BRIDGE_BIND_NATIVE(string_replace);
+    BRIDGE_BIND_NATIVE(string_replace_first);
+    BRIDGE_BIND_NATIVE(string_replace_last);
+    BRIDGE_BIND_NATIVE(string_replace_all);
     //
-    Bridge_bindNative(bridge, "tepish", ug_string_find);
-    Bridge_bindNative(bridge, "birinchisiniTepish", ug_string_find_first);
-    Bridge_bindNative(bridge, "axirqisiniTepish", ug_string_find_last);
+    BRIDGE_BIND_NATIVE(string_find);
+    BRIDGE_BIND_NATIVE(string_find_first);
+    BRIDGE_BIND_NATIVE(string_find_last);
     // 
-    Bridge_bindNative(bridge, "kisish", ug_string_cut);
-    // 
-    Bridge_bindNative(bridge, "sanash", ug_string_count);
-    // 
-    Bridge_bindNative(bridge, "ulash", ug_string_link);
-    Bridge_bindNative(bridge, "formatlash", ug_str_format);
-    Bridge_bindNative(bridge, "toldurush", ug_str_fill);
+    BRIDGE_BIND_NATIVE(string_count);
+    BRIDGE_BIND_NATIVE(string_link);
+    BRIDGE_BIND_NATIVE(string_cut);
+    BRIDGE_BIND_NATIVE(string_format);
+    BRIDGE_BIND_NATIVE(string_fill);
     //
     Bridge_register(bridge, "xet");
 }

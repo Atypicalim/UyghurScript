@@ -8,7 +8,6 @@ void ug_box_loop(Bridge *bridge)
     Value *fun = Bridge_receiveValue(bridge, UG_TYPE_FUN);
     Container *_box = box->object;
     void (*_fun)() = fun->object;
-    printf("loop: %s %s \n", Value_toString(box), Value_toString(fun));
     // 
     Executer *exe = bridge->uyghur->executer;
     Hashmap *map = _box->map;
@@ -35,7 +34,7 @@ void lib_box_register(Bridge *bridge)
 {
     Bridge_startBox(bridge);
     //
-    Bridge_bindNative(bridge, "dewriylesh", ug_box_loop);
+    BRIDGE_BIND_NATIVE(box_loop);
     //
     Bridge_register(bridge, "sanduq");
 }

@@ -167,6 +167,10 @@ void Bridge_run(Bridge *, Value *);
 
 typedef void (*NATIVE)(Bridge *);
 
+// push alias -> func to bridge
+#define BRIDGE_BIND_NATIVE(name) \
+    Bridge_bindNative(bridge, ALIAS_ ## name, ug_ ## name);
+
 ////////////////////////////////////////////////////////////////////////////
 
 struct Debug

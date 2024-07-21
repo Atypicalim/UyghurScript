@@ -2,14 +2,14 @@
 
 #include "../uyghur/uyghur.c"
 
-void oqush(Bridge *bridge)
+void ug_read(Bridge *bridge)
 {
     char *r = system_read_terminal();
     Bridge_returnString(bridge, r);
     pct_free(r);
 }
 
-void yezish(Bridge *bridge)
+void ug_write(Bridge *bridge)
 {
     Value *v = Bridge_nextValue(bridge);
     while (v != NULL)
@@ -20,16 +20,16 @@ void yezish(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-void izlash(Bridge *bridge)
+void ug_trace(Bridge *bridge)
 {
-    char *msg = "izlash";
+    char *msg = "TRACE";
     if (Bridge_topType(bridge) == UG_TYPE_STR) msg = Bridge_receiveString(bridge);
     printf("\n[%s] %s\n", UG_TAG_LOG, msg);
     Debug_writeTrace(bridge->uyghur->debug);
     Bridge_returnEmpty(bridge);
 }
 
-void ekirish(Bridge *bridge)
+void ug_import(Bridge *bridge)
 {
     char *path = Bridge_receiveString(bridge);
     Uyghur *uyghur = bridge->uyghur;
@@ -40,7 +40,7 @@ void ekirish(Bridge *bridge)
     Bridge_returnValue(bridge, box);
 }
 
-void tazilash(Bridge *bridge)
+void ug_clean(Bridge *bridge)
 {
     char *path = Bridge_receiveString(bridge);
     Container_delLocation(bridge->uyghur->executer->globalScope, path);
@@ -54,12 +54,12 @@ void lib_global_register(Bridge *bridge)
     Bridge_bindString(bridge, "NESHIR_ISMI", UG_VERSION_NAME);
     Bridge_bindNumber(bridge, "NESHIR_NUMIRI", UG_VERSION_CODE);
     // console
-    Bridge_bindNative(bridge, "oqush", oqush);
-    Bridge_bindNative(bridge, "yezish", yezish);
-    Bridge_bindNative(bridge, "izlash", izlash);
+    BRIDGE_BIND_NATIVE(read);
+    BRIDGE_BIND_NATIVE(write);
+    BRIDGE_BIND_NATIVE(trace);
     // module
-    Bridge_bindNative(bridge, "ekirish", ekirish);
-    Bridge_bindNative(bridge, "tazilash", tazilash);
+    BRIDGE_BIND_NATIVE(import);
+    BRIDGE_BIND_NATIVE(clean);
     //
     Bridge_register(bridge, NULL);
 }

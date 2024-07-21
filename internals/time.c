@@ -47,13 +47,13 @@ void lib_time_register(Bridge *bridge)
 {
     Bridge_startBox(bridge);
     //
-    Bridge_bindNative(bridge, "rayunElish", ug_time_get_zone);
-    Bridge_bindNative(bridge, "sikuntElish", ug_time_get_seconds);
-    Bridge_bindNative(bridge, "sikuntqaAylandurush", ug_time_create_seconds);
-    Bridge_bindNative(bridge, "sikuntniAylandurush", ug_time_format_seconds);
-    Bridge_bindNative(bridge, "chislaElish", ug_time_get_date);
-    Bridge_bindNative(bridge, "sanaqElish", ug_time_get_clock);
-    Bridge_bindNative(bridge, "programminiUxlitish", ug_time_sleep_seconds);
+    BRIDGE_BIND_NATIVE(time_get_zone);
+    BRIDGE_BIND_NATIVE(time_get_seconds);
+    BRIDGE_BIND_NATIVE(time_create_seconds);
+    BRIDGE_BIND_NATIVE(time_format_seconds);
+    BRIDGE_BIND_NATIVE(time_get_date);
+    BRIDGE_BIND_NATIVE(time_get_clock);
+    BRIDGE_BIND_NATIVE(time_sleep_seconds);
     //
     Bridge_register(bridge, "waqit");
 }
