@@ -17,6 +17,7 @@ void Uyghur_init(Uyghur *this)
     this->aliasesMap = Hashmap_new();
     this->lettersMap = Hashmap_new();
     this->wordsMap = Hashmap_new();
+    this->language = NULL;
     utils_add_aliases(this);
 }
 

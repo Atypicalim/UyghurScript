@@ -6,19 +6,40 @@ typedef struct {
     char* key;
     char* val;
 } PAIR_ALIASES;
-//
+
+////////////////////////////////////////////////////////////////
+
 // [M[ VARIABLES ]M]
-//
+
+////////////////////////////////////////////////////////////////
+
 // [M[ BODIES ]M]
-//
-int aliases_get_size(char *tp) {
+
+////////////////////////////////////////////////////////////////
+
+// [M[ FOOTERS ]M]
+
+////////////////////////////////////////////////////////////////
+
+int aliases_get_size_by_lang(char *tp) {
     if (!tp) tp = "";
-    // [M[ FILTER_SIZE ]M]
+    // [M[ FILTER_SIZE_BY_LANG ]M]
     return 0;
 }
-const PAIR_ALIASES* aliases_get_conf(char *tp) {
+const PAIR_ALIASES* aliases_get_conf_by_lang(char *tp) {
     if (!tp) tp = "";
-    // [M[ FILTER_CONF ]M]
+    // [M[ FILTER_CONF_BY_LANG ]M]
+    return 0;
+}
+
+int aliases_get_size_by_name(char *tp) {
+    if (!tp) tp = "";
+    // [M[ FILTER_SIZE_BY_NAME ]M]
+    return 0;
+}
+const PAIR_ALIASES* aliases_get_conf_by_name(char *tp) {
+    if (!tp) tp = "";
+    // [M[ FILTER_CONF_BY_NAME ]M]
     return 0;
 }
 //

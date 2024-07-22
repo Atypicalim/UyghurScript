@@ -19,13 +19,13 @@ void raylib_on_show()
 {
     // SetTargetFPS(60);
     Bridge_startFunc(uyghurBridge);
-    Bridge_call(uyghurBridge, "doska_korsitish_qayturmisi");
+    Bridge_call(uyghurBridge, ALIAS_STAGE_ON_SHOW);
 }
 
 void raylib_on_draw()
 {
     Bridge_startFunc(uyghurBridge);
-    Bridge_call(uyghurBridge, "doska_sizish_qayturmisi");
+    Bridge_call(uyghurBridge, ALIAS_STAGE_ON_DRAW);
     // DrawFPS(10, 10);
 }
 

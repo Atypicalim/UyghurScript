@@ -182,10 +182,10 @@ ALIAS_STAGE:
   en: stage
   ug: doska
   tr: sahne
-# ALIAS_STAGE_ON_SHOW:
-#   ug: doska_korsitish_qayturmisi
-# ALIAS_STAGE_ON_DRAW:
-#   ug: doska_sizish_qayturmisi
+ALIAS_STAGE_ON_SHOW:
+  ug: doska_korsitish_qayturmisi
+ALIAS_STAGE_ON_DRAW:
+  ug: doska_sizish_qayturmisi
 ALIAS_stage_set_log:
   ug: logDerijisiniBikitish
 ALIAS_stage_set_fps:

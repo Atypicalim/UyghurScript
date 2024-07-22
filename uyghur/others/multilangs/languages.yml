@@ -188,3 +188,7 @@ LANG_ERR_BRIDGE_FUNCTION_NOT_FOUND:
   en: "bridge function not found"
   ug: "kowruk fonkisiyesi tepilmidi"
   tr: "köprü fonksiyonu bulunamadı"
+LANG_ERR_BRIDGE_FUNCTION_IS_DUPLICATE:
+  en: "bridge function is duplicate"
+  ug: "kowruk fonkisiyesi artuqche"
+  tr: "köprü fonksiyonu aşırı"

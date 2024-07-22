@@ -69,6 +69,6 @@ int main(int argc, char const *argv[])
     if (argc == 1) Uyghur_runCode(uyghur, gScriptData, NULL);
     if (argc >= 2) Uyghur_runArgs(uyghur, argc, argv);
     Uyghur_free(uyghur);
-    //
+    // 
     return 0;
 }

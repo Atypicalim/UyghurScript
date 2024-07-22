@@ -400,8 +400,8 @@ void utils_add_aliases(Uyghur *uyghur) {
         char *lang = UG_LANGUAGE_ARRAY[i];
         log_warn("helper.alieases: %s", lang);
         //
-        int sizeAliases = aliases_get_size(lang);
-        PAIR_ALIASES* pairAliases = aliases_get_conf(lang);
+        int sizeAliases = aliases_get_size_by_lang(lang);
+        PAIR_ALIASES* pairAliases = aliases_get_conf_by_lang(lang);
         for (size_t i = 0; i < sizeAliases; i++)
         {
             PAIR_ALIASES pair = pairAliases[i];
@@ -424,9 +424,9 @@ void helper_set_aliased_key(Uyghur *uyghur, Container *container, char *_key, Va
         ptr = aliasesMap[i].position;
         while (ptr != NULL) {
             char *alias = String_get(ptr->key);
-            char *key = String_get(ptr->value);
-            // log_debug("-- %s %s %s", _key, key, alias);
-            if (is_eq_string(_key, key)) {
+            char *name = String_get(ptr->value);
+            // log_debug("-- %s %s %s", _key, name, alias);
+            if (is_eq_string(_key, name)) {
                 // log_debug("helper.lang %s", alias);
                 char *location = convert_string_to_location(alias, UG_TYPE_STR);
                 Container_setLocation(container, location, value);
