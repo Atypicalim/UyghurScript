@@ -14,11 +14,9 @@
 void Uyghur_init(Uyghur *this)
 {
     log_warn("uyghur.init:");
-    this->aliasesMap = Hashmap_new();
     this->lettersMap = Hashmap_new();
     this->wordsMap = Hashmap_new();
     this->language = NULL;
-    utils_add_aliases(this);
 }
 
 Uyghur *Uyghur_new()
@@ -37,8 +35,8 @@ Value *Uyghur_runCode(Uyghur *this, char *code, char *path)
 {
     if (path == NULL) path = UG_SCRIPT_NAME;
     log_warn("uyghur.run: %s", path);
-    utils_set_languages(this, path);
-    utils_add_languages(this, path);
+    helper_set_languages(this, path);
+    helper_add_languages(this, path);
     log_warn("uyghur.tokenize");
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
     log_warn("uyghur.parse");

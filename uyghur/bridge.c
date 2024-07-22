@@ -148,7 +148,7 @@ void Bridge_register(Bridge *this, char *boxName)
     {
         Value *key = Stack_pop(this->stack);
         char *_key =  String_get(key->string);
-        helper_set_aliased_key(this->uyghur, container, _key, value);
+        helper_set_aliased_key(container, _key, value);
         Object_release(key);
         value = Stack_pop(this->stack);
     }
@@ -156,7 +156,7 @@ void Bridge_register(Bridge *this, char *boxName)
     {
         Object_retain(container);
         Value *temp = Value_newContainer(container, NULL);
-        helper_set_aliased_key(this->uyghur, global, boxName, temp);
+        helper_set_aliased_key(global, boxName, temp);
     }
 }
 
@@ -340,31 +340,15 @@ void Bridge_call(Bridge *this, char *funcName)
     }
     Cursor_free(cursor);
     // execute
-    int calledCount = 0;
-    int runCount = 1;
     Value *r = NULL;
     //
-    int size = aliases_get_size_by_name(ALIAS_STAGE_ON_DRAW);
-    const PAIR_ALIASES* pairs = aliases_get_conf_by_name(ALIAS_STAGE_ON_DRAW);
-    for (size_t i = 0; i < size; i++)
-    {
-        runCount = runCount + 1;
-        PAIR_ALIASES pair = pairs[i];
-        Token *funcToken = Token_key(UG_TTYPE_STR, pair.val, "*");
-        Value *funcValue = Executer_getValueByToken(executer, funcToken, true);
-        if (Value_isFunc(funcValue)) {
-            calledCount++;
-            r = Executer_runFunc(executer, funcValue);
-        }
-        Object_release(funcToken);
-        Object_release(funcValue);
-    }
-    //
-    if (calledCount < 1) {
+    Value *f = helper_get_aliased_key(executer->globalScope, funcName);
+    if (f == NULL) {
         log_warn("%s:%s", LANG_ERR_BRIDGE_FUNCTION_NOT_FOUND, funcName);
-    }
-    if (calledCount > 1) {
-        tools_error("%s:%s", LANG_ERR_BRIDGE_FUNCTION_IS_DUPLICATE, funcName);
+    } else if (!Value_isFunc(f)) {
+        tools_error("%s:%s", LANG_ERR_BRIDGE_FUNCTION_NOT_VALID, funcName);
+    } else {
+        r = Executer_runFunc(executer, f);
     }
     // result
     Stack_clear(stack);

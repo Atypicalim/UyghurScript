@@ -122,7 +122,6 @@ typedef struct Bridge Bridge;
 
 typedef struct _Uyghur {
     bool running;
-    Hashmap *aliasesMap;
     Hashmap *lettersMap;
     Hashmap *wordsMap;
     USTRING language;

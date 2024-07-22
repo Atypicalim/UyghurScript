@@ -346,7 +346,7 @@ void Container_print(Container *this)
     printf("[Container]\n");
 }
 
-void utils_set_languages(Uyghur *uyghur, char *tp) {
+void helper_set_languages(Uyghur *uyghur, char *tp) {
     if (!!uyghur->language) {
         return;
     }
@@ -362,7 +362,7 @@ void utils_set_languages(Uyghur *uyghur, char *tp) {
     }
 }
 
-void utils_add_languages(Uyghur *uyghur, char *tp) {
+void helper_add_languages(Uyghur *uyghur, char *tp) {
     Hashmap *lettersMap = uyghur->lettersMap;
     Hashmap *wordsMap = uyghur->wordsMap;
     // letters
@@ -392,49 +392,32 @@ void utils_add_languages(Uyghur *uyghur, char *tp) {
     }
 }
 
-void utils_add_aliases(Uyghur *uyghur) {
-    void *aliasesMap = uyghur->aliasesMap;
-    //
-    for (size_t i = 0; i < UG_LANGUAGE_COUNT; i++)
+void helper_set_aliased_key(Container *container, char *_key, Value *value) {
+    // log_warn("helper.aliased: %s", _key);
+    int size = aliases_get_size_by_name(_key);
+    const PAIR_ALIASES* pairs = aliases_get_conf_by_name(_key);
+    for (size_t i = 0; i < size; i++)
     {
-        char *lang = UG_LANGUAGE_ARRAY[i];
-        log_warn("helper.alieases: %s", lang);
-        //
-        int sizeAliases = aliases_get_size_by_lang(lang);
-        PAIR_ALIASES* pairAliases = aliases_get_conf_by_lang(lang);
-        for (size_t i = 0; i < sizeAliases; i++)
-        {
-            PAIR_ALIASES pair = pairAliases[i];
-            log_debug("helper.lang %s %s", pair.key, pair.val);
-            Hashmap_set(aliasesMap, pair.val, String_format(pair.key));
-        }
+        PAIR_ALIASES pair = pairs[i];
+        char *location = convert_string_to_location(pair.val, UG_TYPE_STR);
+        Container_setLocation(container, location, value);
+        pct_free(location);
     }
 }
 
-void helper_set_aliased_key(Uyghur *uyghur, Container *container, char *_key, Value *value) {
-    //
-    // log_warn("helper.aliased: %s", _key);
-    char *location = convert_string_to_location(_key, UG_TYPE_STR);
-    Container_setLocation(container, location, value);
-    pct_free(location);
-    //
-    Hashmap *aliasesMap = uyghur->aliasesMap;
-    Hashkey *ptr;
-    for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
-        ptr = aliasesMap[i].position;
-        while (ptr != NULL) {
-            char *alias = String_get(ptr->key);
-            char *name = String_get(ptr->value);
-            // log_debug("-- %s %s %s", _key, name, alias);
-            if (is_eq_string(_key, name)) {
-                // log_debug("helper.lang %s", alias);
-                char *location = convert_string_to_location(alias, UG_TYPE_STR);
-                Container_setLocation(container, location, value);
-                pct_free(location);
-            }
-            ptr = ptr->next;
-        }
+Value *helper_get_aliased_key(Container *container, char *_key) {
+    Value *result = NULL;
+    int size = aliases_get_size_by_name(_key);
+    const PAIR_ALIASES* pairs = aliases_get_conf_by_name(_key);
+    for (size_t i = 0; i < size; i++)
+    {
+        PAIR_ALIASES pair = pairs[i];
+        char *location = convert_string_to_location(pair.val, UG_TYPE_STR);
+        result = Container_getLocation(container, location);
+        pct_free(location);
+        if (result!= NULL) break;
     }
+    return result;
 }
 
 #endif
