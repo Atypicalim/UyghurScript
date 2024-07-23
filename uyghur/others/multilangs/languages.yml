@@ -7,25 +7,29 @@
 
 # tags
 LANG_TAG_DEBUG:
-  en: DEBUG
-  ug: SINAQ
-  uay: سىنال
-  tr: SINAQ
+  en: debug
+  ug: sinaq
+  uay: سىناق
+  tr: Ölçek
+  kz: "сынақ"
 LANG_TAG_INFO:
-  en: INFO
-  ug: UCHUR
+  en: info
+  ug: uchur
   uay: ئۇچۇر
-  tr: UCHUR
+  tr: mesaj
+  kz: "хабар"
 LANG_TAG_WARN:
-  en: WARN
-  ug: AGAHLAN
+  en: warn
+  ug: agah
   uay: ئاگاھ
-  tr: AGAHLAN
+  tr: uyarı
+  kz: "ескерту"
 LANG_TAG_ERROR:
-  en: ERROR
-  ug: XATALIQ
+  en: error
+  ug: xataliq
   uay: خاتالىق
-  tr: XATALIQ
+  tr: yanılgı
+  kz: "қателік"
 
 #  common
 LANG_ERR_INVALID_TYPE:
@@ -33,36 +37,43 @@ LANG_ERR_INVALID_TYPE:
   ug: "inawetsiz tip uchritildi"
   uay: "ئىناۋەتسىز تىپ ئۇچرىتىلدى"
   tr: "geçersiz tür bulundu"
+  kz: "жарамсыз түр табылды"
 LANG_ERR_INVALID_LTTR:
   en: "found invalid letter"
   ug: "inawetsiz herip uchritildi"
   uay: "ئىناۋەتسىز ھەرىپ ئۇچرىتىلدى"
   tr: "geçersiz harf bulundu"
+  kz: "жарамсыз әріп табылды"
 LANG_ERR_INVALID_WORD:
   en: "found invalid word"
   ug: "inawetsiz soz uchritildi"
   uay: "ئىناۋەتسىز سۆز ئۇچرىتىلدى"
   tr: "geçersiz söz bulundu"
+  kz: "жарамсыз сөз табылды"
 LANG_ERR_INVALID_NAME:
   en: "found invalid name"
   ug: "inawetsiz nam uchritildi"
   uay: "ئىناۋەتسىز نام ئۇچرىتىلدى"
   tr: "geçersiz nam bulundu"
+  kz: "жарамсыз ат табылды"
 LANG_ERR_INVALID_NMBR:
   en: "found invalid number"
   ug: "inawetsiz san uchritildi"
   uay: "ئىناۋەتسىز سان ئۇچرىتىلدى"
   tr: "geçersiz sayı bulundu"
+  kz: "жарамсыз сан табылды"
 LANG_ERR_INVALID_STRG:
   en: "found invalid string"
   ug: "inawetsiz xet uchritildi"
   uay: "ئىناۋەتسىز خەت ئۇچرىتىلدى"
   tr: "geçersiz dize bulundu"
+  kz: "жарамсыз хат табылды"
 LANG_ERR_CANNOT_BE_FLOAT:
   en: "can not be float number"
   ug: "parche san bolsa bolmaydu"
   uay: "پارچە سان بولسا بولمايدۇ"
   tr: "kayan sayı olamaz"
+  kz: "қалқымалы сан бола алмайды"
 
 #  tokenizer
 LANG_ERR_TOKENIZER_EXCEPTION:
@@ -70,41 +81,49 @@ LANG_ERR_TOKENIZER_EXCEPTION:
   ug: "imla xataliqi kuruldi"
   uay: "ئىملا خاتالىقى كۈرۈلدى"
   tr: "yazım hatasi oluştu"
+  kz: "Жазу қатесі болды"
 LANG_ERR_TOKENIZER_INVALID_SIGN:
   en: "found invalid sign"
   ug: "uchritilghan belge inawetsiz"
   uay: "ئۇچرىتىلغان بەلگە ئىناۋەتسىز"
   tr: "bulunan belge geçersiz"
+  kz: "табылған белгі жарамсыз"
 LANG_ERR_TOKENIZER_INVALID_KEY:
   en: "found invalid key name"
   ug: "uchritilghan achquch ismi inawetsiz"
   uay: "ئۇچرىتىلغان ئاچقۇچ ئىسمى ئىناۋەتسىز"
   tr: "bulunan anahtar adı geçersiz"
+  kz: "табылған кілт аты жарамсыз"
 LANG_ERR_TOKENIZER_INVALID_BOX:
   en: "found invlaid box name"
   ug: "uchritilghan sanduq ismi inawetsiz"
   uay: "ئۇچرىتىلغان ساندۇق ئىسمى ئىناۋەتسىز"
   tr: "bulunan sandık adı geçersiz"
+  kz: "Табылған сандық аты жарамсыз"
 LANG_ERR_TOKENIZER_STRING_START_ERROR:
   en: "string starting error"
   ug: "xet beshi xata"
   uay: "خەت بېشى خاتا"
   tr: "dize başlangıcı ​​hata"
+  kz: "хат бастау қате"
 LANG_ERR_TOKENIZER_STRING_END_ERROR:
   en: "string ending error"
   ug: "xet axiri xata"
   uay: "خەت ئاخىرى خاتا"
   tr: "dize bitişi xata"
+  kz: "хат ақыры қате"
 LANG_ERR_TOKENIZER_KEY_START_ERROR:
   en: "key starting error"
   ug: "achquch beshi xata"
   uay: "ئاچقۇچ بېشى خاتا"
   tr: "anahtar başlangıcı ​​hata"
+  kz: "кілт бастау қате"
 LANG_ERR_TOKENIZER_KEY_END_ERROR:
   en: "key ending error"
   ug: "achquch axiri xata"
   uay: "ئاچقۇچ ئاخىرى خاتا"
   tr: "anahtar bitişi xata"
+  kz: "кілт ақыры қате"
 
 
 #  parser
@@ -113,21 +132,25 @@ LANG_ERR_PARSER_EXCEPTION:
   ug: "logika xataliqi kuruldi"
   uay: "لوگىكا خاتالىقى كۈرۈلدى"
   tr: "mantık hatasi oluştu"
+  kz: "Логикалық қатесі болды"
 LANG_ERR_PARSER_INVALID_VARIABLE:
   en: "invalid desired value"
   ug: "kutken qimmet inawetsiz"
   uay: "كۈتكەن قىممەت ئىناۋەتسىز"
   tr: "istenen kıymet eçersiz"
+  kz: "күтілген қиммет жарамсыз"
 LANG_ERR_PARSER_INVALID_IF:
   en: "found invalid if"
   ug: "eger jumlisi inawetsiz"
   uay: "ئەگەر جۈملىسى ئىناۋەتسىز"
   tr: "eğer cümlesi eçersiz"
+  kz: "егер сөйлем жарамсыз"
 LANG_ERR_PARSER_INVALID_CALCULATOR:
   en: "found invalid calculator"
   ug: "hisablash meshghulati inawetsiz"
   uay: "ھېسابلاش مەشغۇلاتى ئىناۋەتسىز"
   tr: "hesaplama işlemi eçersiz"
+  kz: "есептеу операциясы жарамсыз"
 
 
 # executer
@@ -136,102 +159,121 @@ LANG_ERR_EXECUTER_EXCEPTION:
   ug: "ijra xataliqi kuruldi"
   uay: "ئىجرا خاتالىقى كۈرۈلدى"
   tr: "çalıştırma hatasi oluştu"
+  kz: "орындау қатесі болды"
 LANG_ERR_EXECUTER_STACK_OVERFLOW:
   en: "occured stack overflow"
   ug: "boshluq teship ketti"
   uay: "بوشلۇق تېشىپ كەتتى"
   tr: "boşluk taşması oluştu"
+  kz: "ғарыш толып кетті"
 LANG_ERR_EXECUTER_NOT_IMPLEMENTED:
   en: "execute not implemented"
   ug: "ijra meshghulati qollanmidi"
   uay: "ئىجرا مەشغۇلاتى قوللانمىدى"
   tr: "çalıştırma işlemi gerçekleştirilemedi"
+  kz: "орындау жаттығу қолданылмады"
 LANG_ERR_EXECUTER_INVALID_STATE:
   en: "found invalid state"
   ug: "ijra haliti inawetsiz"
   uay: "ئىجرا ھالىتى ئىناۋەتسىز"
   tr: "çalıştırma durumu geçersiz"
+  kz: "орындау күйі жарамсыз"
 LANG_ERR_EXECUTER_INVALID_KEY:
   en: "found invalid key"
   ug: "inawetsiz achquch uchritildi"
   uay: "ئىناۋەتسىز ئاچقۇچ ئۇچرىتىلدى"
   tr: "geçersiz anahtar bulundu"
+  kz: "жарамсыз кілт табылды"
 LANG_ERR_EXECUTER_INVALID_NAME:
   en: "found invalid name"
   ug: "inawetsiz nam uchritildi"
   uay: "ئىناۋەتسىز نام ئۇچرىتىلدى"
   tr: "geçersiz nam bulundu"
+  kz: "жарамсыз ат табылды"
 LANG_ERR_EXECUTER_INVALID_VARIABLE:
   en: "found invalid variable"
   ug: "inawetsiz miqdar uchritildi"
   uay: "ئىناۋەتسىز مىقدار ئۇچرىتىلدى"
   tr: "geçersiz değişken bulundu"
+  kz: "жарамсыз айнымалы табылды"
 LANG_ERR_EXECUTER_INVALID_BOX:
   en: "found invalid box"
   ug: "inawetsiz sanduq uchritildi"
   uay: "ئىناۋەتسىز ساندۇق ئۇچرىتىلدى"
   tr: "geçersiz sandık bulundu"
+  kz: "жарамсыз сандық табылды"
 # calculate
 LANG_ERR_EXECUTER_CALCULATION_INVALID:
   en: "found invalid calculation"
   ug: "hisablash meshghulati inawetsiz"
   uay: "ھېسابلاش مەشغۇلاتى ئىناۋەتسىز"
   tr: "hesaplama işlemi geçersiz"
+  kz: "есептеу операциясы жарамсыз"
 LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN:
   en: "found invalid calculation sign"
   ug: "hisablash belgisi inawetsiz"
   uay: "ھېسابلاش بەلگىسى ئىناۋەتسىز"
   tr: "hesaplama belgesi geçersiz"
+  kz: "есептеу белгісы жарамсыз"
 LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS:
   en: "found invalid calculation args"
   ug: "hisablash miqtarliri inawetsiz"
   uay: "ھېسابلاش مىقتارلىرى ئىناۋەتسىز"
   tr: "hesaplama değişkenleri geçersiz"
+  kz: "есептеу айнымалылары жарамсыз"
 #
 LANG_ERR_EXECUTER_INVALID_DEVIDE:
   en: "devider can not be zero"
   ug: "bolguchi san nol bulalmaydu"
   uay: "بۆلگۈچى سان نۆل بۇلالمايدۇ"
   tr: "bölen sayı sıfır olamaz"
+  kz: "бөлетін сан нөл болалмады"
 #
 LANG_ERR_EXECUTER_INVALID_IF:
   en: "found invalid if"
   ug: "eger jumlisi inawetsiz"
   uay: "ئەگەر جۈملىسى ئىناۋەتسىز"
   tr: "eğer cümlesi eçersiz"
+  kz: "егер сөйлем жарамсыз"
 # 
 LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED:
   en: "variable already defined"
   ug: "miqdar alliburun iniqlanghan"
   uay: "مىقدار ئاللىبۇرۇن ئىنىقلانغان"
   tr: "değişken zaten tanımlanmış"
+  kz: "айнымалы қазірдің анықталды"
 LANG_ERR_EXECUTER_VARIABLE_FAILURE_DEFINED:
   en: "variable failure defined"
   ug: "miqdar muweppiqyetlik iniqlanmini"
   uay: "مىقدار مۇۋەپپىقيەتلىك ئىنىقلانمىدى"
   tr: "değişken başarısızlıkla tanımlanmış"
+  kz: "айнымалы сәтсіздік анықталды"
 #
 LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND:
   en: "target variable not found"
   ug: "nishanlanghan miqtar tepilmidi"
   uay: "نىشانلانغان مىقدار تېپىلمىدى"
   tr: "nişan değişken bulunamadı"
+  kz: "мақсат айнымалы табылмады"
 LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND:
   en: "target box not found"
   ug: "nishanlanghan sanduq tepilmidi"
   uay: "نىشانلانغان ساندۇق تېپىلمىدى"
   tr: "nişan sandık bulunamadı"
+  kz: "мақсат сандық табылмады"
 LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND:
   en: "target runnable not found"
   ug: "nishanlanghan yugurguchi tepilmidi"
   uay: "نىشانلانغان يۈگۈرگۈچى تېپىلمىدى"
   tr: "nişan koşucu bulunamadı"
+  kz: "мақсат жүгіруші табылмады"
 #
 LANG_ERR_EXECUTER_BRIDGE_INVALID_RESULT:
   en: "bridge returned invalid result"
   ug: "kowruk qayturghan netije inawetsiz"
   uay: "كۆۋرۈك قايتۇرغان نەتىجە ئىناۋەتسىز"
   tr: "köprü geriverılen netice geçersiz"
+  kz: "көпір қайтарған нәтиже жарамсыз"
 
 # executer
 LANG_ERR_BRIDGE_FUNCTION_NOT_FOUND:
@@ -239,8 +281,10 @@ LANG_ERR_BRIDGE_FUNCTION_NOT_FOUND:
   ug: "kowruk fonkisiyesi tepilmidi"
   uay: "كۆۋرۈك فونكىسىيەسى تېپىلمىدى"
   tr: "köprü fonksiyonu bulunamadı"
+  kz: "көпір функция табылмады"
 LANG_ERR_BRIDGE_FUNCTION_NOT_VALID:
   en: "bridge function is invalid"
   ug: "kowruk fonkisiyesi inawetsiz"
   uay: "كۆۋرۈك فونكىسىيەسى ئىناۋەتسىز"
   tr: "köprü fonksiyonu geçersiz"
+  kz: "көпір функция жарамсыз"

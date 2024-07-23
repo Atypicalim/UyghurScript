@@ -19,8 +19,7 @@ TVALUE_NUM:
   tr: sayı
   kz: сан
 TVALUE_STR:
-TVALUE_Skz:
-en: str
+  en: str
   ug: xet
   uay: خەت
   tr: dize
@@ -30,7 +29,7 @@ TVALUE_BOX:
   ug: sanduq
   uay: ساندۇق
   tr: sandık
-  kz: қорап
+  kz: сандық
 #
 TVALUE_WHILE:
   en: while
