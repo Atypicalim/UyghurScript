@@ -26,7 +26,7 @@ fonkisiye @waqit[sikuntniAylandurush] bilen  1640187039 [%Y-%m-%d %H:%M:%S] ishl
 
 ```python
 # get string date
-fonkisiye @waqit[chislaElish] ishlitilsun we netije r bolsun
+fonkisiye @waqit[waqitElish] ishlitilsun we netije r bolsun
 # Thu Dec 23 00:01:06 2021
 ```
 

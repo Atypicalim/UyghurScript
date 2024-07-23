@@ -206,9 +206,9 @@ fonkisiye @*[doska_sizish_qayturmisi] mezmuni
         tekshuruldighanQimmet = kunupkaNumuri < kunupkaSani
     tamamlansun
     # screen
-    fonkisiye @ressam[rayunToldurushAylandurulghan] bilen 7 5 500 55 [555555] 0 0 0 ishlitilsun
-    fonkisiye @ressam[rayunToldurushAylandurulghan] bilen 12 10 333 45 [333333] 0 0 0 ishlitilsun
-    fonkisiye @ressam[rayunToldurushAylandurulghan] bilen 350 20 70 35 [88888833] 0 0 0 ishlitilsun
+    fonkisiye @taxta[totTereplikToldurushAylandurulghan] bilen 7 5 500 55 [555555] 0 0 0 ishlitilsun
+    fonkisiye @taxta[totTereplikToldurushAylandurulghan] bilen 12 10 333 45 [333333] 0 0 0 ishlitilsun
+    fonkisiye @taxta[totTereplikToldurushAylandurulghan] bilen 350 20 70 35 [88888833] 0 0 0 ishlitilsun
     # clear
     fonkisiye @zapchas[kunupkaKorsitish] bilen 425 10 75 45 [Tazilash] ishlitilsun we netije rr bolsun
     eger rr bolsa
@@ -216,13 +216,13 @@ fonkisiye @*[doska_sizish_qayturmisi] mezmuni
     tamamlansun
     # input
     fonkisiye belgilerniElish bilen herketQimmet ishlitilsun we netije sinaqXet bolsun
-    fonkisiye @ressam[xetYezish] bilen [] sinaqXet 36 2 [111111] 377 21 ishlitilsun
+    fonkisiye @taxta[xetYezish] bilen [] sinaqXet 36 2 [111111] 377 21 ishlitilsun
     # result
     fonkisiye @xet[formatlash] bilen [%f] netijeQimmet ishlitilsun we netije sinaqXet bolsun
-    fonkisiye @ressam[xetYezish] bilen [] sinaqXet 24 2 [aaaaaa] 25 15 ishlitilsun
+    fonkisiye @taxta[xetYezish] bilen [] sinaqXet 24 2 [aaaaaa] 25 15 ishlitilsun
     # action
     fonkisiye @xet[formatlash] bilen [%f] hazirqiQimmet ishlitilsun we netije sinaqXet bolsun
-    fonkisiye @ressam[xetYezish] bilen [] sinaqXet 16 2 [aaaaaa] 25 38 ishlitilsun
+    fonkisiye @taxta[xetYezish] bilen [] sinaqXet 16 2 [aaaaaa] 25 38 ishlitilsun
 tamamlansun
 
-fonkisiye @doska[korsitish] bilen 515 225 [Xisabliguch] 4096 ishlitilsun
+fonkisiye @sehne[korsitish] bilen 515 225 [Xisabliguch] 4096 ishlitilsun

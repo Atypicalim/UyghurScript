@@ -10,7 +10,7 @@ tools = builder.tools
 
 VERSION_CODE = 0.2
 SUPPORT_LANG = set()
-SCRIPT_PATH = "./examples/sınav.tr"
+SCRIPT_PATH = "./examples/sinaq.uay"
 SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
 
 ###############################################################################

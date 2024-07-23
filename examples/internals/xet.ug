@@ -13,14 +13,14 @@ fonkisiye @*[doska_sizish_qayturmisi] mezmuni
         s = s + 0.0001
     tamamlansun
 
-    fonkisiye @ressam[xetMolcherlesh] bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we netije w bolsun
+    fonkisiye @taxta[xetMolcherlesh] bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we netije w bolsun
     o = w / 2
     o = 250 - o
-    fonkisiye @ressam[xetYezish] bilen [../resources/ukij.ttf] [SINAQ] 36 0 [ff0000ff] o 50 ishlitilsun
+    fonkisiye @taxta[xetYezish] bilen [../resources/ukij.ttf] [SINAQ] 36 0 [ff0000ff] o 50 ishlitilsun
 
-    fonkisiye @ressam[xetEkirish] bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we netije r bolsun
-    fonkisiye @ressam[tamghaBesish] bilen r 250 250 0.5 0.5 [ffaaaaff] 0 0 -1 -1 0 s ishlitilsun
+    fonkisiye @taxta[xetEkirish] bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we netije r bolsun
+    fonkisiye @taxta[tamghaBesish] bilen r 250 250 0.5 0.5 [ffaaaaff] 0 0 -1 -1 0 s ishlitilsun
 
 tamamlansun
 
-fonkisiye @doska[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun
+fonkisiye @sehne[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun

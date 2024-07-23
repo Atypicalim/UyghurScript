@@ -17,8 +17,8 @@ fonkisiye @*[doska_sizish_qayturmisi] mezmuni
     tamamlansun
     x = x + d
     y = y + d
-    fonkisiye @ressam[chemberSizish] bilen x y 100 100 [55aaff] ishlitilsun
+    fonkisiye @taxta[chemberSizish] bilen x y 100 100 [55aaff] ishlitilsun
 
 tamamlansun
 
-fonkisiye @doska[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun
+fonkisiye @sehne[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun

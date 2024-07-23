@@ -73,7 +73,7 @@ int time_get_seconds()
 }
 
 // "2000-02-02 22:22:22"
-int time_create_seconds(char *str)
+int time_convert_to_seconds(char *str)
 {
     if (strlen(str) != 19) return -1;
     int year = atoi(str + 0);
@@ -95,7 +95,7 @@ int time_create_seconds(char *str)
 }
 
 // "%Y-%m-%d %H:%M:%S"
-char *time_format_seconds(int seconds, char *format)
+char *time_convert_from_seconds(int seconds, char *format)
 {
     time_t currentTime = seconds >= 0 ? seconds : time(NULL);
     struct tm *localTime = localtime(&currentTime);
@@ -108,7 +108,7 @@ char *time_format_seconds(int seconds, char *format)
     return data;
 }
 
-char *time_get_date()
+char *time_get_time()
 {
     time_t currentTime = time(NULL);
     char *fullLocalDate = ctime(&currentTime);

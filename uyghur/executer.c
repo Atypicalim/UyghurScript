@@ -183,7 +183,7 @@ void Executer_findValueByToken(Executer *this, Token *token, Container **rContai
         pct_free(location);
         if (value != NULL) *rContainer = value->object;
     }
-    if (rContainer == NULL) return;
+    if (*rContainer == NULL) return;
     // key
     char *location = convert_string_to_location(token->value, UG_TYPE_STR);
     *rValue = Container_getLocation(*rContainer, location);

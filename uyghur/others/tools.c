@@ -1,5 +1,7 @@
 // tools
 
+#include "header.h"
+
 #ifndef H_TOOLS
 #define H_TOOLS
 
@@ -90,6 +92,10 @@ int is_sign(UCHAR uChar) {
     return isprint(c) && !isalpha(c);
 }
 
+bool is_special(UCHAR uChar) {
+    return is_space(uChar) || is_cntrl(uChar) || is_sign(uChar);
+}
+
 ////////////////////////////////////////////////////////////////////////
 
 UCHAR clone_uchar(UCHAR ch) {
@@ -149,14 +155,14 @@ bool is_number_body(UCHAR c)
 
 bool is_letter_begin(UCHAR c, UCHAR n)
 {
-    if (is_alpha(c)) return true;
-    if ((is_uchar_eq_char(c, '_') || is_uchar_eq_char(c, '$')) && is_alpha(n)) return true;
+    if (!is_special(c)) return true;
+    if ((is_uchar_eq_char(c, '_') || is_uchar_eq_char(c, '$')) && !is_special(n)) return true;
     return false;
 }
 
 bool is_letter_body(UCHAR c)
 {
-    return !is_space(c) && !is_cntrl(c) && !is_sign(c);
+    return !is_special(c);
 }
 
 bool is_string_open(UCHAR c) {

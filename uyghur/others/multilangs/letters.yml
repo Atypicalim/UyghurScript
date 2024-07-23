@@ -1,122 +1,150 @@
 
 #
 TVALUE_EMPTY:
-  en: "empty"
-  ug: "quruq"
-  tr: "boş"
+  en: empty
+  ug: quruq
+  uay: قۇرۇق
+  tr: boş
 TVALUE_LOGIC:
-  en: "logic"
-  ug: "logika"
-  tr: "mantık"
+  en: logic
+  ug: logika
+  uay: لوگىكا
+  tr: mantık
 TVALUE_NUM:
-  en: "num"
-  ug: "san"
-  tr: "sayı"
+  en: num
+  ug: san
+  uay: سان
+  tr: sayı
 TVALUE_STR:
-  en: "str"
-  ug: "xet"
-  tr: "dize"
+  en: str
+  ug: xet
+  uay: خەت
+  tr: dize
 TVALUE_BOX:
-  en: "box"
-  ug: "sanduq"
-  tr: "sandık"
+  en: box
+  ug: sanduq
+  uay: ساندۇق
+  tr: sandık
 #
 TVALUE_WHILE:
-  en: "while"
-  ug: "nawada"
-  tr: "nawada"
+  en: while
+  ug: nawada
+  uay: ناۋادا
+  tr: nawada
 TVALUE_IF:
-  en: "if"
-  ug: "eger"
-  tr: "eğer"
+  en: if
+  ug: eger
+  uay: ئەگەر
+  tr: eğer
 TVALUE_IF_ELSE:
-  en: "elif"
-  ug: "egerde"
-  tr: "eğerde"
+  en: elif
+  ug: egerde
+  uay: ئەگەردە
+  tr: eğerde
 TVALUE_THEN:
-  en: "then"
-  ug: "bolsa"
-  tr: "olsa"
+  en: then
+  ug: bolsa
+  uay: بولسا
+  tr: olsa
 TVALUE_ELSE:
-  en: "else"
-  ug: "bolmisa"
-  tr: "olmasa"
+  en: else
+  ug: bolmisa
+  uay: بولمىسا
+  tr: olmasa
 TVALUE_CODE_END:
-  en: "finish"
-  ug: "tamamlansun"
-  tr: "tamamlansin"
+  en: finish
+  ug: tamamlansun
+  uay: تاماملانسۇن
+  tr: tamamlansin
 
 #
 TVALUE_TRUE:
-  en: "true"
-  ug: "rast"
-  tr: "gerçek"
+  en: right
+  ug: rast
+  uay: راست
+  tr: gerçek
 TVALUE_FALSE:
-  en: "false"
-  ug: "yalghan"
-  tr: "yanlış"
+  en: wrong
+  ug: yalghan
+  uay: يالغان
+  tr: yanlış
 TVALUE_OPPOSITE:
-  en: "opposite"
-  ug: "ekische"
-  tr: "karşı"
+  en: opposite
+  ug: ekische
+  uay: ئەكىسچە
+  tr: karşı
 
 # 
 TVALUE_COMMAND:
-  en: "$command"
-  ug: "$buyruq"
-  tr: "$buyruk"
+  en: $command
+  ug: $buyruq
+  uay: بۇيرۇق
+  tr: $buyruk
 TVALUE_CMD_OUTPUT:
-  en: "write"
-  ug: "yezilsun"
-  tr: "yaz"
+  en: write
+  ug: yezilsun
+  uay: يېزىلسۇن
+  tr: yaz
 TVALUE_CMD_INPUT:
-  en: "read"
-  ug: "oqulsun"
-  tr: "oku"
+  en: read
+  ug: oqulsun
+  uay: ئوقۇلسۇن
+  tr: oku
 #
 TVALUE_VARIABLE:
-  en: "variable"
-  ug: "miqdar"
-  tr: "değişken"
+  en: variable
+  ug: miqdar
+  uay: مىقدار
+  tr: değişken
 TVALUE_VALUE:
-  en: "value"
-  ug: "qimmiti"
-  tr: "kıymeti"
+  en: value
+  ug: qimmiti
+  uay: قىممىتى
+  tr: kıymeti
 TVALUE_MADE:
-  en: "made"
-  ug: "bolsun"
-  tr: "olsun"
+  en: made
+  ug: bolsun
+  uay: بولسۇن
+  tr: olsun
 # 
 TVALUE_EXCEPTION:
-  en: "exception"
-  ug: "xataliq"
-  tr: "hatalık"
+  en: exception
+  ug: xataliq
+  uay: خاتالىق
+  tr: hatalık
 # 
 TVALUE_FUNCTION:
-  en: "function"
-  ug: "fonkisiye"
-  tr: "fonksiyon"
+  en: function
+  ug: fonkisiye
+  uay: فونكىسىيە
+  tr: fonksiyon
 TVALUE_CONTENT:
-  en: "content"
-  ug: "mezmuni"
-  tr: "içeriği"
+  en: content
+  ug: mezmuni
+  uay: مەزمۇنى
+  tr: içeriği
 TVALUE_WITH:
-  en: "with"
-  ug: "bilen"
-  tr: "ile"
+  en: with
+  ug: bilen
+  uay: بىلەن
+  tr: ile
 TVALUE_CALL:
-  en: "applied"
-  ug: "ishlitilsun"
-  tr: "kullanılsın"
+  en: applied
+  ug: ishlitilsun
+  uay: ئىشلىتىلسۇن
+  tr: kullanılsın
 TVALUE_RETURN:
-  en: "returned"
-  ug: "qayturulsun"
-  tr: "geriverılsın"
+  en: returned
+  ug: qayturulsun
+  uay: قايتۇرۇلسۇن
+  tr: geriverılsın
 TVALUE_FURTHER:
-  en: "and"
-  ug: "we"
-  tr: "ve"
+  en: and
+  ug: we
+  uay: ۋە
+  tr: ve
 TVALUE_RESULT:
-  en: "result"
-  ug: "netije"
-  tr: "netice"
+  en: result
+  ug: netije
+  uay: نەتىجە
+  tr: netice

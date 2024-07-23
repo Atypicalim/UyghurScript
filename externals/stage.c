@@ -252,7 +252,7 @@ void native_stage_get_clipboard(Bridge *bridge)
     Bridge_returnString(bridge, r);
 }
 
-void native_stage_set_mourse_cursor(Bridge *bridge)
+void native_stage_set_mouse_cursor(Bridge *bridge)
 {
     int c = Bridge_receiveNumber(bridge);
     SetMouseCursor(c);
@@ -356,7 +356,7 @@ void lib_stage_register(Bridge *bridge)
     // system
     BRIDGE_BIND_NATIVE(stage_set_clipboard);
     BRIDGE_BIND_NATIVE(stage_get_clipboard);
-    BRIDGE_BIND_NATIVE(stage_set_mourse_cursor);
+    BRIDGE_BIND_NATIVE(stage_set_mouse_cursor);
     BRIDGE_BIND_NATIVE(stage_get_mouse_position);
     BRIDGE_BIND_NATIVE(stage_get_mouse_wheel);
     BRIDGE_BIND_NATIVE(stage_get_mouse_key_action);

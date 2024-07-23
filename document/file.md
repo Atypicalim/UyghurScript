@@ -36,11 +36,11 @@ fonkisiye @xojjet[buXojjetmu] bilen [../uyghur/parser.c] ishlitilsun we netije r
 ```
 
 ```python
-fonkisiye @xojjet[buSomkimu] bilen [../uyghur/parser.c] ishlitilsun we netije r bolsun
+fonkisiye @xojjet[buQisquchmu] bilen [../uyghur/parser.c] ishlitilsun we netije r bolsun
 # yalghan
 ```
 
 ```python
-fonkisiye @xojjet[somkaQurush] bilen [./a/b/c] ishlitilsun we netije r bolsun
+fonkisiye @xojjet[qisquchQurush] bilen [./a/b/c] ishlitilsun we netije r bolsun
 # 0
 ```
