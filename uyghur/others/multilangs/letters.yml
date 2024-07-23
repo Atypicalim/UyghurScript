@@ -60,13 +60,13 @@ TVALUE_ELSE:
   ug: bolmisa
   uay: بولمىسا
   tr: olmasa
-  kz: басқа
+  kz: болмаса
 TVALUE_CODE_END:
   en: finish
   ug: tamamlansun
   uay: تاماملانسۇن
   tr: tamamlansin
-  kz: болмаса
+  kz: аяқталсын
 
 #
 TVALUE_TRUE:
