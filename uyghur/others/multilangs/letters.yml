@@ -5,146 +5,175 @@ TVALUE_EMPTY:
   ug: quruq
   uay: قۇرۇق
   tr: boş
+  kz: бос
 TVALUE_LOGIC:
   en: logic
   ug: logika
   uay: لوگىكا
   tr: mantık
+  kz: логика
 TVALUE_NUM:
   en: num
   ug: san
   uay: سان
   tr: sayı
+  kz: сан
 TVALUE_STR:
-  en: str
+TVALUE_Skz:
+en: str
   ug: xet
   uay: خەت
   tr: dize
+  kz: хат
 TVALUE_BOX:
   en: box
   ug: sanduq
   uay: ساندۇق
   tr: sandık
+  kz: қорап
 #
 TVALUE_WHILE:
   en: while
   ug: nawada
   uay: ناۋادا
-  tr: nawada
+  tr: böyleyse
+  kz: солайда
 TVALUE_IF:
   en: if
   ug: eger
   uay: ئەگەر
   tr: eğer
+  kz: егер
 TVALUE_IF_ELSE:
   en: elif
   ug: egerde
   uay: ئەگەردە
   tr: eğerde
+  kz: егерде
 TVALUE_THEN:
   en: then
   ug: bolsa
   uay: بولسا
   tr: olsa
+  kz: болса
 TVALUE_ELSE:
   en: else
   ug: bolmisa
   uay: بولمىسا
   tr: olmasa
+  kz: басқа
 TVALUE_CODE_END:
   en: finish
   ug: tamamlansun
   uay: تاماملانسۇن
   tr: tamamlansin
+  kz: болмаса
 
 #
 TVALUE_TRUE:
   en: right
   ug: rast
   uay: راست
-  tr: gerçek
+  tr: doğru
+  kz: рас
 TVALUE_FALSE:
   en: wrong
   ug: yalghan
   uay: يالغان
   tr: yanlış
+  kz: жалған
 TVALUE_OPPOSITE:
   en: opposite
   ug: ekische
   uay: ئەكىسچە
   tr: karşı
+  kz: қарсы
 
 # 
 TVALUE_COMMAND:
-  en: $command
-  ug: $buyruq
+  en: command
+  ug: buyruq
   uay: بۇيرۇق
-  tr: $buyruk
+  tr: buyruk
+  kz: бұйрық
 TVALUE_CMD_OUTPUT:
   en: write
   ug: yezilsun
   uay: يېزىلسۇن
   tr: yaz
+  kz: жазу
 TVALUE_CMD_INPUT:
   en: read
   ug: oqulsun
   uay: ئوقۇلسۇن
   tr: oku
+  kz: оқу
 #
 TVALUE_VARIABLE:
   en: variable
   ug: miqdar
   uay: مىقدار
   tr: değişken
+  kz: айнымалы
 TVALUE_VALUE:
   en: value
   ug: qimmiti
   uay: قىممىتى
   tr: kıymeti
+  kz: қимметі
 TVALUE_MADE:
   en: made
   ug: bolsun
   uay: بولسۇن
   tr: olsun
+  kz: болсын
 # 
 TVALUE_EXCEPTION:
   en: exception
   ug: xataliq
   uay: خاتالىق
   tr: hatalık
+  kz: қателік
 # 
 TVALUE_FUNCTION:
   en: function
   ug: fonkisiye
   uay: فونكىسىيە
   tr: fonksiyon
+  kz: функция
 TVALUE_CONTENT:
   en: content
   ug: mezmuni
   uay: مەزمۇنى
   tr: içeriği
+  kz: мазмұны
 TVALUE_WITH:
   en: with
   ug: bilen
   uay: بىلەن
   tr: ile
+  kz: бірге
 TVALUE_CALL:
   en: applied
   ug: ishlitilsun
   uay: ئىشلىتىلسۇن
   tr: kullanılsın
+  kz: қолданылсын
 TVALUE_RETURN:
   en: returned
   ug: qayturulsun
   uay: قايتۇرۇلسۇن
   tr: geriverılsın
+  kz: қайтарылсын
 TVALUE_FURTHER:
   en: and
   ug: we
   uay: ۋە
   tr: ve
+  kz: бен
 TVALUE_RESULT:
   en: result
   ug: netije
   uay: نەتىجە
   tr: netice
+  kz: нәтиже
