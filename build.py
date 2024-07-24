@@ -43,14 +43,37 @@ static const PAIR_{3} {1}[{0}] = {{
 def readYaml(fromPath):
     _configs = tools.files.read(fromPath, 'utf-8')
     configs = yaml.safe_load(_configs)
-    aliasesArr = []
+    return configs
+
+def readColors():
+    configs = readYaml(f"./uyghur/others/multilangs/colors.yml")
+    color2nameMap = {}
+    name2colorMap = {}
+    for color, names in configs.items():
+        for name in names:
+            if name not in name2colorMap:
+                name2colorMap[name] = {}
+            if color not in color2nameMap:
+                color2nameMap[color] = []
+            name2colorMap[name] = color
+            if name not in color2nameMap[color]:
+                color2nameMap[color].append(name)
+    return color2nameMap, name2colorMap
+
+def readLanguages(fromPath):
+    configs = readYaml(fromPath)
+    langsArr = []
+    namesArr = []
     mapLang2Name = {}
     mapName2Lang = {}
     for alias, pairs in configs.items():
-        # aliases
-        aliasesArr.append(alias)
-        # languages
+        # names
+        namesArr.append(alias)
+        # 
         for lang, value in pairs.items():
+            # langs
+            if lang not in langsArr:
+                langsArr.append(lang)
             #
             if lang not in mapLang2Name:
                 mapLang2Name[lang] = {}
@@ -60,7 +83,7 @@ def readYaml(fromPath):
                 mapName2Lang[alias] = {}
             mapName2Lang[alias][lang] = value
             #
-    return aliasesArr, mapLang2Name, mapName2Lang
+    return langsArr, namesArr, mapLang2Name, mapName2Lang
 
 def formatVariables(template, names):
     variables = []
@@ -125,9 +148,9 @@ def formatFilters(name, mapping):
 
 def _Yaml2Template(name, varTpl, lineTpl):
     _name = name.lower()
-    aliasesArr, mapLang2Name, mapName2Lang = readYaml(f"./uyghur/others/multilangs/{_name}.yml")
+    langsArr, namesArr, mapLang2Name, mapName2Lang = readLanguages(f"./uyghur/others/multilangs/{_name}.yml")
     #
-    variables = formatVariables(varTpl, aliasesArr)
+    variables = formatVariables(varTpl, namesArr)
     bodies = formatBodies(lineTpl, name, mapLang2Name)
     footers = formatFooters(tplYamlLineNormal, name, mapName2Lang)
     [filterSizeByLang, filterConfByLang] = formatFilters(name, mapLang2Name)
@@ -193,6 +216,74 @@ bldr.onMacro(_onMacro())
 bldr.onLine(lambda line: line)
 bldr.start()
 
+###############################################################################
+
+langsArr, namesArr, mapLang2Name, mapName2Lang = readLanguages(f"./uyghur/others/multilangs/letters.yml")
+# 
+letterArray = []
+for name, infos in mapName2Lang.items():
+    lines = ""
+    for lang, value in infos.items():
+        lines = lines + "{}:'{}',".format(lang, value)
+    letterArray.append(name + ":{"+ lines + "},")
+letterText = "\n".join(letterArray)
+#
+langArray = []
+for lang in langsArr:
+    langArray.append("'" + lang + "'")
+langText = ", ".join(langArray)
+
+# converter
+def _onMacro():
+    def onMacro(code, command, argument = None):
+        if command == "LETTERS_MAP":
+            return letterText
+        elif command == "LANGS_ARR":
+            return langText
+    return onMacro
+bldr = builder.code()
+bldr.setInput("./others/convert.tpl.js")
+bldr.setComment("//")
+bldr.setOutput(DST_DIR + "convert.js")
+bldr.onMacro(_onMacro())
+bldr.onLine(lambda line: line)
+bldr.start()
+
+
+###############################################################################
+
+#
+color2nameMap, name2colorMap = readColors()
+#
+colorArray = []
+for name, infos in mapName2Lang.items():
+    lines = ""
+    for lang, value in infos.items():
+        color = name2colorMap[name]
+        line = "'{}':'{}',".format(value, color)
+        colorArray.append(line)
+colorText = "\n".join(colorArray)
+#
+langArray = []
+for lang in langsArr:
+    langArray.append("'" + lang + "'")
+langText = ", ".join(langArray)
+
+# color
+def _onMacro():
+    def onMacro(code, command, argument = None):
+        if command == "COLORS_MAP":
+            return colorText
+        elif command == "LANGS_ARR":
+            return langText
+    return onMacro
+bldr = builder.code()
+bldr.setInput("./others/converter.tpl.html")
+bldr.setComment("//", False)
+bldr.setOutput(DST_DIR + "converter.html")
+bldr.onMacro(_onMacro())
+bldr.onLine(lambda line: line)
+bldr.start()
 
 ###############################################################################
 
@@ -232,5 +323,5 @@ task.addWarnings(False, [
     "incompatible-pointer-types"
 ])
 # task.addFlags(["-I ../pure-c-tools/"])
-task.start()
-task.run()
+# task.start()
+# task.run()

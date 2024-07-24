@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../others/query.js"></script>
+    <script src="../build/convert.js"></script>
+    <style>
+        pre {
+            background: rgb(249, 249, 249);;
+        }
+        red {
+            color: rgb(197, 11, 61);
+        }
+        yellow {
+            color: rgb(239, 227, 0);
+        }
+        green {
+            color: green;
+        }
+        blue {
+            color: rgb(49, 143, 198);
+        }
+        cyan {
+            color: rgb(3, 174, 174);
+        }
+        grey {
+            color: grey;
+        }
+        purple {
+            color: rgb(165, 2, 240);
+        }
+    </style>
+</head>
+<body>
+    <div id="code"></div>
+</body>
+</html>
+<script>
+
+let CONVERTER_COLORS_MAP = {
+    // [M[ COLORS_MAP ]M]
+};
+
+let CONVERTER_LANG_ARR = [
+    // [M[ LANGS_ARR ]M]
+];
+
+let code = `
+miqdar s qimmiti sanduq bolsun
+miqdar k qimmiti [key] bolsun
+
+@s(1) = 111 + 200
+@s(2) = [abc]
+@s(3) = 333
+@s[abc] = [str...]
+@s(123) = [num...]
+@s{k} = [val...]
+
+fonkisiye func miqdar k v mezmuni
+    ikrangha k yezilsun
+    ikrangha [-----------] yezilsun
+    ikrangha v yezilsun
+    ikrangha [\n] yezilsun
+tamamlansun
+
+fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun we netije r bolsun
+
+# ikrangha s yezilsun
+ikrangha [END!] yezilsun
+
+`;
+    
+function colorize2html(code) {
+    let text = code.substring(0);
+    //
+    let keys = Object.keys(CONVERTER_COLORS_MAP);
+    keys.sort((a, b) => b.length - a.length);
+    //
+    function block2colorized(block) {
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            const color = CONVERTER_COLORS_MAP[key];
+            if (key == block) {
+                return `<${color}>${key}</${color}>`;
+            }
+        }
+        if (!isNaN(block) && typeof Number(block) === 'number') {
+            return `<purple>${block}</purple>`;
+        }
+        if (block.startsWith('[') && block.endsWith(']')) {
+            _block = block.substring(1, block.length - 1)
+            _block = _block.replaceAll("\\n", "N");
+            return `[<yellow>${_block}</yellow>]`;
+        }
+        if ("+-*/%^".includes(block)) {
+            return `<red>${block}</red>`;
+        }
+        block = block.replaceAll(/@(\S+)\[(\S+)\]/gi, `@<green>$1</green>[<yellow>$2</yellow>]`);
+        block = block.replaceAll(/@(\S+)\{(\S+)\}/gi, `@<green>$1</green>[<cyan>$2</cyan>]`);
+        block = block.replaceAll(/@(\S+)\((\S+)\)/gi, `@<green>$1</green>[<purple>$2</purple>]`);
+        return block;
+    }
+    //
+    let lines = text.split("\n");
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.match("^\s*#")) {
+            lines[i] = line.replaceAll(/#([^\n]+)/gi, `<grey>#$1</grey>`);
+            continue;
+        }
+        let blocks = line.split(" ");
+        for (let j = 0; j < blocks.length; j++) {
+            const block = blocks[j];
+            let translated = block2colorized(block);
+            blocks[j] = translated;
+        }
+        lines[i] = blocks.join(" ");
+    }
+    let _text = lines.join("\n");
+    return `<pre>${_text}</pre>`;
+}
+
+function setLang(lang) {
+    let txt = convert2language("ug", lang, code);
+    let btn = language2buttons();
+    let pre = colorize2html(txt);
+    var $ = query2selector();
+    $("#code").html(btn + pre);
+}
+
+function language2buttons() {
+    let buttons = [];
+    for (let i = 0; i < CONVERTER_LANG_ARR.length; i++) {
+        const lang = CONVERTER_LANG_ARR[i];
+        let button = `<button onclick="setLang('${lang}')">${lang}</button>`;
+        buttons.push(button)
+    }
+    let _text = buttons.join("\n");
+    return `<div>${_text}</div>`;
+}
+
+//
+function render() {
+    setLang("en");
+}
+
+window.onload = function() {
+    render();
+};
+    
+    </script>
