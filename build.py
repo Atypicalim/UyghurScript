@@ -46,7 +46,7 @@ def readYaml(fromPath):
     return configs
 
 def readColors():
-    configs = readYaml(f"./uyghur/others/multilangs/colors.yml")
+    configs = readYaml(f"./others/colors.yml")
     color2nameMap = {}
     name2colorMap = {}
     for color, names in configs.items():
@@ -148,7 +148,7 @@ def formatFilters(name, mapping):
 
 def _Yaml2Template(name, varTpl, lineTpl):
     _name = name.lower()
-    langsArr, namesArr, mapLang2Name, mapName2Lang = readLanguages(f"./uyghur/others/multilangs/{_name}.yml")
+    langsArr, namesArr, mapLang2Name, mapName2Lang = readLanguages(f"./uyghur/multilangs/{_name}.yml")
     #
     variables = formatVariables(varTpl, namesArr)
     bodies = formatBodies(lineTpl, name, mapLang2Name)
@@ -176,7 +176,7 @@ def _Yaml2Template(name, varTpl, lineTpl):
             return filterConfByName
     #
     bldr = builder.code()
-    bldr.setInput(f"./uyghur/others/templates/{_name}.tpl.h")
+    bldr.setInput(f"./uyghur/templates/{_name}.tpl.h")
     bldr.setComment("//")
     bldr.setOutput(f"{DST_DIR}{_name}.h")
     bldr.onMacro(_onMacro)
@@ -209,7 +209,7 @@ def _onMacro():
 
 # configs
 bldr = builder.code()
-bldr.setInput("./uyghur/others/templates/configs.tpl.h")
+bldr.setInput("./uyghur/templates/configs.tpl.h")
 bldr.setComment("//")
 bldr.setOutput(DST_DIR + "configs.h")
 bldr.onMacro(_onMacro())
@@ -218,7 +218,7 @@ bldr.start()
 
 ###############################################################################
 
-langsArr, namesArr, mapLang2Name, mapName2Lang = readLanguages(f"./uyghur/others/multilangs/letters.yml")
+langsArr, namesArr, mapLang2Name, mapName2Lang = readLanguages(f"./uyghur/multilangs/letters.yml")
 # 
 letterArray = []
 for name, infos in mapName2Lang.items():
@@ -233,7 +233,7 @@ for lang in langsArr:
     langArray.append("'" + lang + "'")
 langText = ", ".join(langArray)
 
-# converter
+# translate
 def _onMacro():
     def onMacro(code, command, argument = None):
         if command == "LETTERS_MAP":
@@ -242,9 +242,9 @@ def _onMacro():
             return langText
     return onMacro
 bldr = builder.code()
-bldr.setInput("./others/convert.tpl.js")
+bldr.setInput("./others/translate.tpl.js")
 bldr.setComment("//")
-bldr.setOutput(DST_DIR + "convert.js")
+bldr.setOutput(DST_DIR + "translate.js")
 bldr.onMacro(_onMacro())
 bldr.onLine(lambda line: line)
 bldr.start()
@@ -269,7 +269,7 @@ for lang in langsArr:
     langArray.append("'" + lang + "'")
 langText = ", ".join(langArray)
 
-# color
+# colorize
 def _onMacro():
     def onMacro(code, command, argument = None):
         if command == "COLORS_MAP":
@@ -278,9 +278,9 @@ def _onMacro():
             return langText
     return onMacro
 bldr = builder.code()
-bldr.setInput("./others/converter.tpl.html")
+bldr.setInput("./others/colorize.tpl.js")
 bldr.setComment("//", False)
-bldr.setOutput(DST_DIR + "converter.html")
+bldr.setOutput(DST_DIR + "colorize.js")
 bldr.onMacro(_onMacro())
 bldr.onLine(lambda line: line)
 bldr.start()
@@ -323,5 +323,5 @@ task.addWarnings(False, [
     "incompatible-pointer-types"
 ])
 # task.addFlags(["-I ../pure-c-tools/"])
-# task.start()
-# task.run()
+task.start()
+task.run()

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../../pure-js-tools/tools.js"></script>
+    <script src="../build/translate.js"></script>
+    <script src="../build/colorize.js"></script>
+    <style>
+        pre {
+            background: rgb(249, 249, 249);
+            font-family: Roboto,Arial,sans-serif,Alkatip;
+        }
+        red {
+            color: rgb(197, 11, 61);
+        }
+        yellow {
+            color: rgb(239, 227, 0);
+        }
+        green {
+            color: green;
+        }
+        blue {
+            color: rgb(49, 143, 198);
+        }
+        cyan {
+            color: rgb(3, 174, 174);
+        }
+        grey {
+            color: grey;
+        }
+        purple {
+            color: rgb(165, 2, 240);
+        }
+    </style>
+</head>
+<body>
+    <div id="code"></div>
+</body>
+</html>
+<script>
+
+"use strict";
+
+let code = `
+miqdar s qimmiti sanduq bolsun
+miqdar k qimmiti [key] bolsun
+
+@s(1) = 111 + 200
+@s(2) = [abc]
+@s(3) = 333
+@s[abc] = [str...]
+@s(123) = [num...]
+@s{k} = [val...]
+
+fonkisiye func miqdar k v mezmuni
+    ikrangha k yezilsun
+    ikrangha [-----------] yezilsun
+    ikrangha v yezilsun
+    ikrangha [\n] yezilsun
+tamamlansun
+
+fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun we netije r bolsun
+
+# ikrangha s yezilsun
+ikrangha [END!] yezilsun
+`;
+
+
+function setLang(lang) {
+    let _code = translate_ug_code("ug", lang, code);
+    let _pre = colorize_ug_code(_code);
+    // 
+    let buttons = [];
+    for (let i = 0; i < TRANSLATE_LANGS_ARR.length; i++) {
+        const lang = TRANSLATE_LANGS_ARR[i];
+        let button = `<button onclick="setLang('${lang}')">${lang}</button>`;
+        buttons.push(button)
+    }
+    let _btn = buttons.join("\n");
+    // 
+    var $ = query2selector();
+    $("#code").html(_btn + _pre);
+}
+
+function language2buttons() {
+    return `<div>${_text}</div>`;
+}
+
+window.onload = function() {
+    setLang("en");
+};
+    
+    </script>
