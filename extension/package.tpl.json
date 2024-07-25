@@ -1,0 +1,46 @@
+{
+	"name": "uyghurscript",
+	"displayName": "uyghurscript",
+	"publisher": "kompasim",
+	"description": "uyghur script language extension ...",
+	"icon": "others/icon.png",
+	"version": "{}", // [M[ EXT_VERSION ]M]
+	"engines": {
+		"vscode": "^1.69.0"
+	},
+    "keywords": [
+		"uyghurscript",
+		"language",
+		"" // [M[ EXT_KEYWORDS ]M]
+	],
+	"categories": [
+		"Programming Languages",
+		"Snippets"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/kompasim/UyghurScript/"
+	},
+	"homepage": "https://kompasim.github.io/",
+	"bugs": {
+		"url": "https://github.com/kompasim/UyghurScript/issues",
+		"email": "kompasim@163.com"
+	},
+	"contributes": {
+		"languages": [
+			"" // [M[ EXT_LANGUAGES ]M]
+		],
+		"grammars": [
+			"" // [M[ EXT_GRAMMARS ]M]
+		],
+		"snippets": [
+			"" // [M[ EXT_SNIPPETS ]M]
+		]
+	},
+	"__metadata": {
+		"id": "8ab59741-be9e-4fa6-8bd5-68019f3112ca",
+		"publisherDisplayName": "kompasim",
+		"publisherId": "e3a63838-26bc-4a34-8015-ce54572c165b",
+		"isPreReleaseVersion": false
+	}
+}

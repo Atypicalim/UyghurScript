@@ -4,7 +4,7 @@
 
 > a toy script interpreter written in c, u can write & run your script written in uyghur language grammar with it ...
 
-> there is a [vscode extension](https://github.com/kompasim/uyghurscript-vscode-extension) for highlighting and autocompleting.
+> there is a [vscode extension](https://marketplace.visualstudio.com/publishers/kompasim) for highlighting and autocompleting.
 
 ![screenshot](./resources/screenshot.png)
 

@@ -1,0 +1,131 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "{name}", // [M[ FORMAT_ARGS ]M]
+    "patterns": [
+        {
+            "include": "#expression"
+        }
+    ],
+    "repository": {
+        "expression": {
+            "patterns": [
+                {
+                    "name": "entity.name.function",
+                    "match": "\\b({})\\b" // [M[ GRAMMAR_TYPES ]M]
+                },
+                {
+                    "name": "support.function",
+                    "match": "\\b({})\\b" // [M[ GRAMMAR_ACCOUNTCE ]M]
+                },
+                {
+                    "name": "keyword",
+                    "match": "\\b({})\\b" // [M[ GRAMMAR_KEYWORD ]M]
+                },
+                {
+                    "name": "keyword",
+                    "match": "\\b({})\\b" // [M[ GRAMMAR_BLOCKS ]M]
+                },
+                {
+                    "name": "keyword",
+                    "match": "\\b({})\\b" // [M[ GRAMMAR_EVENTS ]M]
+                },
+                {
+                    "name": "comment",
+                    "match": "#.*"
+                },
+                {
+                    "name": "keyword",
+                    "match": "\\s+(=|\\+|\\-|\\*|/|\\^|%|<|>|\\?|؟|&|~)\\s+"
+                },
+                {
+                    "include": "#strings"
+                },
+                {
+                    "include": "#numbers"
+                },
+                {
+                    "include": "#punctuations"
+                },
+                {
+                    "name": "variable.language.self",
+                    "match": "@(\\-|\\+|\\*)"
+                },
+                {
+                    "name": "variable.language.self",
+                    "match": "@[^\\s\\d\\[\\{\\(][^\\s\\[\\{\\(]*"
+                }
+            ]
+        },
+        "strings": {
+            "name": "string.quoted.double.{lang}", // [M[ FORMAT_ARGS ]M]
+            "begin": "\\[",
+            "end": "\\]",
+            "patterns": [
+                {
+                    "name": "constant.character.escape.{lang}", // [M[ FORMAT_ARGS ]M]
+                    "match": "\\\\."
+                },
+                {
+                    "name": "constant.character.escape.{lang}", // [M[ FORMAT_ARGS ]M]
+                    "match": "\\\\."
+                },
+                {
+                    "name": "punctuation.term.myscript",
+                    "begin": "\\{",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "meta.brace.curly.myscript"
+                        }
+                    },
+                    "end": "\\}",
+                    "endCaptures": {
+                        "0": {
+                            "name": "meta.brace.curly.myscript"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "#numbers"
+                        },
+                        {
+                            "include": "#strings"
+                        }
+                    ]
+                }
+            ]
+        },
+        "numbers": {
+            "patterns": [
+                {
+                    "name": "constant.numeric.integer.myscript",
+                    "match": "\\b(\\d+)\\b"
+                },
+                {
+                    "name": "constant.numeric.decimal.myscript",
+                    "match": "\\b(\\d+\\.\\d+)\\b"
+                }
+            ]
+        },
+        "punctuations": {
+            "patterns": [
+                {
+                    "name": "punctuation.curly.open.myscript",
+                    "match": "\\["
+                },
+                {
+                    "name": "punctuation.curly.close.myscript",
+                    "match": "\\]"
+                },
+                {
+                    "name": "punctuation.curly.open.myscript",
+                    "match": "\\{"
+                },
+                {
+                    "name": "punctuation.curly.close.myscript",
+                    "match": "\\}"
+                }
+            ]
+        }
+    },
+    "scopeName": "text.language.{name}" // [M[ FORMAT_ARGS ]M]
+}

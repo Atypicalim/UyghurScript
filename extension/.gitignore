@@ -1,0 +1,5 @@
+node_modules
+*.vsix
+package.json
+*.tmLanguage.json
+snippets/
