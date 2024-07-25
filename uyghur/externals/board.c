@@ -1,7 +1,7 @@
 // baord
 
 #include "raylib.h"
-#include "../uyghur/uyghur.c"
+#include "../uyghur.c"
 
 // tool
 

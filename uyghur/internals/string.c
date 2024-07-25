@@ -1,6 +1,6 @@
 // string
 
-#include "../uyghur/uyghur.c"
+#include "../uyghur.c"
 
 void native_string_replace(Bridge *bridge)
 {

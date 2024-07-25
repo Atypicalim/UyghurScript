@@ -1,6 +1,6 @@
 // global
 
-#include "../uyghur/uyghur.c"
+#include "../uyghur.c"
 
 void native_read(Bridge *bridge)
 {

@@ -1,6 +1,6 @@
 // time
 
-#include "../uyghur/uyghur.c"
+#include "../uyghur.c"
 
 void native_time_get_zone(Bridge *bridge)
 {

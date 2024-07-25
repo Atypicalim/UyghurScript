@@ -1,6 +1,6 @@
 // library test
 
-#include "../uyghur/uyghur.c"
+#include "../uyghur.c"
  
 
 void cFuncTest(Bridge *bridge)

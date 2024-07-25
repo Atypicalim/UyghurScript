@@ -4,7 +4,7 @@
 #define RAYGUI_IMPLEMENTATION
 #include "src/raygui.h"  
 #include "styles/ashes/ashes.h"  
-#include "../uyghur/uyghur.c"
+#include "../uyghur.c"
 
 // data
 Bridge *uyghurBridge;
