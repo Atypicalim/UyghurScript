@@ -7,7 +7,6 @@ variable:
     uay: "مىقدار جۈملىسى ياساش"
     tr: "değişken cümlesi yapmak"
     kz: "айнымалы сөйлемі жасау"
-  describe: ""
 
 read:
   prefix: TVALUE_CMD_INPUT
@@ -17,7 +16,6 @@ read:
     uay: "ئوقۇش جۈملىسى ياساش"
     tr: "oku cümlesi yapmak"
     kz: "оқу сөйлемі жасау"
-  describe: ""
 
 write:
   prefix: TVALUE_CMD_OUTPUT
@@ -27,7 +25,6 @@ write:
     uay: "يېزىلش جۈملىسى ياساش"
     tr: "yaz cümlesi yapmak"
     kz: "жазу сөйлемі жасау"
-  describe: ""
 
 calculate:
   prefix:
@@ -42,7 +39,6 @@ calculate:
     uay: "ھېسابلاش جۈملىسى ياساش"
     tr: "hesaplama cümlesi yapmak"
     kz: "есептеу сөйлемі жасау"
-  describe: ""
 
 value:
   prefix: TVALUE_VALUE
@@ -52,7 +48,6 @@ value:
     uay: "قىممىەت جۈملىسى ياساش"
     tr: "kıymet cümlesi yapmak"
     kz: "қиммет сөйлемі жасау"
-  describe: ""
 
 exception:
   prefix: TVALUE_EXCEPTION
@@ -62,17 +57,15 @@ exception:
     uay: "خاتالىق جۈملىسى ياساش"
     tr: "hatalık cümlesi yapmak"
     kz: "қателік сөйлемі жасау"
-  describe: ""
 
-applied:
-  prefix: TVALUE_CALL
+apply:
+  prefix: TVALUE_FUNCTION
   message:
     en: "make apply sentence"
     ug: "ishlitish jumlisi yasash"
     uay: "ئىشلىتىش جۈملىسى ياساش"
     tr: "kullanmak cümlesi yapmak"
     kz: "қолдану сөйлемі жасау"
-  describe: ""
 
 function:
   prefix: TVALUE_FUNCTION
@@ -82,7 +75,6 @@ function:
     uay: "فونكىسىيە جۈملىسى ياساش"
     tr: "fonksiyon cümlesi yapmak"
     kz: "функция сөйлемі жасау"
-  describe: ""
 
 return:
   prefix: TVALUE_RETURN
@@ -92,7 +84,6 @@ return:
     uay: "قايتۇرۇش جۈملىسى ياساش"
     tr: "gerivermek cümlesi yapmak"
     kz: "қайтару сөйлемі жасау"
-  describe: ""
 
 if:
   prefix: TVALUE_IF
@@ -102,7 +93,6 @@ if:
     uay: "ئەگەر جۈملىسى ياساش"
     tr: "eğer cümlesi yapmak"
     kz: "егер сөйлемі жасау"
-  describe: ""
 
 while:
   prefix: TVALUE_WHILE
@@ -112,7 +102,6 @@ while:
     uay: "ناۋادا جۈملىسى ياساش"
     tr: "böyleyse cümlesi yapmak"
     kz: "солайда сөйлемі жасау"
-  describe: ""
 
 import:
   prefix: ALIAS_import
@@ -122,4 +111,3 @@ import:
     uay: "ئەكىرىش جۈملىسى ياساش"
     tr: "içermek cümlesi yapmak"
     kz: "әкелу сөйлемі жасау"
-  describe: ""

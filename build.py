@@ -2,6 +2,8 @@
 import os
 import sys
 import json
+import subprocess
+import shutil
 import yaml
 sys.path.append('../my-build-tools/')
 
@@ -257,6 +259,12 @@ tplExtGrammar = '''             {{
 				"path": "./syntaxes/{lang}.tmLanguage.json"
 			}}'''
 
+tplExtSnippet = '''             {{
+                "language": "{lang}",
+                "path": "./snippets/{lang}.language-snippets.json"
+			}}
+'''
+
 langNames = mapName2LangOthers['LANG_LANGUAGE_FULLNAME']
 langTrans = mapName2LangOthers['LANG_LANGUAGE_TRANSLATION']
 grammars = readYaml(f"./others/grammars.yml")
@@ -264,6 +272,7 @@ grammars = readYaml(f"./others/grammars.yml")
 langArray = []
 gramArray = []
 keywordsArray = []
+snippetsArray = []
 def translateNames(lang, names):
     translates = []
     for name in names:
@@ -273,8 +282,8 @@ def translateNames(lang, names):
     return "|".join(translates)
 
 for lang in langsArr:
-    if lang == 'en':
-        continue
+    # if lang == 'en':
+    #     continue
     name = langNames[lang]
     tran = langTrans[lang]
     _lang = tplExtLanguage.format(lang=lang, name=name, tran=tran)
@@ -283,6 +292,8 @@ for lang in langsArr:
     gramArray.append(_lang)
     _keyword = tplExtKeyword.format(lang=lang, name=name, tran=tran)
     keywordsArray.append(_keyword)
+    _snippets = tplExtSnippet.format(lang=lang, name=name, tran=tran)
+    snippetsArray.append(_snippets)
     #
     def _onMacro(code, command, argument = None):
         if command == "FORMAT_ARGS":
@@ -302,6 +313,7 @@ for lang in langsArr:
 langText = ",\n".join(langArray)
 gramText = ",\n".join(gramArray)
 keywordsText = ",\n".join(keywordsArray)
+snippetsText = ",\n".join(snippetsArray)
 
 # extension
 def _onMacro():
@@ -314,6 +326,8 @@ def _onMacro():
             return langText
         elif command == "EXT_GRAMMARS":
             return gramText
+        elif command == "EXT_SNIPPETS":
+            return snippetsText
     return onMacro
 bldr = builder.code()
 bldr.setInput("./extension/package.tpl.json")
@@ -325,11 +339,64 @@ bldr.start()
 
 # snippets
 
+print("SNIPPETS:")
 snippets = readYaml(f"./others/snippets.yml")
-snippetsPath = tools.tools.append_path(DST_DIR, "snippets")
-tools.files.mk_folder(snippetsPath)
-# TODO:
+extensionsDir = "./extension/"
+snippetsBldDir = tools.tools.append_path(DST_DIR, "snippets")
+snippetsExtDir = tools.tools.append_path(extensionsDir, "snippets")
+tools.files.delete(snippetsBldDir)
+tools.files.delete(snippetsExtDir)
+tools.files.mk_folder(snippetsBldDir)
+tools.files.mk_folder(snippetsExtDir)
+snippetLang = "ug"
+snippetsMap = {}
+for name in snippets:
+    print("\nsnippet:", name)
+    snippet = snippets[name]
+    # initialize
+    _prefix = snippet['prefix']
+    _prefixes = None
+    if isinstance(_prefix, str) and not _prefixes and _prefix in mapName2LangLetters:
+        _prefixes = mapName2LangLetters[_prefix]
+    if isinstance(_prefix, str) and not _prefixes and _prefix in mapName2LangAliases:
+        _prefixes = mapName2LangAliases[_prefix]
+    if _prefixes:
+        snippet['prefix'] = _prefixes
 
+    # translate
+    fineName = name + "." + snippetLang
+    fromPath = tools.tools.append_path("./examples/snippets/", fineName)
+    toPath = tools.tools.append_path(snippetsBldDir, fineName)
+    shutil.copy(fromPath, toPath)
+    result = subprocess.run(["node", "./others/convert.js", toPath], capture_output=True, text=True)
+    print("translate:", name, result if isinstance(result, str) else "OK")
+    # generate
+    for lang in langsArr:
+        snippetPath = toPath
+        if lang != snippetLang:
+            snippetPath = snippetPath + '.' + lang
+            # continue
+        # 
+        _file = open(snippetPath, "r", encoding="utf-8")
+        _content = _file.read().replace("\r\n", "\r")
+        body = _content.split("\n")
+        # 
+        prefix = snippet['prefix'][lang]
+        message = snippet['message'][lang]
+        # 
+        print("generate:", lang)
+        if lang not in snippetsMap:
+            snippetsMap[lang] = {}
+        snippetsMap[lang][message] = {
+            "prefix": prefix,
+            "describe": "",
+            "body": body,
+        }
+# 
+for lang in langsArr:
+    confPath = tools.tools.append_path(snippetsExtDir, f"{lang}.language-snippets.json")
+    with open(confPath, "w", encoding="utf-8") as f:
+        json.dump(snippetsMap[lang], f, ensure_ascii=False, indent=4)
 
 ###############################################################################
 
