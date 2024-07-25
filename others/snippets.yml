@@ -1,0 +1,125 @@
+
+variable:
+  prefix: TVALUE_VARIABLE
+  message:
+    en: "make variable sentence"
+    ug: "miqdar jumlisi yasash"
+    uay: "مىقدار جۈملىسى ياساش"
+    tr: "değişken cümlesi yapmak"
+    kz: "айнымалы сөйлемі жасау"
+  describe: ""
+
+read:
+  prefix: TVALUE_CMD_INPUT
+  message:
+    en: "make read sentence"
+    ug: "oqulsh jumlisi yasash"
+    uay: "ئوقۇش جۈملىسى ياساش"
+    tr: "oku cümlesi yapmak"
+    kz: "оқу сөйлемі жасау"
+  describe: ""
+
+write:
+  prefix: TVALUE_CMD_OUTPUT
+  message:
+    en: "make write sentence"
+    ug: "yezish jumlisi yasash"
+    uay: "يېزىلش جۈملىسى ياساش"
+    tr: "yaz cümlesi yapmak"
+    kz: "жазу сөйлемі жасау"
+  describe: ""
+
+calculate:
+  prefix:
+    en: calculate
+    ug: hisablash
+    uay: ھېسابلاش
+    tr: hesaplama
+    kz: есептеу
+  message:
+    en: "make calculate sentence"
+    ug: "hisablash jumlisi yasash"
+    uay: "ھېسابلاش جۈملىسى ياساش"
+    tr: "hesaplama cümlesi yapmak"
+    kz: "есептеу сөйлемі жасау"
+  describe: ""
+
+value:
+  prefix: TVALUE_VALUE
+  message:
+    en: "make value sentence"
+    ug: "qimmet jumlisi yasash"
+    uay: "قىممىەت جۈملىسى ياساش"
+    tr: "kıymet cümlesi yapmak"
+    kz: "қиммет сөйлемі жасау"
+  describe: ""
+
+exception:
+  prefix: TVALUE_EXCEPTION
+  message:
+    en: "make exception sentence"
+    ug: "xataliq jumlisi yasash"
+    uay: "خاتالىق جۈملىسى ياساش"
+    tr: "hatalık cümlesi yapmak"
+    kz: "қателік сөйлемі жасау"
+  describe: ""
+
+applied:
+  prefix: TVALUE_CALL
+  message:
+    en: "make apply sentence"
+    ug: "ishlitish jumlisi yasash"
+    uay: "ئىشلىتىش جۈملىسى ياساش"
+    tr: "kullanmak cümlesi yapmak"
+    kz: "қолдану сөйлемі жасау"
+  describe: ""
+
+function:
+  prefix: TVALUE_FUNCTION
+  message:
+    en: "make function sentence"
+    ug: "fonkisiye jumlisi yasash"
+    uay: "فونكىسىيە جۈملىسى ياساش"
+    tr: "fonksiyon cümlesi yapmak"
+    kz: "функция сөйлемі жасау"
+  describe: ""
+
+return:
+  prefix: TVALUE_RETURN
+  message:
+    en: "make return sentence"
+    ug: "qayturush jumlisi yasash"
+    uay: "قايتۇرۇش جۈملىسى ياساش"
+    tr: "gerivermek cümlesi yapmak"
+    kz: "қайтару сөйлемі жасау"
+  describe: ""
+
+if:
+  prefix: TVALUE_IF
+  message:
+    en: "make if sentence"
+    ug: "eger jumlisi yasash"
+    uay: "ئەگەر جۈملىسى ياساش"
+    tr: "eğer cümlesi yapmak"
+    kz: "егер сөйлемі жасау"
+  describe: ""
+
+while:
+  prefix: TVALUE_WHILE
+  message:
+    en: "make while sentence"
+    ug: "nawada jumlisi yasash"
+    uay: "ناۋادا جۈملىسى ياساش"
+    tr: "böyleyse cümlesi yapmak"
+    kz: "солайда сөйлемі жасау"
+  describe: ""
+
+import:
+  prefix: ALIAS_import
+  message:
+    en: "make import sentence"
+    ug: "ekirish jumlisi yasash"
+    uay: "ئەكىرىش جۈملىسى ياساش"
+    tr: "içermek cümlesi yapmak"
+    kz: "әкелу сөйлемі жасау"
+  describe: ""

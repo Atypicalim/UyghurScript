@@ -1,5 +1,7 @@
 
+import os
 import sys
+import json
 import yaml
 sys.path.append('../my-build-tools/')
 
@@ -8,6 +10,7 @@ tools = builder.tools
 
 ###############################################################################
 
+PROJECT_NAME ="UyghurScript"
 VERSION_CODE = 0.2
 EXTENSION_VERSION = "1.0.2"
 SUPPORT_LANG = set()
@@ -19,6 +22,7 @@ SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT
 DST_DIR = "./build/"
 DST_ALIAS = DST_DIR + "script"
 DST_SCRIPT = DST_ALIAS + "." + SCRIPT_EXT
+tools.files.mk_folder(DST_DIR)
 
 ###############################################################################
 
@@ -318,6 +322,14 @@ bldr.setOutput("./extension/package.json")
 bldr.onMacro(_onMacro())
 bldr.onLine(lambda line: line)
 bldr.start()
+
+# snippets
+
+snippets = readYaml(f"./others/snippets.yml")
+snippetsPath = tools.tools.append_path(DST_DIR, "snippets")
+tools.files.mk_folder(snippetsPath)
+# TODO:
+
 
 ###############################################################################
 
