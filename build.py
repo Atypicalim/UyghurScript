@@ -303,7 +303,7 @@ for lang in langsArr:
             return code.format(translates)
     #
     bldr = builder.code()
-    bldr.setInput("./extension/syntaxes/tmLanguage.tpl.json")
+    bldr.setInput("./extension/tmLanguage.tpl.json")
     bldr.setComment("//", False)
     bldr.setOutput(f"./extension/syntaxes/{lang}.tmLanguage.json")
     bldr.onMacro(_onMacro)
