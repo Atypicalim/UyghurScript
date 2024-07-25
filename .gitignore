@@ -1,6 +1,8 @@
-.vscode
-build
+/.vscode
+/node_modules
+/build/
 pure-lua-tools/
 my-build-tools/
+/*.vsix
 /*.exe
 /*.log

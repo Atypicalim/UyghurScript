@@ -32,7 +32,7 @@ function __translate_ug_code(from, to, code) {
         return block;
     }
     //
-    let lines = text.split("\n");
+    let lines = text.replace(/\r\n/g, "\n").split("\n");
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         let blocks = line.split(" ");
