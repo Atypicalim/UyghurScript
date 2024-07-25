@@ -9,6 +9,7 @@ tools = builder.tools
 ###############################################################################
 
 VERSION_CODE = 0.2
+EXTENSION_VERSION = "1.0.2"
 SUPPORT_LANG = set()
 SCRIPT_PATH = "./examples/sinaq.kz"
 SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
@@ -60,7 +61,9 @@ def readColors():
                 color2nameMap[color].append(name)
     return color2nameMap, name2colorMap
 
-def readLanguages(fromPath):
+def readLanguages(fileName):
+    fromName = fileName.lower()
+    fromPath = f"./uyghur/multilangs/{fromName}.yml"
     configs = readYaml(fromPath)
     langsArr = []
     namesArr = []
@@ -84,6 +87,12 @@ def readLanguages(fromPath):
             mapName2Lang[alias][lang] = value
             #
     return langsArr, namesArr, mapLang2Name, mapName2Lang
+
+
+langsArrLetters, namesArrLetters, mapLang2NameLetters, mapName2LangLetters = readLanguages("LETTERS")
+langsArrLanguages, namesArrLanguages, mapLang2NameLanguages, mapName2LangLanguages = readLanguages("LANGUAGES")
+langsArrAliases, namesArrAliases, mapLang2NameAliases, mapName2LangAliases = readLanguages("ALIASES")
+langsArrOthers, namesArrOthers, mapLang2NameOthers, mapName2LangOthers = readLanguages("OTHERS")
 
 def formatVariables(template, names):
     variables = []
@@ -148,7 +157,7 @@ def formatFilters(name, mapping):
 
 def _Yaml2Template(name, varTpl, lineTpl):
     _name = name.lower()
-    langsArr, namesArr, mapLang2Name, mapName2Lang = readLanguages(f"./uyghur/multilangs/{_name}.yml")
+    langsArr, namesArr, mapLang2Name, mapName2Lang = readLanguages(name)
     #
     variables = formatVariables(varTpl, namesArr)
     bodies = formatBodies(lineTpl, name, mapLang2Name)
@@ -218,7 +227,100 @@ bldr.start()
 
 ###############################################################################
 
-langsArr, namesArr, mapLang2Name, mapName2Lang = readLanguages(f"./uyghur/multilangs/letters.yml")
+# letters common
+langsArr, namesArr, mapLang2Name, mapName2Lang = readLanguages("LETTERS")
+
+###############################################################################
+
+tplExtKeyword = '''        "{name}", "{tran}"'''
+
+tplExtLanguage = '''            {{
+                "id": "{lang}",
+                "aliases": [
+                    "{tran}",
+                    "{name}",
+                    "{lang}"
+                ],
+                "extensions": [
+                    ".{lang}"
+                ],
+                "configuration": "./language-configuration.json"
+            }}'''
+
+tplExtGrammar = '''             {{
+				"language": "{lang}",
+				"scopeName": "text.language.{name}",
+				"path": "./syntaxes/{lang}.tmLanguage.json"
+			}}'''
+
+langNames = mapName2LangOthers['LANG_LANGUAGE_FULLNAME']
+langTrans = mapName2LangOthers['LANG_LANGUAGE_TRANSLATION']
+grammars = readYaml(f"./others/grammars.yml")
+
+langArray = []
+gramArray = []
+keywordsArray = []
+def translateNames(lang, names):
+    translates = []
+    for name in names:
+        langs = mapName2LangLetters[name]
+        translate = langs[lang]
+        translates.append(translate)
+    return "|".join(translates)
+
+for lang in langsArr:
+    if lang == 'en':
+        continue
+    name = langNames[lang]
+    tran = langTrans[lang]
+    _lang = tplExtLanguage.format(lang=lang, name=name, tran=tran)
+    langArray.append(_lang)
+    _lang = tplExtGrammar.format(lang=lang, name=name, tran=tran)
+    gramArray.append(_lang)
+    _keyword = tplExtKeyword.format(lang=lang, name=name, tran=tran)
+    keywordsArray.append(_keyword)
+    #
+    def _onMacro(code, command, argument = None):
+        if command == "FORMAT_ARGS":
+            return code.format(lang=lang, name=name, tran=tran)
+        else:
+            translates = translateNames(lang, grammars[command])
+            return code.format(translates)
+    #
+    bldr = builder.code()
+    bldr.setInput("./extension/syntaxes/tmLanguage.tpl.json")
+    bldr.setComment("//", False)
+    bldr.setOutput(f"./extension/syntaxes/{lang}.tmLanguage.json")
+    bldr.onMacro(_onMacro)
+    bldr.onLine(lambda line: line)
+    bldr.start()
+
+langText = ",\n".join(langArray)
+gramText = ",\n".join(gramArray)
+keywordsText = ",\n".join(keywordsArray)
+
+# extension
+def _onMacro():
+    def onMacro(code, command, argument = None):
+        if command == "EXT_VERSION":
+            return code.format(EXTENSION_VERSION)
+        elif command == "EXT_KEYWORDS":
+            return keywordsText
+        elif command == "EXT_LANGUAGES":
+            return langText
+        elif command == "EXT_GRAMMARS":
+            return gramText
+    return onMacro
+bldr = builder.code()
+bldr.setInput("./extension/package.tpl.json")
+bldr.setComment("//", False)
+bldr.setOutput("./extension/package.json")
+bldr.onMacro(_onMacro())
+bldr.onLine(lambda line: line)
+bldr.start()
+
+###############################################################################
+
 # 
 letterArray = []
 for name, infos in mapName2Lang.items():
@@ -323,5 +425,5 @@ task.addWarnings(False, [
     "incompatible-pointer-types"
 ])
 # task.addFlags(["-I ../pure-c-tools/"])
-task.start()
-task.run()
+# task.start()
+# task.run()
