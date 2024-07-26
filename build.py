@@ -52,21 +52,6 @@ def readYaml(fromPath):
     configs = yaml.safe_load(_configs)
     return configs
 
-def readColors():
-    configs = readYaml(f"./others/colors.yml")
-    color2nameMap = {}
-    name2colorMap = {}
-    for color, names in configs.items():
-        for name in names:
-            if name not in name2colorMap:
-                name2colorMap[name] = {}
-            if color not in color2nameMap:
-                color2nameMap[color] = []
-            name2colorMap[name] = color
-            if name not in color2nameMap[color]:
-                color2nameMap[color].append(name)
-    return color2nameMap, name2colorMap
-
 def readLanguages(fileName):
     fromName = fileName.lower()
     fromPath = f"./uyghur/multilangs/{fromName}.yml"
@@ -303,7 +288,7 @@ for lang in langsArr:
             return code.format(translates)
     #
     bldr = builder.code()
-    bldr.setInput("./extension/tmLanguage.tpl.json")
+    bldr.setInput("./extension/syntaxes/tmLanguage.tpl.json")
     bldr.setComment("//", False)
     bldr.setOutput(f"./extension/syntaxes/{lang}.tmLanguage.json")
     bldr.onMacro(_onMacro)
@@ -433,14 +418,20 @@ bldr.start()
 
 ###############################################################################
 
-#
-color2nameMap, name2colorMap = readColors()
+colorMap = grammars["GRAMMAR_COLORS"]
+
+def getColor(name):
+    for typ in grammars:
+        names = grammars[typ]
+        if name in names:
+            return colorMap[typ]
+    return "black"
 #
 colorArray = []
 for name, infos in mapName2Lang.items():
     lines = ""
     for lang, value in infos.items():
-        color = name2colorMap[name]
+        color = getColor(name)
         line = "'{}':'{}',".format(value, color)
         colorArray.append(line)
 colorText = "\n".join(colorArray)

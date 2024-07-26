@@ -21,16 +21,16 @@ function colorize_ug_code(code) {
             return `<purple>${block}</purple>`;
         }
         if (block.startsWith('[') && block.endsWith(']')) {
-            _block = block.substring(1, block.length - 1)
-            _block = _block.replaceAll("\\n", "N");
+            var _block = block.substring(1, block.length - 1);
+            _block = JSON.stringify(_block);
             return `[<yellow>${_block}</yellow>]`;
         }
         if ("+-*/%^".includes(block)) {
             return `<red>${block}</red>`;
         }
-        block = block.replaceAll(/@(\S+)\[(\S+)\]/gi, `@<green>$1</green>[<yellow>$2</yellow>]`);
-        block = block.replaceAll(/@(\S+)\{(\S+)\}/gi, `@<green>$1</green>[<cyan>$2</cyan>]`);
-        block = block.replaceAll(/@(\S+)\((\S+)\)/gi, `@<green>$1</green>[<purple>$2</purple>]`);
+        block = block.replaceAll(/@(\S+)\[(\S+)\]/gi, `<orange>@$1</orange>[<yellow>$2</yellow>]`);
+        block = block.replaceAll(/@(\S+)\{(\S+)\}/gi, `<orange>@$1</orange>[<white>$2</white>]`);
+        block = block.replaceAll(/@(\S+)\((\S+)\)/gi, `<orange>@$1</orange>[<purple>$2</purple>]`);
         return block;
     }
     //

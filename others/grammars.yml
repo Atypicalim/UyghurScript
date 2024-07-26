@@ -1,4 +1,15 @@
 
+# to colorize
+
+GRAMMAR_COLORS:
+  GRAMMAR_TYPES: green
+  GRAMMAR_ACCOUNTCE: blue
+  GRAMMAR_KEYWORD: red
+  GRAMMAR_BLOCKS: red
+  GRAMMAR_EVENTS: red
+
+# to extension
+
 GRAMMAR_TYPES:
   - TVALUE_EMPTY
   - TVALUE_LOGIC
