@@ -2,177 +2,205 @@
 #
 TVALUE_EMPTY:
   en: empty
+  uy: قۇرۇق
   ug: quruq
-  uay: قۇرۇق
+  uz: bo'sh
   tr: boş
   kz: бос
 TVALUE_LOGIC:
   en: logic
+  uy: لوگىكا
   ug: logika
-  uay: لوگىكا
+  uz: mantiq
   tr: mantık
   kz: логика
 TVALUE_NUM:
   en: num
+  uy: سان
   ug: san
-  uay: سان
+  uz: son
   tr: sayı
   kz: сан
 TVALUE_STR:
   en: str
+  uy: خەت
   ug: xet
-  uay: خەت
+  uz: xat
   tr: dize
   kz: хат
 TVALUE_BOX:
   en: box
+  uy: ساندۇق
   ug: sanduq
-  uay: ساندۇق
+  uz: sandiq
   tr: sandık
   kz: сандық
 #
 TVALUE_WHILE:
   en: while
+  uy: ناۋادا
   ug: nawada
-  uay: ناۋادا
+  uz: shundayda
   tr: böyleyse
   kz: солайда
 TVALUE_IF:
   en: if
+  uy: ئەگەر
   ug: eger
-  uay: ئەگەر
+  uz: agar
   tr: eğer
   kz: егер
 TVALUE_IF_ELSE:
   en: elif
+  uy: ئەگەردە
   ug: egerde
-  uay: ئەگەردە
+  uz: egerda
   tr: eğerde
   kz: егерде
 TVALUE_THEN:
   en: then
+  uy: بولسا
   ug: bolsa
-  uay: بولسا
+  uz: bo'lsa
   tr: olsa
   kz: болса
 TVALUE_ELSE:
   en: else
+  uy: بولمىسا
   ug: bolmisa
-  uay: بولمىسا
+  uz: bo'lmasa
   tr: olmasa
   kz: болмаса
 TVALUE_CODE_END:
   en: finish
+  uy: تاماملانسۇن
   ug: tamamlansun
-  uay: تاماملانسۇن
+  uz: tamomlansin
   tr: tamamlansin
   kz: аяқталсын
 
 #
 TVALUE_TRUE:
   en: right
+  uy: راست
   ug: rast
-  uay: راست
+  uz: rost
   tr: doğru
   kz: рас
 TVALUE_FALSE:
   en: wrong
+  uy: يالغان
   ug: yalghan
-  uay: يالغان
+  uz: yolg'on
   tr: yanlış
   kz: жалған
 TVALUE_OPPOSITE:
   en: opposite
+  uy: ئەكىسچە
   ug: ekische
-  uay: ئەكىسچە
+  uz: qarshi
   tr: karşı
   kz: қарсы
 
 # 
 TVALUE_COMMAND:
   en: command
+  uy: بۇيرۇق
   ug: buyruq
-  uay: بۇيرۇق
+  uz: buyruq
   tr: buyruk
   kz: бұйрық
 TVALUE_CMD_OUTPUT:
   en: write
+  uy: يېزىلسۇن
   ug: yezilsun
-  uay: يېزىلسۇن
+  uz: yozilsin
   tr: yaz
   kz: жазу
 TVALUE_CMD_INPUT:
   en: read
+  uy: ئوقۇلسۇن
   ug: oqulsun
-  uay: ئوقۇلسۇن
+  uz: o'qisin
   tr: oku
   kz: оқу
 #
 TVALUE_VARIABLE:
   en: variable
+  uy: مىقدار
   ug: miqdar
-  uay: مىقدار
+  uz: o'zgaruvch
   tr: değişken
   kz: айнымалы
 TVALUE_VALUE:
   en: value
+  uy: قىممىتى
   ug: qimmiti
-  uay: قىممىتى
+  uz: qiymati
   tr: kıymeti
   kz: қимметі
 TVALUE_MADE:
   en: made
+  uy: بولسۇن
   ug: bolsun
-  uay: بولسۇن
+  uz: bo'lsin
   tr: olsun
   kz: болсын
 # 
 TVALUE_EXCEPTION:
   en: exception
+  uy: خاتالىق
   ug: xataliq
-  uay: خاتالىق
+  uz: xatolik
   tr: hatalık
   kz: қателік
 # 
 TVALUE_FUNCTION:
   en: function
+  uy: فونكىسىيە
   ug: fonkisiye
-  uay: فونكىسىيە
+  uz: funksiya
   tr: fonksiyon
   kz: функция
 TVALUE_CONTENT:
   en: content
+  uy: مەزمۇنى
   ug: mezmuni
-  uay: مەزمۇنى
+  uz: mazmuni
   tr: içeriği
   kz: мазмұны
 TVALUE_WITH:
   en: with
+  uy: بىلەن
   ug: bilen
-  uay: بىلەن
+  uz: bilan
   tr: ile
   kz: бірге
 TVALUE_CALL:
   en: called
+  uy: ئىشلىتىلسۇن
   ug: ishlitilsun
-  uay: ئىشلىتىلسۇن
+  uz: ishlatilsin
   tr: kullanılsın
   kz: қолданылсын
 TVALUE_RETURN:
   en: returned
+  uy: قايتۇرۇلسۇن
   ug: qayturulsun
-  uay: قايتۇرۇلسۇن
+  uz: qaytarilsin
   tr: geriverılsın
   kz: қайтарылсын
 TVALUE_FURTHER:
   en: and
+  uy: ۋە
   ug: we
-  uay: ۋە
+  uz: va
   tr: ve
   kz: бен
 TVALUE_RESULT:
   en: result
+  uy: نەتىجە
   ug: netije
-  uay: نەتىجە
+  uz: natija
   tr: netice
   kz: нәтиже

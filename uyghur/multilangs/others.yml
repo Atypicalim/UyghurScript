@@ -2,13 +2,15 @@
 # language
 LANG_LANGUAGE_FULLNAME:
   en: english
-  ug: uyghur
-  uay: uighur
+  uy: uyghur
+  ug: uighur
+  uz: uzbek
   tr: turkish
   kz: kazakh
 LANG_LANGUAGE_TRANSLATION:
   en: english
+  uy: ئۇيغۇرچە
   ug: uyghurche
-  uay: ئۇيغۇرچە
+  uz: o'zbek
   tr: Türkçe
   kz: қазақша

@@ -3,8 +3,9 @@ variable:
   prefix: TVALUE_VARIABLE
   message:
     en: "make variable sentence"
+    uy: "مىقدار جۈملىسى ياساش"
     ug: "miqdar jumlisi yasash"
-    uay: "مىقدار جۈملىسى ياساش"
+    uz: o'zgaruvch bayonoti tuzish
     tr: "değişken cümlesi yapmak"
     kz: "айнымалы сөйлемі жасау"
 
@@ -12,8 +13,9 @@ read:
   prefix: TVALUE_CMD_INPUT
   message:
     en: "make read sentence"
+    uy: "ئوقۇش جۈملىسى ياساش"
     ug: "oqulsh jumlisi yasash"
-    uay: "ئوقۇش جۈملىسى ياساش"
+    uz: o'qish bayonoti tuzish
     tr: "oku cümlesi yapmak"
     kz: "оқу сөйлемі жасау"
 
@@ -21,22 +23,25 @@ write:
   prefix: TVALUE_CMD_OUTPUT
   message:
     en: "make write sentence"
+    uy: "يېزىلش جۈملىسى ياساش"
     ug: "yezish jumlisi yasash"
-    uay: "يېزىلش جۈملىسى ياساش"
+    uz: yozish bayonoti tuzish
     tr: "yaz cümlesi yapmak"
     kz: "жазу сөйлемі жасау"
 
 calculate:
   prefix:
     en: calculate
+    uy: ھېسابلاش
     ug: hisablash
-    uay: ھېسابلاش
+    uz: hisoblash
     tr: hesaplama
     kz: есептеу
   message:
     en: "make calculate sentence"
+    uy: "ھېسابلاش جۈملىسى ياساش"
     ug: "hisablash jumlisi yasash"
-    uay: "ھېسابلاش جۈملىسى ياساش"
+    uz: hisoblash bayonoti tuzish
     tr: "hesaplama cümlesi yapmak"
     kz: "есептеу сөйлемі жасау"
 
@@ -44,8 +49,9 @@ value:
   prefix: TVALUE_VALUE
   message:
     en: "make value sentence"
+    uy: "قىممىەت جۈملىسى ياساش"
     ug: "qimmet jumlisi yasash"
-    uay: "قىممىەت جۈملىسى ياساش"
+    uz: qiymat bayonoti tuzish
     tr: "kıymet cümlesi yapmak"
     kz: "қиммет сөйлемі жасау"
 
@@ -53,8 +59,9 @@ exception:
   prefix: TVALUE_EXCEPTION
   message:
     en: "make exception sentence"
+    uy: "خاتالىق جۈملىسى ياساش"
     ug: "xataliq jumlisi yasash"
-    uay: "خاتالىق جۈملىسى ياساش"
+    uz: xatolik bayonoti tuzish
     tr: "hatalık cümlesi yapmak"
     kz: "қателік сөйлемі жасау"
 
@@ -62,8 +69,9 @@ call:
   prefix: TVALUE_FUNCTION
   message:
     en: "make call sentence"
+    uy: "ئىشلىتىش جۈملىسى ياساش"
     ug: "ishlitish jumlisi yasash"
-    uay: "ئىشلىتىش جۈملىسى ياساش"
+    uz: ishlatish bayonoti tuzish
     tr: "kullanmak cümlesi yapmak"
     kz: "қолдану сөйлемі жасау"
 
@@ -71,8 +79,9 @@ function:
   prefix: TVALUE_FUNCTION
   message:
     en: "make function sentence"
+    uy: "فونكىسىيە جۈملىسى ياساش"
     ug: "fonkisiye jumlisi yasash"
-    uay: "فونكىسىيە جۈملىسى ياساش"
+    uz: funksiya bayonoti tuzish
     tr: "fonksiyon cümlesi yapmak"
     kz: "функция сөйлемі жасау"
 
@@ -80,8 +89,9 @@ return:
   prefix: TVALUE_RETURN
   message:
     en: "make return sentence"
+    uy: "قايتۇرۇش جۈملىسى ياساش"
     ug: "qayturush jumlisi yasash"
-    uay: "قايتۇرۇش جۈملىسى ياساش"
+    uz: qaytarish bayonoti tuzish
     tr: "gerivermek cümlesi yapmak"
     kz: "қайтару сөйлемі жасау"
 
@@ -89,8 +99,9 @@ if:
   prefix: TVALUE_IF
   message:
     en: "make if sentence"
+    uy: "ئەگەر جۈملىسى ياساش"
     ug: "eger jumlisi yasash"
-    uay: "ئەگەر جۈملىسى ياساش"
+    uz: agar bayonoti tuzish
     tr: "eğer cümlesi yapmak"
     kz: "егер сөйлемі жасау"
 
@@ -98,8 +109,9 @@ while:
   prefix: TVALUE_WHILE
   message:
     en: "make while sentence"
+    uy: "ناۋادا جۈملىسى ياساش"
     ug: "nawada jumlisi yasash"
-    uay: "ناۋادا جۈملىسى ياساش"
+    uz: shundayda bayonoti tuzish
     tr: "böyleyse cümlesi yapmak"
     kz: "солайда сөйлемі жасау"
 
@@ -107,7 +119,8 @@ import:
   prefix: ALIAS_import
   message:
     en: "make import sentence"
+    uy: "ئەكىرىش جۈملىسى ياساش"
     ug: "ekirish jumlisi yasash"
-    uay: "ئەكىرىش جۈملىسى ياساش"
+    uz: olibkelish bayonoti tuzish
     tr: "içermek cümlesi yapmak"
     kz: "әкелу сөйлемі жасау"

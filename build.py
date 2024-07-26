@@ -223,6 +223,37 @@ langsArr, namesArr, mapLang2Name, mapName2Lang = readLanguages("LETTERS")
 
 ###############################################################################
 
+letterArray = []
+for name, infos in mapName2Lang.items():
+    lines = ""
+    for lang, value in infos.items():
+        lines = lines + "{}:\"{}\",".format(lang, value)
+    letterArray.append(name + ":{"+ lines + "},")
+letterText = "\n".join(letterArray)
+#
+langArray = []
+for lang in langsArr:
+    langArray.append("'" + lang + "'")
+langText = ", ".join(langArray)
+
+# translate
+def _onMacro():
+    def onMacro(code, command, argument = None):
+        if command == "LETTERS_MAP":
+            return letterText
+        elif command == "LANGS_ARR":
+            return langText
+    return onMacro
+bldr = builder.code()
+bldr.setInput("./others/translate.tpl.js")
+bldr.setComment("//")
+bldr.setOutput(DST_DIR + "translate.js")
+bldr.onMacro(_onMacro())
+bldr.onLine(lambda line: line)
+bldr.start()
+
+###############################################################################
+
 tplExtKeyword = '''        "{name}", "{tran}"'''
 
 tplExtLanguage = '''            {{
@@ -382,38 +413,6 @@ for lang in langsArr:
     confPath = tools.tools.append_path(snippetsExtDir, f"{lang}.language-snippets.json")
     with open(confPath, "w", encoding="utf-8") as f:
         json.dump(snippetsMap[lang], f, ensure_ascii=False, indent=4)
-
-###############################################################################
-
-# 
-letterArray = []
-for name, infos in mapName2Lang.items():
-    lines = ""
-    for lang, value in infos.items():
-        lines = lines + "{}:'{}',".format(lang, value)
-    letterArray.append(name + ":{"+ lines + "},")
-letterText = "\n".join(letterArray)
-#
-langArray = []
-for lang in langsArr:
-    langArray.append("'" + lang + "'")
-langText = ", ".join(langArray)
-
-# translate
-def _onMacro():
-    def onMacro(code, command, argument = None):
-        if command == "LETTERS_MAP":
-            return letterText
-        elif command == "LANGS_ARR":
-            return langText
-    return onMacro
-bldr = builder.code()
-bldr.setInput("./others/translate.tpl.js")
-bldr.setComment("//")
-bldr.setOutput(DST_DIR + "translate.js")
-bldr.onMacro(_onMacro())
-bldr.onLine(lambda line: line)
-bldr.start()
 
 
 ###############################################################################

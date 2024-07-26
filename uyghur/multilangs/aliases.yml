@@ -5,423 +5,489 @@
 # console
 ALIAS_read:
   en: read
+  uy: ئوقۇش
   ug: oqush
-  uay: ئوقۇش
+  uz: oqush
   tr: okumak
   kz: оқу
 ALIAS_write:
   en: write
+  uy: يېزىش
   ug: yezish
-  uay: يېزىش
+  uz: yezish
   tr: yazmak
   kz: жазу
 # trace
 ALIAS_trace:
   en: trace
+  uy: ئىزلاش
   ug: izlash
-  uay: ئىزلاش
+  uz: izlash
   tr: izlamak
   kz: іздеу
 # module
 ALIAS_import:
   en: import
+  uy: ئەكىرىش
   ug: ekirish
-  uay: ئەكىرىش
+  uz: ekirish
   tr: içermek
   kz: әкелу
 ALIAS_clean:
   en: clean
+  uy: تازىلاش
   ug: tazilash
-  uay: تازىلاش
+  uz: tazilash
   tr: temizlemek
   kz: тазалау
 
 ############################# time
 ALIAS_TIME:
   en: time
+  uy: ۋاقىت
   ug: waqit
-  uay: ۋاقىت
+  uz: waqit
   tr: vakit
   kz: уақыт
 ALIAS_time_get_zone:
   en: get_zone
+  uy: رايۇن_ئېلىش
   ug: rayunElish
-  uay: رايۇن_ئېلىش
+  uz: rayunElish
   tr: bölge_almak
   kz: белдеуін_алу
 ALIAS_time_get_seconds:
   en: get_seconds
+  uy: سىكۇنىت_ئېلىش
   ug: sikuntElish
-  uay: سىكۇنىت_ئېلىش
+  uz: sikuntElish
   tr: ikinci_almak
   kz: секунды_алу
 ALIAS_time_convert_to_seconds:
   en: convert_to_seconds
+  uy: سىكۇنىتقا_ئايلاندۇرۇش
   ug: sikuntqaAylandurush
-  uay: سىكۇنىتقا_ئايلاندۇرۇش
+  uz: sikuntqaAylandurush
   tr: ikinciye_dönüştürmek
   kz: секундқа_түрлендіру
 ALIAS_time_convert_from_seconds:
   en: convert_from_seconds
+  uy: سىكۇنىتنى_ئايلاندۇرۇش
   ug: sikuntniAylandurush
-  uay: سىكۇنىتنى_ئايلاندۇرۇش
+  uz: sikuntniAylandurush
   tr: ikinciyi_dönüştürmek
   kz: cекундтан_түрлендіру
 ALIAS_time_get_time:
   en: get_time
+  uy: ۋاقىت_ئېلىش
   ug: waqitElish
-  uay: ۋاقىت_ئېلىش
+  uz: waqitElish
   tr: vakit_almak
   kz: уақыт_алу
 ALIAS_time_get_clock:
   en: get_clock
+  uy: ساناق_ۋاقىت
   ug: sanaqElish
-  uay: ساناق_ۋاقىت
+  uz: sanaqElish
   tr: sayaç_almak
   kz: санауыш_алу
 ALIAS_time_sleep_seconds:
   en: sleep_seconds
+  uy: پىروگراممىنى_ئۇخلىتىش
   ug: programminiUxlitish
-  uay: پىروگراممىنى_ئۇخلىتىش
+  uz: programminiUxlitish
   tr: programani_uyutmak
   kz: бағдарламаны_ұйықтау
 
 ############################# system
 ALIAS_SYSTEM:
   en: system
+  uy: سېستىما
   ug: sestima
-  uay: سېستىما
+  uz: sestima
   tr: sistem
   kz: жүйе
 ALIAS_system_get_name:
   en: get_name
+  uy: ئىسمىنى_ئېلىش
   ug: isminiElish
-  uay: ئىسمىنى_ئېلىش
+  uz: isminiElish
   tr: adını_almak
   kz: атын_алу
 ALIAS_system_exit_program:
   en: exit_program
+  uy: پروگراممىدىن_چېكىنىش
   ug: programmidinChikinish
-  uay: پروگراممىدىن_چېكىنىش
+  uz: programmidinChikinish
   tr: programdan_çıkmak
   kz: бағдарламадан_шығу
 ALIAS_system_execute_command:
   en: execute_command
+  uy: ئىجرا_قىلىش
   ug: ijraQilish
-  uay: ئىجرا_قىلىش
+  uz: ijraQilish
   tr: buyruk_çalıştırmak
   kz: бұйрық_орындау
 ALIAS_system_set_env:
   en: set_env
+  uy: مۇھىت_قىممىتى_يېزىش
   ug: muhitQimmitiYezish
-  uay: مۇھىت_قىممىتى_يېزىش
+  uz: muhitQimmitiYezish
   tr: etraf_değişkeni_yazmak
   kz: мойындау_айнымалы_жазу
 ALIAS_system_get_env:
   en: get_env
+  uy: مۇھىت_قىممىتى_ئوقۇش
   ug: muhitQimmitiOqush
-  uay: مۇھىت_قىممىتى_ئوقۇش
+  uz: muhitQimmitiOqush
   tr: etraf_değişkeni_okumak
   kz: мойындау_айнымалы_оқу
 
 ############################# string
 ALIAS_STRING:
   en: string
+  uy: خەت
   ug: xet
-  uay: خەت
+  uz: xet
   tr: dize
   kz: хат
 # 
 ALIAS_string_replace:
   en: replace
+  uy: ئالماشتۇرۇش
   ug: almashturush
-  uay: ئالماشتۇرۇش
+  uz: almashturush
   tr: değiştirmek
   kz: алмастыру
 ALIAS_string_replace_first:
   en: replace_first
+  uy: بىرىنچىسىنى_ئالماشتۇرۇش
   ug: birinchisiniAlmashturush
-  uay: بىرىنچىسىنى_ئالماشتۇرۇش
+  uz: birinchisiniAlmashturush
   tr: birincini_değiştirmek
   kz: бірінші_алмастыру
 ALIAS_string_replace_last:
   en: replace_last
+  uy: ئاخىرقىسىنى_ئالماشتۇرۇش
   ug: axirqisiniAlmashturush
-  uay: ئاخىرقىسىنى_ئالماشتۇرۇش
+  uz: axirqisiniAlmashturush
   tr: sonuncusunu_değiştirmek
   kz: соңғысы_алмастыру
 ALIAS_string_replace_all:
   en: replace_all
+  uy: ھەممىسىنى_ئالماشتۇرۇش
   ug: hemmisiniAlmashturush
-  uay: ھەممىسىنى_ئالماشتۇرۇش
+  uz: hemmisiniAlmashturush
   tr: hepsini_değiştirmek
   kz: барлығы_алмастыру
 # 
 ALIAS_string_find:
   en: find
+  uy: تېپىش
   ug: tepish
-  uay: تېپىش
+  uz: tepish
   tr: bulmak
   kz: табу
 ALIAS_string_find_first:
   en: find_first
+  uy: بىرىنچىسىنى_تېپىش
   ug: birinchisiniTepish
-  uay: بىرىنچىسىنى_تېپىش
+  uz: birinchisiniTepish
   tr: birincini_bulmak
   kz: бірінші_табу
 ALIAS_string_find_last:
   en: find_last
+  uy: ئاخىرقىسىنى_تېپىش
   ug: axirqisiniTepish
-  uay: ئاخىرقىسىنى_تېپىش
+  uz: axirqisiniTepish
   tr: sonuncusunu_bulmak
   kz: соңғысы_табу
 # 
 ALIAS_string_count:
   en: count
+  uy: ساناش
   ug: sanash
-  uay: ساناش
+  uz: sanash
   tr: saymak
   kz: санау
 ALIAS_string_cut:
   en: cut
+  uy: كېسىش
   ug: kisish
-  uay: كېسىش
+  uz: kisish
   tr: kesmek
   kz: кесу
 ALIAS_string_link:
   en: link
+  uy: ئۇلاش
   ug: ulash
-  uay: ئۇلاش
+  uz: ulash
   tr: ulamak
   kz: қосылу
 ALIAS_string_format:
   en: format
+  uy: فورماتلاش
   ug: formatlash
-  uay: فورماتلاش
+  uz: formatlash
   tr: formatlamak
   kz: пішімдеу
 ALIAS_string_fill:
   en: fill
+  uy: تولدۇرۇش
   ug: toldurush
-  uay: تولدۇرۇش
+  uz: toldurush
   tr: doldurmak
   kz: толтыру
 
 ############################# number
 ALIAS_NUMBER:
   en: number
+  uy: سان
   ug: san
-  uay: سان
+  uz: san
   tr: sayı
   kz: сан
 #
 ALIAS_number_ceil:
   en: ceil
+  uy: ئۈستىگە_پۈتۈنلەش
   ug: ustigePutunlesh
-  uay: ئۈستىگە_پۈتۈنلەش
+  uz: ustigePutunlesh
   tr: yukarıya_bütünlemek
   kz: жоғары_толықтауыш
 ALIAS_number_floor:
   en: floor
+  uy: ئاستىغا_پۈتۈنلەش
   ug: astighaPutunlesh
-  uay: ئاستىغا_پۈتۈنلەش
+  uz: astighaPutunlesh
   tr: aşağıya_bütünlemek
   kz: төменге_толықтауыш
 ALIAS_number_round:
   en: round
+  uy: تەخمىنىي_پۈتۈنلەش
   ug: texminiyPutunlesh
-  uay: تەخمىنىي_پۈتۈنلەش
+  uz: texminiyPutunlesh
   tr: tahmin_bütünlemek
   kz: болжау_толықтауыш
 #
 ALIAS_number_seed:
   en: seed
+  uy: ئىختىيارىي_سان_باشلاش
   ug: ixtiyariyUruqBikitish
-  uay: ئىختىيارىي_سان_باشلاش
+  uz: ixtiyariyUruqBikitish
   tr: rastgele_sayı_başlamak
   kz: кездейсоқ_сан_бастау
 ALIAS_number_random:
   en: random
+  uy: ئىختىيارىي_سان_ھاسىللاش
   ug: ixtiyariySanHasillash
-  uay: ئىختىيارىي_سان_ھاسىللاش
+  uz: ixtiyariySanHasillash
   tr: rastgele_sayı_almak
   kz: кездейсоқ_сан_алу
 #
 ALIAS_number_radian:
   en: radian
+  uy: رادىئانغا_ئايلاندۇرۇش
   ug: radianghaAylandurush
-  uay: رادىئانغا_ئايلاندۇرۇش
+  uz: radianghaAylandurush
   tr: radyana_dönüştürmek
   kz: радианға_түрлендіру
 ALIAS_number_degree:
   en: degree
+  uy: گىرادۇسقا_ئايلاندۇرۇش
   ug: gradusqaAylandurush
-  uay: گىرادۇسقا_ئايلاندۇرۇش
+  uz: gradusqaAylandurush
   tr: gardusa_dönüştürmek
   kz: градусқа_түрлендіру
 #
 ALIAS_number_sin:
   en: sin
+  uy: سىنوس_ھېسابلاش
   ug: sinosHisablash
-  uay: سىنوس_ھېسابلاش
+  uz: sinosHisablash
   tr: sin_hesaplamak
   kz: sin_есептеу
 ALIAS_number_cos:
   en: cos
+  uy: كوسىنوس_ھېسابلاش
   ug: kosinosHisablash
-  uay: كوسىنوس_ھېسابلاش
+  uz: kosinosHisablash
   tr: cos_hesaplamak
   kz: cos_есептеу
 ALIAS_number_tan:
   en: tan
+  uy: تانگىنوس_ھېسابلاش
   ug: tanginosHisablash
-  uay: تانگىنوس_ھېسابلاش
+  uz: tanginosHisablash
   tr: tan_hesaplamak
   kz: tan_есептеу
 ALIAS_number_asin:
   en: asin
+  uy: تەتۈر_سىنوس_ھېسابلاش
   ug: teturSinosHisablash
-  uay: تەتۈر_سىنوس_ھېسابلاش
+  uz: teturSinosHisablash
   tr: asin_hesaplamak
   kz: asin_есептеу
 ALIAS_number_acos:
   en: acos
+  uy: تەتۈر_كوسىنوس_ھېسابلاش
   ug: teturCosinosHisablash
-  uay: تەتۈر_كوسىنوس_ھېسابلاش
+  uz: teturCosinosHisablash
   tr: acos_hesaplamak
   kz: acos_есептеу
 ALIAS_number_atan:
   en: atan
+  uy: تەتۈر_تانگىنوس_ھېسابلاش
   ug: teturTanginosHisablash
-  uay: تەتۈر_تانگىنوس_ھېسابلاش
+  uz: teturTanginosHisablash
   tr: atan_hesaplamak
   kz: аtan_есептеу
 #
 ALIAS_number_power:
   en: power
+  uy: دەرىجىگە_كۈتۈرۈش
   ug: derijigeKurutush
-  uay: دەرىجىگە_كۈتۈرۈش
+  uz: derijigeKurutush
   tr: derece_yükseltmek
   kz: дәреже_Кептіру
 ALIAS_number_square:
   en: square
+  uy: يىلتىزدىن_چىقىرىش
   ug: yiltizdinChiqirish
-  uay: يىلتىزدىن_چىقىرىش
+  uz: yiltizdinChiqirish
   tr: Karekök_cikarmak
   kz: тамыр_шығару
 #
 ALIAS_number_log_e:
   en: log_e
+  uy: لوگافىرما_ئې_ھېسابلاش
   ug: logarifmaEHisablash
-  uay: لوگافىرما_ئې_ھېسابلاش
+  uz: logarifmaEHisablash
   tr: logarifma_e_hesaplamak
   kz: логарифм_е_есептеу
 ALIAS_number_log_10:
   en: log_10
+  uy: لوگافىرما_10_ھېسابلاش
   ug: logarifma10Hisablash
-  uay: لوگافىرما_10_ھېسابلاش
+  uz: logarifma10Hisablash
   tr: logarifma_10_hesaplamak
   kz: логарифм_10_есептеу
 #
 ALIAS_number_quotient:
   en: quotient
+  uy: بۈلۈنمىنى_ھېسابلاش
   ug: bulunminiHisablash
-  uay: بۈلۈنمىنى_ھېسابلاش
+  uz: bulunminiHisablash
   tr: bölümı_hesaplamak
   kz: бөлімді_есептеу
 ALIAS_number_reminder:
   en: reminder
+  uy: قالدۇقنى_ھېسابلاش
   ug: qalduqniHisablash
-  uay: قالدۇقنى_ھېسابلاش
+  uz: qalduqniHisablash
   tr: kalanı_hesaplamak
   kz: қалдықты_есептеу
 #
 ALIAS_number_int_part:
   en: int_part
+  uy: پۈتۈن_قىسىمغا_ئېرىشىش
   ug: putunQismighaIrishish
-  uay: پۈتۈن_قىسىمغا_ئېرىشىش
+  uz: putunQismighaIrishish
   tr: butun_kısmını_almak
   kz: бүтін_бөлігін_алу
 ALIAS_number_dec_part:
   en: dec_part
+  uy: پارچە_قىسىمغا_ئېرىشىش
   ug: parcheQismighaIrishish
-  uay: پارچە_قىسىمغا_ئېرىشىش
+  uz: parcheQismighaIrishish
   tr: parça_kısmını_almak
   kz: бөлшек_бөлігін_алу
 
 ############################# file
 ALIAS_FILE:
   en: file
+  uy: ھۆججەت
   ug: xojjet
-  uay: ھۆججەت
+  uz: xojjet
   tr: dosya
   kz: файлфайл
 ALIAS_file_write:
   en: write
+  uy: يېزىش
   ug: yezish
-  uay: يېزىش
+  uz: yezish
   tr: yazmak
   kz: жазу
 ALIAS_file_read:
   en: read
+  uy: ئوقۇش
   ug: oqush
-  uay: ئوقۇش
+  uz: oqush
   tr: okumak
   kz: оқу
 ALIAS_file_copy:
   en: copy
+  uy: كۈچۈرۈش
   ug: kuchurush
-  uay: كۈچۈرۈش
+  uz: kuchurush
   tr: kopyalak
   kz: көшіру
 ALIAS_file_rename:
   en: rename
+  uy: يۆتكەش
   ug: yotkesh
-  uay: يۆتكەش
+  uz: yotkesh
   tr: taşımak
   kz: көшу
 ALIAS_file_remove:
   en: remove
+  uy: ئۈچۈرۈش
   ug: uchurush
-  uay: ئۈچۈرۈش
+  uz: uchurush
   tr: silmek
   kz: жою
 ALIAS_file_exist:
   en: exist
+  uy: بۇ_مەچجۇتمۇ
   ug: buMewjutmu
-  uay: بۇ_مەچجۇتمۇ
+  uz: buMewjutmu
   tr: bu_varmı
   kz: Бұл_барма
 ALIAS_file_is_file:
   en: is_file
+  uy: بۇ_ھۆججەتمۇ
   ug: buXojjetmu
-  uay: بۇ_ھۆججەتمۇ
+  uz: buXojjetmu
   tr: bu_dosyamü
   kz: бұл_файлма
 ALIAS_file_is_directory:
   en: is_directory
+  uy: بۇ_قسقۇچمۇ
   ug: buQisquchmu
-  uay: بۇ_قسقۇچمۇ
+  uz: buQisquchmu
   tr: bu_klasörmü
   kz: бұл_папкама
 ALIAS_file_create_directory:
   en: create_directory
+  uy: قسقۇچ_قۇرۇش
   ug: qisquchQurush
-  uay: قسقۇچ_قۇرۇش
+  uz: qisquchQurush
   tr: klasör_oluşturmak
   kz: папка_жасау
 
 ############################# box
 ALIAS_BOX:
   en: box
+  uy: ساندۇق
   ug: sanduq
-  uay: ساندۇق
+  uz: sanduq
   tr: sandık
   kz: сандық
 ALIAS_box_loop:
   en: box_loop
+  uy: دەۋرىيلەش
   ug: dewriylesh
-  uay: دەۋرىيلەش
+  uz: dewriylesh
   tr: döngüyelemek
   kz: айналдыру
 
@@ -430,470 +496,546 @@ ALIAS_box_loop:
 ############################# stage
 ALIAS_STAGE:
   en: stage
+  uy: سەھنە
   ug: sehne
-  uay: سەھنە
+  uz: sehne
   tr: sahne
   kz: сахна
 ALIAS_STAGE_ON_SHOW:
   en: stage_on_show
+  uy: سەھنە_كۆرسىتىش_قايتۇرمىسى
   ug: doska_korsitish_qayturmisi
-  uay: سەھنە_كۆرسىتىش_قايتۇرمىسى
+  uz: doska_korsitish_qayturmisi
   tr: sahne_göstermek_aramasi
   kz: сахна_көрсету_қайтару
 ALIAS_STAGE_ON_DRAW:
   en: stage_on_draw
+  uy: سەھنە_سىزىش_قايتۇرمىسى
   ug: doska_sizish_qayturmisi
-  uay: سەھنە_سىزىش_قايتۇرمىسى
+  uz: doska_sizish_qayturmisi
   tr: sahne_çizmek_aramasi
   kz: сахна_сызу_қайтару
 ALIAS_stage_set_log:
   en: set_log
+  uy: لوگ_بېكىتىش
   ug: logBikitish
-  uay: لوگ_بېكىتىش
+  uz: logBikitish
   tr: günlüğü_ayarla
   kz: лог_орнату
 ALIAS_stage_set_fps:
   en: set_fps
+  uy: ئەفپىئەس_بېكىتىش
   ug: fpsBikitish
-  uay: ئەفپىئەس_بېكىتىش
+  uz: fpsBikitish
   tr: fps_ayarlamak
   kz: фпс_орнату
 ALIAS_stage_get_fps:
   en: get_fps
+  uy: ئەفپىئەس_ئېلىش
   ug: fpsElish
-  uay: ئەفپىئەس_ئېلىش
+  uz: fpsElish
   tr: fps_almak
   kz: фпс_алу
 ALIAS_stage_draw_fps:
   en: draw_fps
+  uy: ئەفپىئەس_سىزىش
   ug: fpsSizish
-  uay: ئەفپىئەس_سىزىش
+  uz: fpsSizish
   tr: fps_çizmek
   kz: фпс_draw
 ALIAS_stage_show_window:
   en: show_window
+  uy: كۆرسىتىش
   ug: korsitish
-  uay: كۆرسىتىش
+  uz: korsitish
   tr: göstermek
   kz: көрсету
 ALIAS_stage_hide_window:
   en: hide_window
+  uy: يۇشۇرۇش
   ug: yushurush
-  uay: يۇشۇرۇش
+  uz: yushurush
   tr: saklamak
   kz: жасыру
 ALIAS_stage_is_fullscreen:
   en: is_fullscreen
+  uy: پۈتۈن_ئېكرانمۇ
   ug: putunIkranmu
-  uay: پۈتۈن_ئېكرانمۇ
+  uz: putunIkranmu
   tr: bütün_ekranmı
   kz: толық_экранма
 ALIAS_stage_is_hidden:
   en: is_hidden
+  uy: يۇشۇرۇنغانمۇ
   ug: yushurunghanmu
-  uay: يۇشۇرۇنغانمۇ
+  uz: yushurunghanmu
   tr: saklaganmi
   kz: жасырынганба
 ALIAS_stage_is_minimized:
   en: is_minimized
+  uy: كچىكلىتىلگەنمۇ
   ug: kichiklitilgenmu
-  uay: كچىكلىتىلگەنمۇ
+  uz: kichiklitilgenmu
   tr: küçükleştirılendımı
   kz: кішкетылдыба
 ALIAS_stage_is_maximized:
   en: is_maximized
+  uy: چوڭايتلىغانمۇ
   ug: chongaytilghanmu
-  uay: چوڭايتلىغانمۇ
+  uz: chongaytilghanmu
   tr: büyükleştirılendımı
   kz: үлкейетылдыба
 ALIAS_stage_toggle_fullscreen:
   en: toggle_fullscreen
+  uy: پۈتۈن_ئېكران_ئالماشتۇرۇش
   ug: putunIkranHalitiniAlmashturush
-  uay: پۈتۈن_ئېكران_ئالماشتۇرۇش
+  uz: putunIkranHalitiniAlmashturush
   tr: bütün_ekran_değiştirmek
   kz: толық_экранға_өзгерту
 ALIAS_stage_set_minimize:
   en: set_minimize
+  uy: كىچىكلىتىش
   ug: kichiklitish
-  uay: كىچىكلىتىش
+  uz: kichiklitish
   tr: küçükleştirmek
   kz: кішкету
 ALIAS_stage_set_maximize:
   en: set_maximize
+  uy: چوڭايتىش
   ug: chongaytish
-  uay: چوڭايتىش
+  uz: chongaytish
   tr: büyükleştirmek
   kz: үлкейту
 ALIAS_stage_set_normalize:
   en: set_normalize
+  uy: نۇرماللاشتۇرۇش
   ug: normallashturush
-  uay: نۇرماللاشتۇرۇش
+  uz: normallashturush
   tr: normalleştirmek
   kz: қалыптастыру
 ALIAS_stage_set_title:
   en: set_title
+  uy: تېما_بېكىتىش
   ug: temaBikitish
-  uay: تېما_بېكىتىش
+  uz: temaBikitish
   tr: başlık_ayarlamak
   kz: тақырыпты_орнату
 ALIAS_stage_set_icon:
   en: set_icon
+  uy: سىنبەلگە_بېكىتىش
   ug: sibelgeBikitish
-  uay: سىنبەلگە_بېكىتىش
+  uz: sibelgeBikitish
   tr: simge_ayarlamak
   kz: белгішесін_орнату
 ALIAS_stage_set_position:
   en: set_position
+  uy: ئورنىنى_بېكىتىش
   ug: orniniBikitish
-  uay: ئورنىنى_بېكىتىش
+  uz: orniniBikitish
   tr: pozisyonu_ayarlamak
   kz: позициясы_орнату
 ALIAS_stage_get_position:
   en: get_position
+  uy: ئورنىنى_ئېلىش
   ug: orniniElish
-  uay: ئورنىنى_ئېلىش
+  uz: orniniElish
   tr: pozisyonu_almak
   kz: позициясы_алу
 ALIAS_stage_set_size:
   en: set_size
+  uy: چوڭلىقىنى_بېكىتىش
   ug: chongliqiniBikitish
-  uay: چوڭلىقىنى_بېكىتىش
+  uz: chongliqiniBikitish
   tr: boyutu_ayarlamak
   kz: өлшемін_орнату
 ALIAS_stage_get_size:
   en: get_size
+  uy: چوڭلىقىنى_ئېلىش
   ug: chongliqiniElish
-  uay: چوڭلىقىنى_ئېلىش
+  uz: chongliqiniElish
   tr: boyutu_almak
   kz: өлшемін_алу
 ALIAS_stage_set_min_size:
   en: set_min_size
+  uy: ئەڭ_كىچىك_چوڭلىقىنى_بېكىتىش
   ug: engKichikChongliqiniBikitish
-  uay: ئەڭ_كىچىك_چوڭلىقىنى_بېكىتىش
+  uz: engKichikChongliqiniBikitish
   tr: en_küçük_boyutu_ayarlamak
   kz: ең_кішкентай_өлшемін_орнату
 ALIAS_stage_show_cursor:
   en: show_cursor
+  uy: ئىستىرىلكا_كۆرسىتىش
   ug: istirilkaKorsitish
-  uay: ئىستىرىلكا_كۆرسىتىش
+  uz: istirilkaKorsitish
   tr: imleci_göstermek
   kz: курсор_көрсету
 ALIAS_stage_enable_cursor:
   en: enable_cursor
+  uy: ئىستىرىلكا_قوزغىتىش
   ug: istirilkaQozghitish
-  uay: ئىستىرىلكا_قوزغىتىش
+  uz: istirilkaQozghitish
   tr: imleci_başlatmak
   kz: курсор_бастау
 ALIAS_stage_have_cursor:
   en: have_cursor
+  uy: ئىستىرىلكا_ئىچىدىمۇ
   ug: istirilkaIchidimu
-  uay: ئىستىرىلكا_ئىچىدىمۇ
+  uz: istirilkaIchidimu
   tr: imleci_içindemı
   kz: курсор_ішіндеме
 ALIAS_stage_set_clipboard:
   en: set_clipboard
+  uy: چاپلاش_تاختىسىنى_يېزىش
   ug: chaplashTaxtisiniYezish
-  uay: چاپلاش_تاختىسىنى_يېزىش
+  uz: chaplashTaxtisiniYezish
   tr: panoyu_yazmak
   kz: қою_тақтаны_жазу
 ALIAS_stage_get_clipboard:
   en: get_clipboard
+  uy: چاپلاش_تاختىسىنى_ئوقۇش
   ug: chaplashTaxtisiniOqush
-  uay: چاپلاش_تاختىسىنى_ئوقۇش
+  uz: chaplashTaxtisiniOqush
   tr: panoyu_okumak
   kz: қою_тақтаны_оқу
 ALIAS_stage_set_mouse_cursor:
   en: set_mouse_cursor
+  uy: ئائۇس_ئىستىرىلكا_بەلگىسىنى_بېكىتىش
   ug: mausIstirilkaBelgisiniBikitish
-  uay: ئائۇس_ئىستىرىلكا_بەلگىسىنى_بېكىتىش
+  uz: mausIstirilkaBelgisiniBikitish
   tr: fare_imlecini_ayarla
   kz: тінтуір_курсорын_орнату
 ALIAS_stage_get_mouse_position:
   en: get_mouse_position
+  uy: ئائۇس_ئىستىرىلكا_ئورنىنى_ئېلىش
   ug: mausIstirilkaOrniniElish
-  uay: ئائۇس_ئىستىرىلكا_ئورنىنى_ئېلىش
+  uz: mausIstirilkaOrniniElish
   tr: fare_pozisyonu_almak
   kz: тінтуір_позициясын_алу
 ALIAS_stage_get_mouse_wheel:
   en: get_mouse_wheel
+  uy: ئائۇس_ئايلانما_ئورنىنى_ئېلىش
   ug: mausAylanmaOrniniElish
-  uay: ئائۇس_ئايلانما_ئورنىنى_ئېلىش
+  uz: mausAylanmaOrniniElish
   tr: fare_tekerleğini_almak
   kz: тінтуір_Айналым_алу
 ALIAS_stage_get_mouse_key_action:
   en: get_mouse_key_action
+  uy: مائۇس_كۇنۇپكا_ھەركىتىنى_ئېلىش
   ug: mausKunupkisiHerkitiniElish
-  uay: مائۇس_كۇنۇپكا_ھەركىتىنى_ئېلىش
+  uz: mausKunupkisiHerkitiniElish
   tr: fare_anahtar_eylemi_almak
   kz: тінтуір_пернесін_әрекет_алу
 ALIAS_stage_get_mouse_key_state:
   en: get_mouse_key_state
+  uy: مائۇس_كۇنۇپكا_ھالىتىنى_ئېلىش
   ug: mausKunupkisiHalitiniElish
-  uay: مائۇس_كۇنۇپكا_ھالىتىنى_ئېلىش
+  uz: mausKunupkisiHalitiniElish
   tr: fare_anahtar_durumu_almak
   kz: тінтуір_кілтінің_күйін_алу
 ALIAS_stage_get_keyboard_key_action:
   en: get_keyboard_key_action
+  uy: تاختاي_كۇنۇپكا_ھەركىتىنى_ئېلىش
   ug: tahtayKunupkisiHerkitiniElish
-  uay: تاختاي_كۇنۇپكا_ھەركىتىنى_ئېلىش
+  uz: tahtayKunupkisiHerkitiniElish
   tr: klavye_anahtar_eylemi_almak
   kz: пернетақта_кілтінің_әрекетін_алу
 ALIAS_stage_get_keyboard_key_state:
   en: get_keyboard_key_state
+  uy: تاختاي_كۇنۇپكا_ھالىتىنى_ئېلىش
   ug: tahtayKunupkisiHalitiniElish
-  uay: تاختاي_كۇنۇپكا_ھالىتىنى_ئېلىش
+  uz: tahtayKunupkisiHalitiniElish
   tr: klavye_anahtar_durumu_almak
   kz: пернетақта_кілтінің_күйін_алу
 ALIAS_stage_save_screenshot:
   en: save_screenshot
+  uy: ئېكراننى_رەسىمگە_تارتىپ_ساقلاش
   ug: ikranniResimgeTartipSaxlash
-  uay: ئېكراننى_رەسىمگە_تارتىپ_ساقلاش
+  uz: ikranniResimgeTartipSaxlash
   tr: ekran_görüntüsi_alip_saklamak
   kz: экранды_суретке_түсіру_сақтау
 ALIAS_stage_audio_set_volume:
   en: audio_set_volume
+  uy: پىروگرامما_ئاۋازىنى_بېكىتىش
   ug: programmaAwaziniBikitish
-  uay: پىروگرامما_ئاۋازىنى_بېكىتىش
+  uz: programmaAwaziniBikitish
   tr: program_sesi_ayarlamak
   kz: бағдарламаны_дыбысты_орнату
 
 ############################# baord
 ALIAS_BOARD:
   en: board
+  uy: تاختا
   ug: taxta
-  uay: تاختا
+  uz: taxta
   tr: tahta
   kz: тақта
 ALIAS_board_draw_start:
   en: draw_start
+  uy: سىزىشنى_باشلاش
   ug: sizishniBashlash
-  uay: سىزىشنى_باشلاش
+  uz: sizishniBashlash
   tr: çizmeyi_başlamak
   kz: сызуды_бастау
 ALIAS_board_draw_end:
   en: draw_end
+  uy: سىزىشنى_تاماملاش
   ug: sizishniTamamlash
-  uay: سىزىشنى_تاماملاش
+  uz: sizishniTamamlash
   tr: çizmeyi_bitirmek
   kz: сызуды_аяқтау
 # draw point & line
 ALIAS_board_draw_pixel:
   en: draw_pixel
+  uy: نۇقتا_سىزىش
   ug: nuqtaSizish
-  uay: نۇقتا_سىزىش
+  uz: nuqtaSizish
   tr: nokta_çizmek
   kz: нүкте_сызу
 ALIAS_board_draw_line_no_controll:
   en: draw_line_no_controll
+  uy: سىزىق_سىزىش
   ug: siziqSizish
-  uay: سىزىق_سىزىش
+  uz: siziqSizish
   tr: çizgi_çizmek
   kz: сызық_сызу
 ALIAS_board_draw_line_one_controll:
   en: draw_line_one_controll
+  uy: سىزىق_سىزىش_بىر_كونتىروللۇق
   ug: siziqSizishBirKontrolluq
-  uay: سىزىق_سىزىش_بىر_كونتىروللۇق
+  uz: siziqSizishBirKontrolluq
   tr: çizgi_çizmek_tek_kontrol
   kz: сызық_сызу_Бір_басқару
 ALIAS_board_draw_line_two_controll:
   en: draw_line_two_controll
+  uy: سىزىق_سىزىش_ئىككى_كونتىروللۇق
   ug: siziqSizishIkkiKontirolluq
-  uay: سىزىق_سىزىش_ئىككى_كونتىروللۇق
+  uz: siziqSizishIkkiKontirolluq
   tr: çizgi_çizmek_iki_kontrol
   kz: сызық_сызу_екі_басқару
 # draw rectangle
 ALIAS_board_draw_rectangle_fill_transformed:
   en: draw_rectangle_fill_transformed
+  uy: تۆت_تەرەپلىك_تولدۇرۇش_ئايلاندۇرۇلغان
   ug: totTereplikToldurushAylandurulghan
-  uay: تۆت_تەرەپلىك_تولدۇرۇش_ئايلاندۇرۇلغان
+  uz: totTereplikToldurushAylandurulghan
   tr: dörtgen_doldurmak_dönüştürülen
   kz: төртбұрыш_толтыру_түрленген
 ALIAS_board_draw_rectangle_fill_colorful:
   en: draw_rectangle_fill_colorful
+  uy: تۆت_تەرەپلىك_تولدۇرۇش_بويالغان
   ug: totTereplikToldurushBoyalghan
-  uay: تۆت_تەرەپلىك_تولدۇرۇش_بويالغان
+  uz: totTereplikToldurushBoyalghan
   tr: dörtgen_doldurmak_boyalı
   kz: төртбұрыш_толтыру_боялған
 ALIAS_board_draw_rectangle_fill_round:
   en: draw_rectangle_fill_round
+  uy: تۆت_تەرەپلىك_تولدۇرۇش_يۇمۇلاق
   ug: totTereplikToldurushYumulaq
-  uay: تۆت_تەرەپلىك_تولدۇرۇش_يۇمۇلاق
+  uz: totTereplikToldurushYumulaq
   tr: dörtgen_doldurmak_yuvarlak
   kz: төртбұрыш_толтыру_дөңгелек
 ALIAS_board_draw_rectangle_stroke:
   en: draw_rectangle_stroke
+  uy: تۆت_تەرەپلىك_سىزىش
   ug: totTereplikSizish
-  uay: تۆت_تەرەپلىك_سىزىش
+  uz: totTereplikSizish
   tr: dörtgen_çizmek
   kz: төртбұрыш_сызу
 # draw circle & ring
 ALIAS_board_draw_circle_fill:
   en: draw_circle_fill
+  uy: چەمبەر_تولدۇرۇش
   ug: chemberToldurush
-  uay: چەمبەر_تولدۇرۇش
+  uz: chemberToldurush
   tr: çember_doldurmak
   kz: шеңбер_толтыру
 ALIAS_board_draw_circle_stroke:
   en: draw_circle_stroke
+  uy: چەمبەر_سىزىش
   ug: chemberSizish
-  uay: چەمبەر_سىزىش
+  uz: chemberSizish
   tr: çember_çizmek
   kz: шеңбер_сызу
 ALIAS_board_draw_ring_fill:
   en: draw_ring_fill
+  uy: ئۈزۈك_تولدۇرۇش
   ug: uzukToldurush
-  uay: ئۈزۈك_تولدۇرۇش
+  uz: uzukToldurush
   tr: yüzük_doldurmak
   kz: жүзік_толтыру
 ALIAS_board_draw_ring_stroke:
   en: draw_ring_stroke
+  uy: ئۈزۈك_سىزىش
   ug: uzukSizish
-  uay: ئۈزۈك_سىزىش
+  uz: uzukSizish
   tr: yüzük_çizmek
   kz: жүзік_сызу
 # draw triangle & polygon
 ALIAS_board_draw_triangle_fill:
   en: draw_triangle_fill
+  uy: ئۈچ_تەرەپلىك_تولدۇرۇش
   ug: uchTereplikToldurush
-  uay: ئۈچ_تەرەپلىك_تولدۇرۇش
+  uz: uchTereplikToldurush
   tr: üçgen_doldurmak
   kz: үшбұрыш_толтыру
 ALIAS_board_draw_triangle_stroke:
   en: draw_triangle_stroke
+  uy: ئۈچ_تەرەپلىك_سىزىش
   ug: uchTereplikSizish
-  uay: ئۈچ_تەرەپلىك_سىزىش
+  uz: uchTereplikSizish
   tr: üçgen_çizmek
   kz: үшбұрыш_сызу
 ALIAS_board_draw_polygon_fill:
   en: draw_polygon_fill
+  uy: كۆپ_تەرەپلىك_تولدۇرۇش
   ug: kopTereplikToldurush
-  uay: كۆپ_تەرەپلىك_تولدۇرۇش
+  uz: kopTereplikToldurush
   tr: çokgen_doldurmak
   kz: көпбұрыш_толтыру
 ALIAS_board_draw_polygon_stroke:
   en: draw_polygon_stroke
+  uy: كۆپ_تەرەپلىك_سىزىش
   ug: kopTereplikSizish
-  uay: كۆپ_تەرەپلىك_سىزىش
+  uz: kopTereplikSizish
   tr: çokgen_çizmek
   kz: көпбұрыш_сызу
 # font
 ALIAS_board_draw_text:
   en: draw_text
+  uy: خەت_يېزىش
   ug: xetYezish
-  uay: خەت_يېزىش
+  uz: xetYezish
   tr: dize_çizmek
   kz: хат_сызу
 ALIAS_board_measure_text:
   en: measure_text
+  uy: خەت_مۆلچەرلەش
   ug: xetMolcherlesh
-  uay: خەت_مۆلچەرلەش
+  uz: xetMolcherlesh
   tr: dize_ölçmek
   kz: хат_өлшеу
 # texture
 ALIAS_board_create_texture_from_image:
   en: create_texture_from_image
+  uy: رەسىم_ئەكىرىش
   ug: resimEkirish
-  uay: رەسىم_ئەكىرىش
+  uz: resimEkirish
   tr: görünte_içermek
   kz: сурет_әкелу
 ALIAS_board_create_texture_from_text:
   en: create_texture_from_text
+  uy: خەت_ئەكىرىش
   ug: xetEkirish
-  uay: خەت_ئەكىرىش
+  uz: xetEkirish
   tr: dize_içermek
   kz: хат_әкелу
 ALIAS_board_draw_texture_by_tag:
   en: draw_texture_by_tag
+  uy: تامغا_بېسىش
   ug: tamghaBesish
-  uay: تامغا_بېسىش
+  uz: tamghaBesish
   tr: damga_vurmak
   kz: мөр_басу
 
 ############################# music
 ALIAS_MUSIC:
   en: music
+  uy: مۇزىكا
   ug: muzika
-  uay: مۇزىكا
+  uz: muzika
   tr: müzik
   kz: музыка
 ALIAS_music_load: &__load
   en: load
+  uy: يۈكلەش
   ug: yuklesh
-  uay: يۈكلەش
+  uz: yuklesh
   tr: yüklemek
   kz: жүктеу
 ALIAS_music_unload: &__unload
   en: unload
+  uy: بوشىتىش
   ug: boshitish
-  uay: بوشىتىش
+  uz: boshitish
   tr: boşaltmak
   kz: босату
 ALIAS_music_play: &__play
   en: play
+  uy: قۇيۇش
   ug: quyush
-  uay: قۇيۇش
+  uz: quyush
   tr: çalmak
   kz: ойнау
 ALIAS_music_stop: &__stop
   en: stop
+  uy: توختىتىش
   ug: toxtitish
-  uay: توختىتىش
+  uz: toxtitish
   tr: durdur
   kz: тоқтату
 ALIAS_music_pause: &__pause
   en: pause
+  uy: تۇرغۇزۇش
   ug: turghuzush
-  uay: تۇرغۇزۇش
+  uz: turghuzush
   tr: duraklatmak
   kz: тұргүзү
 ALIAS_music_resume: &__resume
   en: resume
+  uy: ماڭغۇزۇش
   ug: mangghuzush
-  uay: ماڭغۇزۇش
+  uz: mangghuzush
   tr: sürdürmek
   kz: мәңгүзү
 ALIAS_music_is_playing: &__playing
   en: is_playing
+  uy: قۇيۇلۋاتامدۇ
   ug: quyuliwatamdu
-  uay: قۇيۇلۋاتامدۇ
+  uz: quyuliwatamdu
   tr: çalıyormu
   kz: ойнап_жатырбу
 ALIAS_music_set_volume: &__volume
   en: set_volume
+  uy: ئاۋازىنى_بېكىتىش
   ug: yuqiriliqiniBikitish
-  uay: ئاۋازىنى_بېكىتىش
+  uz: yuqiriliqiniBikitish
   tr: sesini_ayarlamak
   kz: дыбысты_орнату
 ALIAS_music_update:
   en: update
+  uy: يېڭىلاش
   ug: yingilash
-  uay: يېڭىلاش
+  uz: yingilash
   tr: güncellemek
   kz: жаңарту
 ALIAS_music_get_length:
   en: get_length
+  uy: ئۇزۇنلىقىنى_ئېلىش
   ug: uzunliqiniElish
-  uay: ئۇزۇنلىقىنى_ئېلىش
+  uz: uzunliqiniElish
   tr: uzunluğunu_almak
   kz: ұзындығы_алу
 ALIAS_music_get_position:
   en: get_position
+  uy: ئورنىنى_ئېلىش
   ug: orniniElish
-  uay: ئورنىنى_ئېلىش
+  uz: orniniElish
   tr: pozisyonu_almak
   kz: позициясы_алу
 ALIAS_music_set_position:
   en: set_position
+  uy: ئورنىنى_بېكىتىش
   ug: orniniBikitish
-  uay: ئورنىنى_بېكىتىش
+  uz: orniniBikitish
   tr: pozisyonu_ayarlamak
   kz: позициясы_орнату
 
 ############################# sound
 ALIAS_SOUND:
   en: sound
+  uy: ئاۋاز
   ug: awaz
-  uay: ئاۋاز
+  uz: awaz
   tr: ses
   kz: дыбыс
 ALIAS_sound_load:
@@ -916,19 +1058,22 @@ ALIAS_sound_set_volume:
 ############################# control
 ALIAS_CONTROL:
   en: control
+  uy: زاپچاس
   ug: zapchas
-  uay: زاپچاس
+  uz: zapchas
   tr: kontrol
   kz: басқару
 ALIAS_control_show_button:
   en: show_button
+  uy: كۇنۇپكا_كۆرسىتىش
   ug: kunupkaKorsitish
-  uay: كۇنۇپكا_كۆرسىتىش
+  uz: kunupkaKorsitish
   tr: düğme_göstermek
   kz: түйме_көрсету
 ALIAS_control_show_label:
   en: show_label
+  uy: خەت_كۆرسىتىش
   ug: xetKorsitish
-  uay: خەت_كۆرسىتىش
+  uz: xetKorsitish
   tr: dize_göstermek
   kz: хат_көрсету
