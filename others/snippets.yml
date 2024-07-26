@@ -58,10 +58,10 @@ exception:
     tr: "hatalık cümlesi yapmak"
     kz: "қателік сөйлемі жасау"
 
-apply:
+call:
   prefix: TVALUE_FUNCTION
   message:
-    en: "make apply sentence"
+    en: "make call sentence"
     ug: "ishlitish jumlisi yasash"
     uay: "ئىشلىتىش جۈملىسى ياساش"
     tr: "kullanmak cümlesi yapmak"
