@@ -105,7 +105,7 @@ void Tokenizer_assert(Tokenizer *this, bool value, char *msg)
 }
 
 void Token_addToken(Tokenizer *this, Token *token) {
-    log_debug("tokenizer.token: %s->%s", token->type, token->value);
+    log_debug("tokenizer.token: %s->%s", token->type, escape_cstring(token->value));
     Token_bindInfo(token, this->path, this->line, this->column);
     //
     if (this->head == NULL)

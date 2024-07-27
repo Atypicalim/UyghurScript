@@ -35,8 +35,10 @@ Value *Uyghur_runCode(Uyghur *this, char *code, char *path)
 {
     if (path == NULL) path = UG_SCRIPT_NAME;
     log_warn("uyghur.run: %s", path);
-    helper_set_languages(this, path);
-    helper_add_languages(this, path);
+    USTRING lang = helper_parse_language(path);
+    log_warn("uyghur.lang: %s", lang);
+    helper_set_languages(this, lang);
+    helper_add_languages(this, lang);
     log_warn("uyghur.tokenize");
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
     log_warn("uyghur.parse");

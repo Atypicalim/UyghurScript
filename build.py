@@ -15,16 +15,25 @@ tools = builder.tools
 PROJECT_NAME ="UyghurScript"
 VERSION_CODE = 0.2
 EXTENSION_VERSION = "1.0.2"
+SNIPPETS_LANG = 'ug'
 SUPPORT_LANG = set()
 SCRIPT_PATH = "./examples/sinaq.kz"
 SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
 
 ###############################################################################
 
-DST_DIR = "./build/"
-DST_ALIAS = DST_DIR + "script"
+DIR_BUILD = "./build/"
+tools.files.mk_folder(DIR_BUILD)
+
+DIR_TRANS = tools.tools.append_path(DIR_BUILD, "trans")
+DIR_COLOR = tools.tools.append_path(DIR_BUILD, "color")
+tools.files.delete(DIR_TRANS)
+tools.files.delete(DIR_COLOR)
+tools.files.mk_folder(DIR_TRANS)
+tools.files.mk_folder(DIR_COLOR)
+
+DST_ALIAS = DIR_BUILD + "script"
 DST_SCRIPT = DST_ALIAS + "." + SCRIPT_EXT
-tools.files.mk_folder(DST_DIR)
 
 ###############################################################################
 
@@ -40,12 +49,13 @@ tmplYamlNameConf = "YAML_CONF_{0}_{1}"
 # 
 tplYamlFilter = """    if (pct_cstr_ends_with(tp, "{0}") == 0) {{return {1};}}"""
 #
-tplYamlConfig = """
-#define {0} {2}
+tplYamlConfig = """#define {0} {2}
 static const PAIR_{3} {1}[{0}] = {{
 {4}
 }};
 """
+
+############################################################################### utils
 
 def readYaml(fromPath):
     _configs = tools.files.read(fromPath, 'utf-8')
@@ -79,11 +89,23 @@ def readLanguages(fileName):
             #
     return langsArr, namesArr, mapLang2Name, mapName2Lang
 
+############################################################################### yamls
 
 langsArrLetters, namesArrLetters, mapLang2NameLetters, mapName2LangLetters = readLanguages("LETTERS")
 langsArrLanguages, namesArrLanguages, mapLang2NameLanguages, mapName2LangLanguages = readLanguages("LANGUAGES")
 langsArrAliases, namesArrAliases, mapLang2NameAliases, mapName2LangAliases = readLanguages("ALIASES")
-langsArrOthers, namesArrOthers, mapLang2NameOthers, mapName2LangOthers = readLanguages("OTHERS")
+langsArrConfigs, namesArrConfigs, mapLang2NameConfigs, mapName2LangConfigs = readLanguages("CONFIGS")
+
+grammars = readYaml(f"./others/grammars.yml")
+snippets = readYaml(f"./others/snippets.yml")
+
+############################################################################### formatting
+
+langArray = []
+for lang in langsArrConfigs:
+    SUPPORT_LANG.add(lang)
+
+############################################################################### formatting
 
 def formatVariables(template, names):
     variables = []
@@ -144,20 +166,35 @@ def formatFilters(name, mapping):
     _filterConfs = "\n".join(filterConfs)
     return [_filterSizes, _filterConfs]
 
-###############################################################################
+############################################################################### configs
+
+def _configsMacro(code, command, argument = None):
+    if command == "VERSION_CODE":
+        return code.format(VERSION_CODE)
+    elif command == "VERSION_NAME":
+        return code.format(VERSION_CODE)
+    elif command == "SCRIPT_PATH":
+        return code.format(DST_SCRIPT)
+    elif command == "SCRIPT_NAME":
+        return code.format("*." + SCRIPT_EXT)
+    elif command == "LANGUAGE_COUNT":
+        return code.format(len(SUPPORT_LANG))
+    elif command == "LANGUAGE_ARRAY":
+        return code.format('", "'.join(SUPPORT_LANG))
+    else:
+        return code
+
+############################################################################### multilang
 
 def _Yaml2Template(name, varTpl, lineTpl):
     _name = name.lower()
-    langsArr, namesArr, mapLang2Name, mapName2Lang = readLanguages(name)
+    _, namesArr, mapLang2Name, mapName2Lang = readLanguages(name)
     #
     variables = formatVariables(varTpl, namesArr)
     bodies = formatBodies(lineTpl, name, mapLang2Name)
     footers = formatFooters(tplYamlLineNormal, name, mapName2Lang)
     [filterSizeByLang, filterConfByLang] = formatFilters(name, mapLang2Name)
     [filterSizeByName, filterConfByName] = formatFilters(name, mapName2Lang)
-    #
-    for lang in mapLang2Name:
-        SUPPORT_LANG.add(lang)
     #
     def _onMacro(code, command, argument = None):
         if command == "VARIABLES":
@@ -174,57 +211,27 @@ def _Yaml2Template(name, varTpl, lineTpl):
             return filterSizeByName
         elif command == "FILTER_CONF_BY_NAME":
             return filterConfByName
+        else:
+            return _configsMacro(code, command, argument)
     #
     bldr = builder.code()
+    bldr.setName(name)
     bldr.setInput(f"./uyghur/templates/{_name}.tpl.h")
     bldr.setComment("//")
-    bldr.setOutput(f"{DST_DIR}{_name}.h")
+    bldr.setOutput(f"{DIR_BUILD}{_name}.h")
     bldr.onMacro(_onMacro)
     bldr.start()
     pass
 
-###############################################################################
-
 _Yaml2Template("LANGUAGES", tplYamlDeclare, tplYamlLineReference)
 _Yaml2Template("LETTERS", tplYamlDefine, tplYamlLineNormal)
 _Yaml2Template("ALIASES", tplYamlDefine, tplYamlLineNormal)
+_Yaml2Template("CONFIGS", tplYamlDefine, tplYamlLineNormal)
 
-###############################################################################
-
-def _onMacro():
-    def onMacro(code, command, argument = None):
-        if command == "VERSION_CODE":
-            return code.format(VERSION_CODE)
-        elif command == "VERSION_NAME":
-            return code.format(VERSION_CODE)
-        elif command == "SCRIPT_PATH":
-            return code.format(DST_SCRIPT)
-        elif command == "SCRIPT_NAME":
-            return code.format("*." + SCRIPT_EXT)
-        elif command == "LANGUAGE_COUNT":
-            return code.format(len(SUPPORT_LANG))
-        elif command == "LANGUAGE_ARRAY":
-            return code.format('", "'.join(SUPPORT_LANG))
-    return onMacro
-
-# configs
-bldr = builder.code()
-bldr.setInput("./uyghur/templates/configs.tpl.h")
-bldr.setComment("//")
-bldr.setOutput(DST_DIR + "configs.h")
-bldr.onMacro(_onMacro())
-bldr.onLine(lambda line: line)
-bldr.start()
-
-###############################################################################
-
-# letters common
-langsArr, namesArr, mapLang2Name, mapName2Lang = readLanguages("LETTERS")
-
-###############################################################################
+############################################################################### translate
 
 letterArray = []
-for name, infos in mapName2Lang.items():
+for name, infos in mapName2LangLetters.items():
     lines = ""
     for lang, value in infos.items():
         lines = lines + "{}:\"{}\",".format(lang, value)
@@ -232,7 +239,7 @@ for name, infos in mapName2Lang.items():
 letterText = "\n".join(letterArray)
 #
 langArray = []
-for lang in langsArr:
+for lang in langsArrConfigs:
     langArray.append("'" + lang + "'")
 langText = ", ".join(langArray)
 
@@ -245,14 +252,92 @@ def _onMacro():
             return langText
     return onMacro
 bldr = builder.code()
+bldr.setName("TRANSLATE")
 bldr.setInput("./others/translate.tpl.js")
 bldr.setComment("//")
-bldr.setOutput(DST_DIR + "translate.js")
+bldr.setOutput(DIR_BUILD + "translate.js")
 bldr.onMacro(_onMacro())
 bldr.onLine(lambda line: line)
 bldr.start()
 
-###############################################################################
+############################################################################### colorize
+
+colorMap = grammars["GRAMMAR_COLORS"]
+
+def getColor(name):
+    for typ in grammars:
+        names = grammars[typ]
+        if name in names:
+            return colorMap[typ]
+    return "black"
+#
+colorArray = []
+for name, infos in mapName2LangLetters.items():
+    lines = ""
+    for lang, value in infos.items():
+        color = getColor(name)
+        line = "\"{}\":\"{}\",".format(value, color)
+        colorArray.append(line)
+colorText = "\n".join(colorArray)
+#
+langArray = []
+for lang in langsArrConfigs:
+    langArray.append("'" + lang + "'")
+langText = ", ".join(langArray)
+
+# colorize
+def _onMacro():
+    def onMacro(code, command, argument = None):
+        if command == "COLORS_MAP":
+            return colorText
+        elif command == "LANGS_ARR":
+            return langText
+    return onMacro
+bldr = builder.code()
+bldr.setName("COLORIZE")
+bldr.setInput("./others/colorize.tpl.js")
+bldr.setComment("//", False)
+bldr.setOutput(DIR_BUILD + "colorize.js")
+bldr.onMacro(_onMacro())
+bldr.onLine(lambda line: line)
+bldr.start()
+
+############################################################################### syntax
+
+langNames = mapName2LangConfigs['LANG_LANGUAGE_FULLNAME']
+langTrans = mapName2LangConfigs['LANG_LANGUAGE_TRANSLATION']
+
+langArray = []
+gramArray = []
+keywordsArray = []
+snippetsArray = []
+def translateNames(lang, names):
+    translates = []
+    for name in names:
+        langs = mapName2LangLetters[name]
+        translate = langs[lang]
+        translates.append(translate)
+    return "|".join(translates)
+
+for lang in langsArrConfigs:
+    name = langNames[lang]
+    tran = langTrans[lang]
+    def _onMacro(code, command, argument = None):
+        if command == "FORMAT_ARGS":
+            return code.format(lang=lang, name=name, tran=tran)
+        else:
+            translates = translateNames(lang, grammars[command])
+            return code.format(translates)
+    bldr = builder.code()
+    bldr.setName("EXT·SYNTAX")
+    bldr.setInput("./extension/syntaxes/tmLanguage.tpl.json")
+    bldr.setComment("//", False)
+    bldr.setOutput(f"./extension/syntaxes/{lang}.tmLanguage.json")
+    bldr.onMacro(_onMacro)
+    bldr.onLine(lambda line: line)
+    bldr.start()
+
+############################################################################### package
 
 tplExtKeyword = '''        "{name}", "{tran}"'''
 
@@ -281,25 +366,7 @@ tplExtSnippet = '''             {{
 			}}
 '''
 
-langNames = mapName2LangOthers['LANG_LANGUAGE_FULLNAME']
-langTrans = mapName2LangOthers['LANG_LANGUAGE_TRANSLATION']
-grammars = readYaml(f"./others/grammars.yml")
-
-langArray = []
-gramArray = []
-keywordsArray = []
-snippetsArray = []
-def translateNames(lang, names):
-    translates = []
-    for name in names:
-        langs = mapName2LangLetters[name]
-        translate = langs[lang]
-        translates.append(translate)
-    return "|".join(translates)
-
-for lang in langsArr:
-    # if lang == 'en':
-    #     continue
+for lang in langsArrConfigs:
     name = langNames[lang]
     tran = langTrans[lang]
     _lang = tplExtLanguage.format(lang=lang, name=name, tran=tran)
@@ -310,28 +377,12 @@ for lang in langsArr:
     keywordsArray.append(_keyword)
     _snippets = tplExtSnippet.format(lang=lang, name=name, tran=tran)
     snippetsArray.append(_snippets)
-    #
-    def _onMacro(code, command, argument = None):
-        if command == "FORMAT_ARGS":
-            return code.format(lang=lang, name=name, tran=tran)
-        else:
-            translates = translateNames(lang, grammars[command])
-            return code.format(translates)
-    #
-    bldr = builder.code()
-    bldr.setInput("./extension/syntaxes/tmLanguage.tpl.json")
-    bldr.setComment("//", False)
-    bldr.setOutput(f"./extension/syntaxes/{lang}.tmLanguage.json")
-    bldr.onMacro(_onMacro)
-    bldr.onLine(lambda line: line)
-    bldr.start()
 
 langText = ",\n".join(langArray)
 gramText = ",\n".join(gramArray)
 keywordsText = ",\n".join(keywordsArray)
 snippetsText = ",\n".join(snippetsArray)
 
-# extension
 def _onMacro():
     def onMacro(code, command, argument = None):
         if command == "EXT_VERSION":
@@ -346,6 +397,7 @@ def _onMacro():
             return snippetsText
     return onMacro
 bldr = builder.code()
+bldr.setName("EXT·PACKAE")
 bldr.setInput("./extension/package.tpl.json")
 bldr.setComment("//", False)
 bldr.setOutput("./extension/package.json")
@@ -353,21 +405,28 @@ bldr.onMacro(_onMacro())
 bldr.onLine(lambda line: line)
 bldr.start()
 
-# snippets
+############################################################################### convert
+
+print("CONVERT:")
+for name in snippets:
+    fromPath = tools.tools.append_path("./examples/snippets/", name) + "." + SNIPPETS_LANG
+    result = subprocess.run([
+        "node", "./others/convert.js", fromPath, DIR_TRANS, DIR_COLOR
+    ], capture_output=True, text=True)
+    print("translate:", name, "OK" if result.returncode == 0 else result.stderr)
+print("CONVERTED!\n")
+
+############################################################################### snippets
 
 print("SNIPPETS:")
-snippets = readYaml(f"./others/snippets.yml")
 extensionsDir = "./extension/"
-snippetsBldDir = tools.tools.append_path(DST_DIR, "snippets")
-snippetsExtDir = tools.tools.append_path(extensionsDir, "snippets")
-tools.files.delete(snippetsBldDir)
-tools.files.delete(snippetsExtDir)
-tools.files.mk_folder(snippetsBldDir)
-tools.files.mk_folder(snippetsExtDir)
+snippetsDir = tools.tools.append_path(extensionsDir, "snippets")
+tools.files.delete(snippetsDir)
+tools.files.mk_folder(snippetsDir)
 snippetLang = "ug"
 snippetsMap = {}
 for name in snippets:
-    print("\nsnippet:", name)
+    print("snippet:", name)
     snippet = snippets[name]
     # initialize
     _prefix = snippet['prefix']
@@ -378,22 +437,10 @@ for name in snippets:
         _prefixes = mapName2LangAliases[_prefix]
     if _prefixes:
         snippet['prefix'] = _prefixes
-
-    # translate
-    fineName = name + "." + snippetLang
-    fromPath = tools.tools.append_path("./examples/snippets/", fineName)
-    toPath = tools.tools.append_path(snippetsBldDir, fineName)
-    shutil.copy(fromPath, toPath)
-    result = subprocess.run(["node", "./others/convert.js", toPath], capture_output=True, text=True)
-    print("translate:", name, result if isinstance(result, str) else "OK")
     # generate
-    for lang in langsArr:
-        snippetPath = toPath
-        if lang != snippetLang:
-            snippetPath = snippetPath + '.' + lang
-            # continue
-        # 
-        _file = open(snippetPath, "r", encoding="utf-8")
+    for lang in langsArrConfigs:
+        transPath = tools.tools.append_path(DIR_TRANS, name) + "." + lang
+        _file = open(transPath, "r", encoding="utf-8")
         _content = _file.read().replace("\r\n", "\r")
         body = _content.split("\n")
         # 
@@ -409,57 +456,14 @@ for name in snippets:
             "body": body,
         }
 # 
-for lang in langsArr:
-    confPath = tools.tools.append_path(snippetsExtDir, f"{lang}.language-snippets.json")
+for lang in langsArrConfigs:
+    confPath = tools.tools.append_path(snippetsDir, f"{lang}.language-snippets.json")
     with open(confPath, "w", encoding="utf-8") as f:
         json.dump(snippetsMap[lang], f, ensure_ascii=False, indent=4)
 
+############################################################################### script
 
-###############################################################################
-
-colorMap = grammars["GRAMMAR_COLORS"]
-
-def getColor(name):
-    for typ in grammars:
-        names = grammars[typ]
-        if name in names:
-            return colorMap[typ]
-    return "black"
-#
-colorArray = []
-for name, infos in mapName2Lang.items():
-    lines = ""
-    for lang, value in infos.items():
-        color = getColor(name)
-        line = "'{}':'{}',".format(value, color)
-        colorArray.append(line)
-colorText = "\n".join(colorArray)
-#
-langArray = []
-for lang in langsArr:
-    langArray.append("'" + lang + "'")
-langText = ", ".join(langArray)
-
-# colorize
-def _onMacro():
-    def onMacro(code, command, argument = None):
-        if command == "COLORS_MAP":
-            return colorText
-        elif command == "LANGS_ARR":
-            return langText
-    return onMacro
-bldr = builder.code()
-bldr.setInput("./others/colorize.tpl.js")
-bldr.setComment("//", False)
-bldr.setOutput(DST_DIR + "colorize.js")
-bldr.onMacro(_onMacro())
-bldr.onLine(lambda line: line)
-bldr.start()
-
-###############################################################################
-
-# script
-tools.files.mk_folder(DST_DIR)
+tools.files.mk_folder(DIR_BUILD)
 tools.files.delete(DST_SCRIPT)
 if SCRIPT_PATH is not None and tools.files.is_file(SCRIPT_PATH):
     tools.files.copy(SCRIPT_PATH, DST_SCRIPT)
@@ -467,10 +471,10 @@ else:
     help_text = " # yardem \n ikrangha [merhaba, uyghur script qa xosh kepsiz ...] yezilsun\n"
     tools.files.write(DST_SCRIPT, help_text, 'utf-8')
 
-###############################################################################
+############################################################################### task
 
-# task
 task = builder.c()
+task.setName("UYGHUR")
 task.setDebug(True)
 task.setInput('./main.c')
 task.setLibs([
@@ -493,6 +497,6 @@ task.addWarnings(False, [
     "attributes",
     "incompatible-pointer-types"
 ])
-# task.addFlags(["-I ../pure-c-tools/"])
-# task.start()
+task.addFlags(["-I ../pure-c-tools/"])
+task.start()
 # task.run()

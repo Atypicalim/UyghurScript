@@ -2,6 +2,21 @@
 ############################# internals #############################
 
 ############################# global
+# information
+ALIAS_get_language:
+  en: get_language
+  uy: تىل_ئېلىش
+  ug: tilElish
+  uz: til_olish
+  tr: dil_almak
+  kz: тіл_алу
+ALIAS_get_name:
+  en: get_name
+  uy: ئىسىم_ئېلىش
+  ug: isimElish
+  uz: ism_olish
+  tr: isim_almak
+  kz: есім_алу
 # console
 ALIAS_read:
   en: read

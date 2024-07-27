@@ -22,7 +22,6 @@ function colorize_ug_code(code) {
         }
         if (block.startsWith('[') && block.endsWith(']')) {
             var _block = block.substring(1, block.length - 1);
-            _block = JSON.stringify(_block);
             return `[<yellow>${_block}</yellow>]`;
         }
         if ("+-*/%^".includes(block)) {
@@ -34,9 +33,28 @@ function colorize_ug_code(code) {
         return block;
     }
     //
-    let lines = text.split("\n");
+    let chars = Array.from(text.replace(/\r\n/g, "\n"));
+    let lines = [];
+    let isString = false;
+    let line = "";
+    for (let i = 0; i < chars.length; i++) {
+        const char = chars[i];
+        if (char == "[") isString = true;
+        if (char == "]") isString = false;
+        if (char != '\n' || isString) {
+            line = line + char;
+        } else {
+            lines.push(line);
+            line = "";
+        }
+    }
+    if (line.length > 0) {
+        lines.push(line);
+        line = "";
+    }
+    //
     for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
+        let line = JSON.stringify(lines[i]).replaceAll(/^"/gi, "").replaceAll(/"$/gi, "");
         if (line.match("^\s*#")) {
             lines[i] = line.replaceAll(/#([^\n]+)/gi, `<grey>#$1</grey>`);
             continue;

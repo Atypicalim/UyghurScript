@@ -2,6 +2,21 @@
 
 #include "../uyghur.c"
 
+void native_get_language(Bridge *bridge)
+{
+    char *r = bridge->uyghur->language;
+    Bridge_returnString(bridge, r);
+}
+
+void native_get_name(Bridge *bridge)
+{
+    char *lang = bridge->uyghur->language;
+    int size = configs_get_size_by_name(LANG_LANGUAGE_TRANSLATION);
+    PAIR_CONFIGS *conf = configs_get_conf_by_name(LANG_LANGUAGE_TRANSLATION);
+    char *trans = helper_filter_multilang_by_key(lang, size, conf);
+    Bridge_returnString(bridge, trans);
+}
+
 void native_read(Bridge *bridge)
 {
     char *r = system_read_terminal();
@@ -53,6 +68,9 @@ void lib_global_register(Bridge *bridge)
     // variables
     Bridge_bindString(bridge, "NESHIR_ISMI", UG_VERSION_NAME);
     Bridge_bindNumber(bridge, "NESHIR_NUMIRI", UG_VERSION_CODE);
+    // info
+    BRIDGE_BIND_NATIVE(get_language);
+    BRIDGE_BIND_NATIVE(get_name);
     // console
     BRIDGE_BIND_NATIVE(read);
     BRIDGE_BIND_NATIVE(write);

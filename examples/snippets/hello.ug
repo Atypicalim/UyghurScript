@@ -1,0 +1,31 @@
+
+# declare variables
+miqdar s qimmiti sanduq bolsun
+miqdar m qimmiti quruq bolsun
+
+# while loop
+miqdar i qimmiti 0 bolsun
+nawada i < 9 bolsa
+    i = i + 1
+    @s{i} = i * i
+tamamlansun
+
+# iterate box
+fonkisiye func miqdar k v mezmuni
+    ikrangha k yezilsun
+    ikrangha [ * ] yezilsun
+    ikrangha k yezilsun
+    ikrangha [ = ] yezilsun
+    ikrangha v yezilsun
+    ikrangha [\n] yezilsun
+tamamlansun
+fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun we netije r bolsun
+
+# get language
+fonkisiye @*[isimElish] ishlitilsun we netije n bolsun
+
+# concat string
+m = n + [ salam!\n]
+
+# print message
+buyruq m yezilsun

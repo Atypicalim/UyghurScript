@@ -32,7 +32,26 @@ function __translate_ug_code(from, to, code) {
         return block;
     }
     //
-    let lines = text.replace(/\r\n/g, "\n").split("\n");
+    let chars = Array.from(text.replace(/\r\n/g, "\n"));
+    let lines = [];
+    let isString = false;
+    let line = "";
+    for (let i = 0; i < chars.length; i++) {
+        const char = chars[i];
+        if (char == "[") isString = true;
+        if (char == "]") isString = false;
+        if (char != '\n' || isString) {
+            line = line + char;
+        } else {
+            lines.push(line);
+            line = "";
+        }
+    }
+    if (line.length > 0) {
+        lines.push(line);
+        line = "";
+    }
+    //
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         let blocks = line.split(" ");

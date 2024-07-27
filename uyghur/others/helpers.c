@@ -346,6 +346,29 @@ void Container_print(Container *this)
     printf("[Container]\n");
 }
 
+USTRING helper_parse_language(char *path) {
+    int size = UG_LANGUAGE_COUNT;
+    for (size_t i = 0; i < size; i++)
+    {
+        char *tp = UG_LANGUAGE_ARRAY[i];
+        if (pct_cstr_ends_with(path, tp) == 0) {
+            return tp;
+        }
+    }
+    return NULL;
+}
+
+char *helper_filter_multilang_by_key(char *key, int size, PAIR_CONFIGS *multilangs) {
+    for (size_t i = 0; i < size; i++)
+    {
+        PAIR_CONFIGS pair = multilangs[i];
+        if (pct_cstr_ends_with(key, pair.key) == 0) {
+            return pair.val;
+        }
+    }
+    return NULL;
+}
+
 void helper_set_languages(Uyghur *uyghur, char *tp) {
     if (!!uyghur->language) {
         return;
