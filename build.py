@@ -316,6 +316,17 @@ bldr.onMacro(_onMacro)
 bldr.onLine(lambda line: line)
 bldr.start()
 
+############################################################################### converter
+
+bldr = builder.html()
+bldr.setName("CONVERTER")
+bldr.setInput("./others/converter.html")
+bldr.containScript()
+bldr.containStyle()
+bldr.containImage()
+bldr.setOutput(DIR_BUILD + "converter.html")
+bldr.start()
+
 ############################################################################### syntax
 
 langNames = mapName2LangConfigs['LANG_LANGUAGE_FULLNAME']
@@ -534,7 +545,6 @@ bldr.setOutput("./readme.md")
 bldr.onMacro(_onMacro)
 bldr.onLine(lambda line: line)
 bldr.start()
-print("FINISHED!\n")
 
 ############################################################################### script
 
@@ -546,14 +556,13 @@ def _onMacro(code, command, argument = None):
         return code.format(PROJECT_REPO)
     pass
 bldr = builder.code()
-bldr.setName("README")
+bldr.setName("SCRIPT")
 bldr.setInput(SCRIPT_PATH)
 bldr.setComment("#", False)
 bldr.setOutput(DST_SCRIPT)
 bldr.onMacro(_onMacro)
 bldr.onLine(lambda line: line)
 bldr.start()
-print("FINISHED!\n")
 
 ############################################################################### task
 

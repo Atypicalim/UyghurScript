@@ -1,8 +1,8 @@
 # uyghurscript README
 
-This is vscode extension for [UyghurScript](https://github.com/kompasim/UyghurScript) language. with this extension you can develop uyghurscript programs more efficiently.
+This is vscode extension for [UyghurScript](https://github.com/kompasim/UyghurScript) language. with this extension you can develop programs in languages like uyghur, kazakh, uzbek and turkish.
 
-![screenshot](https://foruda.gitee.com/images/1659754518942560579/uyghur_script_screenshot.png)
+![screenshot](https://kompasim.github.io/images/function.png)
 
 ## Features
 
@@ -15,7 +15,7 @@ This is vscode extension for [UyghurScript](https://github.com/kompasim/UyghurSc
 
 Initial release of uyghur script vscode extension.
 
-### 1.0.1
+### 1.0.x
 
 Added features X, Y, and Z.
 

@@ -31,7 +31,7 @@ if (!fromFile || !fs.existsSync(fromFile)) {
 //
 let code = fs.readFileSync(fromFile, 'utf8');
 let langues = [];
-let codes = translate_ug_code(fromLang, langues, code);
+let codes = translate_ug_code(langues, code);
 for (let lang in codes) {
     let transFile = path.join(transDir, fromName) + "." + lang;
     let colorFile = path.join(colorDir, fromName) + "." + lang + ".html";

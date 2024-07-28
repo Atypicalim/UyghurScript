@@ -9,6 +9,17 @@ let TRANSLATE_LANGS_ARR = [
     // [M[ LANGS_ARR ]M]
 ];
 
+let TRANSLATE_LANGS_MAP = {};
+Object.keys(TRANSLATE_LETTERS_MAP).forEach((name) => {
+    let info = TRANSLATE_LETTERS_MAP[name];
+    Object.keys(info).forEach((lang) => {
+        let letter = info[lang];
+        TRANSLATE_LANGS_MAP[letter] = lang;
+    });
+});
+let TRANSLATE_LANG_KEYS = Object.keys(TRANSLATE_LANGS_MAP);
+TRANSLATE_LANG_KEYS.sort((a, b) => b.length - a.length);
+
 function __translate_ug_code(from, to, code) {
     let text = code.substring(0);
     //
@@ -68,9 +79,19 @@ function __translate_ug_code(from, to, code) {
     //
     return text;
 }
-function translate_ug_code(from, langOrLangs, code) {
-    let texts = {};
-    if (typeof from != 'string') throw new Error("origin lang invalid");
+function translate_ug_code(langOrLangs, code) {
+    //
+    let _from = null;
+    for (let i = 0; i < TRANSLATE_LANG_KEYS.length; i++) {
+        const tran = TRANSLATE_LANG_KEYS[i];
+        const lang = TRANSLATE_LANGS_MAP[tran];
+        if (code.includes(tran)) {
+            _from = lang;
+            break;
+        }
+    }
+    if (typeof _from != 'string') throw new Error("origin lang invalid");
+    // 
     let langs = [];
     if (typeof langOrLangs == 'string') {
         langs.push(langOrLangs);
@@ -80,9 +101,10 @@ function translate_ug_code(from, langOrLangs, code) {
         throw new Error("target lang invalid");
     }
     if (langs.length <= 0) langs = TRANSLATE_LANGS_ARR;
+    let texts = {};
     for (let index = 0; index < langs.length; index++) {
         const lang = langs[index];
-        texts[lang] = __translate_ug_code(from, lang, code);
+        texts[lang] = __translate_ug_code(_from, lang, code);
     }
     if (typeof langOrLangs == 'string') {
         return texts[langOrLangs];

@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="../../pure-js-tools/tools.js"></script>
-    <script src="../build/translate.js"></script>
-    <script src="../build/colorize.js"></script>
+    <script src="./../pure-js-tools/tools.js"></script>
+    <script src="./build/translate.js"></script>
+    <script src="./build/colorize.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -84,7 +84,7 @@ buyruq r yezilsun
 
 function setLang(lang) {
     let _text = $("#editor").nodes()[0].value;
-    let _code = translate_ug_code("ug", lang, _text);
+    let _code = translate_ug_code(lang, _text);
     let _pre = colorize_ug_code(_code);
     // 
     let buttons = [];
