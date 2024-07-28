@@ -162,7 +162,7 @@ bool is_letter_begin(UCHAR c, UCHAR n)
 
 bool is_letter_body(UCHAR c)
 {
-    return !is_special(c);
+    return !is_special(c) || is_uchar_eq_char(c, '_');
 }
 
 bool is_string_open(UCHAR c) {
