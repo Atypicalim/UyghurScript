@@ -4,37 +4,69 @@
 
 > a toy script interpreter written in c, u can write & run your script written in uyghur language grammar with it ...
 
-> there is a [vscode extension](https://marketplace.visualstudio.com/publishers/kompasim) for highlighting and autocompleting.
+> 
 
-![screenshot](./resources/screenshot.png)
+* run command `./release/uyghur.exe` to get help content
 
-## 1. usage
+* double cick `./release/yuguresh.exe` to run raylib example
 
-* run command `./release/uyghur.exe ./examples/hello.ug` to execute hello world
+![example](./resources/examples/running.png)
 
-* run command `./release/uyghur.exe ./examples/yuguresh.ug` to execute [raylib](https://github.com/raysan5/raylib) binding
-
-* double cick `./release/saet.exe` to run clock program
-
-![example](./resources/clock.png)
-
-* double cick `./release/hisabliguch.exe` to run calculator program
-
-![example](./resources/calculator.png) 
+## 1. multiple langauge
 
 
+* a. english
 
-## 2. variable declaration
+![](./resources/languages/hello.en.png)
+
+
+* b. ئۇيغۇرچە
+
+![](./resources/languages/hello.uy.png)
+
+
+* c. uyghurche
+
+![](./resources/languages/hello.ug.png)
+
+
+* d. o'zbekcha
+
+![](./resources/languages/hello.uz.png)
+
+
+* e. Türkçe
+
+![](./resources/languages/hello.tr.png)
+
+
+* f. қазақша
+
+![](./resources/languages/hello.kz.png)
+
+
+## 2. highlight & translating
+
+* vscode [extension](https://marketplace.visualstudio.com/publishers/kompasim) for highlighting and autocompleting.
+
+* language [converter](https://kompasim.github.io/others/converter.html) for translating different languages.
+
+## 3. supported features
+
+* variable
 
 ```powershell
-# declare
+# declare variable
 miqdar m qimmiti quruq bolsun
 
-# free
+# set value
+m = [hello world!]
+
+# free variable
 m qimmiti quruq bolsun
 ```
 
-## 3. type conversion
+* type
 
 ```powershell
 miqdar m qimmiti [yezish] bolsun
@@ -46,10 +78,77 @@ buyruq m yezilsun
 # convert value to boolean
 m qimmiti logika bolsun
 buyruq m yezilsun
-
 ```
 
-## 4. calculator
+* command
+
+```powershell
+# read a value
+buyruq a oqulsun
+
+# print a value
+buyruq a yezilsun
+```
+
+* if
+
+```powershell
+eger 0 bolsa
+    buyruq [if] yezilsun
+egerde rast bosa
+    buyruq [elif] yezilsun
+bolmisa
+    buyruq [else] yezilsun
+tamamlansun
+```
+
+* while
+
+```powershell
+miqdar i qimmiti 0 bolsun
+nawada i < 9 bolsa
+    buyruq [while\n] yezilsun
+    i = i + 1
+tamamlansun
+```
+
+* function
+
+```powershell
+# a local variable
+miqdar t qimmiti 0 bolsun
+
+# a function with two arguments
+fonkisiye f miqdar x y mezmuni
+    t = x + y
+    netije t qayturulsun
+tamamlansun
+
+# call functions and receive result
+fonkisiye f bilen 10 20 ishlitilsun we netije r bolsun
+
+# print the result value received
+buyruq r yezilsun
+```
+
+* exception
+
+```powershell
+# try block
+xataliq e mezmuni
+    x = 3 / 0
+tamamlansun
+
+# catrch block
+eger e bolsa
+    buyruq [exception:] yezilsun
+    buyruq e yezilsun
+bolmisa
+    buyruq [successful!] yezilsun
+tamamlansun
+```
+
+* calculate
 
 ```powershell
 # arthimetic
@@ -78,123 +177,57 @@ x = [ab] + [cd] # abcd
 x = [ab] * 2 # abab
 ```
 
-## 5. operations
-
-```powershell
-# read a value
-buyruq sQimmet oqulsun
-# print a value
-buyruq sQimmet yezilsun
-```
-
-## 6. io
-
-```powershell
-# output
-buyruq [Ana Tilim Zer Tilim!] yezilsun
-
-# input
-buyruq a oqulsun
-a qimmiti [mezmun:] ulanghan a bolsun
-buyruq a yezilsun
-```
-
-## 7. if
-
-```powershell
-eger 0 bolsa
-    buyruq [if] yezilsun
-egerde rast bosa
-    buyruq [elif] yezilsun
-bolmisa
-    buyruq [else] yezilsun
-tamamlansun
-```
-
-## 8. while
-
-```powershell
-nawada rast bolsa
-    buyruq [while] yezilsun
-tamamlansun
-```
-
-## 9. exception
-
-```powershell
-xataliq e mezmuni
-    x = 3 / 0
-tamamlansun
-# return e == empty if no exception
-eger e bolsa
-    buyruq [exception:] yezilsun
-    buyruq e yezilsun
-bolmisa
-    buyruq [successful!] yezilsun
-tamamlansun
-# exception: cannot devided by zero
-```
-
-## 10. functions
-
-```powershell
-# a global variable
-miqdar yighinda qimmiti 0 bolsun
-
-# a function with two arguments
-fonkisiye sanQushush miqdar x y mezmuni
-    yighinda = x + y
-    netije yighinda qayturulsun
-tamamlansun
-
-# a string varibale of function name
-funcName qimmiti [sanYezish] bolsun
-
-# get function by string value
-funcName qimmiti fonkisiye bolsun
-
-# call functions and receive result
-fonkisiye funcName bilen 10 20 ishlitilsun we netije result bolsun
-
-# print the result value received
-buyruq result yezilsun
-```
-
-## 11. box
+* box
 
 ```powershell
 #  declare a box
 s qimmiti sanduq bolsun
 
 # put a number
-@s[yighinda] qimmiti 123 bolsun
+@s[v] qimmiti 0 bolsun
 
 # set a method
-fonkisiye @s[sinaqFonkisiye] miqdar x y mezmuni
-  @-[yighinda] = x + y
+fonkisiye @s[f] miqdar x y mezmuni
+  @-[yighinda] = @-[v] * 2
 tamamlansun
 
-# this box pointer: -, find in binding box
-@-[keyName]
+# supported aliases 
+# box: @-[keyName]
+# module: @+[keyName]
+# global: @*[keyName]
 
-# this module pointer: +, find in current module
-@+[keyName]
-
-# global box pointer: *, find in global scope
-@*[keyName]
-
-# supported key types: variable, string, number
-@boxName{variableName}
-@boxName[stringKey]
-@boxName(123)
+# supported keys
+# variable: @boxName{variableName}
+# string: @boxName[stringKey]
+# number: @boxName(123)
 ```
 
-## 12. bridge
+* import
 
-> u can get the bridge objet and communicate between c and script, just check `main.c` for more information
+```powershell
+# other.xx
+miqdar x qimmiti [other...] bolsun
+
+# main.xx
+fonkisiye ekirish bilen [../other.xx] ishlitilsun we netije m bolsun
+buyruq @m[x] yezilsun
+
+# run the program
+`.uyghur.exe ./main.xx`
+
+# get the result
+other...
+```
+
+
+--------------------------------
+
+## 4. bridge interfaces
+
+> u can get the bridge objet and communicate between c and script, just check `bridge.c` for more information
 
 *  register a box to script
-```c
+```c++
 Bridge_startBox(bridge);
 Bridge_bindValue(bridge, "num", "text...");
 Bridge_bindValue(bridge, "str", "text...");
@@ -202,7 +235,7 @@ Bridge_register(bridge, "boxName"); // NULL for global scope
 ```
 
 * call script function from c, and get the result
-```c
+```c++
 Bridge_startFunc(bridge);
 Bridge_pushValue(bridge, "argument");
 Bridge_call(bridge, "functionName");
@@ -211,7 +244,7 @@ void *resultValue = Bridge_receiveValue(bridge);
 ```
 
 * call c function from script, and return result
-```c
+```c++
 void testFunc(Bridge *bridge)
 {
     int a = Bridge_receiveNumber(bridge);
@@ -224,33 +257,12 @@ Bridge_bindNative(bridge, "sinaqFonkisiye", testFunc);
 Bridge_register(bridge, NULL);
 ```
 
-## 13. import
-
-```powershell
-# bolek_programma.ug
-buyruq [bolek programmidin salam ...] yezilsun
-bolektikiQimmet qimmiti [bolektiki sinaq qimmet ...] bolsun
-
-# bash_programma.ug
-buyruq [bash programmidin salam ...] yezilsun
-fonkisiye ekirish bilen [../bolek_programma.ug] ishlitilsun we netije bolekSanduq bolsun
-buyruq @bolekSanduq[bolektikiQimmet] yezilsun
-
-# run the program
-`.uyghur.exe ./bash_programma.ug`
-
-# get the result
-bash programmidin salam ...
-bolek programmidin salam ...
-bolektiki sinaq qimmet ...
-```
-
-## -2. todo
+## 5. todo
 
 * objective
 * libraries
 * ...
 
-## -1. others
+## 6. others
 
 > i am still working on it ...

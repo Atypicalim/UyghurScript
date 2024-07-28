@@ -50,7 +50,11 @@
     </style>
 </head>
 <body>
-    <h3>Converter</h3>
+    <h3>
+        Converter
+        for
+        <a id="link" href="">UyghurScript</a>
+    </h3>
     <textarea name="editor" id="editor"></textarea>
     <div id="code"></div>
 </body>
@@ -80,7 +84,6 @@ buyruq r yezilsun
 
 function setLang(lang) {
     let _text = $("#editor").nodes()[0].value;
-    console.log("\n\n\n-->", _text);
     let _code = translate_ug_code("ug", lang, _text);
     let _pre = colorize_ug_code(_code);
     // 
@@ -100,6 +103,7 @@ function language2buttons() {
 
 window.onload = function() {
     $("#editor").html(code);
+    $("#link").nodes()[0].href = TRANSLATE_PROJECT_REPO;
     setLang("en");
 };
     

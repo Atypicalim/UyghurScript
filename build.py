@@ -13,11 +13,12 @@ tools = builder.tools
 ###############################################################################
 
 PROJECT_NAME ="UyghurScript"
+PROJECT_REPO ="https://github.com/kompasim/UyghurScript"
 VERSION_CODE = 0.2
 EXTENSION_VERSION = "1.0.2"
 EXAMPLE_LANG = 'ug'
 SUPPORT_LANG = set()
-SCRIPT_PATH = "./examples/sinaq.kz"
+SCRIPT_PATH = "./examples/help.ug"
 SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
 
 ###############################################################################
@@ -41,7 +42,7 @@ tools.files.mk_folder(DIR_SNIPPET_COLOR)
 tools.files.mk_folder(DIR_FEATURE_TRANS)
 tools.files.mk_folder(DIR_FEATURE_COLOR)
 
-DST_ALIAS = DIR_BUILD + "script"
+DST_ALIAS = DIR_BUILD + "uyghur"
 DST_SCRIPT = DST_ALIAS + "." + SCRIPT_EXT
 
 ###############################################################################
@@ -114,6 +115,9 @@ features = readYaml(f"./others/features.yml")
 langArray = []
 for lang in langsArrConfigs:
     SUPPORT_LANG.add(lang)
+
+langNames = mapName2LangConfigs['LANG_LANGUAGE_FULLNAME']
+langTrans = mapName2LangConfigs['LANG_LANGUAGE_TRANSLATION']
 
 ############################################################################### formatting
 
@@ -254,19 +258,19 @@ for lang in langsArrConfigs:
 langText = ", ".join(langArray)
 
 # translate
-def _onMacro():
-    def onMacro(code, command, argument = None):
-        if command == "LETTERS_MAP":
-            return letterText
-        elif command == "LANGS_ARR":
-            return langText
-    return onMacro
+def _onMacro(code, command, argument = None):
+    if command == "PROJECT_REPO":
+        return code.format(PROJECT_REPO)
+    elif command == "LETTERS_MAP":
+        return letterText
+    elif command == "LANGS_ARR":
+        return langText
 bldr = builder.code()
 bldr.setName("TRANSLATE")
 bldr.setInput("./others/translate.tpl.js")
 bldr.setComment("//")
 bldr.setOutput(DIR_BUILD + "translate.js")
-bldr.onMacro(_onMacro())
+bldr.onMacro(_onMacro)
 bldr.onLine(lambda line: line)
 bldr.start()
 
@@ -296,19 +300,19 @@ for lang in langsArrConfigs:
 langText = ", ".join(langArray)
 
 # colorize
-def _onMacro():
-    def onMacro(code, command, argument = None):
-        if command == "COLORS_MAP":
-            return colorText
-        elif command == "LANGS_ARR":
-            return langText
-    return onMacro
+def _onMacro(code, command, argument = None):
+    if command == "PROJECT_REPO":
+        return code.format(PROJECT_REPO)
+    elif command == "COLORS_MAP":
+        return colorText
+    elif command == "LANGS_ARR":
+        return langText
 bldr = builder.code()
 bldr.setName("COLORIZE")
 bldr.setInput("./others/colorize.tpl.js")
 bldr.setComment("//", False)
 bldr.setOutput(DIR_BUILD + "colorize.js")
-bldr.onMacro(_onMacro())
+bldr.onMacro(_onMacro)
 bldr.onLine(lambda line: line)
 bldr.start()
 
@@ -480,15 +484,76 @@ for lang in langsArrConfigs:
     with open(confPath, "w", encoding="utf-8") as f:
         json.dump(snippetsMap[lang], f, ensure_ascii=False, indent=4)
 
+############################################################################### readme
+
+tplMdLangauge = '''
+* {alpha}. {tran}
+
+![](./resources/languages/hello.{lang}.png)
+'''
+
+tplMdFeature = '''* {name}
+
+```powershell
+{code}
+```
+'''
+
+print("README:")
+
+mdLangaugesArray = []
+i = 0
+for lang in langTrans:
+    tran = langTrans[lang]
+    i = i + 1
+    alpha = chr(ord('a') + i - 1)
+    text = tplMdLangauge.format(alpha=alpha, lang=lang, tran=tran)
+    mdLangaugesArray.append(text)
+mdLanguagesText = "\n".join(mdLangaugesArray)
+
+mdfeaturesArray = []
+for name in features:
+    if name == "hello":
+        continue
+    path = tools.tools.append_path("./examples/features/", name) + ".ug"
+    code = tools.files.read(path, 'utf-8').strip()
+    text = tplMdFeature.format(name=name, code=code)
+    mdfeaturesArray.append(text)
+mdFeaturesText = "\n".join(mdfeaturesArray)
+
+def _onMacro(code, command, argument = None):
+    if command == "MD_LANGUAGES":
+        return mdLanguagesText
+    elif command == "MD_REATURES":
+        return mdFeaturesText
+bldr = builder.code()
+bldr.setName("README")
+bldr.setInput("./readme.tpl.md")
+bldr.setComment("//", False)
+bldr.setOutput("./readme.md")
+bldr.onMacro(_onMacro)
+bldr.onLine(lambda line: line)
+bldr.start()
+print("FINISHED!\n")
+
 ############################################################################### script
 
-tools.files.mk_folder(DIR_BUILD)
+assert tools.files.is_file(SCRIPT_PATH), 'script file not found' + SCRIPT_PATH
 tools.files.delete(DST_SCRIPT)
-if SCRIPT_PATH is not None and tools.files.is_file(SCRIPT_PATH):
-    tools.files.copy(SCRIPT_PATH, DST_SCRIPT)
-else:
-    help_text = " # yardem \n buyruq [merhaba, uyghur script qa xosh kepsiz ...] yezilsun\n"
-    tools.files.write(DST_SCRIPT, help_text, 'utf-8')
+
+def _onMacro(code, command, argument = None):
+    if command == "PROJECT_REPO":
+        return code.format(PROJECT_REPO)
+    pass
+bldr = builder.code()
+bldr.setName("README")
+bldr.setInput(SCRIPT_PATH)
+bldr.setComment("#", False)
+bldr.setOutput(DST_SCRIPT)
+bldr.onMacro(_onMacro)
+bldr.onLine(lambda line: line)
+bldr.start()
+print("FINISHED!\n")
 
 ############################################################################### task
 

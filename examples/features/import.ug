@@ -5,3 +5,9 @@ miqdar x qimmiti [other...] bolsun
 # main.xx
 fonkisiye ekirish bilen [../other.xx] ishlitilsun we netije m bolsun
 buyruq @m[x] yezilsun
+
+# run the program
+`.uyghur.exe ./main.xx`
+
+# get the result
+other...

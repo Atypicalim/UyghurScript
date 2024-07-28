@@ -1,4 +1,6 @@
 
+let TRANSLATE_PROJECT_REPO = '{}'; // [M[ PROJECT_REPO ]M]
+
 let TRANSLATE_LETTERS_MAP = {
 // [M[ LETTERS_MAP ]M]
 };

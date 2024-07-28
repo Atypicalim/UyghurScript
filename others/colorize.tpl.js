@@ -1,4 +1,6 @@
- 
+
+let COLORIZE_PROJECT_REPO = '{}'; // [M[ PROJECT_REPO ]M]
+
 let COLORIZE_COLOR_MAP = {
     // [M[ COLORS_MAP ]M]
 };
