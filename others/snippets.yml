@@ -29,14 +29,14 @@ write:
     tr: "yaz cümlesi yapmak"
     kz: "жазу сөйлемі жасау"
 
-calculate:
+iterate:
   prefix:
-    en: calculate
-    uy: ھېسابلاش
-    ug: hisablash
-    uz: hisoblash
-    tr: hesaplama
-    kz: есептеу
+    en: iterate
+    uy: دەۋرىيلەش
+    ug: dewriylesh
+    uz: aylantirish
+    tr: döngüyelemek
+    kz: айналдыру
   message:
     en: "make calculate sentence"
     uy: "ھېسابلاش جۈملىسى ياساش"

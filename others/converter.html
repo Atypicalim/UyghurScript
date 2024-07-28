@@ -8,6 +8,19 @@
     <script src="../build/translate.js"></script>
     <script src="../build/colorize.js"></script>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            background: #171714;
+            color: whitesmoke;
+        }
+        textarea {
+            min-height:250px;
+            width: 100%;
+            background: #272823;
+            color: #eff0ea;
+        }
         pre {
             background: #272823;
             color: #eff0ea;
@@ -37,40 +50,38 @@
     </style>
 </head>
 <body>
+    <h3>Converter</h3>
+    <textarea name="editor" id="editor"></textarea>
     <div id="code"></div>
 </body>
 </html>
 <script>
 
 "use strict";
+var $ = query2selector();
 
 let code = `
-miqdar s qimmiti sanduq bolsun
-miqdar k qimmiti [key] bolsun
+# a local variable
+miqdar t qimmiti 0 bolsun
 
-@s(1) = 111 + 200
-@s(2) = [abc]
-@s(3) = 333
-@s[abc] = [str...]
-@s(123) = [num...]
-@s{k} = [val...]
-
-fonkisiye func miqdar k v mezmuni
-    ikrangha k yezilsun
-    ikrangha [------\t--فونكىسىيە---] yezilsun
-    ikrangha v yezilsun
-    ikrangha [\n] yezilsun
+# a function with two arguments
+fonkisiye f miqdar x y mezmuni
+    t = x + y
+    netije t qayturulsun
 tamamlansun
 
-fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun we netije r bolsun
+# call functions and receive result
+fonkisiye f bilen 10 20 ishlitilsun we netije r bolsun
 
-# ikrangha s yezilsun
-ikrangha [END!] yezilsun
+# print the result value received
+buyruq r yezilsun
 `;
 
 
 function setLang(lang) {
-    let _code = translate_ug_code("ug", lang, code);
+    let _text = $("#editor").nodes()[0].value;
+    console.log("\n\n\n-->", _text);
+    let _code = translate_ug_code("ug", lang, _text);
     let _pre = colorize_ug_code(_code);
     // 
     let buttons = [];
@@ -80,8 +91,6 @@ function setLang(lang) {
         buttons.push(button)
     }
     let _btn = buttons.join("\n");
-    // 
-    var $ = query2selector();
     $("#code").html(_btn + _pre);
 }
 
@@ -90,6 +99,7 @@ function language2buttons() {
 }
 
 window.onload = function() {
+    $("#editor").html(code);
     setLang("en");
 };
     

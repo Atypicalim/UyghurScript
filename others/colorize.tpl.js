@@ -3,8 +3,24 @@ let COLORIZE_COLOR_MAP = {
     // [M[ COLORS_MAP ]M]
 };
 
-function colorize_ug_code(code) {
-    let text = code.substring(0);
+let __code_bg_style = `
+background: #272823;
+color: #eff0ea;
+font-family: Roboto,Arial,sans-serif,Alkatip;
+`;
+
+let __code_fg_colors = {
+    red: "#f92f78",
+    yellow: "#e7dc79",
+    green: "#a1db27",
+    blue: "#64d2e7",
+    grey: "#8d7d4f",
+    purple: "#a686ff",
+    orange: "#fd8e2a",
+};
+
+function colorize_ug_code(code, isColorized) {
+    let text = code.substring(0).trim();
     //
     let keys = Object.keys(COLORIZE_COLOR_MAP);
     keys.sort((a, b) => b.length - a.length);
@@ -68,7 +84,16 @@ function colorize_ug_code(code) {
         lines[i] = blocks.join(" ");
     }
     let _text = lines.join("\n");
-    return `<pre>${_text}</pre>`;
+    //
+    _text = _text.replaceAll(/<([a-z]+)>/gi, function(match, p1, offset, string, groups) {
+        let _styl = isColorized ? `style='color:` + __code_fg_colors[p1] + `;'` : "";
+        return `<${p1} ${_styl} >`;
+      });
+    // 
+    let _styl = isColorized ? `style="${__code_bg_style}"` : "";
+    _text = `<pre ${_styl} >${_text}</pre>`;
+    //
+    return _text;
 }
 
 if (typeof global !== 'undefined') {

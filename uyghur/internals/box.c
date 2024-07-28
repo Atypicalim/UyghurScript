@@ -2,7 +2,7 @@
 
 #include "../uyghur.c"
 
-void native_box_loop(Bridge *bridge)
+void native_box_iterate(Bridge *bridge)
 {
     Value *box = Bridge_receiveValue(bridge, UG_TYPE_CNT);
     Value *fun = Bridge_receiveValue(bridge, UG_TYPE_FUN);
@@ -34,7 +34,7 @@ void lib_box_register(Bridge *bridge)
 {
     Bridge_startBox(bridge);
     //
-    BRIDGE_BIND_NATIVE(box_loop);
+    BRIDGE_BIND_NATIVE(box_iterate);
     //
     Bridge_register(bridge, ALIAS_BOX);
 }

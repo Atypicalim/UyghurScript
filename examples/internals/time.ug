@@ -11,5 +11,5 @@ fonkisiye @waqit[sikuntElish] ishlitilsun we netije hazirqiWaqit bolsun
 fonkisiye @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%Y-%m-%d %H:%M:%S] ishlitilsun we netije hazirqiChisla bolsun
 
 # print to cosole
-ikrangha hazirqiChisla yezilsun
-ikrangha [\n] yezilsun
+buyruq hazirqiChisla yezilsun
+buyruq [\n] yezilsun

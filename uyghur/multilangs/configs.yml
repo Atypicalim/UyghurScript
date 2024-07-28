@@ -2,8 +2,8 @@
 # language
 LANG_LANGUAGE_FULLNAME:
   en: english
-  uy: uyghur
-  ug: uighur
+  uy: uyghur_uay
+  ug: uyghur_uly
   uz: uzbek
   tr: turkish
   kz: kazakh
@@ -11,6 +11,6 @@ LANG_LANGUAGE_TRANSLATION:
   en: english
   uy: ئۇيغۇرچە
   ug: uyghurche
-  uz: o'zbek
+  uz: o'zbekcha
   tr: Türkçe
   kz: қазақша

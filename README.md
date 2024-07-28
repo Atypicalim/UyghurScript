@@ -41,11 +41,11 @@ miqdar m qimmiti [yezish] bolsun
 
 # get func by string
 m qimmiti fonkisiye bolsun
-ikrangha m yezilsun
+buyruq m yezilsun
 
 # convert value to boolean
 m qimmiti logika bolsun
-ikrangha m yezilsun
+buyruq m yezilsun
 
 ```
 
@@ -82,32 +82,32 @@ x = [ab] * 2 # abab
 
 ```powershell
 # read a value
-ikrandin sQimmet oqulsun
+buyruq sQimmet oqulsun
 # print a value
-ikrangha sQimmet yezilsun
+buyruq sQimmet yezilsun
 ```
 
 ## 6. io
 
 ```powershell
 # output
-ikrangha [Ana Tilim Zer Tilim!] yezilsun
+buyruq [Ana Tilim Zer Tilim!] yezilsun
 
 # input
-ikrandin a oqulsun
+buyruq a oqulsun
 a qimmiti [mezmun:] ulanghan a bolsun
-ikrangha a yezilsun
+buyruq a yezilsun
 ```
 
 ## 7. if
 
 ```powershell
 eger 0 bolsa
-    ikrangha [if] yezilsun
+    buyruq [if] yezilsun
 egerde rast bosa
-    ikrangha [elif] yezilsun
+    buyruq [elif] yezilsun
 bolmisa
-    ikrangha [else] yezilsun
+    buyruq [else] yezilsun
 tamamlansun
 ```
 
@@ -115,7 +115,7 @@ tamamlansun
 
 ```powershell
 nawada rast bolsa
-    ikrangha [while] yezilsun
+    buyruq [while] yezilsun
 tamamlansun
 ```
 
@@ -127,10 +127,10 @@ xataliq e mezmuni
 tamamlansun
 # return e == empty if no exception
 eger e bolsa
-    ikrangha [exception:] yezilsun
-    ikrangha e yezilsun
+    buyruq [exception:] yezilsun
+    buyruq e yezilsun
 bolmisa
-    ikrangha [successful!] yezilsun
+    buyruq [successful!] yezilsun
 tamamlansun
 # exception: cannot devided by zero
 ```
@@ -157,7 +157,7 @@ funcName qimmiti fonkisiye bolsun
 fonkisiye funcName bilen 10 20 ishlitilsun we netije result bolsun
 
 # print the result value received
-ikrangha result yezilsun
+buyruq result yezilsun
 ```
 
 ## 11. box
@@ -228,13 +228,13 @@ Bridge_register(bridge, NULL);
 
 ```powershell
 # bolek_programma.ug
-ikrangha [bolek programmidin salam ...] yezilsun
+buyruq [bolek programmidin salam ...] yezilsun
 bolektikiQimmet qimmiti [bolektiki sinaq qimmet ...] bolsun
 
 # bash_programma.ug
-ikrangha [bash programmidin salam ...] yezilsun
+buyruq [bash programmidin salam ...] yezilsun
 fonkisiye ekirish bilen [../bolek_programma.ug] ishlitilsun we netije bolekSanduq bolsun
-ikrangha @bolekSanduq[bolektikiQimmet] yezilsun
+buyruq @bolekSanduq[bolektikiQimmet] yezilsun
 
 # run the program
 `.uyghur.exe ./bash_programma.ug`

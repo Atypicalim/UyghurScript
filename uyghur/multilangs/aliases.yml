@@ -498,8 +498,8 @@ ALIAS_BOX:
   uz: sandiq
   tr: sandık
   kz: сандық
-ALIAS_box_loop:
-  en: box_loop
+ALIAS_box_iterate:
+  en: box_iterate
   uy: دەۋرىيلەش
   ug: dewriylesh
   uz: aylantirish

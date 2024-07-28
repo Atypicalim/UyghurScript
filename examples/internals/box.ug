@@ -6,12 +6,12 @@ miqdar k qimmiti [key] bolsun
 @s(123) = 456
 
 fonkisiye func miqdar k v mezmuni
-    ikrangha k yezilsun
-    ikrangha [-----------] yezilsun
-    ikrangha v yezilsun
-    ikrangha [\n] yezilsun
+    buyruq k yezilsun
+    buyruq [-----------] yezilsun
+    buyruq v yezilsun
+    buyruq [\n] yezilsun
 tamamlansun
 
-fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun we netije r bolsun
+fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun
 
-ikrangha [END!\n] yezilsun
+buyruq [END!\n] yezilsun

@@ -1,11 +1,11 @@
 # global
 
 ```python
-ikrangha NESHIR_ISMI yezilsun
+buyruq NESHIR_ISMI yezilsun
 # 0.1
 
 ```python
-ikrangha NESHIR_NUMIRI yezilsun
+buyruq NESHIR_NUMIRI yezilsun
 # 0.1
 
 ```python
@@ -25,5 +25,5 @@ fonkisiye tazilash bilen [../examples/hello.ug] ishlitilsun
 # merhaba uyghur script!
 
 ```python
-ikrangha hello yezilsun
+buyruq hello yezilsun
 # [RV => t:UG_TYPE_CNT p:-613914656]

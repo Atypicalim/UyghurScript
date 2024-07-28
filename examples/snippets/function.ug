@@ -1,3 +1,4 @@
-fonkisiye $1 miqdar $2 mezmuni
+fonkisiye f$1 miqdar a$2 mezmuni
     #
+    netije r$3 qayturulsun
 tamamlansun

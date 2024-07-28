@@ -2,8 +2,8 @@
 
 ```python
 # variables
-ikrangha @san[pi] yezilsun
-ikrangha @san[e] yezilsun
+buyruq @san[pi] yezilsun
+buyruq @san[e] yezilsun
 ```
 
 ```python

@@ -1,0 +1,13 @@
+
+# try block
+xataliq e mezmuni
+    x = 3 / 0
+tamamlansun
+
+# catrch block
+eger e bolsa
+    buyruq [exception:] yezilsun
+    buyruq e yezilsun
+bolmisa
+    buyruq [successful!] yezilsun
+tamamlansun

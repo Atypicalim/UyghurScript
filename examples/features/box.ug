@@ -1,0 +1,21 @@
+
+#  declare a box
+s qimmiti sanduq bolsun
+
+# put a number
+@s[v] qimmiti 0 bolsun
+
+# set a method
+fonkisiye @s[f] miqdar x y mezmuni
+  @-[yighinda] = @-[v] * 2
+tamamlansun
+
+# supported aliases 
+# box: @-[keyName]
+# module: @+[keyName]
+# global: @*[keyName]
+
+# supported keys
+# variable: @boxName{variableName}
+# string: @boxName[stringKey]
+# number: @boxName(123)

@@ -75,7 +75,7 @@ tamamlansun
 
 # reset button
 fonkisiye tazilashQayturmisi mezmuni
-    ikrangha [tazilandi] yezilsun
+    buyruq [tazilandi] yezilsun
     netijeQimmet qimmiti 0 bolsun
     hazirqiQimmet qimmiti 0 bolsun
     aldinqiQimmet qimmiti 15 bolsun

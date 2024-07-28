@@ -1,0 +1,10 @@
+
+miqdar m qimmiti [yezish] bolsun
+
+# get func by string
+m qimmiti fonkisiye bolsun
+buyruq m yezilsun
+
+# convert value to boolean
+m qimmiti logika bolsun
+buyruq m yezilsun

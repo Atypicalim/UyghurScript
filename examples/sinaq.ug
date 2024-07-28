@@ -10,14 +10,16 @@ miqdar k qimmiti [key] bolsun
 @s{k} = [val...]
 
 fonkisiye func miqdar k v mezmuni
-    ikrangha k yezilsun
-    ikrangha [-----------] yezilsun
-    ikrangha v yezilsun
-    ikrangha [\n] yezilsun
+    buyruq k yezilsun
+    buyruq [-----------] yezilsun
+    buyruq v yezilsun
+    buyruq [\n] yezilsun
 tamamlansun
 
-fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun we netije r bolsun
+fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun
 
-# ikrangha s yezilsun
-ikrangha [END!] yezilsun
+# buyruq s yezilsun
+buyruq [END!] yezilsun
+
+c = a + b
 

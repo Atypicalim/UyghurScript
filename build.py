@@ -15,7 +15,7 @@ tools = builder.tools
 PROJECT_NAME ="UyghurScript"
 VERSION_CODE = 0.2
 EXTENSION_VERSION = "1.0.2"
-SNIPPETS_LANG = 'ug'
+EXAMPLE_LANG = 'ug'
 SUPPORT_LANG = set()
 SCRIPT_PATH = "./examples/sinaq.kz"
 SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
@@ -25,12 +25,21 @@ SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT
 DIR_BUILD = "./build/"
 tools.files.mk_folder(DIR_BUILD)
 
-DIR_TRANS = tools.tools.append_path(DIR_BUILD, "trans")
-DIR_COLOR = tools.tools.append_path(DIR_BUILD, "color")
-tools.files.delete(DIR_TRANS)
-tools.files.delete(DIR_COLOR)
-tools.files.mk_folder(DIR_TRANS)
-tools.files.mk_folder(DIR_COLOR)
+DIR_SNIPPETS = tools.tools.append_path(DIR_BUILD, "snippets")
+DIR_FEATURES = tools.tools.append_path(DIR_BUILD, "features")
+
+DIR_SNIPPET_TRANS = tools.tools.append_path(DIR_SNIPPETS, "trans")
+DIR_SNIPPET_COLOR = tools.tools.append_path(DIR_SNIPPETS, "color")
+DIR_FEATURE_TRANS = tools.tools.append_path(DIR_FEATURES, "trans")
+DIR_FEATURE_COLOR = tools.tools.append_path(DIR_FEATURES, "color")
+tools.files.delete(DIR_SNIPPET_TRANS)
+tools.files.delete(DIR_SNIPPET_COLOR)
+tools.files.delete(DIR_FEATURE_TRANS)
+tools.files.delete(DIR_FEATURE_COLOR)
+tools.files.mk_folder(DIR_SNIPPET_TRANS)
+tools.files.mk_folder(DIR_SNIPPET_COLOR)
+tools.files.mk_folder(DIR_FEATURE_TRANS)
+tools.files.mk_folder(DIR_FEATURE_COLOR)
 
 DST_ALIAS = DIR_BUILD + "script"
 DST_SCRIPT = DST_ALIAS + "." + SCRIPT_EXT
@@ -98,6 +107,7 @@ langsArrConfigs, namesArrConfigs, mapLang2NameConfigs, mapName2LangConfigs = rea
 
 grammars = readYaml(f"./others/grammars.yml")
 snippets = readYaml(f"./others/snippets.yml")
+features = readYaml(f"./others/features.yml")
 
 ############################################################################### formatting
 
@@ -407,11 +417,20 @@ bldr.start()
 
 ############################################################################### convert
 
-print("CONVERT:")
+print("CONVERT_SNIPPETS:")
 for name in snippets:
-    fromPath = tools.tools.append_path("./examples/snippets/", name) + "." + SNIPPETS_LANG
+    fromPath = tools.tools.append_path("./examples/snippets/", name) + "." + EXAMPLE_LANG
     result = subprocess.run([
-        "node", "./others/convert.js", fromPath, DIR_TRANS, DIR_COLOR
+        "node", "./others/convert.js", fromPath, DIR_SNIPPET_TRANS, DIR_SNIPPET_COLOR
+    ], capture_output=True, text=True)
+    print("translate:", name, "OK" if result.returncode == 0 else result.stderr)
+print("CONVERTED!\n")
+
+print("CONVERT_FEATURES:")
+for name in features:
+    fromPath = tools.tools.append_path("./examples/features/", name) + "." + EXAMPLE_LANG
+    result = subprocess.run([
+        "node", "./others/convert.js", fromPath, DIR_FEATURE_TRANS, DIR_FEATURE_COLOR
     ], capture_output=True, text=True)
     print("translate:", name, "OK" if result.returncode == 0 else result.stderr)
 print("CONVERTED!\n")
@@ -439,7 +458,7 @@ for name in snippets:
         snippet['prefix'] = _prefixes
     # generate
     for lang in langsArrConfigs:
-        transPath = tools.tools.append_path(DIR_TRANS, name) + "." + lang
+        transPath = tools.tools.append_path(DIR_SNIPPET_TRANS, name) + "." + lang
         _file = open(transPath, "r", encoding="utf-8")
         _content = _file.read().replace("\r\n", "\r")
         body = _content.split("\n")
@@ -468,7 +487,7 @@ tools.files.delete(DST_SCRIPT)
 if SCRIPT_PATH is not None and tools.files.is_file(SCRIPT_PATH):
     tools.files.copy(SCRIPT_PATH, DST_SCRIPT)
 else:
-    help_text = " # yardem \n ikrangha [merhaba, uyghur script qa xosh kepsiz ...] yezilsun\n"
+    help_text = " # yardem \n buyruq [merhaba, uyghur script qa xosh kepsiz ...] yezilsun\n"
     tools.files.write(DST_SCRIPT, help_text, 'utf-8')
 
 ############################################################################### task
@@ -499,4 +518,4 @@ task.addWarnings(False, [
 ])
 task.addFlags(["-I ../pure-c-tools/"])
 task.start()
-# task.run()
+task.run()

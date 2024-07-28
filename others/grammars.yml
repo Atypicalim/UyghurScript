@@ -6,7 +6,7 @@ GRAMMAR_COLORS:
   GRAMMAR_ACCOUNTCE: blue
   GRAMMAR_KEYWORD: red
   GRAMMAR_BLOCKS: red
-  GRAMMAR_EVENTS: red
+  GRAMMAR_EVENTS: red 
 
 # to extension
 

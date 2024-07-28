@@ -12,14 +12,14 @@ tamamlansun
 
 # iterate box
 fonkisiye func miqdar k v mezmuni
-    ikrangha k yezilsun
-    ikrangha [ * ] yezilsun
-    ikrangha k yezilsun
-    ikrangha [ = ] yezilsun
-    ikrangha v yezilsun
-    ikrangha [\n] yezilsun
+    buyruq k yezilsun
+    buyruq [ * ] yezilsun
+    buyruq k yezilsun
+    buyruq [ = ] yezilsun
+    buyruq v yezilsun
+    buyruq [\n] yezilsun
 tamamlansun
-fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun we netije r bolsun
+fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun
 
 # get language
 fonkisiye @*[isimElish] ishlitilsun we netije n bolsun

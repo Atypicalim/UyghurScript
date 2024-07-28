@@ -1,0 +1,9 @@
+
+# declare variable
+miqdar m qimmiti quruq bolsun
+
+# set value
+m = [hello world!]
+
+# free variable
+m qimmiti quruq bolsun
