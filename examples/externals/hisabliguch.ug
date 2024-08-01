@@ -68,7 +68,7 @@ fonkisiye belgilerniElish miqdar x mezmuni
     egerde x ? 15 bolsa
         r qimmiti [=] bolsun
     bolmisa
-        fonkisiye @xet[formatlash] bilen [%f] x ishlitilsun we netije r bolsun # string_format bug
+        fonkisiye @xet[formatlash] bilen [%f] x ishlitilsun we r elinsun # string_format bug
     tamamlansun
     netije r qayturulsun
 tamamlansun
@@ -173,8 +173,8 @@ tamamlansun
 # draw button
 fonkisiye kunupkaSizish miqdar id mezmuni
     # 2d point
-    fonkisiye @san[qalduqniHisablash] bilen id 5 ishlitilsun we netije kordinatX bolsun
-    fonkisiye @san[bulunminiHisablash] bilen id 5 ishlitilsun we netije kordinatY bolsun
+    fonkisiye @san[qalduqniHisablash] bilen id 5 ishlitilsun we kordinatX elinsun
+    fonkisiye @san[bulunminiHisablash] bilen id 5 ishlitilsun we kordinatY elinsun
     eger kordinatX ? 0 bolsa
         kordinatX qimmiti 5 bolsun
         kordinatY = kordinatY - 1
@@ -186,9 +186,9 @@ fonkisiye kunupkaSizish miqdar id mezmuni
     kunupkaOrniY = 51 * kordinatY
     kunupkaOrniX = kunupkaOrniX + 5
     kunupkaOrniY = kunupkaOrniY + 15
-    fonkisiye belgilerniElish bilen id ishlitilsun we netije kunupkaXeti bolsun
+    fonkisiye belgilerniElish bilen id ishlitilsun we kunupkaXeti elinsun
     # button
-    fonkisiye @zapchas[kunupkaKorsitish] bilen kunupkaOrniX kunupkaOrniY 100 50 kunupkaXeti ishlitilsun we netije rr bolsun
+    fonkisiye @zapchas[kunupkaKorsitish] bilen kunupkaOrniX kunupkaOrniY 100 50 kunupkaXeti ishlitilsun we rr elinsun
     eger rr bolsa
         fonkisiye kunupkaQauturmisi bilen id ishlitilsun
     tamamlansun
@@ -210,18 +210,18 @@ fonkisiye @*[doska_sizish_qayturmisi] mezmuni
     fonkisiye @taxta[totTereplikToldurushAylandurulghan] bilen 12 10 333 45 [333333] 0 0 0 ishlitilsun
     fonkisiye @taxta[totTereplikToldurushAylandurulghan] bilen 350 20 70 35 [88888833] 0 0 0 ishlitilsun
     # clear
-    fonkisiye @zapchas[kunupkaKorsitish] bilen 425 10 75 45 [Tazilash] ishlitilsun we netije rr bolsun
+    fonkisiye @zapchas[kunupkaKorsitish] bilen 425 10 75 45 [Tazilash] ishlitilsun we rr elinsun
     eger rr bolsa
         fonkisiye tazilashQayturmisi ishlitilsun
     tamamlansun
     # input
-    fonkisiye belgilerniElish bilen herketQimmet ishlitilsun we netije sinaqXet bolsun
+    fonkisiye belgilerniElish bilen herketQimmet ishlitilsun we sinaqXet elinsun
     fonkisiye @taxta[xetYezish] bilen [] sinaqXet 36 2 [111111] 377 21 ishlitilsun
     # result
-    fonkisiye @xet[formatlash] bilen [%f] netijeQimmet ishlitilsun we netije sinaqXet bolsun
+    fonkisiye @xet[formatlash] bilen [%f] netijeQimmet ishlitilsun we sinaqXet elinsun
     fonkisiye @taxta[xetYezish] bilen [] sinaqXet 24 2 [aaaaaa] 25 15 ishlitilsun
     # action
-    fonkisiye @xet[formatlash] bilen [%f] hazirqiQimmet ishlitilsun we netije sinaqXet bolsun
+    fonkisiye @xet[formatlash] bilen [%f] hazirqiQimmet ishlitilsun we sinaqXet elinsun
     fonkisiye @taxta[xetYezish] bilen [] sinaqXet 16 2 [aaaaaa] 25 38 ishlitilsun
 tamamlansun
 

@@ -335,7 +335,7 @@ void Parser_consumeAstResult(Parser *this)
 {
     Parser_checkWord(this, 0, 1, TVALUE_RESULT);
     Token *name = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
-    Parser_checkWord(this, 1, 1, TVALUE_RETURN);
+    Parser_checkWord(this, 1, 1, TVALUE_RETURNED);
     Parser_pushLeaf(this, UG_ATYPE_RSLT, 1, name);
 }
 
@@ -389,9 +389,8 @@ void Parser_consumeAstCall(Parser *this)
     if (Parser_isValue(this, 1, TVALUE_FURTHER))
     {
         Parser_checkValue(this, 1, 1, TVALUE_FURTHER);
-        Parser_checkWord(this, 1, 1, TVALUE_RESULT);
         result = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
-        Parser_checkWord(this, 1, 1, TVALUE_MADE);
+        Parser_checkWord(this, 1, 1, TVALUE_RECIEVED);
     }
     Stack_push(leaf->tokens, result);
     //

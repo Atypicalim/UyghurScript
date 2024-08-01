@@ -95,7 +95,7 @@ buyruq a yezilsun
 ```powershell
 eger 0 bolsa
     buyruq [if] yezilsun
-egerde rast bosa
+egerde rast bolsa
     buyruq [elif] yezilsun
 bolmisa
     buyruq [else] yezilsun
@@ -136,7 +136,7 @@ fonkisiye f miqdar x y mezmuni
 tamamlansun
 
 # call functions and receive result
-fonkisiye f bilen 10 20 ishlitilsun we netije r bolsun
+fonkisiye f bilen 10 20 ishlitilsun we r elinsun
 
 # print the result value received
 buyruq r yezilsun
@@ -222,7 +222,7 @@ tamamlansun
 miqdar x qimmiti [other...] bolsun
 
 # main.xx
-fonkisiye ekirish bilen [../other.xx] ishlitilsun we netije m bolsun
+fonkisiye ekirish bilen [../other.xx] ishlitilsun we m elinsun
 buyruq @m[x] yezilsun
 
 # run the program

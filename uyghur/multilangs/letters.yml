@@ -216,6 +216,7 @@ TVALUE_CALL:
   uz: ishlatilsin
   tr: kullanılsın
   kz: қолданылсын
+  # 
 TVALUE_RESULT:
   en: result
   uy: نەتىجە
@@ -223,14 +224,13 @@ TVALUE_RESULT:
   uz: natija
   tr: netice
   kz: нәтиже
-TVALUE_RETURN:
+TVALUE_RETURNED:
   en: returned
   uy: قايتۇرۇلسۇن
   ug: qayturulsun
   uz: qaytarilsin
   tr: geriverılsın
   kz: қайтарылсын
-
 # 
 TVALUE_FURTHER:
   en: and

@@ -85,16 +85,6 @@ function:
     tr: "fonksiyon cümlesi yapmak"
     kz: "функция сөйлемі жасау"
 
-return:
-  prefix: TVALUE_RETURN
-  message:
-    en: "make return sentence"
-    uy: "قايتۇرۇش جۈملىسى ياساش"
-    ug: "qayturush jumlisi yasash"
-    uz: qaytarish bayonoti tuzish
-    tr: "gerivermek cümlesi yapmak"
-    kz: "қайтару сөйлемі жасау"
-
 if:
   prefix: TVALUE_IF
   message:

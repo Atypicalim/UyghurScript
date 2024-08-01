@@ -62,10 +62,10 @@ miqdar x qimmiti quruq bolsun
 miqdar y qimmiti quruq bolsun
 fonkisiye istirilkaSizish miqdar istirilka bulung mezmuni
     # Pythagoras qanuniyiti
-    fonkisiye @san[radianghaAylandurush] bilen bulung ishlitilsun we netije a bolsun
-    fonkisiye @san[radianghaAylandurush] bilen bulung ishlitilsun we netije b bolsun
-    fonkisiye @san[sinosHisablash] bilen a ishlitilsun we netije a bolsun
-    fonkisiye @san[kosinosHisablash] bilen b ishlitilsun we netije b bolsun
+    fonkisiye @san[radianghaAylandurush] bilen bulung ishlitilsun we a elinsun
+    fonkisiye @san[radianghaAylandurush] bilen bulung ishlitilsun we b elinsun
+    fonkisiye @san[sinosHisablash] bilen a ishlitilsun we a elinsun
+    fonkisiye @san[kosinosHisablash] bilen b ishlitilsun we b elinsun
     # 
     eger istirilka ? SAET bolsa
         hazirqiRadius qimmiti saetRadiusi bolsun
@@ -87,9 +87,9 @@ tamamlansun
 
 fonkisiye istirilkaHisablash miqdar hazirqiWaqit mezmuni
     # waqitni aylandurush
-    fonkisiye @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%H] ishlitilsun we netije saet bolsun
-    fonkisiye @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%M] ishlitilsun we netije minut bolsun
-    fonkisiye @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%S] ishlitilsun we netije sikunit bolsun
+    fonkisiye @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%H] ishlitilsun we saet elinsun
+    fonkisiye @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%M] ishlitilsun we minut elinsun
+    fonkisiye @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%S] ishlitilsun we sikunit elinsun
     saet qimmiti san bolsun
     minut qimmiti san bolsun
     sikunit qimmiti san bolsun
@@ -99,12 +99,12 @@ fonkisiye istirilkaHisablash miqdar hazirqiWaqit mezmuni
         saet = saet - 12
     tamamlansun
     # gradusqa aylandurush
-    fonkisiye bulungHisablash bilen saet 12 ishlitilsun we netije saetGradusi bolsun
-    fonkisiye bulungHisablash bilen minut 60 ishlitilsun we netije minutGradusi bolsun
-    fonkisiye bulungHisablash bilen sikunit 60 ishlitilsun we netije sikunitGradusi bolsun
+    fonkisiye bulungHisablash bilen saet 12 ishlitilsun we saetGradusi elinsun
+    fonkisiye bulungHisablash bilen minut 60 ishlitilsun we minutGradusi elinsun
+    fonkisiye bulungHisablash bilen sikunit 60 ishlitilsun we sikunitGradusi elinsun
     # artuqini hisablash
-    fonkisiye artuqcheHisablash bilen minutGradusi 30 ishlitilsun we netije saetArtuqche bolsun
-    fonkisiye artuqcheHisablash bilen sikunitGradusi 5 ishlitilsun we netije minutArtuqche bolsun
+    fonkisiye artuqcheHisablash bilen minutGradusi 30 ishlitilsun we saetArtuqche elinsun
+    fonkisiye artuqcheHisablash bilen sikunitGradusi 5 ishlitilsun we minutArtuqche elinsun
     saetGradusi = saetGradusi + saetArtuqche
     minutGradusi = minutGradusi + minutArtuqche
 tamamlansun
@@ -114,14 +114,14 @@ tamamlansun
 
 fonkisiye @*[doska_sizish_qayturmisi] mezmuni
     #
-    fonkisiye @waqit[sikuntElish] ishlitilsun we netije hazirqiWaqit bolsun
+    fonkisiye @waqit[sikuntElish] ishlitilsun we hazirqiWaqit elinsun
     # teglik sizish
     fonkisiye @taxta[totTereplikToldurushAylandurulghan] bilen 0 0 ikranKengliki ikranIgizliki [101010] 0 0 0 ishlitilsun
     fonkisiye @taxta[totTereplikToldurushAylandurulghan] bilen 5 5 490 590 [303030] 0 0 0 ishlitilsun
     fonkisiye @taxta[chemberToldurush] bilen merkezX merkezY teglikRadiusi teglikRadiusi [101010] ishlitilsun
     # xet yezish
     fonkisiye @taxta[xetYezish] bilen [../resources/ukij.ttf] tema 36 0 [bbbbbb] 35 20 ishlitilsun
-    fonkisiye @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%Y-%m-%d %H:%M:%S] ishlitilsun we netije chisla bolsun
+    fonkisiye @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%Y-%m-%d %H:%M:%S] ishlitilsun we chisla elinsun
     fonkisiye @taxta[xetYezish] bilen [../resources/ukij.ttf] chisla 36 0 [eeeeee] 115 450 ishlitilsun
     # istirilka hisablash
     fonkisiye istirilkaHisablash bilen hazirqiWaqit ishlitilsun

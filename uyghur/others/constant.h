@@ -156,9 +156,10 @@ const UG_PAIRS UG_WORDS_MAP[] = {
     {TVALUE_CONTENT, 0},
     {TVALUE_WITH, 0},
     {TVALUE_CALL, 0},
-    {TVALUE_RETURN, 0},
-    {TVALUE_FURTHER, 0},
     {TVALUE_RESULT, 0},
+    {TVALUE_RETURNED, 0},
+    {TVALUE_FURTHER, 0},
+    {TVALUE_RECIEVED, 0},
     // 
     {TVALUE_NUM, 0},
     {TVALUE_STR, 0},

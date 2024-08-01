@@ -33,12 +33,12 @@ fonkisiye @*[doska_sizish_qayturmisi] mezmuni
         y = 262
     tamamlansun
 
-    fonkisiye @taxta[resimEkirish] bilen [../resources/run.png] 0 0 -1 -1 yalghan yalghan ishlitilsun we netije r bolsun
+    fonkisiye @taxta[resimEkirish] bilen [../resources/run.png] 0 0 -1 -1 yalghan yalghan ishlitilsun we r elinsun
     fonkisiye @taxta[tamghaBesish] bilen r 100 300 0.5 0.5 [aaffff] x y 200 260 0.5 1 ishlitilsun
     fonkisiye @taxta[tamghaBesish] bilen r 250 300 0.5 0.5 [ffffaa] x y 200 260 0.5 1 ishlitilsun
     fonkisiye @taxta[tamghaBesish] bilen r 400 300 0.5 0.5 [ffaaff] x y 200 260 0.5 1 ishlitilsun
 
-    fonkisiye @taxta[xetEkirish] bilen [../resources/ukij.ttf] s 36 0 ishlitilsun we netije w bolsun
+    fonkisiye @taxta[xetEkirish] bilen [../resources/ukij.ttf] s 36 0 ishlitilsun we w elinsun
     fonkisiye @taxta[tamghaBesish] bilen w 250 50 0.5 0.5 [333333] 0 0 -1 -1 0.5 1 ishlitilsun
 
 tamamlansun
