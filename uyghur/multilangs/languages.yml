@@ -31,7 +31,7 @@ LANG_TAG_ERROR:
   en: error
   uy: خاتالىق
   ug: xataliq
-  uz: Xato
+  uz: xatolik
   tr: yanılgı
   kz: "қателік"
 
@@ -238,7 +238,7 @@ LANG_ERR_EXECUTER_CALCULATION_INVALID:
   en: "found invalid calculation"
   uy: "ھېسابلاش مەشغۇلاتى ئىناۋەتسىز"
   ug: "hisablash meshghulati inawetsiz"
-  uz: "yaroqsiz hisoblash operatsiyasi"
+  uz: "hisoblash operatsiyasi yaroqsiz"
   tr: "hesaplama işlemi geçersiz"
   kz: "есептеу операциясы жарамсыз"
 LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN:
@@ -260,9 +260,16 @@ LANG_ERR_EXECUTER_INVALID_DEVIDE:
   en: "devider can not be zero"
   uy: "بۆلگۈچى سان نۆل بۇلالمايدۇ"
   ug: "bolguchi san nol bulalmaydu"
-  uz: "Bo'luvchi nol bo'lolmaydu"
+  uz: "Bo'luvchi son nol bo'lolmaydu"
   tr: "bölen sayı sıfır olamaz"
   kz: "бөлетін сан нөл болалмады"
+LANG_ERR_EXECUTER_INVALID_SPREAD:
+  en: "found invalid spread target"
+  uy: "تەكرار نىشانى ئىناۋەتسىز"
+  ug: "tekrar nishani inawetsiz"
+  uz: "takror nishoni yaroqsiz"
+  tr: "tekrar nişani geçersiz"
+  kz: "текрар нысаны жарамсыз"
 #
 LANG_ERR_EXECUTER_INVALID_IF:
   en: "found invalid if"

@@ -5,6 +5,7 @@ type:
 command:
 if:
 while:
+spread:
 function:
 exception:
 calculate:

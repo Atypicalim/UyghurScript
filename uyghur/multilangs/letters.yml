@@ -35,6 +35,7 @@ TVALUE_BOX:
   uz: sandiq
   tr: sandık
   kz: сандық
+
 #
 TVALUE_WHILE:
   en: while
@@ -43,6 +44,22 @@ TVALUE_WHILE:
   uz: shundayda
   tr: böyleyse
   kz: солайда
+TVALUE_SPREAD:
+  en: speaded
+  uy: يېيىلغان
+  ug: yeyilghan
+  uz: yoyilgan
+  tr: yayılan
+  kz: жайылған
+TVALUE_BECOME:
+  en: become
+  uy: بۇلۇپ
+  ug: bulup
+  uz: bo'lib
+  tr: olup
+  kz: болу
+
+# 
 TVALUE_IF:
   en: if
   uy: ئەگەر
@@ -146,6 +163,7 @@ TVALUE_MADE:
   uz: bo'lsin
   tr: olsun
   kz: болсын
+
 # 
 TVALUE_EXCEPTION:
   en: exception
@@ -154,6 +172,21 @@ TVALUE_EXCEPTION:
   uz: xatolik
   tr: hatalık
   kz: қателік
+TVALUE_TESTING:
+  en: testing
+  uy: سىناق
+  ug: sinaq
+  uz: sinov
+  tr: sınav
+  kz: сынақ
+TVALUE_TESTED:
+  en: tested
+  uy: سىنالسۇن
+  ug: sinalsun
+  uz: sinolsin
+  tr: sınalsın
+  kz: сыналсын
+
 # 
 TVALUE_FUNCTION:
   en: function
@@ -183,20 +216,6 @@ TVALUE_CALL:
   uz: ishlatilsin
   tr: kullanılsın
   kz: қолданылсын
-TVALUE_RETURN:
-  en: returned
-  uy: قايتۇرۇلسۇن
-  ug: qayturulsun
-  uz: qaytarilsin
-  tr: geriverılsın
-  kz: қайтарылсын
-TVALUE_FURTHER:
-  en: and
-  uy: ۋە
-  ug: we
-  uz: va
-  tr: ve
-  kz: бен
 TVALUE_RESULT:
   en: result
   uy: نەتىجە
@@ -204,3 +223,26 @@ TVALUE_RESULT:
   uz: natija
   tr: netice
   kz: нәтиже
+TVALUE_RETURN:
+  en: returned
+  uy: قايتۇرۇلسۇن
+  ug: qayturulsun
+  uz: qaytarilsin
+  tr: geriverılsın
+  kz: қайтарылсын
+
+# 
+TVALUE_FURTHER:
+  en: and
+  uy: ۋە
+  ug: we
+  uz: va
+  tr: ve
+  kz: бен
+TVALUE_RECIEVED:
+  en: received
+  uy: ئېلىنسۇن
+  ug: elinsun
+  uz: olinsin
+  tr: alısın
+  kz: алынсын

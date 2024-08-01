@@ -112,6 +112,17 @@ nawada i < 9 bolsa
 tamamlansun
 ```
 
+* spread
+
+```powershell
+yeyilghan [abc...] miqdar i v bulup
+    buyruq i yezilsun
+    buyruq [\t] yezilsun
+    buyruq v yezilsun
+    buyruq [\n] yezilsun
+tamamlansun
+```
+
 * function
 
 ```powershell

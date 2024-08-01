@@ -1,68 +1,44 @@
 # todo
 
-# ################################################################################
-
-# box variable type
-# s qimmiti sanduq bolsun
-# @box{variable}
-# @box[string]
-# @box{number}
-
-# operations
-# orders: ( )
-# numbers: + - * / ^ %
-# strings: ~
-# logics: ! ^ & |
-
-# change
-# variable value function made => @{variable} == get a key from root scope
+# ######################################################### const
 
 # variable
 # miqdar x tipi turaqliq/turaqsiz bolsun
+# turaqliq x qimmiti quruq bolsun
+# turaqsiz x qimmiti quruq bolsun
 
-# alias alias
-# _ global
-# $ this
+# ######################################################### oop
 
-# ################################################################################
+tur Name miqdar x y mezmuni # asasi quruq
+    @-[x] = x
+    @-[y] = y
+tamamlansun
 
-# fonkisiye @*[doska_sizish_qayturmisi] mezmuni
-# tamamlansun
+tur Name bilen 10 20 yaritilsun we obj elinsun 
 
-# fonkisiye @sehne[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun
+@?{key}
 
-# ################################################################################
+örnek
+tur
+tuxum
+torelme
+yiltiz
+uruq
 
-# @*{key} searchFromGlobal
-# @+{key} searchFromModule
-# @-{key} searchFromBox
-# @?{key} searchRecursive
+# ######################################################### function
 
-# @box{123} -- use num as key, as string when fail
-# @box[str] -- use str as key
-# @box{val} -- use val as key, as string when fail
+fonkisiye f miqdar a mezmuni # something extra
+    netije r qayturulsun
+tamamlansun
 
-# miqdar a qimmiti quruq bolsun
+fonkisiye f bilen a b ishlitilsun we r elinsun 
 
-# a qimmiti xet bolsun
-# a qimmiti [] bolsun
+# ######################################################### exception
 
-# quruq
-# san -- 0
-# xet -- []
-# sanduq
-# logika -- yalghan
+xataliq e mezmuni
+tamamlansun
 
-# try / catch
-# sinaq: 
-# ...
-# hataqiq e:
-# ...
-# bolsun
+sinaq
+sinalsun we e elinsun
 
-# pointer
-# a = &b
-# b = *a
-
-# optimization
-# give boolean data type to value object and remove string comparation for type
+# ######################################################### repeat

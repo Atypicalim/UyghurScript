@@ -1,25 +1,16 @@
 
-miqdar s qimmiti sanduq bolsun
-miqdar k qimmiti [key] bolsun
+miqdar x qimmiti quruq bolsun
 
-@s(1) = 111
-@s(2) = [abc]
-@s(3) = 333
-@s[abc] = [str...]
-@s(123) = [num...]
-@s{k} = [val...]
-
-fonkisiye func miqdar k v mezmuni
-    buyruq k yezilsun
-    buyruq [-----------] yezilsun
-    buyruq v yezilsun
-    buyruq [\n] yezilsun
+xataliq e bulup
+    x = 3 / 0
 tamamlansun
 
-fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun
-
-# buyruq s yezilsun
-buyruq [END!] yezilsun
-
-c = a + b
+# catrch block
+eger e bolsa
+    buyruq [exception:\n] yezilsun
+    buyruq e yezilsun
+    buyruq [\n] yezilsun
+bolmisa
+    buyruq [successful!\n] yezilsun
+tamamlansun
 

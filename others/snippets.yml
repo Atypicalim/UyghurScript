@@ -114,6 +114,15 @@ while:
     uz: shundayda bayonoti tuzish
     tr: "böyleyse cümlesi yapmak"
     kz: "солайда сөйлемі жасау"
+spread:
+  prefix: TVALUE_SPREAD
+  message:
+    en: "make spread sentence"
+    uy: "يېيىش جۈملىسى ياساش"
+    ug: "yeyish jumlisi yasash"
+    uz: yoyish bayonoti tuzish
+    tr: "yaymak cümlesi yapmak"
+    kz: "жайылу сөйлемі жасау"
 
 import:
   prefix: ALIAS_import

@@ -18,7 +18,7 @@ VERSION_CODE = 0.4
 EXTENSION_VERSION = "1.0.4"
 EXAMPLE_LANG = 'ug'
 SUPPORT_LANG = set()
-SCRIPT_PATH = "./examples/help.ug"
+SCRIPT_PATH = "./examples/sinaq.ug"
 SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
 
 ###############################################################################

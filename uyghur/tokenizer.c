@@ -12,16 +12,6 @@ void Tokenizer_reset(Tokenizer *this)
     this->code = NULL;
 }
 
-void _set_keyword(Hashmap *map, char *tvalue, char *ttype)
-{
-    Hashmap_set(map, tvalue, String_format(ttype));
-}
-
-void _fill_keyword(Hashmap *map, char *tvalue)
-{
-    _set_keyword(map, tvalue, tvalue);
-}
-
 Tokenizer *Tokenizer_new(Uyghur *uyghur)
 {
     // init
@@ -36,19 +26,20 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
 }
 
 Token *Tokenizer_parseLetter(Tokenizer *this, String *letter, bool isGetName)
-{   
+{
     // letters 
     String *_letter = Hashmap_get(this->uyghur->lettersMap, String_get(letter));
-    if (_letter != NULL) {
-        // log_debug("tokenizer.replaced: %s -> %s", String_get(letter), String_get(alias));
-        letter = _letter;
+    String *_temp = _letter != NULL ? _letter : letter;
+    String *_word = Hashmap_get(this->uyghur->wordsMap, String_get(_temp));
+    if (_word == NULL) {
+        Token *token = Token_new(UG_TTYPE_NAM, String_get(_temp));
+        token->extra = String_get(letter);
+        return token;
     }
-    // name
-    String *val = Hashmap_get(this->uyghur->wordsMap, String_get(letter));
-    if (val == NULL) return Token_new(UG_TTYPE_NAM, String_get(letter));
     // word
-    char *type = String_equal(letter, val) ? UG_TTYPE_WRD : String_get(val);
-    Token *token = Token_new(type, String_get(letter));
+    char *_type = String_equal(_temp, _word) ? UG_TTYPE_WRD : String_get(_word);
+    Token *token = Token_new(_type, String_get(_temp));
+    token->extra = String_get(letter);
     return token;
 }
 

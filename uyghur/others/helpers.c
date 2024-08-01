@@ -416,7 +416,7 @@ void helper_add_languages(Uyghur *uyghur, char *tp) {
 }
 
 void helper_set_aliased_key(Container *container, char *_key, Value *value) {
-    // log_warn("helper.aliased: %s", _key);
+    // log_warn("helper.set.aliased: %s", _key);
     int size = aliases_get_size_by_name(_key);
     const PAIR_ALIASES* pairs = aliases_get_conf_by_name(_key);
     for (size_t i = 0; i < size; i++)
@@ -429,18 +429,18 @@ void helper_set_aliased_key(Container *container, char *_key, Value *value) {
 }
 
 Value *helper_get_aliased_key(Container *container, char *_key) {
-    Value *result = NULL;
+    // log_warn("helper.get.aliased: %s", _key);
     int size = aliases_get_size_by_name(_key);
     const PAIR_ALIASES* pairs = aliases_get_conf_by_name(_key);
     for (size_t i = 0; i < size; i++)
     {
         PAIR_ALIASES pair = pairs[i];
         char *location = convert_string_to_location(pair.val, UG_TYPE_STR);
-        result = Container_getLocation(container, location);
+        Value *result = Container_getLocation(container, location);
         pct_free(location);
-        if (result!= NULL) break;
+        if (result!= NULL) return result;
     }
-    return result;
+    return NULL;
 }
 
 #endif

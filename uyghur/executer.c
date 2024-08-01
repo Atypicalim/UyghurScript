@@ -597,6 +597,89 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
     }
 }
 
+void Executer_consumeSpread(Executer *this, Leaf *leaf)
+{
+    //
+    Cursor *cursor = Stack_reset(leaf->tokens);
+    Token *target = Stack_next(leaf->tokens, cursor);
+    Token *iter1 = Stack_next(leaf->tokens, cursor);
+    Token *iter2 = Stack_next(leaf->tokens, cursor);
+    Cursor_free(cursor);
+    Token_print(target);
+    Token_print(iter1);
+    Token_print(iter2);
+    //
+    Value *value = NULL;
+    if (!Token_isWord(target)) {
+        value = Executer_getValueByToken(this, target, true);
+    } else if (
+        is_eq_string(target->value, TVALUE_NUM)
+        || is_eq_string(target->value, TVALUE_STR)
+        || is_eq_string(target->value, TVALUE_BOX)
+    ) {
+        char *location = convert_string_to_location(target->extra, UG_TYPE_STR);
+        value = Container_getLocation(this->globalScope, location);
+        pct_free(location);
+        if (value != NULL) Object_retain(value);
+    }
+    // 
+    Value *current1;
+    Value *current2;
+    if (Value_isInt(value)) {
+        for (size_t i = 0; i < value->number; i++)
+        {
+            Executer_pushContainer(this, UG_CTYPE_SCP);
+            current1 = Value_newNumber(i, iter1);
+            Executer_setValueByToken(this, iter1, current1, true);
+            current2 = Value_newNumber(i + 1, iter2);
+            Executer_setValueByToken(this, iter2, current2, true);
+            Executer_consumeTree(this, leaf);
+            Executer_popContainer(this, UG_CTYPE_SCP);
+            if (this->errorMsg != NULL) break;
+        }
+    } else if (Value_isString(value)) {
+        utf8_iter iterator;
+        utf8_init(&iterator, String_get(value->string));
+        while (utf8_next(&iterator)) {
+            Executer_pushContainer(this, UG_CTYPE_SCP);
+            current1 = Value_newNumber(iterator.position, iter1);
+            Executer_setValueByToken(this, iter1, current1, true);
+            current2 = Value_newString(String_format(utf8_getchar(&iterator)), iter2);
+            Executer_setValueByToken(this, iter2, current2, true);
+            Executer_consumeTree(this, leaf);
+            Executer_popContainer(this, UG_CTYPE_SCP);
+            if (this->errorMsg != NULL) break;
+        }
+    } else if (Value_isContainer(value)) {
+        Container *box = value->object;
+        Hashmap *map = box->map;
+        Hashkey *ptr;
+        for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
+            ptr = map[i].position;
+            while (ptr != NULL) {
+                String *_key = ptr->key;
+                Value *val = ptr->value;
+                //
+                Executer_pushContainer(this, UG_CTYPE_SCP);
+                current1 = Value_newString(_key, iter1);
+                Executer_setValueByToken(this, iter1, current1, true);
+                current2 = val;
+                Executer_setValueByToken(this, iter2, current2, true);
+                Executer_consumeTree(this, leaf);
+                Executer_popContainer(this, UG_CTYPE_SCP);
+                if (this->errorMsg != NULL) break;
+                // 
+                ptr = ptr->next;
+            }
+            if (this->errorMsg != NULL) break;
+        }
+    } else {
+        Executer_error(this, target, LANG_ERR_EXECUTER_INVALID_SPREAD);
+    }
+    //
+    if (value != NULL) Object_release(value);
+}
+
 void Executer_consumeException(Executer *this, Leaf *leaf)
 {
     
@@ -843,6 +926,12 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     if(tp == UG_ATYPE_WHL)
     {
         Executer_consumeWhile(this, leaf);
+        return;
+    }
+    // spread
+    if(tp == UG_ATYPE_SPR)
+    {
+        Executer_consumeSpread(this, leaf);
         return;
     }
     // exception

@@ -1,13 +1,15 @@
 
-# try block
-xataliq e mezmuni
+miqdar x qimmiti quruq bolsun
+
+xataliq e bulup
     x = 3 / 0
 tamamlansun
 
 # catrch block
 eger e bolsa
-    buyruq [exception:] yezilsun
+    buyruq [exception:\n] yezilsun
     buyruq e yezilsun
+    buyruq [\n] yezilsun
 bolmisa
-    buyruq [successful!] yezilsun
+    buyruq [successful!\n] yezilsun
 tamamlansun

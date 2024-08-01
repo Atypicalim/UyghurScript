@@ -269,21 +269,21 @@ ALIAS_number_ceil:
   ug: ustigePutunlesh
   uz: ustiga_butunlash
   tr: yukarıya_bütünlemek
-  kz: жоғары_толықтауыш
+  kz: жоғары_бүтінтлу
 ALIAS_number_floor:
   en: floor
   uy: ئاستىغا_پۈتۈنلەش
   ug: astighaPutunlesh
   uz: ostiga_butunlash
   tr: aşağıya_bütünlemek
-  kz: төменге_толықтауыш
+  kz: төменге_бүтінлу
 ALIAS_number_round:
   en: round
   uy: تەخمىنىي_پۈتۈنلەش
   ug: texminiyPutunlesh
   uz: taxmin_butunlash
   tr: tahmin_bütünlemek
-  kz: болжау_толықтауыш
+  kz: болжау_бүтінлу
 #
 ALIAS_number_seed:
   en: seed
@@ -578,7 +578,7 @@ ALIAS_stage_is_fullscreen:
   ug: putunIkranmu
   uz: butun_ekranmi
   tr: bütün_ekranmı
-  kz: толық_экранма
+  kz: бүтін_экранма
 ALIAS_stage_is_hidden:
   en: is_hidden
   uy: يۇشۇرۇنغانمۇ
@@ -606,7 +606,7 @@ ALIAS_stage_toggle_fullscreen:
   ug: putunIkranHalitiniAlmashturush
   uz: butun_ekran_holatini_almashtirish
   tr: bütün_ekran_değiştirmek
-  kz: толық_экранға_өзгерту
+  kz: бүтін_экранға_өзгерту
 ALIAS_stage_set_minimize:
   en: set_minimize
   uy: كىچىكلىتىش

@@ -13,7 +13,7 @@ int main(int argc, char const *argv[])
     INCBIN(Script, UG_SCRIPT_PATH);
     //
     log_set_file("./test.log");
-    log_set_level(1);
+    log_set_level(0);
     log_set_color(true);
     log_set_quiet(false);
     // 
