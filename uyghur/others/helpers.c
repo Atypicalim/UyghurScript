@@ -128,7 +128,7 @@ bool is_base_type(char tp)
 
 bool is_bridge_type(char tp)
 {
-    return is_base_type(tp) || tp == UG_TYPE_CNT || tp == UG_TYPE_FUN;
+    return is_base_type(tp) || tp == UG_TYPE_CNT || tp == UG_TYPE_WKR;
 }
 
 bool is_calculator_common(UCHAR c)

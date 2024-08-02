@@ -6,7 +6,8 @@ command:
 if:
 while:
 spread:
-function:
+worker:
+creator:
 exception:
 calculate:
 box:

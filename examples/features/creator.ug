@@ -1,0 +1,12 @@
+
+# a creator with one arguments
+yasighuchi Y miqdar m asas quruq mezmuni
+    yasighuchi quruq ishlitilsun 
+    @-[m] = m
+tamamlansun
+
+# call creator and receive object
+yasighuchi f bilen [abc...] ishlitilsun we r elinsun
+
+# print the object value received
+buyruq @r[m] yezilsun

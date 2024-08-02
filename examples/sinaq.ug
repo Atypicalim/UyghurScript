@@ -1,16 +1,20 @@
 
-miqdar x qimmiti quruq bolsun
-
-xataliq e bulup
-    x = 3 / 0
+yasighuchi Name miqdar x mezmuni
+    # @-[x] = x
 tamamlansun
 
-# catrch block
-eger e bolsa
-    buyruq [exception:\n] yezilsun
-    buyruq e yezilsun
-    buyruq [\n] yezilsun
-bolmisa
-    buyruq [successful!\n] yezilsun
+fonkisiye func miqdar a mezmuni
+    #
 tamamlansun
 
+yeyilghan 10000 miqdar k v bulup
+    yasighuchi Name bilen 11 22 ishlitilsun we r elinsun
+    # fonkisiye func bilen 11 22 ishlitilsun we r elinsun
+    buyruq r yezilsun
+    buyruq [---\n] yezilsun
+tamamlansun
+
+buyruq [!!!\n] yezilsun
+fonkisiye @waqit[programminiUxlitish] bilen 10 ishlitilsun we r elinsun
+
+# momory leak

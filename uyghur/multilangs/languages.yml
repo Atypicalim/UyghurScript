@@ -315,6 +315,13 @@ LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND:
   uz: "Maqsadli yuguruvchi topilmadi"
   tr: "nişan koşucu bulunamadı"
   kz: "мақсат жүгіруші табылмады"
+LANG_ERR_EXECUTER_RUNNABLE_NOT_VALID:
+  en: "target runnable not valid"
+  uy: "نىشانلانغان يۈگۈرگۈچى ئىناۋەتسىز"
+  ug: "nishanlanghan yugurguchi inawetsiz"
+  uz: "Maqsadli yuguruvchi Yaroqsiz"
+  tr: "nişan koşucu geçersiz"
+  kz: "мақсат жүгіруші жарамсыз"
 #
 LANG_ERR_EXECUTER_BRIDGE_INVALID_RESULT:
   en: "bridge returned invalid result"

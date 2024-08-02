@@ -188,13 +188,21 @@ TVALUE_TESTED:
   kz: сыналсын
 
 # 
-TVALUE_FUNCTION:
+TVALUE_WORKER:
   en: function
   uy: فونكىسىيە
   ug: fonkisiye
   uz: funksiya
   tr: fonksiyon
   kz: функция
+TVALUE_CREATOR:
+  en: creator
+  uy: ياسىغۇچى
+  ug: yasighuchi
+  uz: yasag'uchi
+  tr: oluşturucu
+  kz: жасаушы
+#
 TVALUE_CONTENT:
   en: content
   uy: مەزمۇنى
@@ -202,6 +210,7 @@ TVALUE_CONTENT:
   uz: mazmuni
   tr: içeriği
   kz: мазмұны
+#
 TVALUE_WITH:
   en: with
   uy: بىلەن
@@ -209,8 +218,8 @@ TVALUE_WITH:
   uz: bilan
   tr: ile
   kz: бірге
-TVALUE_CALL:
-  en: called
+TVALUE_APPLY:
+  en: applied
   uy: ئىشلىتىلسۇن
   ug: ishlitilsun
   uz: ishlatilsin

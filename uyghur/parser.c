@@ -339,11 +339,11 @@ void Parser_consumeAstResult(Parser *this)
     Parser_pushLeaf(this, UG_ATYPE_RSLT, 1, name);
 }
 
-void Parser_consumeAstFunc(Parser *this)
+void Parser_consumeAstWorker(Parser *this)
 {
-    Parser_checkWord(this, 0, 1, TVALUE_FUNCTION);
+    Parser_checkWord(this, 0, 1, TVALUE_WORKER);
     Token *name = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
-    Leaf *leaf = Leaf_new(UG_ATYPE_FUN);
+    Leaf *leaf = Leaf_new(UG_ATYPE_WRKR);
     Leaf *code = Leaf_new(UG_ATYPE_CODE);
         // args
     if (Parser_isValue(this, 1, TVALUE_VARIABLE))
@@ -366,11 +366,42 @@ void Parser_consumeAstFunc(Parser *this)
     Parser_openBranch(this);
 }
 
-void Parser_consumeAstCall(Parser *this)
+void Parser_consumeAstCreator(Parser *this)
 {
-    Parser_checkWord(this, 0, 1, TVALUE_FUNCTION);
+    Parser_checkWord(this, 0, 1, TVALUE_CREATOR);
     Token *name = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
-    Leaf *leaf = Leaf_new(UG_ATYPE_CALL);
+    Leaf *leaf = Leaf_new(UG_ATYPE_CRTR);
+    Leaf *code = Leaf_new(UG_ATYPE_CODE);
+        // args
+    if (Parser_isValue(this, 1, TVALUE_VARIABLE))
+    {
+        Parser_checkValue(this, 1, 1, TVALUE_VARIABLE);
+        Token *variable = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
+        while (variable != NULL)
+        {
+            Stack_push(code->tokens, variable);
+            variable = Parser_isValue(this, 1, TVALUE_CONTENT) ? NULL : Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
+        }
+    }
+    // finish
+    Parser_checkValue(this, 1, 1, TVALUE_CONTENT);
+    Stack_push(leaf->tokens, name);
+    Stack_push(code->tokens, name);
+    Leaf_pushLeaf(this->leaf, leaf);
+    Parser_openBranch(this);
+    Leaf_pushLeaf(this->leaf, code);
+    Parser_openBranch(this);
+}
+
+void Parser_consumeAstApply(Parser *this)
+{
+    bool isWorker = Parser_isWord(this, 0, TVALUE_WORKER);
+    bool isCrator = Parser_isWord(this, 0, TVALUE_CREATOR);
+    Parser_assert(this, isWorker || isCrator, LANG_ERR_PARSER_INVALID_VARIABLE);
+    Parser_checkType(this, 0, 1, UG_TTYPE_WRD);
+    //
+    Token *name = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
+    Leaf *leaf = Leaf_new(UG_ATYPE_APPLY);
     // args
     if (Parser_isValue(this, 1, TVALUE_WITH))
     {
@@ -379,11 +410,11 @@ void Parser_consumeAstCall(Parser *this)
         while (variable != NULL)
         {
             Stack_push(leaf->tokens, variable);
-            variable = Parser_isValue(this, 1, TVALUE_CALL) ? NULL : Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+            variable = Parser_isValue(this, 1, TVALUE_APPLY) ? NULL : Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
         }
     }
     //
-    Parser_checkWord(this, 1, 1, TVALUE_CALL);
+    Parser_checkWord(this, 1, 1, TVALUE_APPLY);
     // result
     Token *result = Token_empty();
     if (Parser_isValue(this, 1, TVALUE_FURTHER))
@@ -495,17 +526,26 @@ void Parser_consumeToken(Parser *this, Token *token)
         Parser_consumeAstResult(this);
         return;
     }
-    // FUNC
-    if (is_eq_string(v, TVALUE_FUNCTION) && (Parser_isValue(this, 2, TVALUE_VARIABLE) || Parser_isValue(this, 2, TVALUE_CONTENT)))
-    {
-        Parser_consumeAstFunc(this);
-        return;
+    // WORKER
+    if (is_eq_string(v, TVALUE_WORKER)) {
+        if (Parser_isValue(this, 2, TVALUE_VARIABLE) || Parser_isValue(this, 2, TVALUE_CONTENT)) {
+            Parser_consumeAstWorker(this);
+            return;
+        }
     }
-    // CALL
-    if (is_eq_string(v, TVALUE_FUNCTION) && (Parser_isValue(this, 2, TVALUE_WITH) || Parser_isValue(this, 2, TVALUE_CALL)))
-    {
-        Parser_consumeAstCall(this);
-        return;
+    // WORKER
+    if (is_eq_string(v, TVALUE_CREATOR)) {
+        if (Parser_isValue(this, 2, TVALUE_VARIABLE) || Parser_isValue(this, 2, TVALUE_CONTENT)) {
+            Parser_consumeAstCreator(this);
+            return;
+        }
+    }
+    // APPLY
+    if ((is_eq_string(v, TVALUE_WORKER) || is_eq_string(v, TVALUE_CREATOR))) {
+        if (Parser_isValue(this, 2, TVALUE_WITH) || Parser_isValue(this, 2, TVALUE_APPLY)) {
+            Parser_consumeAstApply(this);
+            return;
+        }
     }
     // IF_FIRST
     if (is_eq_string(v, TVALUE_IF))

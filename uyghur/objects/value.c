@@ -67,9 +67,14 @@ Value *Value_newContainer(Container *container, void *extra)
     return Value_new(UG_TYPE_CNT, NULL, 0, NULL, container, extra);
 }
 
-Value *Value_newFunction(void *function, void *extra)
+Value *Value_newWorker(void *function, void *extra)
 {
-    return Value_new(UG_TYPE_FUN ,NULL, 0, NULL, function, extra);
+    return Value_new(UG_TYPE_WKR ,NULL, 0, NULL, function, extra);
+}
+
+Value *Value_newCreator(void *function, void *extra)
+{
+    return Value_new(UG_TYPE_CTR ,NULL, 0, NULL, function, extra);
 }
 
 Value *Value_newNative(void *function, void *extra)
@@ -112,9 +117,14 @@ bool Value_isContainer(Value *this)
     return this != NULL && this->type == UG_TYPE_CNT;
 }
 
-bool Value_isFunc(Value *this)
+bool Value_isWorker(Value *this)
 {
-    return this != NULL && this->type == UG_TYPE_FUN;
+    return this != NULL && this->type == UG_TYPE_WKR;
+}
+
+bool Value_isCreator(Value *this)
+{
+    return this != NULL && this->type == UG_TYPE_CTR;
 }
 
 bool Value_isNative(Value *this)
@@ -124,7 +134,7 @@ bool Value_isNative(Value *this)
 
 bool Value_isRunnable(Value *this)
 {
-    return this != NULL && (this->type == UG_TYPE_FUN || this->type == UG_TYPE_NTV);
+    return this != NULL && (this->type == UG_TYPE_WKR || this->type == UG_TYPE_CTR || this->type == UG_TYPE_NTV);
 }
 
 void Value_print(Value *this)
@@ -178,8 +188,10 @@ char *Value_toString(Value *this)
         return String_dump(this->string);
     } if (this->type == UG_TYPE_CNT) {
         return Container_toString(this->object);
-    } if (this->type == UG_TYPE_FUN) {
-        return tools_format("<Function p:%p>",  this->object);
+    } if (this->type == UG_TYPE_WKR) {
+        return tools_format("<Worker p:%p>",  this->object);
+    } if (this->type == UG_TYPE_CTR) {
+        return tools_format("<Creator p:%p>",  this->object);
     } if (this->type == UG_TYPE_NTV) {
         return tools_format("<Native p:%p>",  this->object);
     } else {

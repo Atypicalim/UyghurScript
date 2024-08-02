@@ -345,10 +345,10 @@ void Bridge_call(Bridge *this, char *funcName)
     Value *f = helper_get_aliased_key(executer->globalScope, funcName);
     if (f == NULL) {
         log_warn("%s:%s", LANG_ERR_BRIDGE_FUNCTION_NOT_FOUND, funcName);
-    } else if (!Value_isFunc(f)) {
-        tools_error("%s:%s", LANG_ERR_BRIDGE_FUNCTION_NOT_VALID, funcName);
+    } else if (Value_isWorker(f)) {
+        r = Executer_runWorker(executer, f);
     } else {
-        r = Executer_runFunc(executer, f);
+        tools_error("%s:%s", LANG_ERR_BRIDGE_FUNCTION_NOT_VALID, funcName);
     }
     // result
     Stack_clear(stack);

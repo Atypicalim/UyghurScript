@@ -123,7 +123,7 @@ yeyilghan [abc...] miqdar i v bulup
 tamamlansun
 ```
 
-* function
+* worker
 
 ```powershell
 # a local variable
@@ -140,6 +140,22 @@ fonkisiye f bilen 10 20 ishlitilsun we r elinsun
 
 # print the result value received
 buyruq r yezilsun
+```
+
+* creator
+
+```powershell
+# a creator with one arguments
+yasighuchi Y miqdar m asas quruq mezmuni
+    yasighuchi quruq ishlitilsun 
+    @-[m] = m
+tamamlansun
+
+# call creator and receive object
+yasighuchi f bilen [abc...] ishlitilsun we r elinsun
+
+# print the object value received
+buyruq @r[m] yezilsun
 ```
 
 * exception

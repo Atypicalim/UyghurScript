@@ -462,7 +462,7 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
             {
                 r = Value_newBoolean(!value->boolean, NULL);
             }
-            else if (value->type == UG_TYPE_FUN)
+            else
             {
                 r = Value_newBoolean(false, NULL);
             }
@@ -481,7 +481,7 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
         {
             r = Value_toBoolean(value);
         }
-        else if (is_eq_string(act, TVALUE_FUNCTION))
+        else if (is_eq_string(act, TVALUE_WORKER) || is_eq_string(act, TVALUE_CREATOR))
         {
             char *funcName = String_get(value->string);
             Token *funcToken = Token_name(funcName);
@@ -704,29 +704,46 @@ void Executer_consumeException(Executer *this, Leaf *leaf)
     Executer_setValueByToken(this, name, error, true);
 }
 
-void Executer_consumeFunction(Executer *this, Leaf *leaf)
+void Executer_consumeWorker(Executer *this, Leaf *leaf)
 {
-    // func name
+    // worker name
     Cursor *cursor1 = Stack_reset(leaf->tokens);
-    Token *function = Stack_next(leaf->tokens, cursor1);
+    Token *worker = Stack_next(leaf->tokens, cursor1);
     Cursor_free(cursor1);
-    // func body
+    // worker body
     Cursor *cursor2 = Queue_reset(leaf->leafs);
     Leaf *code = Queue_next(leaf->leafs, cursor2);
     Cursor_free(cursor2);
-    // func self
+    // worker self
     Value *self = NULL;
-    if (Token_isKey(function)) {
+    if (Token_isKey(worker)) {
         Container *container;
-        Executer_findValueByToken(this, function, &container, &INVALID_VAL);
-        Executer_assert(this, container != NULL, function, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
+        Executer_findValueByToken(this, worker, &container, &INVALID_VAL);
+        Executer_assert(this, container != NULL, worker, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
         if (Container_isBox(container)) {
             self = Value_newContainer(container, NULL);
         }
     }
-    Value *func = Value_newFunction(code, self);
-    // save func
-    Executer_setValueByToken(this, function, func, true);
+    Value *wkr = Value_newWorker(code, self);
+    // save worker
+    Executer_setValueByToken(this, worker, wkr, true);
+}
+
+void Executer_consumeCreator(Executer *this, Leaf *leaf)
+{
+    // creator name
+    Cursor *cursor1 = Stack_reset(leaf->tokens);
+    Token *creator = Stack_next(leaf->tokens, cursor1);
+    Cursor_free(cursor1);
+    // creator body
+    Cursor *cursor2 = Queue_reset(leaf->leafs);
+    Leaf *code = Queue_next(leaf->leafs, cursor2);
+    Cursor_free(cursor2);
+    // creator self
+    Executer_assert(this, Token_isName(creator), creator, LANG_ERR_EXECUTER_INVALID_NAME);
+    Value *ctr = Value_newCreator(code, NULL);
+    // save creator
+    Executer_setValueByToken(this, creator, ctr, true);
 }
 
 void Executer_consumeCode(Executer *this, Leaf *leaf)
@@ -749,10 +766,10 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     Executer_consumeTree(this, leaf);
 }
 
-Value *Executer_runFunc(Executer *this, Value *funcValue)
+Value *Executer_runWorker(Executer *this, Value *workerValue)
 {
-    Leaf *codeNode = funcValue->object;
-    Value *selfValue = funcValue->extra;
+    Leaf *codeNode = workerValue->object;
+    Value *selfValue = workerValue->extra;
     // 
     Executer_pushContainer(this, UG_CTYPE_SCP);
     Container_setLocation(this->currContainer, SCOPE_ALIAS_BOX, selfValue);
@@ -765,7 +782,24 @@ Value *Executer_runFunc(Executer *this, Value *funcValue)
     return r;
 }
 
-Value *Executer_runNative(Executer *this, Value *funcValue)
+Value *Executer_runCreator(Executer *this, Value *creatorValue, Token *creatorToken)
+{
+    Leaf *codeNode = creatorValue->object;
+    Value *selfValue = Value_newContainer(Container_newBox(), NULL);
+    // 
+    Executer_pushContainer(this, UG_CTYPE_SCP);
+    Container_setLocation(this->currContainer, SCOPE_ALIAS_BOX, selfValue);
+    Executer_consumeLeaf(this, codeNode);
+    Executer_popContainer(this, UG_CTYPE_SCP);
+    // 
+    Object_release(selfValue);
+    this->isReturn = false;
+    Value *r = Stack_pop(this->callStack);
+    if (r == NULL) r = Value_newEmpty(NULL);
+    return r;
+}
+
+Value *Executer_runNative(Executer *this, Value *nativeValue)
 {
     Bridge *bridge = this->uyghur->bridge;
     Bridge_startArgument(bridge);
@@ -781,7 +815,7 @@ Value *Executer_runNative(Executer *this, Value *funcValue)
     Cursor_free(cursor);
     Bridge_send(bridge);
     //
-    Bridge_run(bridge, funcValue);
+    Bridge_run(bridge, nativeValue);
     //
     tools_assert(bridge->type == BRIDGE_STACK_TP_RES, LANG_ERR_EXECUTER_BRIDGE_INVALID_RESULT);
     Value *r = Bridge_popValue(bridge);
@@ -799,7 +833,7 @@ Value *Executer_pushStack(Executer *this, Value *value)
     Stack_push(this->callStack, value);
 }
 
-void Executer_consumeCall(Executer *this, Leaf *leaf)
+void Executer_consumeApply(Executer *this, Leaf *leaf)
 {
     Stack_clear(this->callStack);
     Cursor *cursor = Stack_reset(leaf->tokens);
@@ -822,12 +856,14 @@ void Executer_consumeCall(Executer *this, Leaf *leaf)
     // run runnable
     Value *r = NULL;
     Debug_pushTrace(this->uyghur->debug, runnableName);
-    if (runnableValue->type == UG_TYPE_FUN) {
-        r = Executer_runFunc(this, runnableValue);
+    if (runnableValue->type == UG_TYPE_WKR) {
+        r = Executer_runWorker(this, runnableValue);
+    } else if (runnableValue->type == UG_TYPE_CTR) {
+        r = Executer_runCreator(this, runnableValue, runnableName);
     } else if (runnableValue->type == UG_TYPE_NTV) {
         r = Executer_runNative(this, runnableValue);
     } else {
-        Executer_error(this, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND);
+        Executer_error(this, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_VALID);
     }
     Debug_popTrace(this->uyghur->debug, NULL);
     // return result
@@ -940,16 +976,20 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
         Executer_consumeException(this, leaf);
         return;
     }
-    // function
-    if(tp == UG_ATYPE_FUN)
-    {
-        Executer_consumeFunction(this, leaf);
+    // worker
+    if(tp == UG_ATYPE_WRKR) {
+        Executer_consumeWorker(this, leaf);
         return;
     }
-    // call
-    if(tp == UG_ATYPE_CALL)
+    // creator
+    if(tp == UG_ATYPE_CRTR) {
+        Executer_consumeCreator(this, leaf);
+        return;
+    }
+    // apply
+    if(tp == UG_ATYPE_APPLY)
     {
-        Executer_consumeCall(this, leaf);
+        Executer_consumeApply(this, leaf);
         return;
     }
     // code

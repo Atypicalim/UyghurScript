@@ -22,6 +22,7 @@ Container *Container_new(char tp)
 
 void Container_free(Container *this)
 {
+    // TODO: free every retained values
     Object_release(this->map);
     Object_free(this);
 }

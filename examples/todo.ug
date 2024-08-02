@@ -9,12 +9,12 @@
 
 # ######################################################### oop
 
-tur Name miqdar x y mezmuni # asasi quruq
+yasighuchi Name miqdar x y asas quruq mezmuni
+    yasighuchi quruq bilen 10 20 ishlitilsun 
     @-[x] = x
     @-[y] = y
+    fonkisiye @_[other] bilen 10 20 ishlitilsun we obj elinsun 
 tamamlansun
-
-tur Name bilen 10 20 yaritilsun we obj elinsun 
 
 @?{key}
 
@@ -27,7 +27,7 @@ uruq
 
 # ######################################################### function
 
-fonkisiye f miqdar a mezmuni # something extra
+fonkisiye f miqdar a roli quruq mezmuni
     netije r qayturulsun
 tamamlansun
 

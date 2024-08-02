@@ -5,9 +5,9 @@
 void native_box_iterate(Bridge *bridge)
 {
     Value *box = Bridge_receiveValue(bridge, UG_TYPE_CNT);
-    Value *fun = Bridge_receiveValue(bridge, UG_TYPE_FUN);
+    Value *wkr = Bridge_receiveValue(bridge, UG_TYPE_WKR);
     Container *_box = box->object;
-    void (*_fun)() = fun->object;
+    void (*_wkr)() = wkr->object;
     // 
     Executer *exe = bridge->uyghur->executer;
     Hashmap *map = _box->map;
@@ -21,7 +21,7 @@ void native_box_iterate(Bridge *bridge)
             Executer_clearStack(exe);
             Executer_pushStack(exe, val);
             Executer_pushStack(exe, key);
-            Executer_runFunc(exe, fun);
+            Executer_runWorker(exe, wkr);
             // 
             ptr = ptr->next;
         }

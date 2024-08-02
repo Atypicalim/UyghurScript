@@ -65,18 +65,8 @@ exception:
     tr: "hatalık cümlesi yapmak"
     kz: "қателік сөйлемі жасау"
 
-call:
-  prefix: TVALUE_FUNCTION
-  message:
-    en: "make call sentence"
-    uy: "ئىشلىتىش جۈملىسى ياساش"
-    ug: "ishlitish jumlisi yasash"
-    uz: ishlatish bayonoti tuzish
-    tr: "kullanmak cümlesi yapmak"
-    kz: "қолдану сөйлемі жасау"
-
-function:
-  prefix: TVALUE_FUNCTION
+worker:
+  prefix: TVALUE_WORKER
   message:
     en: "make function sentence"
     uy: "فونكىسىيە جۈملىسى ياساش"
@@ -84,6 +74,36 @@ function:
     uz: funksiya bayonoti tuzish
     tr: "fonksiyon cümlesi yapmak"
     kz: "функция сөйлемі жасау"
+
+creator:
+  prefix: TVALUE_CREATOR
+  message:
+    en: "make creator sentence"
+    uy: "ياسىغۇچى جۈملىسى ياساش"
+    ug: "yasighuchi jumlisi yasash"
+    uz: yasag'uchi bayonoti tuzish
+    tr: "oluşturucu cümlesi yapmak"
+    kz: "жасаушы сөйлемі жасау"
+
+worker_apply:
+  prefix: TVALUE_WORKER
+  message:
+    en: "make function apply sentence"
+    uy: "فونكىسىيە ئىشلىتىش جۈملىسى ياساش"
+    ug: "fonkisiye ishlitish jumlisi yasash"
+    uz: funksiya ishlatish bayonoti tuzish
+    tr: "fonksiyon kullanmak cümlesi yapmak"
+    kz: "функция қолдану сөйлемі жасау"
+
+creator_apply:
+  prefix: TVALUE_CREATOR
+  message:
+    en: "make creator apply sentence"
+    uy: "ياسىغۇچى ئىشلىتىش جۈملىسى ياساش"
+    ug: "yasighuchi ishlitish jumlisi yasash"
+    uz: yasag'uchi ishlatish bayonoti tuzish
+    tr: "oluşturucu kullanmak cümlesi yapmak"
+    kz: "жасаушы қолдану сөйлемі жасау"
 
 if:
   prefix: TVALUE_IF
