@@ -228,13 +228,12 @@ Value *Executer_getValueFromContainer(Executer *this, Container *container, Toke
     return value;
 }
 
-Value *Executer_setValueToContainer(Executer *this, Container *container, Token *token, Value *value)
+void Executer_setValueToContainer(Executer *this, Container *container, Token *token, Value *value)
 {
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     char *location = Executer_getLocationOfToken(this, token);
-    Value *replaced = Container_setLocation(container, location, value);
+    Container_setLocation(container, location, value);
     pct_free(location);
-    return replaced;
 }
 
 // 

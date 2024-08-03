@@ -14,8 +14,8 @@
 void Uyghur_init(Uyghur *this)
 {
     log_warn("uyghur.init:");
-    this->lettersMap = Hashmap_new();
-    this->wordsMap = Hashmap_new();
+    this->lettersMap = Hashmap_new(false);
+    this->wordsMap = Hashmap_new(false);
     this->language = NULL;
 }
 

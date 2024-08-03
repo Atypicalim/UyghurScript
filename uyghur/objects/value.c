@@ -144,22 +144,22 @@ void Value_print(Value *this)
     }
     else if (this->type == UG_TYPE_NIL)
     {
-        printf("<Empty>\n", TVALUE_EMPTY);
+        printf("<Empty>\n p:%p", TVALUE_EMPTY, this);
     }
     else if (this->type == UG_TYPE_BOL)
     {
         bool value = this->boolean;
-        printf("<Boolean => v:%s>\n", value ? TVALUE_TRUE : TVALUE_FALSE);
+        printf("<Boolean => v:%s p:%p>\n", value ? TVALUE_TRUE : TVALUE_FALSE, this);
     }
     else if (this->type == UG_TYPE_NUM)
     {
         double value = this->number;
-        printf("<Number => v:%f>\n", value);
+        printf("<Number => v:%f p:%p>\n", value, this);
     }
     else if (this->type == UG_TYPE_STR)
     {
         char *value = String_get(this->string);
-        printf("<String => v:%s>\n", value);
+        printf("<String => v:%s p:%p>\n", value, this);
     }
     else if (this->type == UG_TYPE_CNT)
     {
@@ -171,7 +171,7 @@ void Value_print(Value *this)
     }
     else
     {
-        printf("<Value => t:%c>\n", this->type);
+        printf("<Value => t:%c p:%p>\n", this->type, this);
     }
 }
 

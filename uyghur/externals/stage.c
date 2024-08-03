@@ -324,7 +324,7 @@ void native_stage_audio_set_volume(Bridge *bridge)
 void lib_stage_register(Bridge *bridge)
 {
     uyghurBridge = bridge;
-    resourcesMap = Hashmap_new(NULL);
+    resourcesMap = Hashmap_new(false);
     //
     Bridge_startBox(bridge);
     // settings

@@ -15,14 +15,13 @@ Container *Container_new(char tp)
     tools_assert(isBox || isScope || isModule, "invalid container type for new");
     Container *container = malloc(sizeof(Container));
     Object_init(container, PCT_OBJ_CNTNR);
-    container->map = Hashmap_new();
+    container->map = Hashmap_new(true);
     container->type = tp;
     return container;
 }
 
 void Container_free(Container *this)
 {
-    // TODO: free every retained values
     Object_release(this->map);
     Object_free(this);
 }
@@ -44,11 +43,9 @@ Container *Container_newModule()
 
 // 
 
-void *Container_delLocation(Container *this, char *key)
+void Container_delLocation(Container *this, char *key)
 {
-    void *deleted = Hashmap_del(this->map, key);
-    if (deleted != NULL) Object_release(deleted);
-    return deleted;
+    Hashmap_del(this->map, key);
 }
 
 // 
@@ -58,13 +55,10 @@ void *Container_getLocation(Container *this, char *key)
     return Hashmap_get(this->map, key);
 }
 
-void *Container_setLocation(Container *this, char *key, void *value)
+void Container_setLocation(Container *this, char *key, void *value)
 {
     if (value == NULL) return Container_delLocation(this, key);
-    Object_retain(value);
-    void *r = Hashmap_set(this->map, key, value);
-    if (r != NULL) Object_release(r);
-    return r;
+    Hashmap_set(this->map, key, value);
 }
 
 //
