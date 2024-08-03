@@ -67,19 +67,25 @@ Value *Value_newContainer(Container *container, void *extra)
     return Value_new(UG_TYPE_CNT, NULL, 0, NULL, container, extra);
 }
 
-Value *Value_newWorker(void *function, void *extra)
+Value *Value_newObject(Container *container, void *extra)
 {
-    return Value_new(UG_TYPE_WKR ,NULL, 0, NULL, function, extra);
+    // Object_retain(container);
+    return Value_new(UG_TYPE_OBJ, NULL, 0, NULL, container, extra);
 }
 
-Value *Value_newCreator(void *function, void *extra)
+Value *Value_newWorker(void *worker, void *extra)
 {
-    return Value_new(UG_TYPE_CTR ,NULL, 0, NULL, function, extra);
+    return Value_new(UG_TYPE_WKR ,NULL, 0, NULL, worker, extra);
 }
 
-Value *Value_newNative(void *function, void *extra)
+Value *Value_newCreator(void *creator, void *extra)
 {
-    return Value_new(UG_TYPE_NTV ,NULL, 0, NULL, function, extra);
+    return Value_new(UG_TYPE_CTR ,NULL, 0, NULL, creator, extra);
+}
+
+Value *Value_newNative(void *native, void *extra)
+{
+    return Value_new(UG_TYPE_NTV ,NULL, 0, NULL, native, extra);
 }
 
 bool Value_isEmpty(Value *this)
@@ -164,6 +170,14 @@ void Value_print(Value *this)
     else if (this->type == UG_TYPE_CNT)
     {
         printf("<Container => p:%p>\n", this->object);
+    }
+    else if (this->type == UG_TYPE_WKR)
+    {
+        printf("<Worker => p:%p>\n", this->object);
+    } 
+    else if (this->type == UG_TYPE_CTR)
+    {
+        printf("<Creator => p:%p>\n", this->object);
     }
     else if (this->type == UG_TYPE_NTV)
     {

@@ -724,10 +724,12 @@ void Executer_consumeWorker(Executer *this, Leaf *leaf)
         Executer_assert(this, container != NULL, worker, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
         if (Container_isBox(container)) {
             self = Value_newContainer(container, NULL);
+        } else {
+            log_error("TODO: register to self object of creator");
         }
     }
-    Value *wkr = Value_newWorker(code, self);
     // save worker
+    Value *wkr = Value_newWorker(code, self);
     Executer_setValueByToken(this, worker, wkr, true);
 }
 
@@ -741,10 +743,17 @@ void Executer_consumeCreator(Executer *this, Leaf *leaf)
     Cursor *cursor2 = Queue_reset(leaf->leafs);
     Leaf *code = Queue_next(leaf->leafs, cursor2);
     Cursor_free(cursor2);
-    // creator self
+    //
     Executer_assert(this, Token_isName(creator), creator, LANG_ERR_EXECUTER_INVALID_NAME);
-    Value *ctr = Value_newCreator(code, NULL);
+    // save constructor
+    Container *self = Container_newBox();
+    Token *funT = Token_name(FUNCTION_KEY);
+    Value *funV = Value_newWorker(code, NULL);
+    Executer_setValueToContainer(this, self, funT, funV);
+    // save paent
+    Container *base = NULL;
     // save creator
+    Value *ctr = Value_newCreator(self, base);
     Executer_setValueByToken(this, creator, ctr, true);
 }
 
@@ -790,20 +799,29 @@ Value *Executer_runWorker(Executer *this, Value *workerValue)
 
 Value *Executer_runCreator(Executer *this, Value *creatorValue, Token *creatorToken)
 {
-    Leaf *codeNode = creatorValue->object;
-    Value *selfValue = Value_newContainer(Container_newBox(), NULL);
+    Container *selfContainer = creatorValue->object;
+    Container *baseContainer = creatorValue->extra;
+    //
+    Token *funT = Token_name(FUNCTION_KEY);
+    Value *funV = Executer_getValueFromContainer(this, selfContainer, funT);
+    Object_release(funT);
+    //
+    Leaf *codeNode = funV->object;
+    // TODO: copy functions to object
     // 
+    Value *objectValue = Value_newObject(Container_newBox(), NULL);
+    // // 
     Executer_pushContainer(this, UG_CTYPE_SCP);
-    Container_setLocation(this->currContainer, SCOPE_ALIAS_BOX, selfValue);
+    Container_setLocation(this->currContainer, SCOPE_ALIAS_BOX, objectValue);
     Executer_consumeLeaf(this, codeNode);
     Executer_popContainer(this, UG_CTYPE_SCP);
     // 
     this->isReturn = false;
     Value *r = Stack_pop(this->callStack);
     if (r == NULL) {
-        r = selfValue;
+        r = objectValue;
     } else {
-        Object_release(selfValue);
+        Object_release(objectValue);
     }
     return r;
 }
@@ -858,7 +876,6 @@ void Executer_consumeApply(Executer *this, Leaf *leaf)
         arg = Stack_next(leaf->tokens, cursor);
     }
     Cursor_free(cursor);
-    Stack_reverse(this->callStack);
     // get runable
     Value *runnableValue = Executer_getValueByToken(this, runnableName, false);
     Executer_assert(this, runnableValue != NULL, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND);

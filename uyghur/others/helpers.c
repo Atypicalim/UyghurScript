@@ -230,12 +230,16 @@ void Object_freeByType(char type, void *object)
     if (type == PCT_OBJ_CNTNR) return Container_free(object);
     if (type == PCT_OBJ_TOKEN) return Token_free(object);
     if (type == PCT_OBJ_LEAF) return Leaf_free(object);
-    pct_object_free_by_type(type, object);
+    pct_object_free(object);
 }
 
 void Object_printByType(char type, void *object)
 {
     if (type == PCT_OBJ_VALUE) return Value_print(object);
+    if (type == PCT_OBJ_CNTNR) return Container_print(object);
+    if (type == PCT_OBJ_TOKEN) return Token_print(object);
+    if (type == PCT_OBJ_LEAF) return Leaf_print(object);
+    pct_object_print(object);
 }
 
 // 

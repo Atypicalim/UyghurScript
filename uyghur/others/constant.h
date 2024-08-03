@@ -219,6 +219,8 @@ const UG_PAIRS UG_WORDS_MAP[] = {
 #define SCOPE_ALIAS_MDL "+"
 #define SCOPE_ALIAS_BOX "-"
 
+#define FUNCTION_KEY "__"
+
 #define CODE_FALSE -1
 #define CODE_TRUE 1
 #define CODE_NONE 0

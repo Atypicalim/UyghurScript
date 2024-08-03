@@ -356,6 +356,7 @@ void Parser_consumeAstWorker(Parser *this)
             variable = Parser_isValue(this, 1, TVALUE_CONTENT) ? NULL : Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
         }
     }
+    Stack_reverse(code->tokens);
     // finish
     Parser_checkValue(this, 1, 1, TVALUE_CONTENT);
     Stack_push(leaf->tokens, name);
@@ -383,6 +384,7 @@ void Parser_consumeAstCreator(Parser *this)
             variable = Parser_isValue(this, 1, TVALUE_CONTENT) ? NULL : Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
         }
     }
+    Stack_reverse(code->tokens);
     // finish
     Parser_checkValue(this, 1, 1, TVALUE_CONTENT);
     Stack_push(leaf->tokens, name);
@@ -413,15 +415,18 @@ void Parser_consumeAstApply(Parser *this)
             variable = Parser_isValue(this, 1, TVALUE_APPLY) ? NULL : Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
         }
     }
+    Stack_reverse(leaf->tokens);
     //
     Parser_checkWord(this, 1, 1, TVALUE_APPLY);
     // result
-    Token *result = Token_empty();
+    Token *result = NULL;
     if (Parser_isValue(this, 1, TVALUE_FURTHER))
     {
         Parser_checkValue(this, 1, 1, TVALUE_FURTHER);
         result = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
         Parser_checkWord(this, 1, 1, TVALUE_RECIEVED);
+    } else {
+        result = Token_empty();
     }
     Stack_push(leaf->tokens, result);
     //
