@@ -1,20 +1,18 @@
 
 yasighuchi Name miqdar x mezmuni
-    # @-[x] = x
+    @-[x] = x
 tamamlansun
 
-fonkisiye func miqdar a mezmuni
-    #
+fonkisiye func miqdar x mezmuni
+    buyruq x yezilsun
 tamamlansun
 
-yeyilghan 10000 miqdar k v bulup
-    yasighuchi Name bilen 11 22 ishlitilsun we r elinsun
-    # fonkisiye func bilen 11 22 ishlitilsun we r elinsun
-    buyruq r yezilsun
-    buyruq [---\n] yezilsun
-tamamlansun
+yasighuchi Name bilen 111 222 ishlitilsun we r elinsun
+buyruq @r[x] yezilsun
+
+# fonkisiye func bilen 11 22 ishlitilsun we r elinsun
 
 buyruq [!!!\n] yezilsun
-fonkisiye @waqit[programminiUxlitish] bilen 10 ishlitilsun we r elinsun
+fonkisiye @waqit[programminiUxlitish] bilen 1 ishlitilsun we r elinsun
 
 # momory leak

@@ -411,11 +411,14 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
         } else {
             value = Executer_getValueByToken(this, name, true);
             Executer_assert(this, value != NULL, name, LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND);
+        }
+        if (Value_isContainer(value)) {
+            Container_print(value->object);
+        } else {
             char *content = Value_toString(value);
             printf("%s", content);
             pct_free(content);
         }
-        if (Value_isContainer(value)) Container_print(value->object);
         if (value != NULL) Object_release(value);
     }
     else if (is_eq_string(action->value, TVALUE_CMD_INPUT))
@@ -777,7 +780,11 @@ Value *Executer_runWorker(Executer *this, Value *workerValue)
     // 
     this->isReturn = false;
     Value *r = Stack_pop(this->callStack);
-    if (r == NULL) r = Value_newEmpty(NULL);
+    if (r == NULL) {
+        r = Value_newEmpty(NULL);
+    } else {
+        //
+    }
     return r;
 }
 
@@ -791,10 +798,13 @@ Value *Executer_runCreator(Executer *this, Value *creatorValue, Token *creatorTo
     Executer_consumeLeaf(this, codeNode);
     Executer_popContainer(this, UG_CTYPE_SCP);
     // 
-    Object_release(selfValue);
     this->isReturn = false;
     Value *r = Stack_pop(this->callStack);
-    if (r == NULL) r = Value_newEmpty(NULL);
+    if (r == NULL) {
+        r = selfValue;
+    } else {
+        Object_release(selfValue);
+    }
     return r;
 }
 
@@ -802,7 +812,6 @@ Value *Executer_runNative(Executer *this, Value *nativeValue)
 {
     Bridge *bridge = this->uyghur->bridge;
     Bridge_startArgument(bridge);
-    Stack_reverse(this->callStack);
     Cursor *cursor = Stack_reset(this->callStack);
     Value *value = Stack_next(this->callStack, cursor);
     while (value != NULL)
@@ -849,6 +858,7 @@ void Executer_consumeApply(Executer *this, Leaf *leaf)
         arg = Stack_next(leaf->tokens, cursor);
     }
     Cursor_free(cursor);
+    Stack_reverse(this->callStack);
     // get runable
     Value *runnableValue = Executer_getValueByToken(this, runnableName, false);
     Executer_assert(this, runnableValue != NULL, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND);
