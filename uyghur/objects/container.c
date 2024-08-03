@@ -80,6 +80,21 @@ bool Container_isModule(Container *this)
 
 // 
 
+void __Container_copyTo(Hashkey *hashkey, Hashmap *other)
+{
+    String *key = hashkey->key;
+    Value *val = hashkey->value;
+    char *_key = String_get(key);
+    Hashmap_set(other, _key, val);
+}
+
+void Container_copyTo(Container *this, Container *other)
+{
+    Hashmap_foreachHashkey(this->map, __Container_copyTo, other->map);
+}
+
+// 
+
 char *Container_toString(Container *this)
 {
     char *name = "Container";

@@ -777,7 +777,7 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     Executer_consumeTree(this, leaf);
 }
 
-Value *Executer_runWorker(Executer *this, Value *workerValue)
+Value *Executer_applyWorker(Executer *this, Value *workerValue)
 {
     Leaf *codeNode = workerValue->object;
     Value *selfValue = workerValue->extra;
@@ -797,19 +797,21 @@ Value *Executer_runWorker(Executer *this, Value *workerValue)
     return r;
 }
 
-Value *Executer_runCreator(Executer *this, Value *creatorValue, Token *creatorToken)
+Value *Executer_applyCreator(Executer *this, Value *creatorValue, Token *creatorToken)
 {
-    Container *selfContainer = creatorValue->object;
+    Container *classContainer = creatorValue->object;
     Container *baseContainer = creatorValue->extra;
     //
     Token *funT = Token_name(FUNCTION_KEY);
-    Value *funV = Executer_getValueFromContainer(this, selfContainer, funT);
+    Value *funV = Executer_getValueFromContainer(this, classContainer, funT);
     Object_release(funT);
     //
     Leaf *codeNode = funV->object;
-    // TODO: copy functions to object
+    // TODO: copy base to object
     // 
-    Value *objectValue = Value_newObject(Container_newBox(), NULL);
+    Container *objectContainer = Container_newBox();
+    Value *objectValue = Value_newObject(objectContainer, NULL);
+    Container_copyTo(classContainer, objectContainer);
     // // 
     Executer_pushContainer(this, UG_CTYPE_SCP);
     Container_setLocation(this->currContainer, SCOPE_ALIAS_BOX, objectValue);
@@ -826,7 +828,7 @@ Value *Executer_runCreator(Executer *this, Value *creatorValue, Token *creatorTo
     return r;
 }
 
-Value *Executer_runNative(Executer *this, Value *nativeValue)
+Value *Executer_applyNative(Executer *this, Value *nativeValue)
 {
     Bridge *bridge = this->uyghur->bridge;
     Bridge_startArgument(bridge);
@@ -883,11 +885,11 @@ void Executer_consumeApply(Executer *this, Leaf *leaf)
     Value *r = NULL;
     Debug_pushTrace(this->uyghur->debug, runnableName);
     if (runnableValue->type == UG_TYPE_WKR) {
-        r = Executer_runWorker(this, runnableValue);
+        r = Executer_applyWorker(this, runnableValue);
     } else if (runnableValue->type == UG_TYPE_CTR) {
-        r = Executer_runCreator(this, runnableValue, runnableName);
+        r = Executer_applyCreator(this, runnableValue, runnableName);
     } else if (runnableValue->type == UG_TYPE_NTV) {
-        r = Executer_runNative(this, runnableValue);
+        r = Executer_applyNative(this, runnableValue);
     } else {
         Executer_error(this, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_VALID);
     }

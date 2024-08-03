@@ -6,15 +6,15 @@ tamamlansun
 # buyruq [\n] yezilsun
 
 fonkisiye @Name[func] miqdar x y mezmuni
-    # buyruq x yezilsun
-    # buyruq y yezilsun
+    buyruq x yezilsun
+    buyruq y yezilsun
 tamamlansun
 
 yasighuchi Name bilen 111 222 ishlitilsun we r elinsun
 # buyruq r yezilsun
-buyruq @r[func] yezilsun
+# buyruq @r[func] yezilsun
 
-# fonkisiye @Name[func] bilen 11 ishlitilsun we r elinsun
+fonkisiye @Name[func] bilen 11 ishlitilsun we r elinsun
 
 buyruq [\n!!!\n] yezilsun
 # fonkisiye @waqit[programminiUxlitish] bilen 1 ishlitilsun we r elinsun
