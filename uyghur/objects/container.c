@@ -12,7 +12,9 @@ Container *Container_new(char tp)
     bool isBox = tp == UG_CTYPE_BOX;
     bool isScope = tp == UG_CTYPE_SCP;
     bool isModule = tp == UG_CTYPE_MDL;
-    tools_assert(isBox || isScope || isModule, "invalid container type for new");
+    bool isCreator = tp == UG_CTYPE_CTR;
+    bool isObject = tp == UG_CTYPE_OBJ;
+    tools_assert(isBox || isScope || isModule || isCreator || isObject, "invalid container type for new");
     Container *container = malloc(sizeof(Container));
     Object_init(container, PCT_OBJ_CNTNR);
     container->map = Hashmap_new(true);
@@ -26,9 +28,9 @@ void Container_free(Container *this)
     Object_free(this);
 }
 
-Container *Container_newBox()
+Container *Container_newModule()
 {
-    return Container_new(UG_CTYPE_BOX);
+    return Container_new(UG_CTYPE_MDL);
 }
 
 Container *Container_newScope()
@@ -36,9 +38,19 @@ Container *Container_newScope()
     return Container_new(UG_CTYPE_SCP);
 }
 
-Container *Container_newModule()
+Container *Container_newCtr()
 {
-    return Container_new(UG_CTYPE_MDL);
+    return Container_new(UG_CTYPE_CTR);
+}
+
+Container *Container_newObj()
+{
+    return Container_new(UG_CTYPE_OBJ);
+}
+
+Container *Container_newBox()
+{
+    return Container_new(UG_CTYPE_BOX);
 }
 
 // 
@@ -63,19 +75,30 @@ void Container_setLocation(Container *this, char *key, void *value)
 
 //
 
+
+bool Container_isModule(Container *this)
+{
+    return this->type == UG_CTYPE_MDL;
+}
+
 bool Container_isScope(Container *this)
 {
     return this->type == UG_CTYPE_SCP;
 }
 
+bool Container_isCtr(Container *this)
+{
+    return this->type == UG_CTYPE_CTR;
+}
+
+bool Container_isObj(Container *this)
+{
+    return this->type == UG_CTYPE_OBJ;
+}
+
 bool Container_isBox(Container *this)
 {
     return this->type == UG_CTYPE_BOX;
-}
-
-bool Container_isModule(Container *this)
-{
-    return this->type == UG_CTYPE_MDL;
 }
 
 // 
@@ -98,9 +121,11 @@ void Container_copyTo(Container *this, Container *other)
 char *Container_toString(Container *this)
 {
     char *name = "Container";
-    if (Container_isScope(this)) name = "Scope";
-    if (Container_isBox(this)) name = "Box";
     if (Container_isModule(this)) name = "Module";
+    if (Container_isScope(this)) name = "Scope";
+    if (Container_isCtr(this)) name = "Creator";
+    if (Container_isObj(this)) name = "Object";
+    if (Container_isBox(this)) name = "Box";
     return tools_format("<%s p:%p>", name, this);
 }
 

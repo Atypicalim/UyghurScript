@@ -7,7 +7,9 @@ tamamlansun
 
 fonkisiye @Name[func] miqdar x y mezmuni
     buyruq x yezilsun
-    buyruq y yezilsun
+    buyruq [\n] yezilsun
+    buyruq @-[x] yezilsun
+    buyruq [\n] yezilsun
 tamamlansun
 
 yasighuchi Name bilen 111 222 ishlitilsun we r elinsun
@@ -16,7 +18,7 @@ yasighuchi Name bilen 111 222 ishlitilsun we r elinsun
 
 fonkisiye @Name[func] bilen 11 ishlitilsun we r elinsun
 
-buyruq [\n!!!\n] yezilsun
+# buyruq [\n!!!\n] yezilsun
 # fonkisiye @waqit[programminiUxlitish] bilen 1 ishlitilsun we r elinsun
 
 # momory leak

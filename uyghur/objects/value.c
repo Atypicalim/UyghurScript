@@ -298,7 +298,7 @@ void Value_free(Value *this)
     // }
     if (this->type == UG_TYPE_STR) {
         Object_release(this->string);
-    } else if (this->type == UG_TYPE_CNT) {
+    } else if (this->type == UG_TYPE_CNT || this->type == UG_TYPE_OBJ) {
         Object_release(this->object);
     }
     if (this != Value_EMPTY && this != Value_TRUE && this != Value_FALSE) {

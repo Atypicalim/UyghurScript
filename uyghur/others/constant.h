@@ -76,6 +76,8 @@
 #define UG_CTYPE_BOX 'x'
 #define UG_CTYPE_SCP 's'
 #define UG_CTYPE_MDL 'm'
+#define UG_CTYPE_CTR 'c'
+#define UG_CTYPE_OBJ 'o'
 
 // object type
 #define PCT_OBJ_VALUE '$'
@@ -217,7 +219,7 @@ const UG_PAIRS UG_WORDS_MAP[] = {
 
 #define SCOPE_ALIAS_PRG "*"
 #define SCOPE_ALIAS_MDL "+"
-#define SCOPE_ALIAS_BOX "-"
+#define SCOPE_ALIAS_SLF "-"
 
 #define FUNCTION_KEY "__"
 

@@ -108,21 +108,23 @@ Container *Executer_getCurrentModule(Executer *this, Token *token)
     return container;
 }
 
-Container *Executer_getCurrentBox(Executer *this, Token *token)
+Container *Executer_getCurrentSelf(Executer *this, Token *token)
 {
     Cursor *cursor = Stack_reset(this->containerStack);
     Container *container = NULL;
     while ((container =  Stack_next(this->containerStack, cursor)) != NULL)
     {
         if (!Container_isScope(container)) break;
-        Value *self = Container_getLocation(container, SCOPE_ALIAS_BOX);
+        Value *self = Container_getLocation(container, SCOPE_ALIAS_SLF);
         if (self != NULL) {
             container = self->object;
             break;
         }
     }
     Cursor_free(cursor);
-    Executer_assert(this, Container_isBox(container), token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
+    if (!Container_isCtr(container) && !Container_isObj(container) && !Container_isBox(container)) {
+        Executer_error(this, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
+    }
     return container;
 }
 
@@ -174,19 +176,30 @@ void Executer_findValueByToken(Executer *this, Token *token, Container **rContai
     Token *extra = (Token *)token->extra;
     if (is_eq_string(extra->value, SCOPE_ALIAS_PRG)) *rContainer = Executer_getCurrentGlobal(this, token);
     if (is_eq_string(extra->value, SCOPE_ALIAS_MDL)) *rContainer = Executer_getCurrentModule(this, token);
-    if (is_eq_string(extra->value, SCOPE_ALIAS_BOX)) *rContainer = Executer_getCurrentBox(this, token);
+    if (is_eq_string(extra->value, SCOPE_ALIAS_SLF)) *rContainer = Executer_getCurrentSelf(this, token);
     // box
+    Value *value = NULL;
     if (*rContainer == NULL) {
-        Value *value;
         char *location = convert_string_to_location(extra->value, UG_TYPE_STR);
         Executer_findValueByLocation(this, location, &INVALID_CTN, &value);
         pct_free(location);
-        if (value != NULL) *rContainer = value->object;
     }
+    if (value == NULL) return;
+    *rContainer = value->object;
     if (*rContainer == NULL) return;
     // key
     char *location = convert_string_to_location(token->value, UG_TYPE_STR);
-    *rValue = Container_getLocation(*rContainer, location);
+    // 
+    if (Container_isCtr(*rContainer) || Container_isObj(*rContainer)) {
+        *rValue = Container_getLocation(*rContainer, location);
+        Container *class = value->extra;
+        if (*rValue == NULL && class != NULL) {
+            *rValue = Container_getLocation(class, location);
+        }
+    } else {
+        *rValue = Container_getLocation(*rContainer, location);
+    }
+    // 
     pct_free(location);
 }
 
@@ -196,8 +209,8 @@ char *Executer_getLocationOfToken(Executer *this, Token *token)
     char *key;
     if (Token_isKeyOfName(token)) {
         char *location = convert_string_to_location(token->value, UG_TYPE_STR);
-        Container *container;
-        Value *value;
+        Container *container = NULL;
+        Value *value = NULL;
         Executer_findValueByLocation(this, location, &container, &value);
         pct_free(location);
         Executer_assert(this, container!= NULL && value!= NULL, token, LANG_ERR_EXECUTER_INVALID_BOX);
@@ -254,7 +267,7 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
 
 void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool withDeclare)
 {
-    Container *container;
+    Container *container = NULL;
     Executer_findValueByToken(this, token, &container, &INVALID_VAL);
     if (withDeclare && container == NULL) container = this->currContainer;
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
@@ -719,13 +732,17 @@ void Executer_consumeWorker(Executer *this, Leaf *leaf)
     // worker self
     Value *self = NULL;
     if (Token_isKey(worker)) {
-        Container *container;
+        Container *container = NULL;
         Executer_findValueByToken(this, worker, &container, &INVALID_VAL);
         Executer_assert(this, container != NULL, worker, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-        if (Container_isBox(container)) {
+        if (Container_isCtr(container)) {
+            self = Value_newCreator(container, NULL);
+        } else if (Container_isObj(container)) {
+            self = Value_newObject(container, NULL);
+        } else if (Container_isBox(container)) {
             self = Value_newContainer(container, NULL);
         } else {
-            log_error("TODO: register to self object of creator");
+            log_error("TODO: not supported type for worker");
         }
     }
     // save worker
@@ -746,7 +763,7 @@ void Executer_consumeCreator(Executer *this, Leaf *leaf)
     //
     Executer_assert(this, Token_isName(creator), creator, LANG_ERR_EXECUTER_INVALID_NAME);
     // save constructor
-    Container *self = Container_newBox();
+    Container *self = Container_newCtr();
     Token *funT = Token_name(FUNCTION_KEY);
     Value *funV = Value_newWorker(code, NULL);
     Executer_setValueToContainer(this, self, funT, funV);
@@ -783,7 +800,7 @@ Value *Executer_applyWorker(Executer *this, Value *workerValue)
     Value *selfValue = workerValue->extra;
     // 
     Executer_pushContainer(this, UG_CTYPE_SCP);
-    Container_setLocation(this->currContainer, SCOPE_ALIAS_BOX, selfValue);
+    Container_setLocation(this->currContainer, SCOPE_ALIAS_SLF, selfValue);
     Executer_consumeLeaf(this, codeNode);
     Executer_popContainer(this, UG_CTYPE_SCP);
     // 
@@ -800,7 +817,6 @@ Value *Executer_applyWorker(Executer *this, Value *workerValue)
 Value *Executer_applyCreator(Executer *this, Value *creatorValue, Token *creatorToken)
 {
     Container *classContainer = creatorValue->object;
-    Container *baseContainer = creatorValue->extra;
     //
     Token *funT = Token_name(FUNCTION_KEY);
     Value *funV = Executer_getValueFromContainer(this, classContainer, funT);
@@ -809,12 +825,11 @@ Value *Executer_applyCreator(Executer *this, Value *creatorValue, Token *creator
     Leaf *codeNode = funV->object;
     // TODO: copy base to object
     // 
-    Container *objectContainer = Container_newBox();
-    Value *objectValue = Value_newObject(objectContainer, NULL);
-    Container_copyTo(classContainer, objectContainer);
+    Container *self = Container_newObj();
+    Value *objectValue = Value_newObject(self, classContainer);
     // // 
     Executer_pushContainer(this, UG_CTYPE_SCP);
-    Container_setLocation(this->currContainer, SCOPE_ALIAS_BOX, objectValue);
+    Container_setLocation(this->currContainer, SCOPE_ALIAS_SLF, objectValue);
     Executer_consumeLeaf(this, codeNode);
     Executer_popContainer(this, UG_CTYPE_SCP);
     // 
