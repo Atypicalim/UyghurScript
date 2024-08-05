@@ -719,7 +719,7 @@ void Executer_consumeException(Executer *this, Leaf *leaf)
     Executer_setValueByToken(this, name, error, true);
 }
 
-void _executer_parseWorkerOrCreator(Executer *this, Leaf *leaf, Token **func, Leaf **code) {
+void _executer_parseWorkerOrCreator(Executer *this, Leaf *leaf, bool isCreator, Token **func, Leaf **code) {
     // func name
     Cursor *cursor1 = Stack_reset(leaf->tokens);
     *func = Stack_next(leaf->tokens, cursor1);
@@ -733,7 +733,9 @@ void _executer_parseWorkerOrCreator(Executer *this, Leaf *leaf, Token **func, Le
         Container *place = NULL;
         Executer_findValueByToken(this, *func, &place, &INVALID_VAL);
         Executer_assert(this, place != NULL, *func, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-        if (Container_isCtr(place) || Container_isObj(place) || Container_isBox(place)) {
+        if (isCreator && (Container_isModule(place))) {
+            return;
+        } else if (!isCreator && (!Container_isWkr(place) && !Container_isBox(place))) {
             return;
         }
     }
@@ -743,13 +745,14 @@ void _executer_parseWorkerOrCreator(Executer *this, Leaf *leaf, Token **func, Le
 void Executer_consumeWorker(Executer *this, Leaf *leaf)
 {
     Token *func; Leaf *code;
-    _executer_parseWorkerOrCreator(this, leaf, &func, &code);
+    _executer_parseWorkerOrCreator(this, leaf, false, &func, &code);
     //
     Container *self = Container_newWkr();
     Token *funT = Token_name(FUNCTION_KEY);
     Value *funV = Value_newWorker(code, NULL);
     Executer_setValueToContainer(this, self, funT, funV);
-    // Object_release(funT);
+    Object_release(funT);
+    Object_release(funV);
     //
     Value *wkr = Value_newWorker(self, NULL);
     Executer_setValueByToken(this, func, wkr, true);
@@ -758,13 +761,14 @@ void Executer_consumeWorker(Executer *this, Leaf *leaf)
 void Executer_consumeCreator(Executer *this, Leaf *leaf)
 {
     Token *func; Leaf *code;
-    _executer_parseWorkerOrCreator(this, leaf, &func, &code);
+    _executer_parseWorkerOrCreator(this, leaf, true, &func, &code);
     //
     Container *self = Container_newCtr();
     Token *funT = Token_name(FUNCTION_KEY);
     Value *funV = Value_newWorker(code, NULL);
     Executer_setValueToContainer(this, self, funT, funV);
-    // Object_release(funT);
+    Object_release(funT);
+    Object_release(funV);
     //
     Value *ctr = Value_newCreator(self, NULL);
     Executer_setValueByToken(this, func, ctr, true);
@@ -790,7 +794,7 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     Executer_consumeTree(this, leaf);
 }
 
-Value *_excuter_applyWorkerOrCreator(Executer *this, Value *runnableValue, Value *self) {
+void _excuter_applyWorkerOrCreator(Executer *this, Value *runnableValue, Value *self) {
     Container *runnable = runnableValue->object;
     Token *func = Token_name(FUNCTION_KEY);
     Value *code = Executer_getValueFromContainer(this, runnable, func);
@@ -801,21 +805,21 @@ Value *_excuter_applyWorkerOrCreator(Executer *this, Value *runnableValue, Value
     Executer_consumeLeaf(this, code->object);
     Executer_popContainer(this, UG_CTYPE_SCP);
     //
+    Object_release(code);
     this->isReturn = false;
-    Value *r = Stack_pop(this->callStack);
-    if (r == NULL) {
-        r = self;
-    } else {
-        Object_release(self);
-    }
-    return r;
 }
 
 Value *Executer_applyWorker(Executer *this, Value *workerValue, Container *container)
 {
     Container *target = container != NULL ? container : this->globalScope;
+    Object_retain(target);
     Value *self = Value_newContainer(target, NULL);
-    return _excuter_applyWorkerOrCreator(this, workerValue, self);
+    _excuter_applyWorkerOrCreator(this, workerValue, self);
+    Object_release(self);
+    //
+    Value *r = Stack_pop(this->callStack);
+    if (r == NULL) r = Value_newEmpty(NULL);
+    return r;
 }
 
 Value *Executer_applyCreator(Executer *this, Value *creatorValue, Container *container)
@@ -823,7 +827,15 @@ Value *Executer_applyCreator(Executer *this, Value *creatorValue, Container *con
     Object_retain(creatorValue);
     Container *target = Container_newObj();
     Value *self = Value_newContainer(target, creatorValue);
-    return _excuter_applyWorkerOrCreator(this, creatorValue, self);
+    _excuter_applyWorkerOrCreator(this, creatorValue, self);
+    // 
+    Value *r = Stack_pop(this->callStack);
+    if (r == NULL) {
+        r = self;
+    } else {
+        Object_release(self);
+    }
+    return r;
 }
 
 Value *Executer_applyNative(Executer *this, Value *nativeValue, Container *container)
@@ -904,7 +916,7 @@ void Executer_consumeApply(Executer *this, Leaf *leaf)
         Object_release(r);
     }
     // release objects
-    Object_release(runnableValue);
+    // Object_release(runnableValue);
     Stack_clear(this->callStack);
 }
 
