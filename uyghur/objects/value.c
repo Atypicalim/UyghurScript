@@ -61,12 +61,6 @@ Value *Value_newString(String *string, void *extra)
     return Value_new(UG_TYPE_STR, NULL, 0, string, NULL, extra);
 }
 
-Value *Value_newContainer(Container *container, void *extra)
-{
-    // Object_retain(container);
-    return Value_new(UG_TYPE_CNT, NULL, 0, NULL, container, extra);
-}
-
 Value *Value_newObject(Container *container, void *extra)
 {
     // Object_retain(container);
@@ -86,6 +80,19 @@ Value *Value_newCreator(void *creator, void *extra)
 Value *Value_newNative(void *native, void *extra)
 {
     return Value_new(UG_TYPE_NTV ,NULL, 0, NULL, native, extra);
+}
+
+Value *Value_newContainer(Container *container, void *extra)
+{
+    // Object_retain(container);
+    if (Container_isCtr(container)) {
+        return Value_newCreator(container, extra);
+    } else if (Container_isObj(container)) {
+        return Value_newObject(container, extra);
+    } else if (Container_isWkr(container)) {
+        return Value_newWorker(container, extra);
+    } 
+    return Value_new(UG_TYPE_CNT, NULL, 0, NULL, container, extra);
 }
 
 bool Value_isEmpty(Value *this)
@@ -146,42 +153,46 @@ bool Value_isRunnable(Value *this)
 void Value_print(Value *this)
 {
     if (this == NULL) {
-        printf("<NULL>\n");
+        printf("<V:NULL>\n");
     }
     else if (this->type == UG_TYPE_NIL)
     {
-        printf("<Empty>\n p:%p", TVALUE_EMPTY, this);
+        printf("<V:Empty>\n p:%p", TVALUE_EMPTY, this);
     }
     else if (this->type == UG_TYPE_BOL)
     {
         bool value = this->boolean;
-        printf("<Boolean => v:%s p:%p>\n", value ? TVALUE_TRUE : TVALUE_FALSE, this);
+        printf("<V:Boolean => v:%s p:%p>\n", value ? TVALUE_TRUE : TVALUE_FALSE, this);
     }
     else if (this->type == UG_TYPE_NUM)
     {
         double value = this->number;
-        printf("<Number => v:%f p:%p>\n", value, this);
+        printf("<V:Number => v:%f p:%p>\n", value, this);
     }
     else if (this->type == UG_TYPE_STR)
     {
         char *value = String_get(this->string);
-        printf("<String => v:%s p:%p>\n", value, this);
+        printf("<V:String => v:%s p:%p>\n", value, this);
     }
     else if (this->type == UG_TYPE_CNT)
     {
-        printf("<Container => p:%p>\n", this->object);
+        printf("<V:Container => p:%p>\n", this->object);
     }
     else if (this->type == UG_TYPE_WKR)
     {
-        printf("<Worker => p:%p>\n", this->object);
+        printf("<V:Worker => p:%p>\n", this->object);
     } 
     else if (this->type == UG_TYPE_CTR)
     {
-        printf("<Creator => p:%p>\n", this->object);
+        printf("<V:Creator => p:%p>\n", this->object);
+    }
+    else if (this->type == UG_TYPE_OBJ)
+    {
+        printf("<V:Object => p:%p>\n", this->object);
     }
     else if (this->type == UG_TYPE_NTV)
     {
-        printf("<Native => p:%p>\n", this->object);
+        printf("<V:Native => p:%p>\n", this->object);
     }
     else
     {

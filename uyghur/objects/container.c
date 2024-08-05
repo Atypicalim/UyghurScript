@@ -12,9 +12,10 @@ Container *Container_new(char tp)
     bool isBox = tp == UG_CTYPE_BOX;
     bool isScope = tp == UG_CTYPE_SCP;
     bool isModule = tp == UG_CTYPE_MDL;
+    bool isWorker = tp == UG_CTYPE_WKR;
     bool isCreator = tp == UG_CTYPE_CTR;
     bool isObject = tp == UG_CTYPE_OBJ;
-    tools_assert(isBox || isScope || isModule || isCreator || isObject, "invalid container type for new");
+    tools_assert(isBox || isScope || isModule || isWorker || isCreator || isObject, "invalid container type for new");
     Container *container = malloc(sizeof(Container));
     Object_init(container, PCT_OBJ_CNTNR);
     container->map = Hashmap_new(true);
@@ -36,6 +37,11 @@ Container *Container_newModule()
 Container *Container_newScope()
 {
     return Container_new(UG_CTYPE_SCP);
+}
+
+Container *Container_newWkr()
+{
+    return Container_new(UG_CTYPE_WKR);
 }
 
 Container *Container_newCtr()
@@ -84,6 +90,11 @@ bool Container_isModule(Container *this)
 bool Container_isScope(Container *this)
 {
     return this->type == UG_CTYPE_SCP;
+}
+
+bool Container_isWkr(Container *this)
+{
+    return this->type == UG_CTYPE_WKR;
 }
 
 bool Container_isCtr(Container *this)

@@ -346,7 +346,7 @@ void Bridge_call(Bridge *this, char *funcName)
     if (f == NULL) {
         log_warn("%s:%s", LANG_ERR_BRIDGE_FUNCTION_NOT_FOUND, funcName);
     } else if (Value_isWorker(f)) {
-        r = Executer_applyWorker(executer, f);
+        r = Executer_applyWorker(executer, f, NULL);
     } else {
         tools_error("%s:%s", LANG_ERR_BRIDGE_FUNCTION_NOT_VALID, funcName);
     }

@@ -183,18 +183,18 @@ void Executer_findValueByToken(Executer *this, Token *token, Container **rContai
         char *location = convert_string_to_location(extra->value, UG_TYPE_STR);
         Executer_findValueByLocation(this, location, &INVALID_CTN, &value);
         pct_free(location);
+        if (value != NULL) *rContainer = value->object;
     }
-    if (value == NULL) return;
-    *rContainer = value->object;
     if (*rContainer == NULL) return;
     // key
     char *location = convert_string_to_location(token->value, UG_TYPE_STR);
     // 
     if (Container_isCtr(*rContainer) || Container_isObj(*rContainer)) {
         *rValue = Container_getLocation(*rContainer, location);
-        Container *class = value->extra;
-        if (*rValue == NULL && class != NULL) {
-            *rValue = Container_getLocation(class, location);
+        Value *creator = value == NULL ? NULL : value->extra;
+        while (*rValue == NULL && creator != NULL) {
+            *rValue = Container_getLocation(creator->object, location);
+            creator = creator->extra;
         }
     } else {
         *rValue = Container_getLocation(*rContainer, location);
@@ -719,59 +719,55 @@ void Executer_consumeException(Executer *this, Leaf *leaf)
     Executer_setValueByToken(this, name, error, true);
 }
 
-void Executer_consumeWorker(Executer *this, Leaf *leaf)
-{
-    // worker name
+void _executer_parseWorkerOrCreator(Executer *this, Leaf *leaf, Token **func, Leaf **code) {
+    // func name
     Cursor *cursor1 = Stack_reset(leaf->tokens);
-    Token *worker = Stack_next(leaf->tokens, cursor1);
+    *func = Stack_next(leaf->tokens, cursor1);
     Cursor_free(cursor1);
-    // worker body
+    // func body
     Cursor *cursor2 = Queue_reset(leaf->leafs);
-    Leaf *code = Queue_next(leaf->leafs, cursor2);
+    *code = Queue_next(leaf->leafs, cursor2);
     Cursor_free(cursor2);
-    // worker self
-    Value *self = NULL;
-    if (Token_isKey(worker)) {
-        Container *container = NULL;
-        Executer_findValueByToken(this, worker, &container, &INVALID_VAL);
-        Executer_assert(this, container != NULL, worker, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-        if (Container_isCtr(container)) {
-            self = Value_newCreator(container, NULL);
-        } else if (Container_isObj(container)) {
-            self = Value_newObject(container, NULL);
-        } else if (Container_isBox(container)) {
-            self = Value_newContainer(container, NULL);
-        } else {
-            log_error("TODO: not supported type for worker");
+    // func location
+    if (Token_isKey(*func)) {
+        Container *place = NULL;
+        Executer_findValueByToken(this, *func, &place, &INVALID_VAL);
+        Executer_assert(this, place != NULL, *func, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
+        if (Container_isCtr(place) || Container_isObj(place) || Container_isBox(place)) {
+            return;
         }
     }
-    // save worker
-    Value *wkr = Value_newWorker(code, self);
-    Executer_setValueByToken(this, worker, wkr, true);
+    Executer_assert(this, Token_isName(*func), *func, LANG_ERR_EXECUTER_INVALID_NAME);
+}
+
+void Executer_consumeWorker(Executer *this, Leaf *leaf)
+{
+    Token *func; Leaf *code;
+    _executer_parseWorkerOrCreator(this, leaf, &func, &code);
+    //
+    Container *self = Container_newWkr();
+    Token *funT = Token_name(FUNCTION_KEY);
+    Value *funV = Value_newWorker(code, NULL);
+    Executer_setValueToContainer(this, self, funT, funV);
+    // Object_release(funT);
+    //
+    Value *wkr = Value_newWorker(self, NULL);
+    Executer_setValueByToken(this, func, wkr, true);
 }
 
 void Executer_consumeCreator(Executer *this, Leaf *leaf)
 {
-    // creator name
-    Cursor *cursor1 = Stack_reset(leaf->tokens);
-    Token *creator = Stack_next(leaf->tokens, cursor1);
-    Cursor_free(cursor1);
-    // creator body
-    Cursor *cursor2 = Queue_reset(leaf->leafs);
-    Leaf *code = Queue_next(leaf->leafs, cursor2);
-    Cursor_free(cursor2);
+    Token *func; Leaf *code;
+    _executer_parseWorkerOrCreator(this, leaf, &func, &code);
     //
-    Executer_assert(this, Token_isName(creator), creator, LANG_ERR_EXECUTER_INVALID_NAME);
-    // save constructor
     Container *self = Container_newCtr();
     Token *funT = Token_name(FUNCTION_KEY);
     Value *funV = Value_newWorker(code, NULL);
     Executer_setValueToContainer(this, self, funT, funV);
-    // save paent
-    Container *base = NULL;
-    // save creator
-    Value *ctr = Value_newCreator(self, base);
-    Executer_setValueByToken(this, creator, ctr, true);
+    // Object_release(funT);
+    //
+    Value *ctr = Value_newCreator(self, NULL);
+    Executer_setValueByToken(this, func, ctr, true);
 }
 
 void Executer_consumeCode(Executer *this, Leaf *leaf)
@@ -794,56 +790,43 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     Executer_consumeTree(this, leaf);
 }
 
-Value *Executer_applyWorker(Executer *this, Value *workerValue)
-{
-    Leaf *codeNode = workerValue->object;
-    Value *selfValue = workerValue->extra;
-    // 
+Value *_excuter_applyWorkerOrCreator(Executer *this, Value *runnableValue, Value *self) {
+    Container *runnable = runnableValue->object;
+    Token *func = Token_name(FUNCTION_KEY);
+    Value *code = Executer_getValueFromContainer(this, runnable, func);
+    Object_release(func);
+    //
     Executer_pushContainer(this, UG_CTYPE_SCP);
-    Container_setLocation(this->currContainer, SCOPE_ALIAS_SLF, selfValue);
-    Executer_consumeLeaf(this, codeNode);
+    Container_setLocation(this->currContainer, SCOPE_ALIAS_SLF, self);
+    Executer_consumeLeaf(this, code->object);
     Executer_popContainer(this, UG_CTYPE_SCP);
-    // 
+    //
     this->isReturn = false;
     Value *r = Stack_pop(this->callStack);
     if (r == NULL) {
-        r = Value_newEmpty(NULL);
+        r = self;
     } else {
-        //
+        Object_release(self);
     }
     return r;
 }
 
-Value *Executer_applyCreator(Executer *this, Value *creatorValue, Token *creatorToken)
+Value *Executer_applyWorker(Executer *this, Value *workerValue, Container *container)
 {
-    Container *classContainer = creatorValue->object;
-    //
-    Token *funT = Token_name(FUNCTION_KEY);
-    Value *funV = Executer_getValueFromContainer(this, classContainer, funT);
-    Object_release(funT);
-    //
-    Leaf *codeNode = funV->object;
-    // TODO: copy base to object
-    // 
-    Container *self = Container_newObj();
-    Value *objectValue = Value_newObject(self, classContainer);
-    // // 
-    Executer_pushContainer(this, UG_CTYPE_SCP);
-    Container_setLocation(this->currContainer, SCOPE_ALIAS_SLF, objectValue);
-    Executer_consumeLeaf(this, codeNode);
-    Executer_popContainer(this, UG_CTYPE_SCP);
-    // 
-    this->isReturn = false;
-    Value *r = Stack_pop(this->callStack);
-    if (r == NULL) {
-        r = objectValue;
-    } else {
-        Object_release(objectValue);
-    }
-    return r;
+    Container *target = container != NULL ? container : this->globalScope;
+    Value *self = Value_newContainer(target, NULL);
+    return _excuter_applyWorkerOrCreator(this, workerValue, self);
 }
 
-Value *Executer_applyNative(Executer *this, Value *nativeValue)
+Value *Executer_applyCreator(Executer *this, Value *creatorValue, Container *container)
+{
+    Object_retain(creatorValue);
+    Container *target = Container_newObj();
+    Value *self = Value_newContainer(target, creatorValue);
+    return _excuter_applyWorkerOrCreator(this, creatorValue, self);
+}
+
+Value *Executer_applyNative(Executer *this, Value *nativeValue, Container *container)
 {
     Bridge *bridge = this->uyghur->bridge;
     Bridge_startArgument(bridge);
@@ -894,17 +877,22 @@ void Executer_consumeApply(Executer *this, Leaf *leaf)
     }
     Cursor_free(cursor);
     // get runable
-    Value *runnableValue = Executer_getValueByToken(this, runnableName, false);
+    
+    Value *runnableValue = NULL;
+    Container *runnableContainer = NULL;
+    Value *selfValue = NULL;
+    Executer_findValueByToken(this, runnableName, &runnableContainer, &runnableValue);
+    Executer_assert(this, runnableContainer != NULL, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND);
     Executer_assert(this, runnableValue != NULL, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND);
     // run runnable
     Value *r = NULL;
     Debug_pushTrace(this->uyghur->debug, runnableName);
     if (runnableValue->type == UG_TYPE_WKR) {
-        r = Executer_applyWorker(this, runnableValue);
+        r = Executer_applyWorker(this, runnableValue, runnableContainer);
     } else if (runnableValue->type == UG_TYPE_CTR) {
-        r = Executer_applyCreator(this, runnableValue, runnableName);
+        r = Executer_applyCreator(this, runnableValue, runnableContainer);
     } else if (runnableValue->type == UG_TYPE_NTV) {
-        r = Executer_applyNative(this, runnableValue);
+        r = Executer_applyNative(this, runnableValue, runnableContainer);
     } else {
         Executer_error(this, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_VALID);
     }
