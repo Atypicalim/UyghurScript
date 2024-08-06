@@ -190,7 +190,6 @@ struct Machine {
     Stack* stack;
     Object* first;
     bool enabled;
-    bool dirty;
     Stack *calls;
     Container *globals;
     Container *rootModule;

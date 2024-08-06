@@ -13,7 +13,6 @@ Machine *Machine_new(Uyghur *uyghur) {
     vm->stack = NULL;
     vm->first = NULL;
     vm->enabled = false;
-    vm->dirty = false;
     vm->calls = NULL;
     vm->globals = NULL;
     vm->rootModule = NULL;
@@ -140,7 +139,11 @@ void Machine_sweep(Machine *this)
         } else {
             Object* unreached = object;
             object = unreached->gcNext;
-            if (previous != NULL) previous->gcNext = object;
+            if (previous != NULL) {
+                previous->gcNext = object;
+            } else {
+                this->first = object;
+            }
             Machine_freeObject(unreached);
             this->numObjects--;
         }
@@ -156,12 +159,11 @@ void Machine_runGC(Machine *this) {
     Machine_sweep(this);
     this->maxObjects = this->numObjects * 2;
     printf("<Machine:collectd %d, left:%d>\n", numObjects - this->numObjects, this->numObjects);
-    this->dirty = false;
 #endif
 }
 
 void Machine_tryGC(Machine *this) {
-    if (this->numObjects >= this->maxObjects && this->enabled && this->dirty) {
+    if (this->numObjects >= this->maxObjects && this->enabled) {
         Machine_runGC(this);
     }
 }
@@ -197,7 +199,6 @@ Object* Machine_createObj(char type, size_t size) {
     object->gcNext = this->first;
     this->first = object;
     this->numObjects++;
-    this->dirty = true;
     return object;
 }
 
