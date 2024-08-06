@@ -20,9 +20,7 @@ int main(int argc, char const *argv[])
     popen("chcp 65001", "r");
     setlocale(LC_ALL, "en_US.utf8");
     //
-    Uyghur *uyghur = Uyghur_new();
-    register_internal_libraries(uyghur->bridge);
-    register_external_libraries(uyghur->bridge);
+    Uyghur *uyghur = Uyghur_instance();
     if (argc == 1) Uyghur_runCode(uyghur, gScriptData, NULL);
     if (argc >= 2) Uyghur_runArgs(uyghur, argc, argv);
     Uyghur_free(uyghur);

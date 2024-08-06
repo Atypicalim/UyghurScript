@@ -29,6 +29,8 @@
 bool isTest = false;
 #define MAX_STACK_SIZE 1000
 #define MAX_TRACE_SIZE 5
+#define GC_USE_COUNTING false
+#define GC_USE_SWEEPING true
 
 typedef char* UG_NAMES;
 typedef const char* UCHAR;
@@ -54,6 +56,13 @@ void Object_printByType(char, void *);
 #include "../../build/configs.h"
 #include "constant.h"
 #include "tools.c"
+
+// object
+
+Object* Machine_createObj(char, size_t);
+void Machine_retainObj(Object*);
+void Machine_releaseObj(Object*);
+void Machine_freeObj(Object*);
 
 // value
 
@@ -117,6 +126,7 @@ typedef struct _Tokenizer {
 
 typedef struct Parser Parser;
 typedef struct Executer Executer;
+typedef struct Machine Machine;
 typedef struct Debug Debug;
 typedef struct Bridge Bridge;
 
@@ -128,9 +138,12 @@ typedef struct _Uyghur {
     Tokenizer *tokenizer;
     Parser *parser;
     Executer *executer;
+    Machine *machine;
     Debug *debug;
     Bridge *bridge;
 } Uyghur;
+
+Uyghur *__uyghur = NULL;
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -169,6 +182,22 @@ typedef void (*NATIVE)(Bridge *);
 // push alias -> func to bridge
 #define BRIDGE_BIND_NATIVE(name) \
     Bridge_bindNative(bridge, ALIAS_ ## name, native_ ## name);
+
+////////////////////////////////////////////////////////////////////////////
+
+struct Machine {
+    Uyghur *uyghur;
+    Stack* stack;
+    Object* first;
+    bool enabled;
+    bool dirty;
+    Stack *calls;
+    Container *globals;
+    Container *rootModule;
+    Container *currContainer;
+    int numObjects;
+    int maxObjects;
+};
 
 ////////////////////////////////////////////////////////////////////////////
 

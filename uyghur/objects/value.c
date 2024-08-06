@@ -22,25 +22,33 @@ char *_get_cache_tag(char type, bool boolean, double number, char *string)
     return NULL;
 }
 
+Value *Value_newEmpty(void *extra)
+{
+    if (Value_EMPTY == NULL) {
+        Value* value = malloc(sizeof(Value));
+        Object_init(value, PCT_OBJ_VALUE);
+        value->type = UG_TYPE_NIL;
+        value->boolean = NULL;
+        value->number = 0;
+        value->string = "";
+        value->object = NULL;
+        value->extra = NULL;
+        Value_EMPTY = value;
+    }
+    return Value_EMPTY;
+}
+
  Value *Value_new(char type, bool boolean, double number, String *string, void *object, void *extra)
 {
     // create
-    Value *value = malloc(sizeof(Value));
+    Value *value = Machine_createObj(PCT_OBJ_VALUE, sizeof(Value));
     value->type = type;
     value->boolean = boolean;
     value->number = number;
     value->string = string;
     value->object = object;
     value->extra = extra;
-    // return
-    Object_init(value, PCT_OBJ_VALUE);
     return value;
-}
-
-Value *Value_newEmpty(void *extra)
-{
-    if (Value_EMPTY == NULL) Value_EMPTY = Value_new(UG_TYPE_NIL, NULL, 0, NULL, NULL, NULL);
-    return Value_EMPTY;
 }
 
 Value *Value_newBoolean(bool boolean, void *extra)
@@ -57,13 +65,13 @@ Value *Value_newNumber(double number, void *extra)
 
 Value *Value_newString(String *string, void *extra)
 {
-    // Object_retain(string);
+    // Machine_retainObj(string);
     return Value_new(UG_TYPE_STR, NULL, 0, string, NULL, extra);
 }
 
 Value *Value_newObject(Container *container, void *extra)
 {
-    // Object_retain(container);
+    // Machine_retainObj(container);
     return Value_new(UG_TYPE_OBJ, NULL, 0, NULL, container, extra);
 }
 
@@ -84,7 +92,7 @@ Value *Value_newNative(void *native, void *extra)
 
 Value *Value_newContainer(Container *container, void *extra)
 {
-    // Object_retain(container);
+    // Machine_retainObj(container);
     if (Container_isCtr(container)) {
         return Value_newCreator(container, extra);
     } else if (Container_isObj(container)) {
@@ -233,7 +241,7 @@ Value *Value_toBoolean(Value *this)
     } else if (this->type == UG_TYPE_STR) {
         return Value_newBoolean(is_eq_string(String_get(this->string), TVALUE_TRUE), NULL);
     } else if (this->type == UG_TYPE_BOL) {
-        Object_retain(this);
+        Machine_retainObj(this);
         return this;
     } else {
         return Value_newBoolean(true, NULL);
@@ -245,7 +253,7 @@ Value *Value_toNumber(Value *this)
 
     if (this->type == UG_TYPE_NUM)
     {
-        Object_retain(this);
+        Machine_retainObj(this);
         return this;
     }
     else if (this->type == UG_TYPE_STR)
@@ -294,11 +302,6 @@ bool Value_isTrue(Value *this)
     }
 }
 
-void Value_release(Value *this)
-{
-    Object_release(this);
-}
-
 void Value_free(Value *this)
 {
     // char *tag = _get_cache_tag(this->type, this->boolean, this->number, String_get(this->string));
@@ -307,14 +310,18 @@ void Value_free(Value *this)
     // {
     //     free(tag);
     // }
+#if GC_USE_COUNTING
     if (this->type == UG_TYPE_STR) {
-        Object_release(this->string);
+        Machine_releaseObj(this->string);
     } else if (this->type == UG_TYPE_CNT || this->type == UG_TYPE_OBJ) {
-        Object_release(this->object);
+        Machine_releaseObj(this->object);
     }
     if (this != Value_EMPTY && this != Value_TRUE && this != Value_FALSE) {
-        Object_free(this);
+        Machine_freeObj(this);
     }
+#elif GC_USE_SWEEPING
+    //
+#endif
 }
 
 #endif

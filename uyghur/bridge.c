@@ -15,7 +15,7 @@ void Bridge_reset(Bridge *this)
     while(value != NULL)
     {
         Object *o = (Object *)value;
-        Object_release(value);
+        Machine_releaseObj(value);
         value = Stack_pop(this->stack);
     }
     if (this->cursor != NULL)
@@ -149,12 +149,12 @@ void Bridge_register(Bridge *this, char *boxName)
         Value *key = Stack_pop(this->stack);
         char *_key =  String_get(key->string);
         helper_set_aliased_key(container, _key, value);
-        Object_release(key);
+        Machine_releaseObj(key);
         value = Stack_pop(this->stack);
     }
     if (boxName != NULL)
     {
-        Object_retain(container);
+        Machine_retainObj(container);
         Value *temp = Value_newContainer(container, NULL);
         helper_set_aliased_key(global, boxName, temp);
     }
@@ -355,6 +355,7 @@ void Bridge_call(Bridge *this, char *funcName)
     Bridge_startResult(this);
     if (r) Bridge_pushValue(this, r);
     Bridge_return(this);
+    Machine_tryGC(this->uyghur->machine);
 }
 
 void Bridge_run(Bridge *this, Value *value) {

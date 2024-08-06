@@ -7,28 +7,37 @@
 
 #include "tokenizer.c"
 #include "parser.c"
+#include "machine.c"
 #include "executer.c"
 #include "debug.c"
 #include "bridge.c"
 
 void Uyghur_init(Uyghur *this)
 {
-    log_warn("uyghur.init:");
     this->lettersMap = Hashmap_new(false);
     this->wordsMap = Hashmap_new(false);
     this->language = NULL;
 }
 
-Uyghur *Uyghur_new()
+Uyghur *Uyghur_instance()
 {
+    if (__uyghur != NULL) return __uyghur;
     Uyghur *uyghur = malloc(sizeof(Uyghur));
     Uyghur_init(uyghur);
+    __uyghur = uyghur;
     uyghur->tokenizer = Tokenizer_new(uyghur);
     uyghur->parser = Parser_new(uyghur);
-    uyghur->executer = Executer_new(uyghur);
+    uyghur->machine = Machine_new(uyghur);
     uyghur->debug = Debug_new(uyghur);
     uyghur->bridge = Bridge_new(uyghur);
-    return uyghur;
+    uyghur->executer = Executer_new(uyghur);
+    // 
+    Machine_disableGC(uyghur->machine);
+    register_internal_libraries(uyghur->bridge);
+    register_external_libraries(uyghur->bridge);
+    Machine_enableGC(uyghur->machine);
+    //
+    return __uyghur;
 }
 
 Value *Uyghur_runCode(Uyghur *this, char *code, char *path)
@@ -71,6 +80,8 @@ Value *Uyghur_runArgs(Uyghur *this, int argc, char const *argv[])
 
 void Uyghur_free(Uyghur *this)
 {
+    
+    Machine_free(this->machine);
     Executer_free(this->executer);
     Parser_free(this->parser);
     Tokenizer_free(this->tokenizer);

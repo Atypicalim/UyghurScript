@@ -16,8 +16,7 @@ Container *Container_new(char tp)
     bool isCreator = tp == UG_CTYPE_CTR;
     bool isObject = tp == UG_CTYPE_OBJ;
     tools_assert(isBox || isScope || isModule || isWorker || isCreator || isObject, "invalid container type for new");
-    Container *container = malloc(sizeof(Container));
-    Object_init(container, PCT_OBJ_CNTNR);
+    Container *container = Machine_createObj(PCT_OBJ_CNTNR, sizeof(Container));
     container->map = Hashmap_new(true);
     container->type = tp;
     return container;
@@ -25,8 +24,12 @@ Container *Container_new(char tp)
 
 void Container_free(Container *this)
 {
-    Object_release(this->map);
-    Object_free(this);
+#if GC_USE_COUNTING
+    Machine_releaseObj(this->map);
+    Machine_freeObj(this);
+#elif GC_USE_SWEEPING
+    //
+#endif
 }
 
 Container *Container_newModule()
@@ -124,7 +127,7 @@ void __Container_copyTo(Hashkey *hashkey, Hashmap *other)
 
 void Container_copyTo(Container *this, Container *other)
 {
-    Hashmap_foreachHashkey(this->map, __Container_copyTo, other->map);
+    Hashmap_foreachItem(this->map, __Container_copyTo, other->map);
 }
 
 // 
