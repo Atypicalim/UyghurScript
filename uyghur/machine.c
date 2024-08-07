@@ -75,11 +75,12 @@ void _machine_mark_value(Value *);
 void _machine_mark_object(Object *);
 
 void _machine_mark_object(Object *object) {
-    if (!object->gcMark) object->gcMark = 1;
+    object->gcMark = 1;
 }
 
 void _machine_mark_value(Value *value) {
     if (value == NULL) return;
+    if (value->gcMark) return;
     _machine_mark_object(value);
     if (value->type == UG_TYPE_NUM) {
         // token
@@ -108,6 +109,7 @@ void _machine_mark_hashkey(Hashkey *hashkey, void *other) {
 }
 
 void _machine_mark_container(Container *container) {
+    if (container->gcMark) return;
     _machine_mark_object(container);
     Hashmap_foreachItem(container->map, _machine_mark_hashkey, NULL);
 }
@@ -203,13 +205,32 @@ Object* Machine_createObj(char type, size_t size) {
 }
 
 void Machine_retainObj(Object* object) {
-    Object_retain(object);
+    // Object_retain(object);
 }
 
 void Machine_releaseObj(Object* object) {
-    Object_release(object);
+    // Object_release(object);
 }
 
 void Machine_freeObj(Object* object) {
-    Object_free(object);
+    // Object_free(object);
+}
+
+void Machine_testGC(Machine* this) {
+    log_warn("\n\n\n---------------------TEST:");
+    for (size_t i = 0; i < 100; i++) {
+        log_warn("---------------------test%i", i);
+        for (size_t j = 0; j < 100; j++) {
+            void *ctnr = Container_newBox();
+            Container *target = this->globals;
+            Value *self = Value_newContainer(target, NULL);
+            Container_setLocation(this->currContainer, SCOPE_ALIAS_SLF, self);
+        }
+        log_warn("--gc");
+        Machine_runGC(this);
+        time_sleep_seconds(1);
+    }
+    log_warn("\n\n\n---------------------END!!!");
+    time_sleep_seconds(10);
+    
 }
