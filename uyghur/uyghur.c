@@ -31,11 +31,13 @@ Uyghur *Uyghur_instance()
     uyghur->debug = Debug_new(uyghur);
     uyghur->bridge = Bridge_new(uyghur);
     uyghur->executer = Executer_new(uyghur);
-    // 
-    Machine_disableGC(uyghur->machine);
+    //
     register_internal_libraries(uyghur->bridge);
     register_external_libraries(uyghur->bridge);
-    Machine_enableGC(uyghur->machine);
+    //
+    uyghur->machine->freezing = false;
+    uyghur->machine->collecting = true;
+    Machine_runGC(uyghur->machine);
     //
     return __uyghur;
 }

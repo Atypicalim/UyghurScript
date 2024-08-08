@@ -76,7 +76,6 @@
 #define UG_CTYPE_BOX 'x'
 #define UG_CTYPE_SCP 's'
 #define UG_CTYPE_MDL 'm'
-#define UG_CTYPE_WKR 'w'
 #define UG_CTYPE_CTR 'c'
 #define UG_CTYPE_OBJ 'o'
 

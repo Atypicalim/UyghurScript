@@ -189,7 +189,8 @@ struct Machine {
     Uyghur *uyghur;
     Stack* stack;
     Object* first;
-    bool enabled;
+    bool freezing;
+    bool collecting;
     Stack *calls;
     Container *globals;
     Container *rootModule;

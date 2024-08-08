@@ -12,7 +12,8 @@ Machine *Machine_new(Uyghur *uyghur) {
     vm->uyghur = uyghur;
     vm->stack = NULL;
     vm->first = NULL;
-    vm->enabled = false;
+    vm->freezing = true;
+    vm->collecting = false;
     vm->calls = NULL;
     vm->globals = NULL;
     vm->rootModule = NULL;
@@ -22,7 +23,18 @@ Machine *Machine_new(Uyghur *uyghur) {
     return vm;
 }
 
-void Machine_freeObject(Object* object) {
+void _machine_mark_object(Object *object) {
+    if (object->gcFreeze) return;
+    object->gcMark = 1;
+}
+
+void _machine_free_object(Machine *this, Object* object) {
+    if (object->gcFreeze) return;
+    Container *container = object;
+    // add hashmap and hashkey to vm
+    // if (object->objType == PCT_OBJ_CNTNR) {
+    //     free(container->map);
+    // }
     free(object);
 }
 
@@ -72,11 +84,6 @@ Container *Machine_getCurrentSelf(Machine *this, Token *token)
 void _machine_mark_container(Container *);
 void _machine_mark_hashkey(Hashkey *, void *);
 void _machine_mark_value(Value *);
-void _machine_mark_object(Object *);
-
-void _machine_mark_object(Object *object) {
-    object->gcMark = 1;
-}
 
 void _machine_mark_value(Value *value) {
     if (value == NULL) return;
@@ -134,6 +141,8 @@ void Machine_sweep(Machine *this)
     Object* previous = NULL;
     Object* object = this->first;
     while (object) {
+        // log_info("--->seeep:%i %i %p %i", object->gcMark, object != NULL, object, object == this->globals);
+        // Object_print(object);
         if (object->gcMark) {
             object->gcMark = 0;
             previous = object;
@@ -146,7 +155,7 @@ void Machine_sweep(Machine *this)
             } else {
                 this->first = object;
             }
-            Machine_freeObject(unreached);
+            _machine_free_object(this, unreached);
             this->numObjects--;
         }
     }
@@ -157,26 +166,19 @@ void Machine_runGC(Machine *this) {
     //
 #elif GC_USE_SWEEPING
     int numObjects = this->numObjects;
+    log_warn("======================runGC:");
     Machine_mark(this);
     Machine_sweep(this);
     this->maxObjects = this->numObjects * 2;
-    printf("<Machine:collectd %d, left:%d>\n", numObjects - this->numObjects, this->numObjects);
+    int numCollected = numObjects - this->numObjects;
+    log_warn("======================endGC! %d %d/%d", numCollected, this->numObjects, this->maxObjects);
 #endif
 }
 
 void Machine_tryGC(Machine *this) {
-    if (this->numObjects >= this->maxObjects && this->enabled) {
+    if (this->numObjects >= this->maxObjects && this->collecting) {
         Machine_runGC(this);
     }
-}
-
-void Machine_enableGC(Machine *this) {
-    this->enabled = true;
-    Machine_runGC(this);
-}
-
-void Machine_disableGC(Machine *this) {
-    this->enabled = false;
 }
 
 void Machine_dump(Machine *this) {
@@ -188,7 +190,7 @@ void Machine_dump(Machine *this) {
 }
 
 void Machine_free(Machine *this) {
-    Machine_dump(this);
+    // Machine_dump(this);
     // Stack_clear(this->stack); 
     // Machine_runGC(this);
     free(this);
@@ -198,9 +200,13 @@ Object* Machine_createObj(char type, size_t size) {
     Machine *this = __uyghur->machine;
     Object* object = malloc(size);
     Object_init(object, type);
-    object->gcNext = this->first;
-    this->first = object;
-    this->numObjects++;
+    object->gcFreeze = this->freezing;
+    if (!object->gcFreeze) {
+        object->gcNext = this->first;
+        this->first = object;
+        this->numObjects++;
+         object->gcFreeze = false;
+    }
     return object;
 }
 
@@ -218,6 +224,7 @@ void Machine_freeObj(Object* object) {
 
 void Machine_testGC(Machine* this) {
     log_warn("\n\n\n---------------------TEST:");
+    Machine_pushContainer(this, Container_new(UG_CTYPE_SCP));
     for (size_t i = 0; i < 100; i++) {
         log_warn("---------------------test%i", i);
         for (size_t j = 0; j < 100; j++) {

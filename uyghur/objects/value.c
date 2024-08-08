@@ -97,8 +97,6 @@ Value *Value_newContainer(Container *container, void *extra)
         return Value_newCreator(container, extra);
     } else if (Container_isObj(container)) {
         return Value_newObject(container, extra);
-    } else if (Container_isWkr(container)) {
-        return Value_newWorker(container, extra);
     } 
     return Value_new(UG_TYPE_CNT, NULL, 0, NULL, container, extra);
 }
@@ -184,23 +182,23 @@ void Value_print(Value *this)
     }
     else if (this->type == UG_TYPE_CNT)
     {
-        printf("<V:Container => p:%p>\n", this->object);
+        printf("<V:Container => %p p:%p>\n", this, this->object);
     }
     else if (this->type == UG_TYPE_WKR)
     {
-        printf("<V:Worker => p:%p>\n", this->object);
+        printf("<V:Worker => %p p:%p>\n", this, this->object);
     } 
     else if (this->type == UG_TYPE_CTR)
     {
-        printf("<V:Creator => p:%p>\n", this->object);
+        printf("<V:Creator => %p p:%p>\n", this, this->object);
     }
     else if (this->type == UG_TYPE_OBJ)
     {
-        printf("<V:Object => p:%p>\n", this->object);
+        printf("<V:Object => %p p:%p>\n", this, this->object);
     }
     else if (this->type == UG_TYPE_NTV)
     {
-        printf("<V:Native => p:%p>\n", this->object);
+        printf("<V:Native => %p p:%p>\n", this, this->object);
     }
     else
     {

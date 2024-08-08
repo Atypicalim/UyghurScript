@@ -722,7 +722,7 @@ void _executer_parseWorkerOrCreator(Executer *this, Leaf *leaf, bool isCreator, 
         Executer_assert(this, place != NULL, *func, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
         if (isCreator && (Container_isModule(place))) {
             return;
-        } else if (!isCreator && (!Container_isWkr(place) && !Container_isBox(place))) {
+        } else if (!isCreator && !Container_isBox(place)) {
             return;
         }
     }
@@ -734,14 +734,7 @@ void Executer_consumeWorker(Executer *this, Leaf *leaf)
     Token *func; Leaf *code;
     _executer_parseWorkerOrCreator(this, leaf, false, &func, &code);
     //
-    Container *self = Container_newWkr();
-    Token *funT = Token_name(FUNCTION_KEY);
-    Value *funV = Value_newWorker(code, NULL);
-    Executer_setValueToContainer(this, self, funT, funV);
-    Machine_releaseObj(funT);
-    Machine_releaseObj(funV);
-    //
-    Value *wkr = Value_newWorker(self, NULL);
+    Value *wkr = Value_newWorker(code, NULL);
     Executer_setValueByToken(this, func, wkr, true);
 }
 
@@ -781,28 +774,21 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     Executer_consumeTree(this, leaf);
 }
 
-void _excuter_applyWorkerOrCreator(Executer *this, Value *runnableValue, Value *self) {
-    Container *runnable = runnableValue->object;
-    Token *func = Token_name(FUNCTION_KEY);
-    Value *code = Executer_getValueFromContainer(this, runnable, func);
-    Machine_releaseObj(func);
-    //
-    Executer_pushContainer(this, UG_CTYPE_SCP);
-    Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
-    Executer_consumeLeaf(this, code->object);
-    Executer_popContainer(this, UG_CTYPE_SCP);
-    //
-    Machine_releaseObj(code);
-    this->isReturn = false;
-}
-
 Value *Executer_applyWorker(Executer *this, Value *workerValue, Container *container)
 {
     Container *target = container != NULL ? container : this->globalScope;
     Machine_retainObj(target);
     Value *self = Value_newContainer(target, NULL);
-    _excuter_applyWorkerOrCreator(this, workerValue, self);
+    //
+    Value *func = workerValue;
+    //
+    Executer_pushContainer(this, UG_CTYPE_SCP);
+    Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
+    Executer_consumeLeaf(this, func->object);
+    Executer_popContainer(this, UG_CTYPE_SCP);
+    //
     Machine_releaseObj(self);
+    this->isReturn = false;
     //
     Value *r = Stack_pop(this->callStack);
     if (r == NULL) r = Value_newEmpty(NULL);
@@ -811,10 +797,20 @@ Value *Executer_applyWorker(Executer *this, Value *workerValue, Container *conta
 
 Value *Executer_applyCreator(Executer *this, Value *creatorValue, Container *container)
 {
-    Machine_retainObj(creatorValue);
     Container *target = Container_newObj();
     Value *self = Value_newContainer(target, creatorValue);
-    _excuter_applyWorkerOrCreator(this, creatorValue, self);
+    // 
+    Token *temp = Token_name(FUNCTION_KEY);
+    Value *func = Executer_getValueFromContainer(this, creatorValue->object, temp);
+    Machine_releaseObj(temp);
+    //
+    Executer_pushContainer(this, UG_CTYPE_SCP);
+    Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
+    Executer_consumeLeaf(this, func->object);
+    Executer_popContainer(this, UG_CTYPE_SCP);
+    //
+    Machine_releaseObj(self);
+    this->isReturn = false;
     // 
     Value *r = Stack_pop(this->callStack);
     if (r == NULL) {

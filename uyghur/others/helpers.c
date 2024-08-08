@@ -322,7 +322,7 @@ void Hashmap_print(Hashmap *this)
 
 void Container_print(Container *this)
 {
-    printf("[Container -> p:%p t:%c]\n", this, this->type);
+    printf("[Container -> p:%p %p t:%c]\n", this, this->map, this->type);
     _hashmap_print_with_callback(this->map, "|", _container_key_print_callback);
     printf("[Container]\n");
 }
