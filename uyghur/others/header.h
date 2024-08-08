@@ -59,7 +59,8 @@ void Object_printByType(char, void *);
 
 // object
 
-Object* Machine_createObj(char, size_t);
+void Machine_tryLinkForGC(Object*);
+Object* Machine_createObjTryGC(char, size_t);
 void Machine_retainObj(Object*);
 void Machine_releaseObj(Object*);
 void Machine_freeObj(Object*);

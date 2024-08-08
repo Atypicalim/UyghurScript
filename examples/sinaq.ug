@@ -1,9 +1,12 @@
 # running men
 
+miqdar m qimmiti 1 bolsun
+
 fonkisiye @*[doska_korsitish_qayturmisi] mezmuni
 tamamlansun
 
 fonkisiye @*[doska_sizish_qayturmisi] mezmuni
+    # m = m + 1
 tamamlansun
 
-fonkisiye @sehne[korsitish] bilen -1 -1 [Yuguresh] 4096 ishlitilsun
+fonkisiye @sehne[korsitish] bilen -1 -1 [Yuguresh] 0 ishlitilsun

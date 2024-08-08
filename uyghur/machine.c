@@ -196,18 +196,37 @@ void Machine_free(Machine *this) {
     free(this);
 }
 
-Object* Machine_createObj(char type, size_t size) {
+void Machine_tryLinkForGC(Object *object) {
     Machine *this = __uyghur->machine;
+    object->gcFreeze = this->freezing;
+    if (object->gcFreeze) return;
+    object->gcNext = this->first;
+    this->first = object;
+    this->numObjects++;
+}
+
+Object* Machine_createObjTryGC(char type, size_t size) {
     Object* object = malloc(size);
     Object_init(object, type);
-    object->gcFreeze = this->freezing;
-    if (!object->gcFreeze) {
-        object->gcNext = this->first;
-        this->first = object;
-        this->numObjects++;
-         object->gcFreeze = false;
-    }
+    Machine_tryLinkForGC(object);
     return object;
+}
+
+Object* _Machine_createObjChangeGC(char type, size_t size, bool freeze) {
+    Machine *this = __uyghur->machine;
+    bool freezing = this->freezing;
+    this->freezing = freeze;
+    Object* object = Machine_createObjTryGC(type, size);
+    this->freezing = freezing;
+    return object;
+}
+
+Object* Machine_createObjWithGC(char type, size_t size) {
+    return _Machine_createObjChangeGC(type, size, false);
+}
+
+Object* Machine_createObjWithoutGC(char type, size_t size) {
+    return _Machine_createObjChangeGC(type, size, true);
 }
 
 void Machine_retainObj(Object* object) {

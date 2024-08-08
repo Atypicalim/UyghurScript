@@ -41,7 +41,7 @@ Value *Value_newEmpty(void *extra)
  Value *Value_new(char type, bool boolean, double number, String *string, void *object, void *extra)
 {
     // create
-    Value *value = Machine_createObj(PCT_OBJ_VALUE, sizeof(Value));
+    Value *value = Machine_createObjTryGC(PCT_OBJ_VALUE, sizeof(Value));
     value->type = type;
     value->boolean = boolean;
     value->number = number;
