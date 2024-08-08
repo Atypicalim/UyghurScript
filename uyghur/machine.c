@@ -25,16 +25,18 @@ Machine *Machine_new(Uyghur *uyghur) {
 
 void _machine_mark_object(Object *object) {
     if (object->gcFreeze) return;
+    // log_info("mark_object:%p", object);
     object->gcMark = 1;
 }
 
 void _machine_free_object(Machine *this, Object* object) {
     if (object->gcFreeze) return;
-    Container *container = object;
+    // Container *container = object;
     // add hashmap and hashkey to vm
     // if (object->objType == PCT_OBJ_CNTNR) {
     //     free(container->map);
     // }
+    // log_info("free_object:%p", object);
     free(object);
 }
 
@@ -118,6 +120,7 @@ void _machine_mark_hashkey(Hashkey *hashkey, void *other) {
 void _machine_mark_container(Container *container) {
     if (container->gcMark) return;
     _machine_mark_object(container);
+    _machine_mark_object(container->map);
     Hashmap_foreachItem(container->map, _machine_mark_hashkey, NULL);
 }
 
@@ -168,8 +171,9 @@ void Machine_runGC(Machine *this) {
     int numObjects = this->numObjects;
     log_warn("======================runGC:");
     Machine_mark(this);
+    log_warn("======================midG~:");
     Machine_sweep(this);
-    this->maxObjects = this->numObjects * 2;
+    this->maxObjects = this->numObjects * 2 + 100000; // TODO:gc issue
     int numCollected = numObjects - this->numObjects;
     log_warn("======================endGC! %d %d/%d", numCollected, this->numObjects, this->maxObjects);
 #endif
