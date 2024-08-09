@@ -60,7 +60,10 @@ void Object_printByType(char, void *);
 // object
 
 void Machine_tryLinkForGC(Object*);
-Object* Machine_createObjTryGC(char, size_t);
+Object* Machine_createObjByCurrentFreezeFlag(char, size_t);
+Object* Machine_createObjByCustomFreezeFlag(char, size_t, bool);
+Object* Machine_createObjNotFreeze(char, size_t);
+Object* Machine_createObjAndFreeze(char, size_t);
 void Machine_retainObj(Object*);
 void Machine_releaseObj(Object*);
 void Machine_freeObj(Object*);

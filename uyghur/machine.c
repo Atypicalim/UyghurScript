@@ -91,7 +91,7 @@ void _machine_mark_value(Value *value) {
     if (value == NULL) return;
     if (value->gcMark) return;
     _machine_mark_object(value);
-    if (value->type == UG_TYPE_NUM) {
+    if (value->type == UG_TYPE_NIL || value->type == UG_TYPE_BOL || value->type == UG_TYPE_NUM) {
         // token
     } else if (value->type == UG_TYPE_STR) {
         _machine_mark_object(value->string);
@@ -107,6 +107,7 @@ void _machine_mark_value(Value *value) {
         // native
     } else {
         log_warn("value type not registered for marking");
+        Value_print(value);
     }
 }
 
@@ -173,7 +174,7 @@ void Machine_runGC(Machine *this) {
     Machine_mark(this);
     log_warn("======================midG~:");
     Machine_sweep(this);
-    this->maxObjects = this->numObjects * 2 + 100000; // TODO:gc issue
+    this->maxObjects = this->numObjects * 2 + 1000000; // TODO:gc issue
     int numCollected = numObjects - this->numObjects;
     log_warn("======================endGC! %d %d/%d", numCollected, this->numObjects, this->maxObjects);
 #endif
@@ -209,28 +210,28 @@ void Machine_tryLinkForGC(Object *object) {
     this->numObjects++;
 }
 
-Object* Machine_createObjTryGC(char type, size_t size) {
+Object* Machine_createObjByCurrentFreezeFlag(char type, size_t size) {
     Object* object = malloc(size);
     Object_init(object, type);
     Machine_tryLinkForGC(object);
     return object;
 }
 
-Object* _Machine_createObjChangeGC(char type, size_t size, bool freeze) {
+Object* Machine_createObjByCustomFreezeFlag(char type, size_t size, bool freeze) {
     Machine *this = __uyghur->machine;
     bool freezing = this->freezing;
     this->freezing = freeze;
-    Object* object = Machine_createObjTryGC(type, size);
+    Object* object = Machine_createObjByCurrentFreezeFlag(type, size);
     this->freezing = freezing;
     return object;
 }
 
-Object* Machine_createObjWithGC(char type, size_t size) {
-    return _Machine_createObjChangeGC(type, size, false);
+Object* Machine_createObjNotFreeze(char type, size_t size) {
+    return Machine_createObjByCustomFreezeFlag(type, size, false);
 }
 
-Object* Machine_createObjWithoutGC(char type, size_t size) {
-    return _Machine_createObjChangeGC(type, size, true);
+Object* Machine_createObjAndFreeze(char type, size_t size) {
+    return Machine_createObjByCustomFreezeFlag(type, size, true);
 }
 
 void Machine_retainObj(Object* object) {

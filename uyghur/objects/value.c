@@ -22,27 +22,26 @@ char *_get_cache_tag(char type, bool boolean, double number, char *string)
     return NULL;
 }
 
-Value *Value_newEmpty(void *extra)
-{
-    if (Value_EMPTY == NULL) {
-        Value* value = malloc(sizeof(Value));
-        Object_init(value, PCT_OBJ_VALUE);
-        value->type = UG_TYPE_NIL;
-        value->boolean = NULL;
-        value->number = 0;
-        value->string = "";
-        value->object = NULL;
-        value->extra = NULL;
-        Value_EMPTY = value;
+Value *_value_newValue(bool freeze, char typ) {
+    // create
+    Value *value = NULL;
+    if (freeze) {
+        value = Machine_createObjAndFreeze(PCT_OBJ_VALUE, sizeof(Value));
+    } else {
+        value = Machine_createObjByCurrentFreezeFlag(PCT_OBJ_VALUE, sizeof(Value));
     }
-    return Value_EMPTY;
+    value->type = typ;
+    value->boolean = false;
+    value->number = 0;
+    value->string = "";
+    value->object = NULL;
+    value->extra = NULL;
+    return value;
 }
 
  Value *Value_new(char type, bool boolean, double number, String *string, void *object, void *extra)
 {
-    // create
-    Value *value = Machine_createObjTryGC(PCT_OBJ_VALUE, sizeof(Value));
-    value->type = type;
+    Value *value = _value_newValue(false, type);
     value->boolean = boolean;
     value->number = number;
     value->string = string;
@@ -51,10 +50,24 @@ Value *Value_newEmpty(void *extra)
     return value;
 }
 
+Value *Value_newEmpty(void *extra)
+{
+    if (Value_EMPTY == NULL) {
+        Value_EMPTY = _value_newValue(true, UG_TYPE_NIL);
+    }
+    return Value_EMPTY;
+}
+
 Value *Value_newBoolean(bool boolean, void *extra)
 {
-    if (Value_TRUE == NULL) Value_TRUE = Value_new(UG_TYPE_BOL, true, 0, NULL, NULL, NULL);
-    if (Value_FALSE == NULL) Value_FALSE = Value_new(UG_TYPE_BOL, false, 0, NULL, NULL, NULL);
+    if (Value_TRUE == NULL) {
+        Value_TRUE = _value_newValue(true, UG_TYPE_BOL);
+        Value_TRUE->boolean = true;
+    }
+    if (Value_FALSE == NULL) {
+        Value_FALSE = _value_newValue(true, UG_TYPE_BOL);
+        Value_FALSE->boolean = false;
+    }
     return boolean ? Value_TRUE : Value_FALSE;
 }
 
@@ -226,7 +239,7 @@ char *Value_toString(Value *this)
     } if (this->type == UG_TYPE_NTV) {
         return tools_format("<Native p:%p>",  this->object);
     } else {
-        return tools_format("<Object p:%p t:%c>", this->object, this->type);
+        return tools_format("<Object %p p:%p t:%c>", this, this->object, this->type);
     } 
 }
 

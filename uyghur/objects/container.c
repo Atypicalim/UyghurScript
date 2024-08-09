@@ -15,7 +15,7 @@ Container *Container_new(char tp)
     bool isCreator = tp == UG_CTYPE_CTR;
     bool isObject = tp == UG_CTYPE_OBJ;
     tools_assert(isBox || isScope || isModule || isCreator || isObject, "invalid container type for new");
-    Container *container = Machine_createObjTryGC(PCT_OBJ_CNTNR, sizeof(Container));
+    Container *container = Machine_createObjByCurrentFreezeFlag(PCT_OBJ_CNTNR, sizeof(Container));
     container->map = Hashmap_new(true);
     Machine_tryLinkForGC(container->map);
     container->type = tp;
