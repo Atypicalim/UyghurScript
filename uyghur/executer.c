@@ -76,7 +76,7 @@ void Executer_assert(Executer *this, bool value, Token *token, char *msg)
 
 void Executer_pushContainer(Executer *this, char type)
 {
-    Container *container = Container_new(type);
+    Container *container = Container_new(type, NULL);
     Machine_pushContainer(this->machine, container);
 }
 
@@ -170,7 +170,7 @@ void Executer_findValueByToken(Executer *this, Token *token, Container **rContai
         char *location = convert_string_to_location(extra->value, UG_TYPE_STR);
         Executer_findValueByLocation(this, location, &INVALID_CTN, &value);
         pct_free(location);
-        if (value != NULL) *rContainer = value->object;
+        if (value != NULL) *rContainer = value;
     }
     if (*rContainer == NULL) return;
     // key
@@ -180,7 +180,7 @@ void Executer_findValueByToken(Executer *this, Token *token, Container **rContai
         *rValue = Container_getLocation(*rContainer, location);
         Value *creator = value == NULL ? NULL : value->extra;
         while (*rValue == NULL && creator != NULL) {
-            *rValue = Container_getLocation(creator->object, location);
+            *rValue = Container_getLocation(creator, location);
             creator = creator->extra;
         }
     } else {
@@ -380,7 +380,7 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_STR)) {
         new = Value_newString(String_new(), token);
     } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_BOX)) {
-        new = Value_newContainer(Container_newBox(), token);
+        new =Container_newBox(token);
     } else {
         new = Executer_getValueByToken(this, token, true); // todo
     }
@@ -413,7 +413,7 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
             Executer_assert(this, value != NULL, name, LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND);
         }
         if (Value_isContainer(value)) {
-            Container_print(value->object);
+            Container_print(value);
         } else {
             char *content = Value_toString(value);
             printf("%s", content);
@@ -653,7 +653,7 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
             if (this->errorMsg != NULL) break;
         }
     } else if (Value_isContainer(value)) {
-        Container *box = value->object;
+        Container *box = value;
         Hashmap *map = box->map;
         Hashkey *ptr;
         for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
@@ -734,7 +734,7 @@ void Executer_consumeWorker(Executer *this, Leaf *leaf)
     Token *func; Leaf *code;
     _executer_parseWorkerOrCreator(this, leaf, false, &func, &code);
     //
-    Value *wkr = Value_newWorker(code, NULL);
+    Value *wkr = Runnable_newWorker(code, NULL);
     Executer_setValueByToken(this, func, wkr, true);
 }
 
@@ -743,15 +743,14 @@ void Executer_consumeCreator(Executer *this, Leaf *leaf)
     Token *func; Leaf *code;
     _executer_parseWorkerOrCreator(this, leaf, true, &func, &code);
     //
-    Container *self = Container_newCtr();
+    Container *self = Container_newCtr(NULL);
     Token *funT = Token_name(FUNCTION_KEY);
-    Value *funV = Value_newWorker(code, NULL);
+    Value *funV = Runnable_newWorker(code, NULL);
     Executer_setValueToContainer(this, self, funT, funV);
     Machine_releaseObj(funT);
     Machine_releaseObj(funV);
     //
-    Value *ctr = Value_newCreator(self, NULL);
-    Executer_setValueByToken(this, func, ctr, true);
+    Executer_setValueByToken(this, func, self, true);
 }
 
 void Executer_consumeCode(Executer *this, Leaf *leaf)
@@ -776,9 +775,8 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
 
 Value *Executer_applyWorker(Executer *this, Value *workerValue, Container *container)
 {
-    Container *target = container != NULL ? container : this->globalScope;
-    Machine_retainObj(target);
-    Value *self = Value_newContainer(target, NULL);
+    Container *self = container != NULL ? container : this->globalScope;
+    Machine_retainObj(self);
     //
     Value *func = workerValue;
     //
@@ -797,11 +795,10 @@ Value *Executer_applyWorker(Executer *this, Value *workerValue, Container *conta
 
 Value *Executer_applyCreator(Executer *this, Value *creatorValue, Container *container)
 {
-    Container *target = Container_newObj();
-    Value *self = Value_newContainer(target, creatorValue);
+    Container *self = Container_newObj(creatorValue);
     // 
     Token *temp = Token_name(FUNCTION_KEY);
-    Value *func = Executer_getValueFromContainer(this, creatorValue->object, temp);
+    Value *func = Executer_getValueFromContainer(this, creatorValue, temp);
     Machine_releaseObj(temp);
     //
     Executer_pushContainer(this, UG_CTYPE_SCP);
@@ -1067,8 +1064,7 @@ Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
     Executer_pushContainer(this, UG_CTYPE_MDL);
     Executer_consumeTree(this, tree);
     if (this->machine->stack->head == this->machine->stack->tail) return NULL;
-    Container *container = Executer_popContainer(this, UG_CTYPE_MDL);
-    Value *module = Value_newContainer(container, NULL);
+    Container *module = Executer_popContainer(this, UG_CTYPE_MDL);
     Container_setLocation(this->globalScope, path, module);
     return module;
 }

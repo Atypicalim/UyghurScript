@@ -26,7 +26,7 @@ void raylib_on_draw()
 {
     Bridge_startFunc(uyghurBridge);
     Bridge_call(uyghurBridge, ALIAS_STAGE_ON_DRAW);
-    // DrawFPS(10, 10);
+    DrawFPS(10, 10);
 }
 
 void raylib_on_focus()

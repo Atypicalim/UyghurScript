@@ -6,11 +6,10 @@ void native_box_iterate(Bridge *bridge)
 {
     Value *box = Bridge_receiveValue(bridge, UG_TYPE_CNT);
     Value *wkr = Bridge_receiveValue(bridge, UG_TYPE_WKR);
-    Container *_box = box->object;
     void (*_wkr)() = wkr->object;
     // 
     Executer *exe = bridge->uyghur->executer;
-    Hashmap *map = _box->map;
+    Hashmap *map = ((Container*)box)->map;
     Hashkey *ptr;
     for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
         ptr = map[i].position;

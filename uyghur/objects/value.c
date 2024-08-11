@@ -22,13 +22,12 @@ char *_get_cache_tag(char type, bool boolean, double number, char *string)
     return NULL;
 }
 
-Value *_value_newValue(bool freeze, char typ) {
-    // create
+Value *_value_newValueBySize(bool freeze, char typ, size_t size) {
     Value *value = NULL;
     if (freeze) {
-        value = Machine_createObjAndFreeze(PCT_OBJ_VALUE, sizeof(Value));
+        value = Machine_createObjAndFreeze(PCT_OBJ_VALUE, size);
     } else {
-        value = Machine_createObjByCurrentFreezeFlag(PCT_OBJ_VALUE, sizeof(Value));
+        value = Machine_createObjByCurrentFreezeFlag(PCT_OBJ_VALUE, size);
     }
     value->type = typ;
     value->boolean = false;
@@ -37,6 +36,10 @@ Value *_value_newValue(bool freeze, char typ) {
     value->object = NULL;
     value->extra = NULL;
     return value;
+}
+
+Value *_value_newValue(bool freeze, char typ) {
+    return _value_newValueBySize(freeze, typ, sizeof(Value));
 }
 
  Value *Value_new(char type, bool boolean, double number, String *string, void *object, void *extra)
@@ -82,38 +85,6 @@ Value *Value_newString(String *string, void *extra)
     return Value_new(UG_TYPE_STR, NULL, 0, string, NULL, extra);
 }
 
-Value *Value_newObject(Container *container, void *extra)
-{
-    // Machine_retainObj(container);
-    return Value_new(UG_TYPE_OBJ, NULL, 0, NULL, container, extra);
-}
-
-Value *Value_newWorker(void *worker, void *extra)
-{
-    return Value_new(UG_TYPE_WKR ,NULL, 0, NULL, worker, extra);
-}
-
-Value *Value_newCreator(void *creator, void *extra)
-{
-    return Value_new(UG_TYPE_CTR ,NULL, 0, NULL, creator, extra);
-}
-
-Value *Value_newNative(void *native, void *extra)
-{
-    return Value_new(UG_TYPE_NTV ,NULL, 0, NULL, native, extra);
-}
-
-Value *Value_newContainer(Container *container, void *extra)
-{
-    // Machine_retainObj(container);
-    if (Container_isCtr(container)) {
-        return Value_newCreator(container, extra);
-    } else if (Container_isObj(container)) {
-        return Value_newObject(container, extra);
-    } 
-    return Value_new(UG_TYPE_CNT, NULL, 0, NULL, container, extra);
-}
-
 bool Value_isEmpty(Value *this)
 {
     return this != NULL && this->type == UG_TYPE_NIL;
@@ -149,24 +120,14 @@ bool Value_isContainer(Value *this)
     return this != NULL && this->type == UG_TYPE_CNT;
 }
 
-bool Value_isWorker(Value *this)
-{
-    return this != NULL && this->type == UG_TYPE_WKR;
-}
-
 bool Value_isCreator(Value *this)
 {
     return this != NULL && this->type == UG_TYPE_CTR;
 }
 
-bool Value_isNative(Value *this)
-{
-    return this != NULL && this->type == UG_TYPE_NTV;
-}
-
 bool Value_isRunnable(Value *this)
 {
-    return this != NULL && (this->type == UG_TYPE_WKR || this->type == UG_TYPE_CTR || this->type == UG_TYPE_NTV);
+    return this != NULL && (this->type == UG_TYPE_WKR || this->type == UG_TYPE_NTV);
 }
 
 void Value_print(Value *this)
@@ -193,25 +154,15 @@ void Value_print(Value *this)
         char *value = String_get(this->string);
         printf("<V:String => v:%s p:%p>\n", value, this);
     }
-    else if (this->type == UG_TYPE_CNT)
+    else if (is_type_container(this->type))
     {
-        printf("<V:Container => %p p:%p>\n", this, this->object);
+        // printf("<V:Container => %p p:%p>\n", this, this->object);
+        Container_print(this);
     }
-    else if (this->type == UG_TYPE_WKR)
+    else if (is_type_runnable(this->type))
     {
-        printf("<V:Worker => %p p:%p>\n", this, this->object);
-    } 
-    else if (this->type == UG_TYPE_CTR)
-    {
-        printf("<V:Creator => %p p:%p>\n", this, this->object);
-    }
-    else if (this->type == UG_TYPE_OBJ)
-    {
-        printf("<V:Object => %p p:%p>\n", this, this->object);
-    }
-    else if (this->type == UG_TYPE_NTV)
-    {
-        printf("<V:Native => %p p:%p>\n", this, this->object);
+        // printf("<V:Runnable => %p p:%p>\n", this, this->object);
+        Runnable_print(this);
     }
     else
     {
@@ -230,14 +181,10 @@ char *Value_toString(Value *this)
         return tools_number_to_string(this->number);
     } if (this->type == UG_TYPE_STR) {
         return String_dump(this->string);
-    } if (this->type == UG_TYPE_CNT) {
+    } if (is_type_container(this->type)) {
         return Container_toString(this->object);
-    } if (this->type == UG_TYPE_WKR) {
-        return tools_format("<Worker p:%p>",  this->object);
-    } if (this->type == UG_TYPE_CTR) {
-        return tools_format("<Creator p:%p>",  this->object);
-    } if (this->type == UG_TYPE_NTV) {
-        return tools_format("<Native p:%p>",  this->object);
+    } if (is_type_runnable(this->type)) {
+        return Runnable_toString(this->object);
     } else {
         return tools_format("<Object %p p:%p t:%c>", this, this->object, this->type);
     } 
@@ -325,7 +272,7 @@ void Value_free(Value *this)
     if (this->type == UG_TYPE_STR) {
         Machine_releaseObj(this->string);
     } else if (this->type == UG_TYPE_CNT || this->type == UG_TYPE_OBJ) {
-        Machine_releaseObj(this->object);
+        Machine_releaseObj(this);
     }
     if (this != Value_EMPTY && this != Value_TRUE && this != Value_FALSE) {
         Machine_freeObj(this);

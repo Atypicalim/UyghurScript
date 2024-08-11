@@ -134,7 +134,7 @@ void Bridge_bindString(Bridge *this, UG_NAMES name, char *str)
 void Bridge_bindNative(Bridge *this, UG_NAMES name, NATIVE fun)
 {
     Bridge_pushKey(this, name);
-    Bridge_pushValue(this, Value_newNative(fun, NULL));
+    Bridge_pushValue(this, Runnable_newNative(fun, NULL));
 }
 
 void Bridge_register(Bridge *this, char *boxName)
@@ -142,7 +142,7 @@ void Bridge_register(Bridge *this, char *boxName)
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, box expected for register");
     tools_assert(this->last == BRIDGE_ITEM_TP_VAL, "invalid bridge status");
     Container *global = this->uyghur->executer->globalScope;
-    Container *container = boxName == NULL ? global : Container_newBox();
+    Container *container = boxName == NULL ? global : Container_newBox(NULL);
     Value *value = Stack_pop(this->stack);
     while (value != NULL)
     {
@@ -155,8 +155,7 @@ void Bridge_register(Bridge *this, char *boxName)
     if (boxName != NULL)
     {
         Machine_retainObj(container);
-        Value *temp = Value_newContainer(container, NULL);
-        helper_set_aliased_key(global, boxName, temp);
+        helper_set_aliased_key(global, boxName, container);
     }
 }
 
@@ -345,7 +344,7 @@ void Bridge_call(Bridge *this, char *funcName)
     Value *f = helper_get_aliased_key(executer->globalScope, funcName);
     if (f == NULL) {
         log_warn("%s:%s", LANG_ERR_BRIDGE_FUNCTION_NOT_FOUND, funcName);
-    } else if (Value_isWorker(f)) {
+    } else if (Runnable_isWorker(f)) {
         r = Executer_applyWorker(executer, f, NULL);
     } else {
         tools_error("%s:%s", LANG_ERR_BRIDGE_FUNCTION_NOT_VALID, funcName);

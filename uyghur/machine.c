@@ -33,9 +33,6 @@ void _machine_free_object(Machine *this, Object* object) {
     if (object->gcFreeze) return;
     // Container *container = object;
     // add hashmap and hashkey to vm
-    // if (object->objType == PCT_OBJ_CNTNR) {
-    //     free(container->map);
-    // }
     // log_info("free_object:%p", object);
     free(object);
 }
@@ -75,7 +72,7 @@ Container *Machine_getCurrentSelf(Machine *this, Token *token)
         if (!Container_isScope(container)) break;
         Value *self = Container_getLocation(container, SCOPE_ALIAS_SLF);
         if (self != NULL) {
-            container = self->object;
+            container = self;
             break;
         }
     }
@@ -95,16 +92,10 @@ void _machine_mark_value(Value *value) {
         // token
     } else if (value->type == UG_TYPE_STR) {
         _machine_mark_object(value->string);
-    } else if (value->type == UG_TYPE_CNT) {
-        _machine_mark_container(value->object);
-    } else if (value->type == UG_TYPE_WKR) {
-        // leaf
-    }  else if (value->type == UG_TYPE_CTR) {
-        _machine_mark_container(value->object);
-    } else if (value->type == UG_TYPE_OBJ) {
-        _machine_mark_container(value->object);
-    } else if (value->type == UG_TYPE_NTV) {
-        // native
+    } else if (is_type_container(value->type)) {
+        _machine_mark_container(value);
+    } else if (is_type_runnable(value->type)) {
+        //
     } else {
         log_warn("value type not registered for marking");
         Value_print(value);
@@ -248,13 +239,11 @@ void Machine_freeObj(Object* object) {
 
 void Machine_testGC(Machine* this) {
     log_warn("\n\n\n---------------------TEST:");
-    Machine_pushContainer(this, Container_new(UG_CTYPE_SCP));
+    Machine_pushContainer(this, Container_new(UG_CTYPE_SCP, NULL));
     for (size_t i = 0; i < 100; i++) {
         log_warn("---------------------test%i", i);
         for (size_t j = 0; j < 100; j++) {
-            void *ctnr = Container_newBox();
-            Container *target = this->globals;
-            Value *self = Value_newContainer(target, NULL);
+            Container *self = this->globals;
             Container_setLocation(this->currContainer, SCOPE_ALIAS_SLF, self);
         }
         log_warn("--gc");

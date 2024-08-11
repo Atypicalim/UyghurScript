@@ -7,18 +7,14 @@
 #ifndef H_UG_BOX
 #define H_UG_BOX
 
-Container *Container_new(char tp)
+Container *Container_new(char tp, void *extra)
 {
-    bool isBox = tp == UG_CTYPE_BOX;
-    bool isScope = tp == UG_CTYPE_SCP;
-    bool isModule = tp == UG_CTYPE_MDL;
-    bool isCreator = tp == UG_CTYPE_CTR;
-    bool isObject = tp == UG_CTYPE_OBJ;
-    tools_assert(isBox || isScope || isModule || isCreator || isObject, "invalid container type for new");
-    Container *container = Machine_createObjByCurrentFreezeFlag(PCT_OBJ_CNTNR, sizeof(Container));
+    tools_assert(is_type_container(tp), "invalid container type for new");
+    Container *container = _value_newValueBySize(false, tp, sizeof(Container));
     container->map = Hashmap_new(true);
     Machine_tryLinkForGC(container->map);
     container->type = tp;
+    container->extra = extra;
     return container;
 }
 
@@ -34,27 +30,27 @@ void Container_free(Container *this)
 
 Container *Container_newModule()
 {
-    return Container_new(UG_CTYPE_MDL);
+    return Container_new(UG_CTYPE_MDL, NULL);
 }
 
 Container *Container_newScope()
 {
-    return Container_new(UG_CTYPE_SCP);
+    return Container_new(UG_CTYPE_SCP, NULL);
 }
 
-Container *Container_newCtr()
+Container *Container_newCtr(void *extra)
 {
-    return Container_new(UG_CTYPE_CTR);
+    return Container_new(UG_CTYPE_CTR, extra);
 }
 
-Container *Container_newObj()
+Container *Container_newObj(void *extra)
 {
-    return Container_new(UG_CTYPE_OBJ);
+    return Container_new(UG_CTYPE_OBJ, extra);
 }
 
-Container *Container_newBox()
+Container *Container_newBox(void *extra)
 {
-    return Container_new(UG_CTYPE_BOX);
+    return Container_new(UG_CTYPE_BOX, extra);
 }
 
 // 
@@ -78,7 +74,6 @@ void Container_setLocation(Container *this, char *key, void *value)
 }
 
 //
-
 
 bool Container_isModule(Container *this)
 {

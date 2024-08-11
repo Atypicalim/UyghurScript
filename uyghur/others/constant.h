@@ -7,9 +7,9 @@
 #define UG_TYPE_NUM '0'
 #define UG_TYPE_STR '['
 #define UG_TYPE_WKR '&'
+#define UG_TYPE_NTV '#'
 #define UG_TYPE_CTR '$'
 #define UG_TYPE_OBJ '*'
-#define UG_TYPE_NTV '#'
 #define UG_TYPE_CNT '@'
 
 // char values
@@ -80,10 +80,9 @@
 #define UG_CTYPE_OBJ 'o'
 
 // object type
-#define PCT_OBJ_VALUE '$'
-#define PCT_OBJ_CNTNR '@'
 #define PCT_OBJ_TOKEN 't'
 #define PCT_OBJ_LEAF 'l'
+#define PCT_OBJ_VALUE '$'
 
 // token value of keywords
 #define TVALUE_DOT "."

@@ -223,6 +223,16 @@ bool is_scope(UCHAR c)
     return is_uchar_eq_char(c, '*') || is_uchar_eq_char(c, '+') || is_uchar_eq_char(c, '-');
 }
 
+//
+
+bool is_type_container(char tp) {
+    return tp == UG_CTYPE_BOX || tp == UG_CTYPE_SCP || tp == UG_CTYPE_MDL || tp == UG_CTYPE_CTR || tp == UG_CTYPE_OBJ;
+}
+
+bool is_type_runnable(char tp) {
+    return tp == UG_TYPE_NTV || tp == UG_TYPE_WKR;
+}
+
 // 
 
 char *b2s(bool value)

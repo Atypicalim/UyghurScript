@@ -68,6 +68,15 @@ void Machine_retainObj(Object*);
 void Machine_releaseObj(Object*);
 void Machine_freeObj(Object*);
 
+// uyghur
+
+typedef struct _Uyghur Uyghur;
+typedef struct Parser Parser;
+typedef struct Executer Executer;
+typedef struct Machine Machine;
+typedef struct Debug Debug;
+typedef struct _Bridge Bridge;
+
 // value
 
 typedef struct _Value {
@@ -94,13 +103,25 @@ Value *Value_FALSE;
 
 // container
 
-typedef struct _Container {
-    struct _Object;
+typedef struct _Runnable {
+    struct _Value;
     Hashmap *map;
-    char type;
+} Runnable;
+
+Runnable *Runnable_new(char, void*);
+char *Runnable_toString(Runnable *);
+void Runnable_print(Runnable *);
+
+// container
+
+typedef struct _Container {
+    struct _Value;
+    Hashmap *map;
 } Container;
 
-Container *Container_new(char);
+Container *Container_new(char, void*);
+char *Container_toString(Container *);
+void Container_print(Container *);
 
 // 
 
@@ -108,12 +129,16 @@ Container *Container_new(char);
 
 #include "../objects/token.c"
 #include "../objects/leaf.c"
-#include "../objects/container.c"
+
+typedef void (*WORKER)(Leaf *);
+typedef void (*CONTAINER)(Container *);
+typedef void (*NATIVE)(Bridge *);
+
 #include "../objects/value.c"
+#include "../objects/runnable.c"
+#include "../objects/container.c"
 
 ////////////////////////////////////////////////////////////////////////////
-
-typedef struct _Uyghur Uyghur;
 
 typedef struct _Tokenizer {
     Uyghur *uyghur;
@@ -127,12 +152,6 @@ typedef struct _Tokenizer {
     utf8_iter *iterStatic;
     utf8_iter *iterDynamic;
 } Tokenizer;
-
-typedef struct Parser Parser;
-typedef struct Executer Executer;
-typedef struct Machine Machine;
-typedef struct Debug Debug;
-typedef struct Bridge Bridge;
 
 typedef struct _Uyghur {
     bool running;
@@ -164,14 +183,14 @@ Value *INVALID_VAL = NULL;
 #define BRIDGE_STACK_TP_ARG 3
 #define BRIDGE_STACK_TP_RES 4
 
-struct Bridge
-{
+typedef struct _Bridge {
     Uyghur *uyghur;
     Stack *stack;
     Cursor *cursor;
     int type;
     char *last;
-};
+} Bridge;
+
 void Bridge_pushValue(Bridge *, Value *);
 Value *Bridge_popValue(Bridge *);
 void Bridge_startArgument(Bridge *);
@@ -180,8 +199,6 @@ void Bridge_startResult(Bridge *);
 void *Bridge_return(Bridge *);
 void Bridge_call(Bridge *, char *);
 void Bridge_run(Bridge *, Value *);
-
-typedef void (*NATIVE)(Bridge *);
 
 // push alias -> func to bridge
 #define BRIDGE_BIND_NATIVE(name) \
