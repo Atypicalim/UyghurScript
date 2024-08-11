@@ -30,27 +30,13 @@ Value *_value_newValueBySize(bool freeze, char typ, size_t size) {
         value = Machine_createObjByCurrentFreezeFlag(PCT_OBJ_VALUE, size);
     }
     value->type = typ;
-    value->boolean = false;
-    value->number = 0;
-    value->string = "";
-    value->object = NULL;
+    value->obj = NULL;
     value->extra = NULL;
     return value;
 }
 
 Value *_value_newValue(bool freeze, char typ) {
     return _value_newValueBySize(freeze, typ, sizeof(Value));
-}
-
- Value *Value_new(char type, bool boolean, double number, String *string, void *object, void *extra)
-{
-    Value *value = _value_newValue(false, type);
-    value->boolean = boolean;
-    value->number = number;
-    value->string = string;
-    value->object = object;
-    value->extra = extra;
-    return value;
 }
 
 Value *Value_newEmpty(void *extra)
@@ -76,13 +62,18 @@ Value *Value_newBoolean(bool boolean, void *extra)
 
 Value *Value_newNumber(double number, void *extra)
 {
-    return Value_new(UG_TYPE_NUM, NULL, number, NULL, NULL, extra);
+    Value *value = _value_newValue(false, UG_TYPE_NUM);
+    value->number = number;
+    value->extra = extra;
+    return value;
 }
 
 Value *Value_newString(String *string, void *extra)
 {
-    // Machine_retainObj(string);
-    return Value_new(UG_TYPE_STR, NULL, 0, string, NULL, extra);
+    Value *value = _value_newValue(false, UG_TYPE_STR);
+    value->string = string;
+    value->extra = extra;
+    return value;
 }
 
 bool Value_isEmpty(Value *this)
@@ -156,12 +147,12 @@ void Value_print(Value *this)
     }
     else if (is_type_container(this->type))
     {
-        // printf("<V:Container => %p p:%p>\n", this, this->object);
+        // printf("<V:Container => %p p:%p>\n", this, this->obj);
         Container_print(this);
     }
     else if (is_type_runnable(this->type))
     {
-        // printf("<V:Runnable => %p p:%p>\n", this, this->object);
+        // printf("<V:Runnable => %p p:%p>\n", this, this->obj);
         Runnable_print(this);
     }
     else
@@ -182,11 +173,11 @@ char *Value_toString(Value *this)
     } if (this->type == UG_TYPE_STR) {
         return String_dump(this->string);
     } if (is_type_container(this->type)) {
-        return Container_toString(this->object);
+        return Container_toString(this);
     } if (is_type_runnable(this->type)) {
-        return Runnable_toString(this->object);
+        return Runnable_toString(this);
     } else {
-        return tools_format("<Object %p p:%p t:%c>", this, this->object, this->type);
+        return tools_format("<Object %p p:%p t:%c>", this, this->obj, this->type);
     } 
 }
 

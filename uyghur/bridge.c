@@ -358,8 +358,7 @@ void Bridge_call(Bridge *this, char *funcName)
 }
 
 void Bridge_run(Bridge *this, Value *value) {
-    void *func = value->object;
-    char type = (char) value->character;
+    void *func = value->obj;
     void (*function)() = func;
     function(this);
 }

@@ -101,7 +101,7 @@ void native_string_format(Bridge *bridge)
     if (v->type == UG_TYPE_NUM) r = String_format(f, v->number);
     if (v->type == UG_TYPE_STR) r = String_format(f, String_get(v->string));
     if (v->type == UG_TYPE_BOL) r = String_format(f, v->boolean);
-    if (r == NULL) r = String_format(f, v->object);
+    if (r == NULL) r = String_format(f, v->obj);
     Bridge_returnString(bridge, String_get(r));
     Object_release(r);
 }

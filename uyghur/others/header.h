@@ -82,12 +82,14 @@ typedef struct _Bridge Bridge;
 typedef struct _Value {
     struct _Object;
     char type;
-    bool boolean;
-    char character;
-    double number;
-    String *string;
-    void *object;
     void *extra;
+    union { 
+        bool boolean;
+        double number;
+        String *string;
+        Object *obj;
+        Hashmap *map;
+    };
 } Value;
 
 bool Value_isBoolean(Value*);
@@ -105,7 +107,6 @@ Value *Value_FALSE;
 
 typedef struct _Runnable {
     struct _Value;
-    Hashmap *map;
 } Runnable;
 
 Runnable *Runnable_new(char, void*);
@@ -116,7 +117,6 @@ void Runnable_print(Runnable *);
 
 typedef struct _Container {
     struct _Value;
-    Hashmap *map;
 } Container;
 
 Container *Container_new(char, void*);

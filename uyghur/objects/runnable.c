@@ -31,14 +31,14 @@ void Runnable_free(Runnable *this)
 Runnable *Runnable_newWorker(WORKER worker, void *extra)
 {
     Runnable *runnable = Runnable_new(UG_TYPE_WKR, extra);
-    runnable->object = worker;
+    runnable->obj = worker;
     return runnable;
 }
 
 Runnable *Runnable_newNative(NATIVE native, void *extra)
 {
     Runnable *runnable = Runnable_new(UG_TYPE_NTV, extra);
-    runnable->object = native;
+    runnable->obj = native;
     return runnable;
 }
 

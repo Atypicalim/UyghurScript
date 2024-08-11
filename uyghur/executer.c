@@ -782,7 +782,7 @@ Value *Executer_applyWorker(Executer *this, Value *workerValue, Container *conta
     //
     Executer_pushContainer(this, UG_CTYPE_SCP);
     Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
-    Executer_consumeLeaf(this, func->object);
+    Executer_consumeLeaf(this, func->obj);
     Executer_popContainer(this, UG_CTYPE_SCP);
     //
     Machine_releaseObj(self);
@@ -803,7 +803,7 @@ Value *Executer_applyCreator(Executer *this, Value *creatorValue, Container *con
     //
     Executer_pushContainer(this, UG_CTYPE_SCP);
     Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
-    Executer_consumeLeaf(this, func->object);
+    Executer_consumeLeaf(this, func->obj);
     Executer_popContainer(this, UG_CTYPE_SCP);
     //
     Machine_releaseObj(self);

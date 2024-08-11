@@ -329,7 +329,7 @@ void Container_print(Container *this)
 
 void Runnable_print(Runnable *this)
 {
-    printf("[Runnable -> p:%p %p t:%c]\n", this, this->object, this->type);
+    printf("[Runnable -> p:%p %p t:%c]\n", this, this->obj, this->type);
 }
 
 void Object_initByType(char type, void *object)

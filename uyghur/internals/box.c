@@ -6,7 +6,7 @@ void native_box_iterate(Bridge *bridge)
 {
     Value *box = Bridge_receiveValue(bridge, UG_TYPE_CNT);
     Value *wkr = Bridge_receiveValue(bridge, UG_TYPE_WKR);
-    void (*_wkr)() = wkr->object;
+    void (*_wkr)() = wkr->obj;
     // 
     Executer *exe = bridge->uyghur->executer;
     Hashmap *map = ((Container*)box)->map;
