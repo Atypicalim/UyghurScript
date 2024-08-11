@@ -18,11 +18,7 @@ void Bridge_reset(Bridge *this)
         Machine_releaseObj(value);
         value = Stack_pop(this->stack);
     }
-    if (this->cursor != NULL)
-    {
-        free(this->cursor);
-        this->cursor = NULL;
-    }
+    Stack_RESTE(this->stack);
     this->type = 0;
     this->last = NULL;
 }
@@ -32,7 +28,6 @@ Bridge *Bridge_new(Uyghur *uyghur)
     Bridge *bridge = malloc(sizeof(Bridge));
     bridge->uyghur = uyghur;
     bridge->stack = Stack_new();
-    bridge->cursor = NULL;
     bridge->type = 0;
     bridge->last = NULL;
     return bridge;
@@ -56,8 +51,8 @@ Value *Bridge_popValue(Bridge *this)
 // nullable: get next value, value object auto released when reset the stack
 Value *Bridge_nextValue(Bridge *this)
 {
-    tools_assert(this->cursor != NULL, "invalid bridge status, cursor required for values");
-    return Stack_next(this->stack, this->cursor);
+    tools_assert(this->stack != NULL, "invalid bridge status, stack required for values");
+    return Stack_NEXT(this->stack);
 }
 
 // key value
@@ -170,19 +165,17 @@ void Bridge_startArgument(Bridge *this)
 void *Bridge_send(Bridge *this)
 {
     tools_assert(this->type == BRIDGE_STACK_TP_ARG, "invalid bridge status, argument expected for send");
-    Cursor *cursor = Stack_reset(this->stack);
-    Value *v = Stack_next(this->stack, cursor);
+    Stack_RESTE(this->stack);
+    Value *v = Stack_NEXT(this->stack);
     while(v != NULL)
     {
         if (!is_bridge_type(v->type))
         {
             tools_error("invalid bridge status, type %c not available in c", v->type);
         }
-        v = Stack_next(this->stack, cursor);
+        v = Stack_NEXT(this->stack);
     }
-    Cursor_free(cursor);
-    if (this->cursor != NULL) free(this->cursor);
-    this->cursor = Stack_reset(this->stack);
+    Stack_RESTE(this->stack);
 }
 
 // return native call results to script
@@ -325,19 +318,18 @@ void Bridge_call(Bridge *this, char *funcName)
     tools_assert(funcName != NULL, "invalid bridge status, func name not found for call");
     tools_assert(this->type == BRIDGE_STACK_TP_FUN, "invalid bridge status, func expected for call");
     tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key unnecessary for call");
-    Cursor *cursor = Stack_reset(this->stack);
+    Stack_RESTE(this->stack);
     // arguments
     Executer *executer = this->uyghur->executer;
     Stack *stack = executer->callStack;
     Stack_clear(stack);
-    Value *item = Stack_next(this->stack, cursor);
+    Value *item = Stack_NEXT(this->stack);
     while (item != NULL)
     {
         Executer_pushStack(executer, item);
         Object *o = (Object *)item;
-        item = Stack_next(this->stack, cursor);
+        item = Stack_NEXT(this->stack);
     }
-    Cursor_free(cursor);
     // execute
     Value *r = NULL;
     //

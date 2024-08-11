@@ -365,10 +365,9 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
 
 void Executer_consumeVariable(Executer *this, Leaf *leaf)
 {
-    Cursor *cursor = Stack_reset(leaf->tokens);
-    Token *token = Stack_next(leaf->tokens, cursor);
-    Token *name = Stack_next(leaf->tokens, cursor);
-    Cursor_free(cursor);
+    Stack_RESTE(leaf->tokens);
+    Token *token = Stack_NEXT(leaf->tokens);
+    Token *name = Stack_NEXT(leaf->tokens);
     // 
     Value *new = NULL;
     if (Token_isEmpty(token)) {
@@ -394,10 +393,9 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
 
 void Executer_consumeCommand(Executer *this, Leaf *leaf)
 {
-    Cursor *cursor = Stack_reset(leaf->tokens);
-    Token *action = Stack_next(leaf->tokens, cursor);
-    Token *name = Stack_next(leaf->tokens, cursor);
-    Cursor_free(cursor);
+    Stack_RESTE(leaf->tokens);
+    Token *action = Stack_NEXT(leaf->tokens);
+    Token *name = Stack_NEXT(leaf->tokens);
     if (is_eq_string(action->value, TVALUE_CMD_OUTPUT))
     {
         Value *value = NULL;
@@ -431,10 +429,9 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
 
 void Executer_consumeConvert(Executer *this, Leaf *leaf)
 {
-    Cursor *cursor = Stack_reset(leaf->tokens);
-    Token *action = Stack_next(leaf->tokens, cursor);
-    Token *target = Stack_next(leaf->tokens, cursor);
-    Cursor_free(cursor);
+    Stack_RESTE(leaf->tokens);
+    Token *action = Stack_NEXT(leaf->tokens);
+    Token *target = Stack_NEXT(leaf->tokens);
     Value *value = Executer_getValueByToken(this, target, true);
     Value *r = NULL;
     char *act = action->value;
@@ -504,12 +501,11 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
 bool Executer_checkJudge(Executer *this, Leaf *leaf)
 {
     //
-    Cursor *cursor = Stack_reset(leaf->tokens);
-    Token *judge = Stack_next(leaf->tokens, cursor);
-    Token *first = Stack_next(leaf->tokens, cursor);
-    Token *clcltn = Stack_next(leaf->tokens, cursor);
-    Token *second = Stack_next(leaf->tokens, cursor);
-    Cursor_free(cursor);
+    Stack_RESTE(leaf->tokens);
+    Token *judge = Stack_NEXT(leaf->tokens);
+    Token *first = Stack_NEXT(leaf->tokens);
+    Token *clcltn = Stack_NEXT(leaf->tokens);
+    Token *second = Stack_NEXT(leaf->tokens);
     //
     Value *firstV = first == NULL ? NULL : Executer_getValueByToken(this, first, true);
     Value *secondV = second == NULL ? NULL : Executer_getValueByToken(this, second, true);
@@ -538,9 +534,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
 {
     //
     bool isFinish = false;
-    Cursor *cursor1 = Queue_reset(leaf->leafs);
+    Queue_RESTE(leaf->leafs);
     // if
-    Leaf *ifNode = Queue_next(leaf->leafs, cursor1);
+    Leaf *ifNode = Queue_NEXT(leaf->leafs);
     tools_assert(ifNode != NULL, LANG_ERR_EXECUTER_INVALID_IF);
     tools_assert(ifNode->type == UG_ATYPE_IF_F, LANG_ERR_EXECUTER_INVALID_IF);
     if (!isFinish && Executer_checkJudge(this, ifNode))
@@ -551,7 +547,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         isFinish = true;
     }
     // elseif
-    ifNode = Queue_next(leaf->leafs, cursor1);
+    ifNode = Queue_NEXT(leaf->leafs);
     while (ifNode->type == UG_ATYPE_IF_M)
     {
         if (!isFinish && Executer_checkJudge(this, ifNode))
@@ -561,15 +557,14 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
             Executer_popContainer(this, UG_CTYPE_SCP);
             isFinish = true;
         }
-        ifNode = Queue_next(leaf->leafs, cursor1);
+        ifNode = Queue_NEXT(leaf->leafs);
         tools_assert(ifNode != NULL, LANG_ERR_EXECUTER_INVALID_IF);
     }
     // else
     if (ifNode->type == UG_ATYPE_IF_L)
     {
-        Cursor *cursor2 = Stack_reset(ifNode->tokens);
-        Token *token = Stack_next(ifNode->tokens, cursor2);
-        Cursor_free(cursor2);
+        Stack_RESTE(ifNode->tokens);
+        Token *token = Stack_NEXT(ifNode->tokens);
         tools_assert(is_eq_string(token->value, TVALUE_ELSE), LANG_ERR_EXECUTER_INVALID_IF);
         if (!isFinish)
         {
@@ -578,14 +573,13 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
             Executer_popContainer(this, UG_CTYPE_SCP);
             isFinish = true;
         }
-        ifNode = Queue_next(leaf->leafs, cursor1);
+        ifNode = Queue_NEXT(leaf->leafs);
         tools_assert(ifNode != NULL, LANG_ERR_EXECUTER_INVALID_IF);
     }
     // end
     tools_assert(ifNode->type == UG_ATYPE_END, LANG_ERR_EXECUTER_INVALID_IF);
-    Leaf *nullValue = Queue_next(leaf->leafs, cursor1);
+    Leaf *nullValue = Queue_NEXT(leaf->leafs);
     tools_assert(nullValue == NULL, LANG_ERR_EXECUTER_INVALID_IF);
-    Cursor_free(cursor1);
 }
 
 void Executer_consumeWhile(Executer *this, Leaf *leaf)
@@ -602,11 +596,10 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
 void Executer_consumeSpread(Executer *this, Leaf *leaf)
 {
     //
-    Cursor *cursor = Stack_reset(leaf->tokens);
-    Token *target = Stack_next(leaf->tokens, cursor);
-    Token *iter1 = Stack_next(leaf->tokens, cursor);
-    Token *iter2 = Stack_next(leaf->tokens, cursor);
-    Cursor_free(cursor);
+    Stack_RESTE(leaf->tokens);
+    Token *target = Stack_NEXT(leaf->tokens);
+    Token *iter1 = Stack_NEXT(leaf->tokens);
+    Token *iter2 = Stack_NEXT(leaf->tokens);
     Token_print(target);
     Token_print(iter1);
     Token_print(iter2);
@@ -685,9 +678,8 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
 void Executer_consumeException(Executer *this, Leaf *leaf)
 {
     
-    Cursor *cursor = Stack_reset(leaf->tokens);
-    Token *name = Stack_next(leaf->tokens, cursor);
-    Cursor_free(cursor);
+    Stack_RESTE(leaf->tokens);
+    Token *name = Stack_NEXT(leaf->tokens);
     this->isCatch = true;
     // 
     Executer_pushContainer(this, UG_CTYPE_SCP);
@@ -708,13 +700,11 @@ void Executer_consumeException(Executer *this, Leaf *leaf)
 
 void _executer_parseWorkerOrCreator(Executer *this, Leaf *leaf, bool isCreator, Token **func, Leaf **code) {
     // func name
-    Cursor *cursor1 = Stack_reset(leaf->tokens);
-    *func = Stack_next(leaf->tokens, cursor1);
-    Cursor_free(cursor1);
+    Stack_RESTE(leaf->tokens);
+    *func = Stack_NEXT(leaf->tokens);
     // func body
-    Cursor *cursor2 = Queue_reset(leaf->leafs);
-    *code = Queue_next(leaf->leafs, cursor2);
-    Cursor_free(cursor2);
+    Queue_RESTE(leaf->leafs);
+    *code = Queue_NEXT(leaf->leafs);
     // func location
     if (Token_isKey(*func)) {
         Container *place = NULL;
@@ -756,18 +746,16 @@ void Executer_consumeCreator(Executer *this, Leaf *leaf)
 void Executer_consumeCode(Executer *this, Leaf *leaf)
 {
     Stack_reverse(this->callStack);
-    Cursor *cursor1 = Stack_reset(this->callStack);
-    Cursor *cursor2 = Stack_reset(leaf->tokens);
-    Token *funcName = Stack_next(leaf->tokens, cursor2);
-    Token *arg = Stack_next(leaf->tokens, cursor2);
+    Stack_RESTE(this->callStack);
+    Stack_RESTE(leaf->tokens);
+    Token *funcName = Stack_NEXT(leaf->tokens);
+    Token *arg = Stack_NEXT(leaf->tokens);
     while(arg != NULL)
     {
-        Value *value = Stack_next(this->callStack, cursor1);
+        Value *value = Stack_NEXT(this->callStack);
         Executer_setValueToContainer(this, this->machine->currContainer, arg, value);
-        arg = Stack_next(leaf->tokens, cursor2);
+        arg = Stack_NEXT(leaf->tokens);
     }
-    Cursor_free(cursor1);
-    Cursor_free(cursor2);
     //
     Stack_clear(this->callStack);
     Executer_consumeTree(this, leaf);
@@ -822,15 +810,14 @@ Value *Executer_applyNative(Executer *this, Value *nativeValue, Container *conta
 {
     Bridge *bridge = this->uyghur->bridge;
     Bridge_startArgument(bridge);
-    Cursor *cursor = Stack_reset(this->callStack);
-    Value *value = Stack_next(this->callStack, cursor);
+    Stack_RESTE(this->callStack);
+    Value *value = Stack_NEXT(this->callStack);
     while (value != NULL)
     {
         Machine_retainObj(value);
         Bridge_pushValue(bridge, value);
-        value = Stack_next(this->callStack, cursor);
+        value = Stack_NEXT(this->callStack);
     }
-    Cursor_free(cursor);
     Bridge_send(bridge);
     //
     Bridge_run(bridge, nativeValue);
@@ -854,20 +841,19 @@ Value *Executer_pushStack(Executer *this, Value *value)
 void Executer_consumeApply(Executer *this, Leaf *leaf)
 {
     Stack_clear(this->callStack);
-    Cursor *cursor = Stack_reset(leaf->tokens);
+    Stack_RESTE(leaf->tokens);
     // get runnable name and result name
-    Token *runnableName = Stack_next(leaf->tokens, cursor);
-    Token *resultName = Stack_next(leaf->tokens, cursor);
+    Token *runnableName = Stack_NEXT(leaf->tokens);
+    Token *resultName = Stack_NEXT(leaf->tokens);
     // push args
-    Token *arg = Stack_next(leaf->tokens, cursor);
+    Token *arg = Stack_NEXT(leaf->tokens);
     while(arg != NULL)
     {
         Value *value = Executer_getValueByToken(this, arg, true);
         Executer_pushStack(this, value);
         Machine_releaseObj(value);
-        arg = Stack_next(leaf->tokens, cursor);
+        arg = Stack_NEXT(leaf->tokens);
     }
-    Cursor_free(cursor);
     // get runable
     
     Value *runnableValue = NULL;
@@ -902,9 +888,8 @@ void Executer_consumeApply(Executer *this, Leaf *leaf)
 
 void Executer_consumeResult(Executer *this, Leaf *leaf)
 {
-    Cursor *cursor = Stack_reset(leaf->tokens);
-    Token *result = Stack_next(leaf->tokens, cursor);
-    Cursor_free(cursor);
+    Stack_RESTE(leaf->tokens);
+    Token *result = Stack_NEXT(leaf->tokens);
     Value *value = Executer_getValueByToken(this, result, true);
     Stack_clear(this->callStack);
     Executer_pushStack(this, value);
@@ -936,10 +921,9 @@ Value *Executer_calculateBTree(Executer *this, Foliage *foliage)
 
 void Executer_consumeCalculator(Executer *this, Leaf *leaf)
 {
-    Cursor *cursor = Stack_reset(leaf->tokens);
-    Token *body = Stack_next(leaf->tokens, cursor);
-    Token *target = Stack_next(leaf->tokens, cursor);
-    Cursor_free(cursor);
+    Stack_RESTE(leaf->tokens);
+    Token *body = Stack_NEXT(leaf->tokens);
+    Token *target = Stack_NEXT(leaf->tokens);
     Foliage *root = (Foliage *)body->value;
     //
     // TODO:free r object
@@ -1046,16 +1030,15 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 
 bool Executer_consumeTree(Executer *this, Leaf *tree)
 {
-    Cursor *cursor = Queue_reset(tree->leafs);
-    Leaf *leaf = Queue_next(tree->leafs, cursor);
+    Queue_RESTE(tree->leafs);
+    Leaf *leaf = Queue_NEXT(tree->leafs);
     while (leaf != NULL)
     {
         Machine_tryGC(this->machine);
         Executer_consumeLeaf(this, leaf);
         if (this->isReturn) break;
-        leaf = Queue_next(tree->leafs, cursor);
+        leaf = Queue_NEXT(tree->leafs);
     }
-    Cursor_free(cursor);
     return true;
 }
 

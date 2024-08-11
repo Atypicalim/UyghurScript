@@ -186,7 +186,6 @@ Value *INVALID_VAL = NULL;
 typedef struct _Bridge {
     Uyghur *uyghur;
     Stack *stack;
-    Cursor *cursor;
     int type;
     char *last;
 } Bridge;

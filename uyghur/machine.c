@@ -53,21 +53,20 @@ Object* Machine_popContainer(Machine *this) {
 
 Container *Machine_getCurrentModule(Machine *this, Token *token)
 {
-    Cursor *cursor = Stack_reset(this->stack);
+    Stack_RESTE(this->stack);
     Container *container = NULL;
-    while ((container = Stack_next(this->stack, cursor)) != NULL)
+    while ((container = Stack_NEXT(this->stack)) != NULL)
     {
         if (Container_isModule(container)) break;
     }
-    Cursor_free(cursor);
     return container;
 }
 
 Container *Machine_getCurrentSelf(Machine *this, Token *token)
 {
-    Cursor *cursor = Stack_reset(this->stack);
+    Stack_RESTE(this->stack);
     Container *container = NULL;
-    while ((container = Stack_next(this->stack, cursor)) != NULL)
+    while ((container = Stack_NEXT(this->stack)) != NULL)
     {
         if (!Container_isScope(container)) break;
         Value *self = Container_getLocation(container, SCOPE_ALIAS_SLF);
@@ -76,7 +75,6 @@ Container *Machine_getCurrentSelf(Machine *this, Token *token)
             break;
         }
     }
-    Cursor_free(cursor);
     return container;
 }
 
