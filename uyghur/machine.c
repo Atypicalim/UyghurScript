@@ -34,7 +34,17 @@ void _machine_free_object(Machine *this, Object* object) {
     // Container *container = object;
     // add hashmap and hashkey to vm
     // log_info("free_object:%p", object);
-    free(object);
+    if (object->objType == PCT_OBJ_VALUE) {
+        Value *value = object;
+        if (value->type == UG_TYPE_STR) {
+            String_free(value->string);
+        }
+        free(object);
+    } else if (object->objType == PCT_OBJ_HASHMAP) {
+        Hashmap_free(object);
+    } else {
+        free(object);
+    }
 }
 
 void Machine_pushContainer(Machine *this, Object* object) {
