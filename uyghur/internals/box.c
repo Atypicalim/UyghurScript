@@ -12,7 +12,7 @@ void native_box_iterate(Bridge *bridge)
     Hashmap *map = ((Container*)box)->map;
     Hashkey *ptr;
     for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
-        ptr = map[i].position;
+        ptr = map->bucket[i];
         while (ptr != NULL) {
             String *_key = ptr->key;
             Value *key = Value_newString(_key, NULL);

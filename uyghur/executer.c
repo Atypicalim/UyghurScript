@@ -650,7 +650,7 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
         Hashmap *map = box->map;
         Hashkey *ptr;
         for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
-            ptr = map[i].position;
+            ptr = map->bucket[i];
             while (ptr != NULL) {
                 String *_key = ptr->key;
                 Value *val = ptr->value;

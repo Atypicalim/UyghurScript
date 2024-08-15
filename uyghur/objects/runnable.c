@@ -11,21 +11,9 @@ Runnable *Runnable_new(char tp, void *extra)
 {
     tools_assert(is_type_runnable(tp), "invalid runnable type for new");
     Runnable *runnable = _value_newValueBySize(false, tp, sizeof(Runnable));
-    runnable->map = Hashmap_new(true);
-    Machine_tryLinkForGC(runnable->map);
     runnable->type = tp;
     runnable->extra = extra;
     return runnable;
-}
-
-void Runnable_free(Runnable *this)
-{
-#if GC_USE_COUNTING
-    Machine_releaseObj(this->map);
-    Machine_freeObj(this);
-#elif GC_USE_SWEEPING
-    //
-#endif
 }
 
 Runnable *Runnable_newWorker(WORKER worker, void *extra)

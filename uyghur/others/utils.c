@@ -115,7 +115,7 @@ char *time_get_time()
     return fullLocalDate;
 }
 
-int time_get_clock()
+double time_get_clock()
 {
     clock_t clockTime = clock();
     double seconds = (double)clockTime / CLOCKS_PER_SEC;

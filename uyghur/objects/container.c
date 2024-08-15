@@ -18,16 +18,6 @@ Container *Container_new(char tp, void *extra)
     return container;
 }
 
-void Container_free(Container *this)
-{
-#if GC_USE_COUNTING
-    Machine_releaseObj(this->map);
-    Machine_freeObj(this);
-#elif GC_USE_SWEEPING
-    //
-#endif
-}
-
 Container *Container_newModule()
 {
     return Container_new(UG_CTYPE_MDL, NULL);

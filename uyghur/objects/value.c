@@ -147,13 +147,13 @@ void Value_print(Value *this)
     }
     else if (is_type_container(this->type))
     {
-        // printf("<V:Container => %p p:%p>\n", this, this->obj);
-        Container_print(this);
+        printf("<V:Container => %p p:%p>\n", this, this->obj);
+        // Container_print(this);
     }
     else if (is_type_runnable(this->type))
     {
-        // printf("<V:Runnable => %p p:%p>\n", this, this->obj);
-        Runnable_print(this);
+        printf("<V:Runnable => %p p:%p>\n", this, this->obj);
+        // Runnable_print(this);
     }
     else
     {
@@ -259,18 +259,14 @@ void Value_free(Value *this)
     // {
     //     free(tag);
     // }
-#if GC_USE_COUNTING
     if (this->type == UG_TYPE_STR) {
         Machine_releaseObj(this->string);
-    } else if (this->type == UG_TYPE_CNT || this->type == UG_TYPE_OBJ) {
-        Machine_releaseObj(this);
+    } else if (is_type_container(this->type)) {
+        Machine_releaseObj(this->map);
     }
     if (this != Value_EMPTY && this != Value_TRUE && this != Value_FALSE) {
         Machine_freeObj(this);
     }
-#elif GC_USE_SWEEPING
-    //
-#endif
 }
 
 #endif

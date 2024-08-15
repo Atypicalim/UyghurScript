@@ -29,8 +29,6 @@
 bool isTest = false;
 #define MAX_STACK_SIZE 1000
 #define MAX_TRACE_SIZE 5
-#define GC_USE_COUNTING false
-#define GC_USE_SWEEPING true
 
 typedef char* UG_NAMES;
 typedef const char* UCHAR;
@@ -209,8 +207,9 @@ struct Machine {
     Uyghur *uyghur;
     Stack* stack;
     Object* first;
+    bool sweeping;
     bool freezing;
-    bool collecting;
+    bool collects;
     Stack *calls;
     Container *globals;
     Container *rootModule;

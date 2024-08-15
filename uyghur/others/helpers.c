@@ -289,7 +289,7 @@ void _hashmap_print_with_callback(Hashmap *this, char *prefix, HASHKEY_PRINT_CAL
     if (prefix == NULL) prefix = "";
     Hashkey *ptr;
     for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
-        ptr = this[i].position;
+        ptr = this->bucket[i];
         while (ptr != NULL) {
             callback(ptr, prefix);
             ptr = ptr->next;
