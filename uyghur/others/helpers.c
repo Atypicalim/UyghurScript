@@ -128,7 +128,7 @@ bool is_base_type(char tp)
 
 bool is_bridge_type(char tp)
 {
-    return is_base_type(tp) || tp == UG_TYPE_CNT || tp == UG_TYPE_WKR;
+    return is_base_type(tp) || tp == UG_TYPE_WKR;
 }
 
 bool is_calculator_common(UCHAR c)
@@ -322,14 +322,14 @@ void Hashmap_print(Hashmap *this)
 
 void Container_print(Container *this)
 {
-    printf("[Container -> p:%p %p t:%c]\n", this, this->map, this->type);
-    _hashmap_print_with_callback(this->map, "|", _container_key_print_callback);
-    printf("[Container]\n");
+    printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Container"), this, this->map);
+    // _hashmap_print_with_callback(this->map, "|", _container_key_print_callback);
+    // printf("[Container]\n");
 }
 
 void Runnable_print(Runnable *this)
 {
-    printf("[Runnable -> p:%p %p t:%c]\n", this, this->obj, this->type);
+    printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Runnable"), this, this->obj);
 }
 
 void Object_initByType(char type, void *object)

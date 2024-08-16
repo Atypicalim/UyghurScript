@@ -4,7 +4,7 @@
 
 void native_box_iterate(Bridge *bridge)
 {
-    Value *box = Bridge_receiveValue(bridge, UG_TYPE_CNT);
+    Value *box = Bridge_receiveValue(bridge, UG_TYPE_BOX);
     Value *wkr = Bridge_receiveValue(bridge, UG_TYPE_WKR);
     void (*_wkr)() = wkr->obj;
     // 

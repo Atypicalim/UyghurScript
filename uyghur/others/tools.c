@@ -226,11 +226,26 @@ bool is_scope(UCHAR c)
 //
 
 bool is_type_container(char tp) {
-    return tp == UG_CTYPE_BOX || tp == UG_CTYPE_SCP || tp == UG_CTYPE_MDL || tp == UG_CTYPE_CTR || tp == UG_CTYPE_OBJ;
+    return tp == UG_TYPE_BOX || tp == UG_TYPE_SCP || tp == UG_TYPE_MDL || tp == UG_TYPE_CTR || tp == UG_TYPE_OBJ;
 }
 
 bool is_type_runnable(char tp) {
     return tp == UG_TYPE_NTV || tp == UG_TYPE_WKR;
+}
+
+char* get_value_name(char tp, char* def) {
+    switch (tp) {
+        case UG_TYPE_BOX: return "box";
+        case UG_TYPE_SCP: return "scp";
+        case UG_TYPE_MDL: return "mdl";
+        case UG_TYPE_CTR: return "ctr";
+        case UG_TYPE_OBJ: return "obj";
+        //
+        case UG_TYPE_NTV: return "ntv";
+        case UG_TYPE_WKR: return "wkr";
+        //
+        default: return def;
+    }
 }
 
 // 

@@ -1,5 +1,6 @@
 // constant
 
+// @
 // common type
 #define UG_TYPE_NON '?'
 #define UG_TYPE_NIL '~'
@@ -10,7 +11,10 @@
 #define UG_TYPE_NTV '#'
 #define UG_TYPE_CTR '$'
 #define UG_TYPE_OBJ '*'
-#define UG_TYPE_CNT '@'
+// container type
+#define UG_TYPE_BOX 'x'
+#define UG_TYPE_SCP 's'
+#define UG_TYPE_MDL 'm'
 
 // char values
 #define CHAR_EMPTY ' '
@@ -71,13 +75,6 @@
 #define UG_ATYPE_CVT 'c'
 #define UG_ATYPE_CMD '%'
 #define UG_ATYPE_CLC '='
-
-// container type
-#define UG_CTYPE_BOX 'x'
-#define UG_CTYPE_SCP 's'
-#define UG_CTYPE_MDL 'm'
-#define UG_CTYPE_CTR 'c'
-#define UG_CTYPE_OBJ 'o'
 
 // object type
 #define PCT_OBJ_TOKEN 't'

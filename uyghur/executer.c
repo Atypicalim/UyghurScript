@@ -84,7 +84,7 @@ Container *Executer_popContainer(Executer *this, char type)
 {
     Container *container = Machine_popContainer(this->machine);
     tools_assert(container != NULL && container->type == type, LANG_ERR_EXECUTER_INVALID_STATE);
-    if (type == UG_CTYPE_SCP) {
+    if (type == UG_TYPE_SCP) {
         Machine_releaseObj(container);
         return NULL;
     } else {
@@ -108,10 +108,13 @@ Container *Executer_getCurrentModule(Executer *this, Token *token)
 
 Container *Executer_getCurrentSelf(Executer *this, Token *token)
 {
+    log_info("curSelf 11 %s", Token_toString(token));
     Container *container = Machine_getCurrentSelf(this->machine, token);
+    log_info("curSelf 22 %p", container);
     if (!Container_isCtr(container) && !Container_isObj(container) && !Container_isBox(container)) {
         Executer_error(this, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
     }
+    log_info("curSelf 33 %p", container);
     return container;
 }
 
@@ -161,23 +164,29 @@ void Executer_findValueByToken(Executer *this, Token *token, Container **rContai
     // const
     Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_INVALID_KEY);
     Token *extra = (Token *)token->extra;
+    log_info("findVal 111 %s", Token_toString(extra));
     if (is_eq_string(extra->value, SCOPE_ALIAS_PRG)) *rContainer = Executer_getCurrentGlobal(this, token);
     if (is_eq_string(extra->value, SCOPE_ALIAS_MDL)) *rContainer = Executer_getCurrentModule(this, token);
     if (is_eq_string(extra->value, SCOPE_ALIAS_SLF)) *rContainer = Executer_getCurrentSelf(this, token);
+    log_info("findVal 222 %p", *rContainer);
     // box
     Value *value = NULL;
     if (*rContainer == NULL) {
         char *location = convert_string_to_location(extra->value, UG_TYPE_STR);
         Executer_findValueByLocation(this, location, &INVALID_CTN, &value);
+        log_info("findVal 333 %p", *rContainer);
         pct_free(location);
         if (value != NULL) *rContainer = value;
     }
+    log_info("findVal 444 %p", *rContainer);
     if (*rContainer == NULL) return;
     // key
     char *location = convert_string_to_location(token->value, UG_TYPE_STR);
     // 
     if (Container_isCtr(*rContainer) || Container_isObj(*rContainer)) {
+        log_info("findVal 555 %p %s %p", *rContainer, location, (*rContainer)->map);
         *rValue = Container_getLocation(*rContainer, location);
+        log_info("findVal 666 %p", *rValue);
         Value *creator = value == NULL ? NULL : value->extra;
         while (*rValue == NULL && creator != NULL) {
             *rValue = Container_getLocation(creator, location);
@@ -412,6 +421,8 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
         }
         if (Value_isContainer(value)) {
             Container_print(value);
+        } else if (Value_isRunnable(value)) {
+            Runnable_print(value);
         } else {
             char *content = Value_toString(value);
             printf("%s", content);
@@ -541,9 +552,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     tools_assert(ifNode->type == UG_ATYPE_IF_F, LANG_ERR_EXECUTER_INVALID_IF);
     if (!isFinish && Executer_checkJudge(this, ifNode))
     {
-        Executer_pushContainer(this, UG_CTYPE_SCP);
+        Executer_pushContainer(this, UG_TYPE_SCP);
         Executer_consumeTree(this, ifNode);
-        Executer_popContainer(this, UG_CTYPE_SCP);
+        Executer_popContainer(this, UG_TYPE_SCP);
         isFinish = true;
     }
     // elseif
@@ -552,9 +563,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     {
         if (!isFinish && Executer_checkJudge(this, ifNode))
         {
-            Executer_pushContainer(this, UG_CTYPE_SCP);
+            Executer_pushContainer(this, UG_TYPE_SCP);
             Executer_consumeTree(this, ifNode);
-            Executer_popContainer(this, UG_CTYPE_SCP);
+            Executer_popContainer(this, UG_TYPE_SCP);
             isFinish = true;
         }
         ifNode = Queue_NEXT(leaf->leafs);
@@ -568,9 +579,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         tools_assert(is_eq_string(token->value, TVALUE_ELSE), LANG_ERR_EXECUTER_INVALID_IF);
         if (!isFinish)
         {
-            Executer_pushContainer(this, UG_CTYPE_SCP);
+            Executer_pushContainer(this, UG_TYPE_SCP);
             Executer_consumeTree(this, ifNode);
-            Executer_popContainer(this, UG_CTYPE_SCP);
+            Executer_popContainer(this, UG_TYPE_SCP);
             isFinish = true;
         }
         ifNode = Queue_NEXT(leaf->leafs);
@@ -586,9 +597,9 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
 {
     while (Executer_checkJudge(this, leaf))
     {
-        Executer_pushContainer(this, UG_CTYPE_SCP);
+        Executer_pushContainer(this, UG_TYPE_SCP);
         Executer_consumeTree(this, leaf);
-        Executer_popContainer(this, UG_CTYPE_SCP);
+        Executer_popContainer(this, UG_TYPE_SCP);
         if (this->errorMsg != NULL) break;
     }
 }
@@ -623,26 +634,26 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
     if (Value_isInt(value)) {
         for (size_t i = 0; i < value->number; i++)
         {
-            Executer_pushContainer(this, UG_CTYPE_SCP);
+            Executer_pushContainer(this, UG_TYPE_SCP);
             current1 = Value_newNumber(i, iter1);
             Executer_setValueByToken(this, iter1, current1, true);
             current2 = Value_newNumber(i + 1, iter2);
             Executer_setValueByToken(this, iter2, current2, true);
             Executer_consumeTree(this, leaf);
-            Executer_popContainer(this, UG_CTYPE_SCP);
+            Executer_popContainer(this, UG_TYPE_SCP);
             if (this->errorMsg != NULL) break;
         }
     } else if (Value_isString(value)) {
         utf8_iter iterator;
         utf8_init(&iterator, String_get(value->string));
         while (utf8_next(&iterator)) {
-            Executer_pushContainer(this, UG_CTYPE_SCP);
+            Executer_pushContainer(this, UG_TYPE_SCP);
             current1 = Value_newNumber(iterator.position, iter1);
             Executer_setValueByToken(this, iter1, current1, true);
             current2 = Value_newString(String_format(utf8_getchar(&iterator)), iter2);
             Executer_setValueByToken(this, iter2, current2, true);
             Executer_consumeTree(this, leaf);
-            Executer_popContainer(this, UG_CTYPE_SCP);
+            Executer_popContainer(this, UG_TYPE_SCP);
             if (this->errorMsg != NULL) break;
         }
     } else if (Value_isContainer(value)) {
@@ -655,13 +666,13 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
                 String *_key = ptr->key;
                 Value *val = ptr->value;
                 //
-                Executer_pushContainer(this, UG_CTYPE_SCP);
+                Executer_pushContainer(this, UG_TYPE_SCP);
                 current1 = Value_newString(_key, iter1);
                 Executer_setValueByToken(this, iter1, current1, true);
                 current2 = val;
                 Executer_setValueByToken(this, iter2, current2, true);
                 Executer_consumeTree(this, leaf);
-                Executer_popContainer(this, UG_CTYPE_SCP);
+                Executer_popContainer(this, UG_TYPE_SCP);
                 if (this->errorMsg != NULL) break;
                 // 
                 ptr = ptr->next;
@@ -682,9 +693,9 @@ void Executer_consumeException(Executer *this, Leaf *leaf)
     Token *name = Stack_NEXT(leaf->tokens);
     this->isCatch = true;
     // 
-    Executer_pushContainer(this, UG_CTYPE_SCP);
+    Executer_pushContainer(this, UG_TYPE_SCP);
     Executer_consumeTree(this, leaf);
-    Executer_popContainer(this, UG_CTYPE_SCP);
+    Executer_popContainer(this, UG_TYPE_SCP);
     // 
     this->isCatch = false;
     Value *error = NULL;
@@ -736,6 +747,9 @@ void Executer_consumeCreator(Executer *this, Leaf *leaf)
     Container *self = Container_newCtr(NULL);
     Token *funT = Token_name(FUNCTION_KEY);
     Value *funV = Runnable_newWorker(code, NULL);
+    log_info("CREATOR: c:%p m:%p", self, self->map);
+    log_info("CREATOR: t:%s f:%p", Token_toString(funT), funV);
+
     Executer_setValueToContainer(this, self, funT, funV);
     Machine_releaseObj(funT);
     Machine_releaseObj(funV);
@@ -768,10 +782,10 @@ Value *Executer_applyWorker(Executer *this, Value *workerValue, Container *conta
     //
     Value *func = workerValue;
     //
-    Executer_pushContainer(this, UG_CTYPE_SCP);
+    Executer_pushContainer(this, UG_TYPE_SCP);
     Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
     Executer_consumeLeaf(this, func->obj);
-    Executer_popContainer(this, UG_CTYPE_SCP);
+    Executer_popContainer(this, UG_TYPE_SCP);
     //
     Machine_releaseObj(self);
     this->isReturn = false;
@@ -783,16 +797,19 @@ Value *Executer_applyWorker(Executer *this, Value *workerValue, Container *conta
 
 Value *Executer_applyCreator(Executer *this, Value *creatorValue, Container *container)
 {
-    Container *self = Container_newObj(creatorValue);
-    // 
     Token *temp = Token_name(FUNCTION_KEY);
     Value *func = Executer_getValueFromContainer(this, creatorValue, temp);
+    //
+    log_info("APPLY: c:%p m:%p", creatorValue, creatorValue->map);
+    log_info("APPLY: t:%s f:%p", Token_toString(temp), func);
+    Container *self = Container_newObj(creatorValue);
+    // 
     Machine_releaseObj(temp);
     //
-    Executer_pushContainer(this, UG_CTYPE_SCP);
+    Executer_pushContainer(this, UG_TYPE_SCP);
     Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
     Executer_consumeLeaf(this, func->obj);
-    Executer_popContainer(this, UG_CTYPE_SCP);
+    Executer_popContainer(this, UG_TYPE_SCP);
     //
     Machine_releaseObj(self);
     this->isReturn = false;
@@ -872,7 +889,7 @@ void Executer_consumeApply(Executer *this, Leaf *leaf)
     } else if (runnableValue->type == UG_TYPE_NTV) {
         r = Executer_applyNative(this, runnableValue, runnableContainer);
     } else {
-        Executer_error(this, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_VALID);
+        Executer_error(this, runnableName, "LANG_ERR_EXECUTER_RUNNABLE_NOT_VALID");
     }
     Debug_popTrace(this->uyghur->debug, NULL);
     // return result
@@ -936,7 +953,7 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
     char tp = leaf->type;
-    // log_debug("executer.next: %c", tp);
+    log_debug("executer.next: %c", tp);
     // throwing
     if (setjmp(jump_buffer) != 0 || (this->errorMsg != NULL && tp != UG_ATYPE_EXC)) {
         return;
@@ -1044,10 +1061,10 @@ bool Executer_consumeTree(Executer *this, Leaf *tree)
 
 Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
 {
-    Executer_pushContainer(this, UG_CTYPE_MDL);
+    Executer_pushContainer(this, UG_TYPE_MDL);
     Executer_consumeTree(this, tree);
     if (this->machine->stack->head == this->machine->stack->tail) return NULL;
-    Container *module = Executer_popContainer(this, UG_CTYPE_MDL);
+    Container *module = Executer_popContainer(this, UG_TYPE_MDL);
     Container_setLocation(this->globalScope, path, module);
     return module;
 }

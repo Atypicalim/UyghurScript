@@ -108,17 +108,12 @@ bool Value_isString(Value *this)
 
 bool Value_isContainer(Value *this)
 {
-    return this != NULL && this->type == UG_TYPE_CNT;
-}
-
-bool Value_isCreator(Value *this)
-{
-    return this != NULL && this->type == UG_TYPE_CTR;
+    return this != NULL && is_type_container(this->type);
 }
 
 bool Value_isRunnable(Value *this)
 {
-    return this != NULL && (this->type == UG_TYPE_WKR || this->type == UG_TYPE_NTV);
+    return this != NULL && is_type_runnable(this->type);
 }
 
 void Value_print(Value *this)
@@ -147,13 +142,11 @@ void Value_print(Value *this)
     }
     else if (is_type_container(this->type))
     {
-        printf("<V:Container => %p p:%p>\n", this, this->obj);
-        // Container_print(this);
+        Container_print(this);
     }
     else if (is_type_runnable(this->type))
     {
-        printf("<V:Runnable => %p p:%p>\n", this, this->obj);
-        // Runnable_print(this);
+        Runnable_print(this);
     }
     else
     {

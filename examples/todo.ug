@@ -12,8 +12,8 @@
 
 # ######################################################### oop
 
-yasighuchi Name miqdar x y asas quruq mezmuni
-    yasighuchi quruq bilen 10 20 ishlitilsun 
+yasighuchi Name miqdar x y mezmuni
+    yasighuchi quruq bilen 10 20 hemkarlashsun 
     @-[x] = x
     @-[y] = y
     fonkisiye @_[other] bilen 10 20 ishlitilsun we obj elinsun 

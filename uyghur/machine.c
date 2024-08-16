@@ -39,9 +39,13 @@ void _machine_free_object(Machine *this, Object* object) {
         Value *value = object;
         if (value->type == UG_TYPE_STR) {
             String_free(value->string);
+        } else if (value->type == UG_TYPE_OBJ) {
+            // log_info("free obj %p", object);
         }
         free(object);
     } else if (object->objType == PCT_OBJ_HASHMAP) {
+        // log_info("free map %p", object);
+        // free(object);
         Hashmap_free(object);
     } else {
         free(object);
@@ -120,6 +124,7 @@ void _machine_mark_hashkey(Hashkey *hashkey, void *other) {
 
 void _machine_mark_container(Container *container) {
     if (container->gcMark) return;
+    // Machine *this = __uyghur->machine;
     // Machine* this = __uyghur->machine;
     // log_info("mark_container %p %c %i %i", container, container->type, container == this->globals, container == this->rootModule);
     _machine_mark_object(container);
@@ -128,6 +133,10 @@ void _machine_mark_container(Container *container) {
 }
 
 void _machine_mark_cstack(void *ptr, void *other) {
+    
+    // Machine *this = __uyghur->machine;
+    // Container *ctnr = ptr;
+    // log_debug("mark_stack %p %p", ctnr, this->stack->tail->data);
     _machine_mark_container(ptr);
 }
 
@@ -185,7 +194,7 @@ void Machine_runGC(Machine *this) {
     double swpTime = endTime - bgnTime;
     int endCount = this->numObjects;
     int delCount = bgnCount - endCount;
-    this->maxObjects = endCount * 2 + 10000; // TODO:gc issue
+    this->maxObjects = endCount * 2 + 10; // TODO:gc issue
     log_debug("========gc_end! %f %d - %d = %d", swpTime, bgnCount, delCount, endCount);
 }
 
@@ -262,7 +271,7 @@ void Machine_freeObj(Object* object) {
 void Machine_testGC() {
     log_warn("\n\n\n---------------------TEST:");
     Machine* this = __uyghur->machine;
-    Machine_pushContainer(this, Container_new(UG_CTYPE_SCP, NULL));
+    Machine_pushContainer(this, Container_new(UG_TYPE_SCP, NULL));
     for (size_t i = 0; i < 100; i++) {
         log_warn("---------------------test%i", i);
         for (size_t j = 0; j < 1000000; j++) {

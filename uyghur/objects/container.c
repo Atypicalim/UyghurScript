@@ -12,6 +12,7 @@ Container *Container_new(char tp, void *extra)
     tools_assert(is_type_container(tp), "invalid container type for new");
     Container *container = _value_newValueBySize(false, tp, sizeof(Container));
     container->map = Hashmap_new(true);
+    log_debug("new-%s: %p %p", get_value_name(tp, "container"), container, container->map);
     Machine_tryLinkForGC(container->map);
     container->type = tp;
     container->extra = extra;
@@ -20,27 +21,27 @@ Container *Container_new(char tp, void *extra)
 
 Container *Container_newModule()
 {
-    return Container_new(UG_CTYPE_MDL, NULL);
+    return Container_new(UG_TYPE_MDL, NULL);
 }
 
 Container *Container_newScope()
 {
-    return Container_new(UG_CTYPE_SCP, NULL);
+    return Container_new(UG_TYPE_SCP, NULL);
 }
 
 Container *Container_newCtr(void *extra)
 {
-    return Container_new(UG_CTYPE_CTR, extra);
+    return Container_new(UG_TYPE_CTR, extra);
 }
 
 Container *Container_newObj(void *extra)
 {
-    return Container_new(UG_CTYPE_OBJ, extra);
+    return Container_new(UG_TYPE_OBJ, extra);
 }
 
 Container *Container_newBox(void *extra)
 {
-    return Container_new(UG_CTYPE_BOX, extra);
+    return Container_new(UG_TYPE_BOX, extra);
 }
 
 // 
@@ -67,27 +68,27 @@ void Container_setLocation(Container *this, char *key, void *value)
 
 bool Container_isModule(Container *this)
 {
-    return this->type == UG_CTYPE_MDL;
+    return this->type == UG_TYPE_MDL;
 }
 
 bool Container_isScope(Container *this)
 {
-    return this->type == UG_CTYPE_SCP;
+    return this->type == UG_TYPE_SCP;
 }
 
 bool Container_isCtr(Container *this)
 {
-    return this->type == UG_CTYPE_CTR;
+    return this->type == UG_TYPE_CTR;
 }
 
 bool Container_isObj(Container *this)
 {
-    return this->type == UG_CTYPE_OBJ;
+    return this->type == UG_TYPE_OBJ;
 }
 
 bool Container_isBox(Container *this)
 {
-    return this->type == UG_CTYPE_BOX;
+    return this->type == UG_TYPE_BOX;
 }
 
 // 

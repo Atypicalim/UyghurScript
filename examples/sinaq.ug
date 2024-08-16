@@ -1,12 +1,10 @@
-# running men
 
-miqdar m qimmiti 1 bolsun
-
-fonkisiye @*[doska_korsitish_qayturmisi] mezmuni
+yasighuchi Y miqdar m mezmuni
+    # @-[m] = m
 tamamlansun
 
-fonkisiye @*[doska_sizish_qayturmisi] mezmuni
-    # m = m + 1
-tamamlansun
+miqdar xxx qimmiti 0 bolsun
 
-fonkisiye @sehne[korsitish] bilen -1 -1 [Yuguresh] 0 ishlitilsun
+nawada xxx < 1 bolsa
+    yasighuchi Y bilen [abc...\n] ishlitilsun
+tamamlansun
