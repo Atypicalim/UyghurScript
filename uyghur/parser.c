@@ -315,7 +315,7 @@ void Parser_consumeAstSpread(Parser *this)
     Parser_checkWord(this, 1, 1, TVALUE_VARIABLE);
 
     Token *iter1 = Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
-    Token *iter2 = Parser_isWord(this, 1, TVALUE_BECOME) ? Token_empty() : Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
+    Token *iter2 = Parser_isWord(this, 1, TVALUE_BECOME) ? Token_variable() : Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
     //
     Parser_checkWord(this, 1, 1, TVALUE_BECOME);
     Parser_pushLeaf(this, UG_ATYPE_SPR, 3, iter2, iter1, target);

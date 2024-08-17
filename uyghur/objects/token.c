@@ -7,18 +7,6 @@
 #ifndef H_UG_TOKEN
 #define H_UG_TOKEN
 
-typedef struct _Token {
-    struct _Object;
-    const char *file;
-    int line;
-    int column;
-    char *type;
-    char *value;
-    void *extra;
-    void *next;
-    void *last;
-} Token;
-
 Token *Token_new(char *type, void *value)
 {
     Token *token = (Token *)malloc(sizeof(Token));
@@ -43,7 +31,26 @@ void Token_bindInfo(Token *this, const char *file, int line, int column)
 
 Token *Token_empty()
 {
-    return Token_new(UG_TTYPE_EMP, TVALUE_EMPTY);
+    if (Token_EMPTY == NULL) {
+        Token_EMPTY = Token_new(UG_TTYPE_EMP, TVALUE_EMPTY);
+    }
+    return Token_EMPTY;
+}
+
+Token *Token_variable()
+{
+    if (Token_VARIABLE == NULL) {
+        Token_VARIABLE = Token_new(UG_TTYPE_NAM, TEXT_VARIABLE);
+    }
+    return Token_VARIABLE;
+}
+
+Token *Token_function()
+{
+    if (Token_FUNCTION == NULL) {
+        Token_FUNCTION = Token_new(UG_TTYPE_NAM, TEXT_FUNCTION);
+    }
+    return Token_FUNCTION;
 }
 
 Token *Token_name(char *name)

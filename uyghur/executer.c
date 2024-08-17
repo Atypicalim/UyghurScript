@@ -108,13 +108,10 @@ Container *Executer_getCurrentModule(Executer *this, Token *token)
 
 Container *Executer_getCurrentSelf(Executer *this, Token *token)
 {
-    log_info("curSelf 11 %s", Token_toString(token));
     Container *container = Machine_getCurrentSelf(this->machine, token);
-    log_info("curSelf 22 %p", container);
     if (!Container_isCtr(container) && !Container_isObj(container) && !Container_isBox(container)) {
         Executer_error(this, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
     }
-    log_info("curSelf 33 %p", container);
     return container;
 }
 
@@ -154,6 +151,10 @@ void Executer_findValueByToken(Executer *this, Token *token, Container **rContai
 {
     *rContainer = NULL;
     *rValue = NULL;
+    // empty
+    if (token == NULL || Token_isEmpty(token)) {
+        return;
+    }
     // name
     if (Token_isName(token)) {
         char *location = convert_string_to_location(token->value, UG_TYPE_STR);
@@ -164,29 +165,23 @@ void Executer_findValueByToken(Executer *this, Token *token, Container **rContai
     // const
     Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_INVALID_KEY);
     Token *extra = (Token *)token->extra;
-    log_info("findVal 111 %s", Token_toString(extra));
     if (is_eq_string(extra->value, SCOPE_ALIAS_PRG)) *rContainer = Executer_getCurrentGlobal(this, token);
     if (is_eq_string(extra->value, SCOPE_ALIAS_MDL)) *rContainer = Executer_getCurrentModule(this, token);
     if (is_eq_string(extra->value, SCOPE_ALIAS_SLF)) *rContainer = Executer_getCurrentSelf(this, token);
-    log_info("findVal 222 %p", *rContainer);
     // box
     Value *value = NULL;
     if (*rContainer == NULL) {
         char *location = convert_string_to_location(extra->value, UG_TYPE_STR);
         Executer_findValueByLocation(this, location, &INVALID_CTN, &value);
-        log_info("findVal 333 %p", *rContainer);
         pct_free(location);
         if (value != NULL) *rContainer = value;
     }
-    log_info("findVal 444 %p", *rContainer);
     if (*rContainer == NULL) return;
     // key
     char *location = convert_string_to_location(token->value, UG_TYPE_STR);
     // 
     if (Container_isCtr(*rContainer) || Container_isObj(*rContainer)) {
-        log_info("findVal 555 %p %s %p", *rContainer, location, (*rContainer)->map);
         *rValue = Container_getLocation(*rContainer, location);
-        log_info("findVal 666 %p", *rValue);
         Value *creator = value == NULL ? NULL : value->extra;
         while (*rValue == NULL && creator != NULL) {
             *rValue = Container_getLocation(creator, location);
@@ -745,13 +740,8 @@ void Executer_consumeCreator(Executer *this, Leaf *leaf)
     _executer_parseWorkerOrCreator(this, leaf, true, &func, &code);
     //
     Container *self = Container_newCtr(NULL);
-    Token *funT = Token_name(FUNCTION_KEY);
     Value *funV = Runnable_newWorker(code, NULL);
-    log_info("CREATOR: c:%p m:%p", self, self->map);
-    log_info("CREATOR: t:%s f:%p", Token_toString(funT), funV);
-
-    Executer_setValueToContainer(this, self, funT, funV);
-    Machine_releaseObj(funT);
+    Executer_setValueToContainer(this, self, Token_function(), funV);
     Machine_releaseObj(funV);
     //
     Executer_setValueByToken(this, func, self, true);
@@ -797,18 +787,12 @@ Value *Executer_applyWorker(Executer *this, Value *workerValue, Container *conta
 
 Value *Executer_applyCreator(Executer *this, Value *creatorValue, Container *container)
 {
-    Token *temp = Token_name(FUNCTION_KEY);
-    Value *func = Executer_getValueFromContainer(this, creatorValue, temp);
-    //
-    log_info("APPLY: c:%p m:%p", creatorValue, creatorValue->map);
-    log_info("APPLY: t:%s f:%p", Token_toString(temp), func);
+    Value *funV = Executer_getValueFromContainer(this, creatorValue, Token_function());
     Container *self = Container_newObj(creatorValue);
-    // 
-    Machine_releaseObj(temp);
     //
     Executer_pushContainer(this, UG_TYPE_SCP);
     Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
-    Executer_consumeLeaf(this, func->obj);
+    Executer_consumeLeaf(this, funV->obj);
     Executer_popContainer(this, UG_TYPE_SCP);
     //
     Machine_releaseObj(self);
@@ -953,7 +937,7 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
     char tp = leaf->type;
-    log_debug("executer.next: %c", tp);
+    // log_debug("executer.next: %c", tp);
     // throwing
     if (setjmp(jump_buffer) != 0 || (this->errorMsg != NULL && tp != UG_ATYPE_EXC)) {
         return;

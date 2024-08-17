@@ -75,6 +75,24 @@ typedef struct Machine Machine;
 typedef struct Debug Debug;
 typedef struct _Bridge Bridge;
 
+// token
+
+typedef struct _Token {
+    struct _Object;
+    const char *file;
+    int line;
+    int column;
+    char *type;
+    char *value;
+    void *extra;
+    void *next;
+    void *last;
+} Token;
+
+Token *Token_EMPTY;
+Token *Token_VARIABLE;
+Token *Token_FUNCTION;
+
 // value
 
 typedef struct _Value {

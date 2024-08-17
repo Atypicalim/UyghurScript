@@ -100,15 +100,15 @@ void _machine_mark_value(Value *);
 void _machine_mark_value(Value *value) {
     if (value == NULL) return;
     if (value->gcMark) return;
-    _machine_mark_object(value);
     if (value->type == UG_TYPE_NIL || value->type == UG_TYPE_BOL || value->type == UG_TYPE_NUM) {
-        // token
+        _machine_mark_object(value);
     } else if (value->type == UG_TYPE_STR) {
+        _machine_mark_object(value);
         // _machine_mark_object(value->string);
     } else if (is_type_container(value->type)) {
         _machine_mark_container(value);
     } else if (is_type_runnable(value->type)) {
-        //
+        _machine_mark_object(value);
     } else {
         log_warn("value type not registered for marking");
         Value_print(value);
@@ -118,14 +118,13 @@ void _machine_mark_value(Value *value) {
 void _machine_mark_hashkey(Hashkey *hashkey, void *other) {
     String *key = hashkey->key;
     Value *val = hashkey->value;
-    _machine_mark_object(key);
+    // _machine_mark_object(key);
     _machine_mark_value(val);
 }
 
 void _machine_mark_container(Container *container) {
     if (container->gcMark) return;
     // Machine *this = __uyghur->machine;
-    // Machine* this = __uyghur->machine;
     // log_info("mark_container %p %c %i %i", container, container->type, container == this->globals, container == this->rootModule);
     _machine_mark_object(container);
     _machine_mark_object(container->map);
@@ -194,7 +193,7 @@ void Machine_runGC(Machine *this) {
     double swpTime = endTime - bgnTime;
     int endCount = this->numObjects;
     int delCount = bgnCount - endCount;
-    this->maxObjects = endCount * 2 + 10; // TODO:gc issue
+    this->maxObjects = endCount * 2 + 10000; // TODO:gc issue
     log_debug("========gc_end! %f %d - %d = %d", swpTime, bgnCount, delCount, endCount);
 }
 

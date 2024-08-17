@@ -1,10 +1,7 @@
 
 yasighuchi Y miqdar m mezmuni
-    # @-[m] = m
+    @-[m] = m
 tamamlansun
 
-miqdar xxx qimmiti 0 bolsun
-
-nawada xxx < 1 bolsa
-    yasighuchi Y bilen [abc...\n] ishlitilsun
-tamamlansun
+yasighuchi Y bilen [abc...\n] ishlitilsun we r elinsun
+buyruq @r[m] yezilsun

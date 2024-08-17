@@ -12,7 +12,7 @@ Container *Container_new(char tp, void *extra)
     tools_assert(is_type_container(tp), "invalid container type for new");
     Container *container = _value_newValueBySize(false, tp, sizeof(Container));
     container->map = Hashmap_new(true);
-    log_debug("new-%s: %p %p", get_value_name(tp, "container"), container, container->map);
+    // log_debug("new-%s: %p %p", get_value_name(tp, "container"), container, container->map);
     Machine_tryLinkForGC(container->map);
     container->type = tp;
     container->extra = extra;
