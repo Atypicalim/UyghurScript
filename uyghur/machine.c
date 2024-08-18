@@ -94,6 +94,7 @@ Container *Machine_getCurrentSelf(Machine *this, Token *token)
 }
 
 void _machine_mark_container(Container *);
+void _machine_mark_objective(Objective *);
 void _machine_mark_hashkey(Hashkey *, void *);
 void _machine_mark_value(Value *);
 
@@ -107,6 +108,8 @@ void _machine_mark_value(Value *value) {
         // _machine_mark_object(value->string);
     } else if (is_type_container(value->type)) {
         _machine_mark_container(value);
+    } else if (is_type_objective(value->type)) {
+        _machine_mark_objective(value);
     } else if (is_type_runnable(value->type)) {
         _machine_mark_object(value);
     } else {
@@ -129,6 +132,15 @@ void _machine_mark_container(Container *container) {
     _machine_mark_object(container);
     _machine_mark_object(container->map);
     Hashmap_foreachItem(container->map, _machine_mark_hashkey, NULL);
+}
+
+void _machine_mark_objective(Objective *objective) {
+    if (objective->gcMark) return;
+    // Machine *this = __uyghur->machine;
+    // log_info("mark_objective %p %c %i %i", objective, objective->type, objective == this->globals, objective == this->rootModule);
+    _machine_mark_object(objective);
+    _machine_mark_object(objective->map);
+    Hashmap_foreachItem(objective->map, _machine_mark_hashkey, NULL);
 }
 
 void _machine_mark_cstack(void *ptr, void *other) {

@@ -228,8 +228,11 @@ bool is_scope(UCHAR c)
 bool is_type_container(char tp) {
     return tp == UG_TYPE_BOX
     || tp == UG_TYPE_SCP
-    || tp == UG_TYPE_MDL
-    || tp == UG_TYPE_CTR
+    || tp == UG_TYPE_MDL;
+}
+
+bool is_type_objective(char tp) {
+    return tp == UG_TYPE_CTR
     || tp == UG_TYPE_ATR
     || tp == UG_TYPE_OBJ;
 }

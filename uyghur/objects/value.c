@@ -112,6 +112,11 @@ bool Value_isContainer(Value *this)
     return this != NULL && is_type_container(this->type);
 }
 
+bool Value_isObjective(Value *this)
+{
+    return this != NULL && is_type_objective(this->type);
+}
+
 bool Value_isRunnable(Value *this)
 {
     return this != NULL && is_type_runnable(this->type);
@@ -145,6 +150,10 @@ void Value_print(Value *this)
     {
         Container_print(this);
     }
+    else if (is_type_objective(this->type))
+    {
+        Objective_print(this);
+    }
     else if (is_type_runnable(this->type))
     {
         Runnable_print(this);
@@ -168,6 +177,8 @@ char *Value_toString(Value *this)
         return String_dump(this->string);
     } if (is_type_container(this->type)) {
         return Container_toString(this);
+    } if (is_type_objective(this->type)) {
+        return Objective_toString(this);
     } if (is_type_runnable(this->type)) {
         return Runnable_toString(this);
     } else {

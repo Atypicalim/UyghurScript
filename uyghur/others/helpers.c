@@ -327,6 +327,13 @@ void Container_print(Container *this)
     // printf("[Container]\n");
 }
 
+void Objective_print(Objective *this)
+{
+    printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Objective"), this, this->map);
+    // _hashmap_print_with_callback(this->map, "|", _container_key_print_callback);
+    // printf("[Objective]\n");
+}
+
 void Runnable_print(Runnable *this)
 {
     printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Runnable"), this, this->obj);

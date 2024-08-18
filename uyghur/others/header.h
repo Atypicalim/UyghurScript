@@ -119,7 +119,7 @@ Value *Value_EMPTY;
 Value *Value_TRUE;
 Value *Value_FALSE;
 
-// container
+// runnable
 
 typedef struct _Runnable {
     struct _Value;
@@ -128,6 +128,16 @@ typedef struct _Runnable {
 Runnable *Runnable_new(char, void*);
 char *Runnable_toString(Runnable *);
 void Runnable_print(Runnable *);
+
+// objective
+
+typedef struct _Objective {
+    struct _Value;
+} Objective;
+
+Objective *Objective_new(char, void*);
+char *Objective_toString(Objective *);
+void Objective_print(Objective *);
 
 // container
 
@@ -152,6 +162,7 @@ typedef void (*NATIVE)(Bridge *);
 
 #include "../objects/value.c"
 #include "../objects/runnable.c"
+#include "../objects/objective.c"
 #include "../objects/container.c"
 
 ////////////////////////////////////////////////////////////////////////////

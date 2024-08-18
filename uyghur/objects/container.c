@@ -29,21 +29,6 @@ Container *Container_newScope()
     return Container_new(UG_TYPE_SCP, NULL);
 }
 
-Container *Container_newCtr(void *extra)
-{
-    return Container_new(UG_TYPE_CTR, extra);
-}
-
-Container *Container_newAtr(void *extra)
-{
-    return Container_new(UG_TYPE_ATR, extra);
-}
-
-Container *Container_newObj(void *extra)
-{
-    return Container_new(UG_TYPE_OBJ, extra);
-}
-
 Container *Container_newBox(void *extra)
 {
     return Container_new(UG_TYPE_BOX, extra);
@@ -55,8 +40,6 @@ void Container_delLocation(Container *this, char *key)
 {
     Hashmap_del(this->map, key);
 }
-
-// 
 
 void *Container_getLocation(Container *this, char *key)
 {
@@ -79,21 +62,6 @@ bool Container_isModule(Container *this)
 bool Container_isScope(Container *this)
 {
     return this->type == UG_TYPE_SCP;
-}
-
-bool Container_isCtr(Container *this)
-{
-    return this->type == UG_TYPE_CTR;
-}
-
-bool Container_isAtr(Container *this)
-{
-    return this->type == UG_TYPE_ATR;
-}
-
-bool Container_isObj(Container *this)
-{
-    return this->type == UG_TYPE_OBJ;
 }
 
 bool Container_isBox(Container *this)

@@ -109,7 +109,7 @@ Container *Executer_getCurrentModule(Executer *this, Token *token)
 Container *Executer_getCurrentSelf(Executer *this, Token *token)
 {
     Container *container = Machine_getCurrentSelf(this->machine, token);
-    if (!Container_isCtr(container) && !Container_isObj(container) && !Container_isBox(container)) {
+    if (!Objective_isCtr(container) && !Objective_isObj(container) && !Container_isBox(container)) {
         Executer_error(this, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
     }
     return container;
@@ -180,7 +180,7 @@ void Executer_findValueByToken(Executer *this, Token *token, Container **rContai
     // key
     char *location = convert_string_to_location(token->value, UG_TYPE_STR);
     // 
-    if (Container_isCtr(*rContainer) || Container_isObj(*rContainer)) {
+    if (Objective_isCtr(*rContainer) || Objective_isObj(*rContainer)) {
         *rValue = Container_getLocation(*rContainer, location);
         Value *creator = value == NULL ? NULL : value->extra;
         while (*rValue == NULL && creator != NULL) {
@@ -416,6 +416,8 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
         }
         if (Value_isContainer(value)) {
             Container_print(value);
+        } else if (Value_isObjective(value)) {
+            Objective_print(value);
         } else if (Value_isRunnable(value)) {
             Runnable_print(value);
         } else {
@@ -731,7 +733,7 @@ void Executer_consumeWorker(Executer *this, Leaf *leaf)
     Token *func; Leaf *code;
     _Executer_parseAppliable(this, leaf, false, &func, &code);
     //
-    Value *wkr = Runnable_newWorker(code, NULL);
+    Runnable *wkr = Runnable_newWorker(code, NULL);
     Executer_setValueByToken(this, func, wkr, true);
 }
 
@@ -740,7 +742,7 @@ void Executer_consumeCreator(Executer *this, Leaf *leaf)
     Token *func; Leaf *code;
     _Executer_parseAppliable(this, leaf, true, &func, &code);
     //
-    Container *self = Container_newCtr(NULL);
+    Objective *self = Objective_newCtr(NULL);
     Value *funV = Runnable_newWorker(code, NULL);
     Executer_setValueToContainer(this, self, Token_function(), funV);
     Machine_releaseObj(funV);
@@ -753,7 +755,7 @@ void Executer_consumeAssister(Executer *this, Leaf *leaf)
     Token *func; Leaf *code;
     _Executer_parseAppliable(this, leaf, true, &func, &code);
     //
-    Container *self = Container_newAtr(NULL);
+    Objective *self = Objective_newAtr(NULL);
     Value *funV = Runnable_newWorker(code, NULL);
     Executer_setValueToContainer(this, self, Token_function(), funV);
     Machine_releaseObj(funV);
@@ -802,7 +804,7 @@ Value *Executer_applyWorker(Executer *this, Value *workerValue, Container *conta
 Value *Executer_applyCreator(Executer *this, Value *creatorValue, Container *container)
 {
     Value *funV = Executer_getValueFromContainer(this, creatorValue, Token_function());
-    Container *self = Container_newObj(creatorValue);
+    Objective *self = Objective_newObj(creatorValue);
     //
     Executer_pushContainer(this, UG_TYPE_SCP);
     Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
@@ -824,7 +826,7 @@ Value *Executer_applyCreator(Executer *this, Value *creatorValue, Container *con
 Value *Executer_applyAssister(Executer *this, Value *assisterValue, Container *container)
 {
     Value *funV = Executer_getValueFromContainer(this, assisterValue, Token_function());
-    Container *self = Container_newObj(assisterValue);
+    Objective *self = Objective_newObj(assisterValue);
     //
     Executer_pushContainer(this, UG_TYPE_SCP);
     Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
