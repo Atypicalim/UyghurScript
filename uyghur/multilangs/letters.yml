@@ -202,6 +202,13 @@ TVALUE_CREATOR:
   uz: yasag'uchi
   tr: oluşturucu
   kz: жасаушы
+TVALUE_ASSISTER:
+  en: assister
+  uy: ياردەمچى
+  ug: yardemchi
+  uz: yordamchi
+  tr: yardımcı
+  kz: жәрдемшы
 #
 TVALUE_CONTENT:
   en: content

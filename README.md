@@ -142,20 +142,26 @@ fonkisiye f bilen 10 20 ishlitilsun we r elinsun
 buyruq r yezilsun
 ```
 
-* creator
+* objective
 
 ```powershell
-# a creator with one arguments
-yasighuchi Y miqdar m asas quruq mezmuni
-    yasighuchi quruq ishlitilsun 
-    @-[m] = m
+# an assister with one argument
+yasighuchi X miqdar x mezmuni
+    @-[x] = x
 tamamlansun
 
-# call creator and receive object
-yasighuchi f bilen [abc...] ishlitilsun we r elinsun
+# a creator with one arguments
+yasighuchi Y miqdar y mezmuni
+    yasighuchi X bilen 123 ishlitilsun 
+    @-[y] = y
+tamamlansun
+
+# call creator using an assister and receive object
+yasighuchi X bilen [abc...] ishlitilsun we r elinsun
 
 # print the object value received
-buyruq @r[m] yezilsun
+buyruq @r[x] yezilsun
+buyruq @r[y] yezilsun
 ```
 
 * exception

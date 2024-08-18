@@ -486,7 +486,7 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
         {
             r = Value_toBoolean(value);
         }
-        else if (is_eq_string(act, TVALUE_WORKER) || is_eq_string(act, TVALUE_CREATOR))
+        else if (is_eq_string(act, TVALUE_WORKER) || is_eq_string(act, TVALUE_CREATOR) || is_eq_string(act, TVALUE_ASSISTER))
         {
             char *funcName = String_get(value->string);
             Token *funcToken = Token_name(funcName);
@@ -705,7 +705,7 @@ void Executer_consumeException(Executer *this, Leaf *leaf)
     Executer_setValueByToken(this, name, error, true);
 }
 
-void _executer_parseWorkerOrCreator(Executer *this, Leaf *leaf, bool isCreator, Token **func, Leaf **code) {
+void _Executer_parseAppliable(Executer *this, Leaf *leaf, bool isCreator, Token **func, Leaf **code) {
     // func name
     Stack_RESTE(leaf->tokens);
     *func = Stack_NEXT(leaf->tokens);
@@ -729,7 +729,7 @@ void _executer_parseWorkerOrCreator(Executer *this, Leaf *leaf, bool isCreator, 
 void Executer_consumeWorker(Executer *this, Leaf *leaf)
 {
     Token *func; Leaf *code;
-    _executer_parseWorkerOrCreator(this, leaf, false, &func, &code);
+    _Executer_parseAppliable(this, leaf, false, &func, &code);
     //
     Value *wkr = Runnable_newWorker(code, NULL);
     Executer_setValueByToken(this, func, wkr, true);
@@ -738,9 +738,22 @@ void Executer_consumeWorker(Executer *this, Leaf *leaf)
 void Executer_consumeCreator(Executer *this, Leaf *leaf)
 {
     Token *func; Leaf *code;
-    _executer_parseWorkerOrCreator(this, leaf, true, &func, &code);
+    _Executer_parseAppliable(this, leaf, true, &func, &code);
     //
     Container *self = Container_newCtr(NULL);
+    Value *funV = Runnable_newWorker(code, NULL);
+    Executer_setValueToContainer(this, self, Token_function(), funV);
+    Machine_releaseObj(funV);
+    //
+    Executer_setValueByToken(this, func, self, true);
+}
+
+void Executer_consumeAssister(Executer *this, Leaf *leaf)
+{
+    Token *func; Leaf *code;
+    _Executer_parseAppliable(this, leaf, true, &func, &code);
+    //
+    Container *self = Container_newAtr(NULL);
     Value *funV = Runnable_newWorker(code, NULL);
     Executer_setValueToContainer(this, self, Token_function(), funV);
     Machine_releaseObj(funV);
@@ -790,6 +803,28 @@ Value *Executer_applyCreator(Executer *this, Value *creatorValue, Container *con
 {
     Value *funV = Executer_getValueFromContainer(this, creatorValue, Token_function());
     Container *self = Container_newObj(creatorValue);
+    //
+    Executer_pushContainer(this, UG_TYPE_SCP);
+    Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
+    Executer_consumeLeaf(this, funV->obj);
+    Executer_popContainer(this, UG_TYPE_SCP);
+    //
+    Machine_releaseObj(self);
+    this->isReturn = false;
+    // 
+    Value *r = Stack_pop(this->callStack);
+    if (r == NULL) {
+        r = self;
+    } else {
+        Machine_releaseObj(self);
+    }
+    return r;
+}
+
+Value *Executer_applyAssister(Executer *this, Value *assisterValue, Container *container)
+{
+    Value *funV = Executer_getValueFromContainer(this, assisterValue, Token_function());
+    Container *self = Container_newObj(assisterValue);
     //
     Executer_pushContainer(this, UG_TYPE_SCP);
     Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
@@ -871,6 +906,8 @@ void Executer_consumeApply(Executer *this, Leaf *leaf)
         r = Executer_applyWorker(this, runnableValue, runnableContainer);
     } else if (runnableValue->type == UG_TYPE_CTR) {
         r = Executer_applyCreator(this, runnableValue, runnableContainer);
+    } else if (runnableValue->type == UG_TYPE_ATR) {
+        r = Executer_applyAssister(this, runnableValue, runnableContainer);
     } else if (runnableValue->type == UG_TYPE_NTV) {
         r = Executer_applyNative(this, runnableValue, runnableContainer);
     } else {
@@ -993,6 +1030,11 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     // creator
     if(tp == UG_ATYPE_CRTR) {
         Executer_consumeCreator(this, leaf);
+        return;
+    }
+    // assister
+    if(tp == UG_ATYPE_ASTR) {
+        Executer_consumeAssister(this, leaf);
         return;
     }
     // apply

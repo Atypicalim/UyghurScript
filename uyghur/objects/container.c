@@ -34,6 +34,11 @@ Container *Container_newCtr(void *extra)
     return Container_new(UG_TYPE_CTR, extra);
 }
 
+Container *Container_newAtr(void *extra)
+{
+    return Container_new(UG_TYPE_ATR, extra);
+}
+
 Container *Container_newObj(void *extra)
 {
     return Container_new(UG_TYPE_OBJ, extra);
@@ -81,6 +86,11 @@ bool Container_isCtr(Container *this)
     return this->type == UG_TYPE_CTR;
 }
 
+bool Container_isAtr(Container *this)
+{
+    return this->type == UG_TYPE_ATR;
+}
+
 bool Container_isObj(Container *this)
 {
     return this->type == UG_TYPE_OBJ;
@@ -110,12 +120,7 @@ void Container_copyTo(Container *this, Container *other)
 
 char *Container_toString(Container *this)
 {
-    char *name = "Container";
-    if (Container_isModule(this)) name = "Module";
-    if (Container_isScope(this)) name = "Scope";
-    if (Container_isCtr(this)) name = "Creator";
-    if (Container_isObj(this)) name = "Object";
-    if (Container_isBox(this)) name = "Box";
+    char *name = get_value_name(this->type, "container");
     return tools_format("<%s p:%p>", name, this);
 }
 

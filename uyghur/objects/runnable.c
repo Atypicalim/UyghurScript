@@ -43,9 +43,7 @@ bool Runnable_isNative(Runnable *this)
 
 char *Runnable_toString(Runnable *this)
 {
-    char *name = "Runnable";
-    if (Runnable_isWorker(this)) name = "Worker";
-    if (Runnable_isNative(this)) name = "Native";
+    char *name = get_value_name(this->type, "runnable");
     return tools_format("<%s p:%p>", name, this);
 }
 

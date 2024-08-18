@@ -10,6 +10,7 @@
 #define UG_TYPE_WKR '&'
 #define UG_TYPE_NTV '#'
 #define UG_TYPE_CTR '$'
+#define UG_TYPE_ATR '|'
 #define UG_TYPE_OBJ '*'
 // container type
 #define UG_TYPE_BOX 'x'
@@ -63,6 +64,7 @@
 #define UG_ATYPE_RSLT 'R'
 #define UG_ATYPE_WRKR 'W'
 #define UG_ATYPE_CRTR 'C'
+#define UG_ATYPE_ASTR 'A'
 #define UG_ATYPE_CODE '~'
 #define UG_ATYPE_APPLY '&'
 #define UG_ATYPE_IF 'i'
@@ -154,6 +156,7 @@ const UG_PAIRS UG_WORDS_MAP[] = {
     // 
     {TVALUE_WORKER, 0},
     {TVALUE_CREATOR, 0},
+    {TVALUE_ASSISTER, 0},
     {TVALUE_CONTENT, 0},
     {TVALUE_WITH, 0},
     {TVALUE_APPLY, 0},

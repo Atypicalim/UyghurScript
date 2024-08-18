@@ -85,6 +85,16 @@ creator:
     tr: "oluşturucu cümlesi yapmak"
     kz: "жасаушы сөйлемі жасау"
 
+assister:
+  prefix: TVALUE_ASSISTER
+  message:
+    en: "make assister sentence"
+    uy: "ياردەمچى جۈملىسى ياساش"
+    ug: "yardemchi jumlisi yasash"
+    uz: yordamchi bayonoti tuzish
+    tr: "yardımcı cümlesi yapmak"
+    kz: "жәрдемшы сөйлемі жасау"
+
 worker_apply:
   prefix: TVALUE_WORKER
   message:

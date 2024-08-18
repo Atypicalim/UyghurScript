@@ -1,0 +1,18 @@
+
+# an assister with one argument
+yasighuchi X miqdar x mezmuni
+    @-[x] = x
+tamamlansun
+
+# a creator with one arguments
+yasighuchi Y miqdar y mezmuni
+    yasighuchi X bilen 123 ishlitilsun 
+    @-[y] = y
+tamamlansun
+
+# call creator using an assister and receive object
+yasighuchi X bilen [abc...] ishlitilsun we r elinsun
+
+# print the object value received
+buyruq @r[x] yezilsun
+buyruq @r[y] yezilsun
