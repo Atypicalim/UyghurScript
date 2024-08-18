@@ -627,7 +627,8 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
     Value *current1;
     Value *current2;
     if (Value_isInt(value)) {
-        for (size_t i = 0; i < value->number; i++)
+        int num = (int)value->number;
+        for (size_t i = 0; i < num; i++)
         {
             Executer_pushContainer(this, UG_TYPE_SCP);
             current1 = Value_newNumber(i, iter1);

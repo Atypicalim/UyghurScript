@@ -26,7 +26,7 @@ Machine *Machine_new(Uyghur *uyghur) {
 
 void _machine_mark_object(Object *object) {
     if (object->gcFreeze) return;
-    // log_debug("mark_object:%p", object);
+    // log_debug("mark_object:%c %p", object->objType, object);
     object->gcMark = 1;
 }
 
@@ -34,7 +34,7 @@ void _machine_free_object(Machine *this, Object* object) {
     if (object->gcFreeze) return;
     // Container *container = object;
     // add hashmap and hashkey to vm
-    // log_debug("free_object:%p", object);
+    // log_debug("free_object:%c %p", object->objType, object);
     if (object->objType == PCT_OBJ_VALUE) {
         Value *value = object;
         if (value->type == UG_TYPE_STR) {

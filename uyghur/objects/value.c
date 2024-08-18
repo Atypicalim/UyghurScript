@@ -32,6 +32,7 @@ Value *_value_newValueBySize(bool freeze, char typ, size_t size) {
     value->type = typ;
     value->obj = NULL;
     value->extra = NULL;
+    // log_debug("new=%s: %p", get_value_name(typ, "value"), value);
     return value;
 }
 

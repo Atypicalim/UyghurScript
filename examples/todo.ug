@@ -12,12 +12,19 @@
 
 # ######################################################### oop
 
+yardemchi Yuguresh miqdar x mezmuni
+
+
+tamamlansun
+
 yasighuchi Name miqdar x y mezmuni
-    yasighuchi quruq bilen 10 20 hemkarlashsun 
+    yasighuchi Yuguresh bilen 10 20 yardemleshsun 
     @-[x] = x
     @-[y] = y
     fonkisiye @_[other] bilen 10 20 ishlitilsun we obj elinsun 
 tamamlansun
+
+fonkisiye @Yuguresh[yururesh] bilen 10 ishlitilsun
 
 @?{key}
 
