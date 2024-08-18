@@ -95,7 +95,7 @@ assister:
     tr: "yardımcı cümlesi yapmak"
     kz: "жәрдемшы сөйлемі жасау"
 
-worker_apply:
+apply_worker:
   prefix: TVALUE_WORKER
   message:
     en: "make function apply sentence"
@@ -105,7 +105,7 @@ worker_apply:
     tr: "fonksiyon kullanmak cümlesi yapmak"
     kz: "функция қолдану сөйлемі жасау"
 
-creator_apply:
+apply_creator:
   prefix: TVALUE_CREATOR
   message:
     en: "make creator apply sentence"
@@ -114,6 +114,16 @@ creator_apply:
     uz: yasag'uchi ishlatish bayonoti tuzish
     tr: "oluşturucu kullanmak cümlesi yapmak"
     kz: "жасаушы қолдану сөйлемі жасау"
+
+apply_assister:
+  prefix: TVALUE_ASSISTER
+  message:
+    en: "make assister apply sentence"
+    uy: "ياردەمچى ئىشلىتىش جۈملىسى ياساش"
+    ug: "yardemchi ishlitish jumlisi yasash"
+    uz: yordamchi ishlatish bayonoti tuzish
+    tr: "yardımcı kullanmak cümlesi yapmak"
+    kz: "жәрдемшы қолдану сөйлемі жасау"
 
 if:
   prefix: TVALUE_IF
