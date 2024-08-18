@@ -320,11 +320,11 @@ void Hashmap_print(Hashmap *this)
     printf("[Hashmap]\n");
 }
 
-void Container_print(Container *this)
+void Holdable_print(Holdable *this)
 {
-    printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Container"), this, this->map);
+    printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Holdable"), this, this->map);
     // _hashmap_print_with_callback(this->map, "|", _container_key_print_callback);
-    // printf("[Container]\n");
+    // printf("[Holdable]\n");
 }
 
 void Objective_print(Objective *this)
@@ -429,7 +429,7 @@ void helper_add_languages(Uyghur *uyghur, char *tp) {
     }
 }
 
-void helper_set_aliased_key(Container *container, char *_key, Value *value) {
+void helper_set_aliased_key(Value *container, char *_key, Value *value) {
     // log_warn("helper.set.aliased: %s", _key);
     int size = aliases_get_size_by_name(_key);
     const PAIR_ALIASES* pairs = aliases_get_conf_by_name(_key);
@@ -442,7 +442,7 @@ void helper_set_aliased_key(Container *container, char *_key, Value *value) {
     }
 }
 
-Value *helper_get_aliased_key(Container *container, char *_key) {
+Value *helper_get_aliased_key(Value *container, char *_key) {
     // log_warn("helper.get.aliased: %s", _key);
     int size = aliases_get_size_by_name(_key);
     const PAIR_ALIASES* pairs = aliases_get_conf_by_name(_key);

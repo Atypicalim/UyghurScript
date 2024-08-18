@@ -10,7 +10,7 @@ struct Executer {
     Bridge *bridge;
     Leaf *tree;
     Leaf *leaf;
-    Container *globalScope;
+    Holdable *globalScope;
     Stack *callStack;
     bool isReturn;
     bool isCatch;
@@ -47,7 +47,7 @@ Executer *Executer_new(Uyghur *uyghur)
     //
     executer->machine->stack = Stack_new();
     executer->machine->calls = Stack_new();
-    executer->machine->globals = Container_newScope();
+    executer->machine->globals = Holdable_newScope();
     executer->callStack = executer->machine->calls;
     executer->globalScope = executer->machine->globals;
     return executer;
@@ -74,55 +74,50 @@ void Executer_assert(Executer *this, bool value, Token *token, char *msg)
     Executer_error(this, token, msg);
 }
 
-void Executer_pushContainer(Executer *this, char type)
+void Executer_pushScope(Executer *this)
 {
-    Container *container = Container_new(type, NULL);
-    Machine_pushContainer(this->machine, container);
+    Holdable *holdable = Holdable_new(UG_TYPE_SCP, NULL);
+    Machine_pushHolder(this->machine, holdable);
 }
 
-Container *Executer_popContainer(Executer *this, char type)
+void Executer_popScope(Executer *this)
 {
-    Container *container = Machine_popContainer(this->machine);
-    tools_assert(container != NULL && container->type == type, LANG_ERR_EXECUTER_INVALID_STATE);
-    if (type == UG_TYPE_SCP) {
-        Machine_releaseObj(container);
-        return NULL;
-    } else {
-        return container;
-    }
+    Holdable *holdable = Machine_popHolder(this->machine);
+    tools_assert(holdable != NULL && holdable->type == UG_TYPE_SCP, LANG_ERR_EXECUTER_INVALID_STATE);
+    Machine_releaseObj(holdable);
 }
 
-Container *Executer_getCurrentGlobal(Executer *this, Token *token)
+Holdable *Executer_getCurrentGlobal(Executer *this, Token *token)
 {
-    Container *container = this->globalScope;
-    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-    return container;
+    Holdable *holdable = this->globalScope;
+    Executer_assert(this, holdable != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
+    return holdable;
 }
 
-Container *Executer_getCurrentModule(Executer *this, Token *token)
+Holdable *Executer_getCurrentModule(Executer *this, Token *token)
 {
-    Container *container = Machine_getCurrentModule(this->machine, token);
-    Executer_assert(this, Container_isModule(container), token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-    return container;
+    Holdable *holdable = Machine_getCurrentModule(this->machine, token);
+    Executer_assert(this, Holdable_isModule(holdable), token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
+    return holdable;
 }
 
-Container *Executer_getCurrentSelf(Executer *this, Token *token)
+Holdable *Executer_getCurrentScope(Executer *this, Token *token)
 {
-    Container *container = Machine_getCurrentSelf(this->machine, token);
-    if (!Objective_isCtr(container) && !Objective_isObj(container) && !Container_isBox(container)) {
+    Holdable *holdable = this->machine->currHoldable;
+    Executer_assert(this, holdable != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
+    return holdable;
+}
+
+Value *Executer_getCurrentSelf(Executer *this, Token *token)
+{
+    Value *value = Machine_getCurrentSelf(this->machine, token);
+    if (!Objective_isCtr(value) && !Objective_isObj(value) && !Holdable_isBox(value)) {
         Executer_error(this, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
     }
-    return container;
+    return value;
 }
 
-Container *Executer_getCurrentScope(Executer *this, Token *token)
-{
-    Container *container = this->machine->currContainer;
-    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-    return container;
-}
-
-void Executer_findValueByLocation(Executer *this, char *key, Container **rContainer, Value **rValue)
+void Executer_findValueByLocation(Executer *this, char *key, Value **rContainer, Value **rValue)
 {
     *rContainer = NULL;
     *rValue = NULL;
@@ -133,7 +128,7 @@ void Executer_findValueByLocation(Executer *this, char *key, Container **rContai
             *rContainer = block->data;
             *rValue = value;
             break;
-        } else if (Container_isModule(block->data)) {
+        } else if (Holdable_isModule(block->data)) {
             break;
         }
         block = block->last;
@@ -147,7 +142,7 @@ void Executer_findValueByLocation(Executer *this, char *key, Container **rContai
     }
 }
 
-void Executer_findValueByToken(Executer *this, Token *token, Container **rContainer, Value **rValue)
+void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer, Value **rValue)
 {
     *rContainer = NULL;
     *rValue = NULL;
@@ -200,11 +195,11 @@ char *Executer_getLocationOfToken(Executer *this, Token *token)
     char *key;
     if (Token_isKeyOfName(token)) {
         char *location = convert_string_to_location(token->value, UG_TYPE_STR);
-        Container *container = NULL;
+        Holdable *holdable = NULL;
         Value *value = NULL;
-        Executer_findValueByLocation(this, location, &container, &value);
+        Executer_findValueByLocation(this, location, &holdable, &value);
         pct_free(location);
-        Executer_assert(this, container!= NULL && value!= NULL, token, LANG_ERR_EXECUTER_INVALID_BOX);
+        Executer_assert(this, holdable!= NULL && value!= NULL, token, LANG_ERR_EXECUTER_INVALID_BOX);
         char *text = Value_toString(value);
         key = convert_string_to_location(text, value->type);
         pct_free(text);
@@ -222,21 +217,21 @@ char *Executer_getLocationOfToken(Executer *this, Token *token)
 // 
 
 // need release
-Value *Executer_getValueFromContainer(Executer *this, Container *container, Token *token)
+Value *Executer_getValueFromContainer(Executer *this, Holdable *holdable, Token *token)
 {
-    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
+    Executer_assert(this, holdable != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     char *location = Executer_getLocationOfToken(this, token);
-    Value *value = Container_getLocation(container, location);
+    Value *value = Container_getLocation(holdable, location);
     if (value != NULL) Machine_retainObj(value);
     pct_free(location);
     return value;
 }
 
-void Executer_setValueToContainer(Executer *this, Container *container, Token *token, Value *value)
+void Executer_setValueToContainer(Executer *this, Holdable *holdable, Token *token, Value *value)
 {
-    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
+    Executer_assert(this, holdable != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     char *location = Executer_getLocationOfToken(this, token);
-    Container_setLocation(container, location, value);
+    Container_setLocation(holdable, location, value);
     pct_free(location);
 }
 
@@ -258,11 +253,11 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
 
 void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool withDeclare)
 {
-    Container *container = NULL;
-    Executer_findValueByToken(this, token, &container, &INVALID_VAL);
-    if (withDeclare && container == NULL) container = this->machine->currContainer;
-    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
-    Executer_setValueToContainer(this, container, token, value);
+    Holdable *holdable = NULL;
+    Executer_findValueByToken(this, token, &holdable, &INVALID_VAL);
+    if (withDeclare && holdable == NULL) holdable = this->machine->currHoldable;
+    Executer_assert(this, holdable != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
+    Executer_setValueToContainer(this, holdable, token, value);
     Machine_releaseObj(value);
 }
 
@@ -383,15 +378,15 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_STR)) {
         new = Value_newString(String_new(), token);
     } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_BOX)) {
-        new =Container_newBox(token);
+        new =Holdable_newBox(token);
     } else {
         new = Executer_getValueByToken(this, token, true); // todo
     }
     // 
-    Value *old = Executer_getValueFromContainer(this, this->machine->currContainer, name);
+    Value *old = Executer_getValueFromContainer(this, this->machine->currHoldable, name);
     Executer_assert(this, old == NULL, name, LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED);
     Executer_assert(this, new != NULL, name, LANG_ERR_EXECUTER_VARIABLE_FAILURE_DEFINED);
-    Executer_setValueToContainer(this, this->machine->currContainer, name, new);
+    Executer_setValueToContainer(this, this->machine->currHoldable, name, new);
     Machine_releaseObj(new);
 }
 
@@ -406,7 +401,7 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
         if (!Token_isString(name) && helper_token_is_values(name, TVAUES_GROUP_UTYPES)) {
             printf("<Type n:%s>\n", name->value);
             if (is_eq_string(name->value, TVALUE_EMPTY)) {
-                Container_print(this->globalScope);
+                Holdable_print(this->globalScope);
             } else {
                 value = Executer_getValueFromContainer(this, this->globalScope, name);
             }
@@ -414,8 +409,8 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
             value = Executer_getValueByToken(this, name, true);
             Executer_assert(this, value != NULL, name, LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND);
         }
-        if (Value_isContainer(value)) {
-            Container_print(value);
+        if (Value_isHoldable(value)) {
+            Holdable_print(value);
         } else if (Value_isObjective(value)) {
             Objective_print(value);
         } else if (Value_isRunnable(value)) {
@@ -549,9 +544,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     tools_assert(ifNode->type == UG_ATYPE_IF_F, LANG_ERR_EXECUTER_INVALID_IF);
     if (!isFinish && Executer_checkJudge(this, ifNode))
     {
-        Executer_pushContainer(this, UG_TYPE_SCP);
+        Executer_pushScope(this);
         Executer_consumeTree(this, ifNode);
-        Executer_popContainer(this, UG_TYPE_SCP);
+        Executer_popScope(this);
         isFinish = true;
     }
     // elseif
@@ -560,9 +555,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     {
         if (!isFinish && Executer_checkJudge(this, ifNode))
         {
-            Executer_pushContainer(this, UG_TYPE_SCP);
+            Executer_pushScope(this);
             Executer_consumeTree(this, ifNode);
-            Executer_popContainer(this, UG_TYPE_SCP);
+            Executer_popScope(this);
             isFinish = true;
         }
         ifNode = Queue_NEXT(leaf->leafs);
@@ -576,9 +571,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         tools_assert(is_eq_string(token->value, TVALUE_ELSE), LANG_ERR_EXECUTER_INVALID_IF);
         if (!isFinish)
         {
-            Executer_pushContainer(this, UG_TYPE_SCP);
+            Executer_pushScope(this);
             Executer_consumeTree(this, ifNode);
-            Executer_popContainer(this, UG_TYPE_SCP);
+            Executer_popScope(this);
             isFinish = true;
         }
         ifNode = Queue_NEXT(leaf->leafs);
@@ -594,9 +589,9 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
 {
     while (Executer_checkJudge(this, leaf))
     {
-        Executer_pushContainer(this, UG_TYPE_SCP);
+        Executer_pushScope(this);
         Executer_consumeTree(this, leaf);
-        Executer_popContainer(this, UG_TYPE_SCP);
+        Executer_popScope(this);
         if (this->errorMsg != NULL) break;
     }
 }
@@ -632,30 +627,30 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
         int num = (int)value->number;
         for (size_t i = 0; i < num; i++)
         {
-            Executer_pushContainer(this, UG_TYPE_SCP);
+            Executer_pushScope(this);
             current1 = Value_newNumber(i, iter1);
             Executer_setValueByToken(this, iter1, current1, true);
             current2 = Value_newNumber(i + 1, iter2);
             Executer_setValueByToken(this, iter2, current2, true);
             Executer_consumeTree(this, leaf);
-            Executer_popContainer(this, UG_TYPE_SCP);
+            Executer_popScope(this);
             if (this->errorMsg != NULL) break;
         }
     } else if (Value_isString(value)) {
         utf8_iter iterator;
         utf8_init(&iterator, String_get(value->string));
         while (utf8_next(&iterator)) {
-            Executer_pushContainer(this, UG_TYPE_SCP);
+            Executer_pushScope(this);
             current1 = Value_newNumber(iterator.position, iter1);
             Executer_setValueByToken(this, iter1, current1, true);
             current2 = Value_newString(String_format(utf8_getchar(&iterator)), iter2);
             Executer_setValueByToken(this, iter2, current2, true);
             Executer_consumeTree(this, leaf);
-            Executer_popContainer(this, UG_TYPE_SCP);
+            Executer_popScope(this);
             if (this->errorMsg != NULL) break;
         }
-    } else if (Value_isContainer(value)) {
-        Container *box = value;
+    } else if (Value_isHoldable(value) || Value_isObjective(value)) {
+        Value *box = value;
         Hashmap *map = box->map;
         Hashkey *ptr;
         for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
@@ -664,13 +659,13 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
                 String *_key = ptr->key;
                 Value *val = ptr->value;
                 //
-                Executer_pushContainer(this, UG_TYPE_SCP);
+                Executer_pushScope(this);
                 current1 = Value_newString(_key, iter1);
                 Executer_setValueByToken(this, iter1, current1, true);
                 current2 = val;
                 Executer_setValueByToken(this, iter2, current2, true);
                 Executer_consumeTree(this, leaf);
-                Executer_popContainer(this, UG_TYPE_SCP);
+                Executer_popScope(this);
                 if (this->errorMsg != NULL) break;
                 // 
                 ptr = ptr->next;
@@ -691,9 +686,9 @@ void Executer_consumeException(Executer *this, Leaf *leaf)
     Token *name = Stack_NEXT(leaf->tokens);
     this->isCatch = true;
     // 
-    Executer_pushContainer(this, UG_TYPE_SCP);
+    Executer_pushScope(this);
     Executer_consumeTree(this, leaf);
-    Executer_popContainer(this, UG_TYPE_SCP);
+    Executer_popScope(this);
     // 
     this->isCatch = false;
     Value *error = NULL;
@@ -716,12 +711,12 @@ void _Executer_parseAppliable(Executer *this, Leaf *leaf, bool isCreator, Token 
     *code = Queue_NEXT(leaf->leafs);
     // func location
     if (Token_isKey(*func)) {
-        Container *place = NULL;
+        Value *place = NULL;
         Executer_findValueByToken(this, *func, &place, &INVALID_VAL);
         Executer_assert(this, place != NULL, *func, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-        if (isCreator && (Container_isModule(place))) {
+        if (isCreator && (Holdable_isModule(place))) {
             return;
-        } else if (!isCreator && !Container_isBox(place)) {
+        } else if (!isCreator && !Holdable_isBox(place)) {
             return;
         }
     }
@@ -773,7 +768,7 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     while(arg != NULL)
     {
         Value *value = Stack_NEXT(this->callStack);
-        Executer_setValueToContainer(this, this->machine->currContainer, arg, value);
+        Executer_setValueToContainer(this, this->machine->currHoldable, arg, value);
         arg = Stack_NEXT(leaf->tokens);
     }
     //
@@ -781,17 +776,17 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     Executer_consumeTree(this, leaf);
 }
 
-Value *Executer_applyWorker(Executer *this, Value *workerValue, Container *container)
+Value *Executer_applyWorker(Executer *this, Value *workerValue, Value *container)
 {
-    Container *self = container != NULL ? container : this->globalScope;
+    Holdable *self = container != NULL ? container : this->globalScope;
     Machine_retainObj(self);
     //
     Value *func = workerValue;
     //
-    Executer_pushContainer(this, UG_TYPE_SCP);
-    Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
+    Executer_pushScope(this);
+    Container_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
     Executer_consumeLeaf(this, func->obj);
-    Executer_popContainer(this, UG_TYPE_SCP);
+    Executer_popScope(this);
     //
     Machine_releaseObj(self);
     this->isReturn = false;
@@ -801,15 +796,15 @@ Value *Executer_applyWorker(Executer *this, Value *workerValue, Container *conta
     return r;
 }
 
-Value *Executer_applyCreator(Executer *this, Value *creatorValue, Container *container)
+Value *Executer_applyCreator(Executer *this, Value *creatorValue, Value *container)
 {
     Value *funV = Executer_getValueFromContainer(this, creatorValue, Token_function());
     Objective *self = Objective_newObj(creatorValue);
     //
-    Executer_pushContainer(this, UG_TYPE_SCP);
-    Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
+    Executer_pushScope(this);
+    Container_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
     Executer_consumeLeaf(this, funV->obj);
-    Executer_popContainer(this, UG_TYPE_SCP);
+    Executer_popScope(this);
     //
     Machine_releaseObj(self);
     this->isReturn = false;
@@ -823,15 +818,15 @@ Value *Executer_applyCreator(Executer *this, Value *creatorValue, Container *con
     return r;
 }
 
-Value *Executer_applyAssister(Executer *this, Value *assisterValue, Container *container)
+Value *Executer_applyAssister(Executer *this, Value *assisterValue, Value *container)
 {
     Value *funV = Executer_getValueFromContainer(this, assisterValue, Token_function());
     Objective *self = Objective_newObj(assisterValue);
     //
-    Executer_pushContainer(this, UG_TYPE_SCP);
-    Container_setLocation(this->machine->currContainer, SCOPE_ALIAS_SLF, self);
+    Executer_pushScope(this);
+    Container_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
     Executer_consumeLeaf(this, funV->obj);
-    Executer_popContainer(this, UG_TYPE_SCP);
+    Executer_popScope(this);
     //
     Machine_releaseObj(self);
     this->isReturn = false;
@@ -845,7 +840,7 @@ Value *Executer_applyAssister(Executer *this, Value *assisterValue, Container *c
     return r;
 }
 
-Value *Executer_applyNative(Executer *this, Value *nativeValue, Container *container)
+Value *Executer_applyNative(Executer *this, Value *nativeValue, Holdable *container)
 {
     Bridge *bridge = this->uyghur->bridge;
     Bridge_startArgument(bridge);
@@ -896,7 +891,7 @@ void Executer_consumeApply(Executer *this, Leaf *leaf)
     // get runable
     
     Value *runnableValue = NULL;
-    Container *runnableContainer = NULL;
+    Value *runnableContainer = NULL;
     Value *selfValue = NULL;
     Executer_findValueByToken(this, runnableName, &runnableContainer, &runnableValue);
     Executer_assert(this, runnableContainer != NULL, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND);
@@ -1090,12 +1085,18 @@ bool Executer_consumeTree(Executer *this, Leaf *tree)
 
 Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
 {
-    Executer_pushContainer(this, UG_TYPE_MDL);
+    //
+    Holdable *module = Holdable_new(UG_TYPE_MDL, NULL);
+    Machine_pushHolder(this->machine, module);
+    //
     Executer_consumeTree(this, tree);
     if (this->machine->stack->head == this->machine->stack->tail) return NULL;
-    Container *module = Executer_popContainer(this, UG_TYPE_MDL);
-    Container_setLocation(this->globalScope, path, module);
-    return module;
+    //
+    Holdable *holdable = Machine_popHolder(this->machine);
+    tools_assert(holdable != NULL && holdable->type == UG_TYPE_MDL, LANG_ERR_EXECUTER_INVALID_STATE);
+    //
+    Container_setLocation(this->globalScope, path, holdable);
+    return holdable;
 }
 
 void Executer_free(Executer *this)

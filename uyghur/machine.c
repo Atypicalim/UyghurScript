@@ -18,7 +18,7 @@ Machine *Machine_new(Uyghur *uyghur) {
     vm->calls = NULL;
     vm->globals = NULL;
     vm->rootModule = NULL;
-    vm->currContainer = NULL;
+    vm->currHoldable = NULL;
     vm->numObjects = 0;
     vm->maxObjects = 50;
     return vm;
@@ -32,7 +32,7 @@ void _machine_mark_object(Object *object) {
 
 void _machine_free_object(Machine *this, Object* object) {
     if (object->gcFreeze) return;
-    // Container *container = object;
+    // Holdable *holdable = object;
     // add hashmap and hashkey to vm
     // log_debug("free_object:%c %p", object->objType, object);
     if (object->objType == PCT_OBJ_VALUE) {
@@ -52,48 +52,48 @@ void _machine_free_object(Machine *this, Object* object) {
     }
 }
 
-void Machine_pushContainer(Machine *this, Object* object) {
+void Machine_pushHolder(Machine *this, Object* object) {
     tools_assert(this->stack->size < MAX_STACK_SIZE, NULL, LANG_ERR_EXECUTER_STACK_OVERFLOW);
     Stack_push(this->stack, object);
-    this->currContainer = (Container *)this->stack->tail->data;
-    this->rootModule = (Container *)this->stack->head->data;
+    this->currHoldable = (Holdable *)this->stack->tail->data;
+    this->rootModule = (Holdable *)this->stack->head->data;
 }
 
-Object* Machine_popContainer(Machine *this) {
+Object* Machine_popHolder(Machine *this) {
     tools_assert(this->stack->size > 0, "Stack underflow!");
-    Container *container = Stack_pop(this->stack);
-    this->currContainer = (Container *)this->stack->tail->data;
-    return container;
+    Holdable *holdable = Stack_pop(this->stack);
+    this->currHoldable = (Holdable *)this->stack->tail->data;
+    return holdable;
 }
 
-Container *Machine_getCurrentModule(Machine *this, Token *token)
+Holdable *Machine_getCurrentModule(Machine *this, Token *token)
 {
     Stack_RESTE(this->stack);
-    Container *container = NULL;
-    while ((container = Stack_NEXT(this->stack)) != NULL)
+    Holdable *holdable = NULL;
+    while ((holdable = Stack_NEXT(this->stack)) != NULL)
     {
-        if (Container_isModule(container)) break;
+        if (Holdable_isModule(holdable)) break;
     }
-    return container;
+    return holdable;
 }
 
-Container *Machine_getCurrentSelf(Machine *this, Token *token)
+Value *Machine_getCurrentSelf(Machine *this, Token *token)
 {
     Stack_RESTE(this->stack);
-    Container *container = NULL;
-    while ((container = Stack_NEXT(this->stack)) != NULL)
+    Value *value = NULL;
+    while ((value = Stack_NEXT(this->stack)) != NULL)
     {
-        if (!Container_isScope(container)) break;
-        Value *self = Container_getLocation(container, SCOPE_ALIAS_SLF);
+        if (!Holdable_isScope(value)) break;
+        Value *self = Container_getLocation(value, SCOPE_ALIAS_SLF);
         if (self != NULL) {
-            container = self;
+            value = self;
             break;
         }
     }
-    return container;
+    return value;
 }
 
-void _machine_mark_container(Container *);
+void _machine_mark_holdable(Holdable *);
 void _machine_mark_objective(Objective *);
 void _machine_mark_hashkey(Hashkey *, void *);
 void _machine_mark_value(Value *);
@@ -106,8 +106,8 @@ void _machine_mark_value(Value *value) {
     } else if (value->type == UG_TYPE_STR) {
         _machine_mark_object(value);
         // _machine_mark_object(value->string);
-    } else if (is_type_container(value->type)) {
-        _machine_mark_container(value);
+    } else if (is_type_holdable(value->type)) {
+        _machine_mark_holdable(value);
     } else if (is_type_objective(value->type)) {
         _machine_mark_objective(value);
     } else if (is_type_runnable(value->type)) {
@@ -125,13 +125,13 @@ void _machine_mark_hashkey(Hashkey *hashkey, void *other) {
     _machine_mark_value(val);
 }
 
-void _machine_mark_container(Container *container) {
-    if (container->gcMark) return;
+void _machine_mark_holdable(Holdable *holdable) {
+    if (holdable->gcMark) return;
     // Machine *this = __uyghur->machine;
-    // log_info("mark_container %p %c %i %i", container, container->type, container == this->globals, container == this->rootModule);
-    _machine_mark_object(container);
-    _machine_mark_object(container->map);
-    Hashmap_foreachItem(container->map, _machine_mark_hashkey, NULL);
+    // log_info("mark_holdable %p %c %i %i", holdable, holdable->type, holdable == this->globals, holdable == this->rootModule);
+    _machine_mark_object(holdable);
+    _machine_mark_object(holdable->map);
+    Hashmap_foreachItem(holdable->map, _machine_mark_hashkey, NULL);
 }
 
 void _machine_mark_objective(Objective *objective) {
@@ -146,9 +146,9 @@ void _machine_mark_objective(Objective *objective) {
 void _machine_mark_cstack(void *ptr, void *other) {
     
     // Machine *this = __uyghur->machine;
-    // Container *ctnr = ptr;
+    // holdable *ctnr = ptr;
     // log_debug("mark_stack %p %p", ctnr, this->stack->tail->data);
-    _machine_mark_container(ptr);
+    _machine_mark_holdable(ptr);
 }
 
 void _machine_mark_vstack(void *ptr, void *other) {
@@ -157,7 +157,7 @@ void _machine_mark_vstack(void *ptr, void *other) {
 
 void Machine_mark(Machine *this)
 {
-    _machine_mark_container(this->globals);
+    _machine_mark_holdable(this->globals);
     Stack_foreachItem(this->stack, _machine_mark_cstack, NULL);
     Stack_foreachItem(this->calls, _machine_mark_vstack, NULL);
 }
@@ -282,11 +282,11 @@ void Machine_freeObj(Object* object) {
 void Machine_testGC() {
     log_warn("\n\n\n---------------------TEST:");
     Machine* this = __uyghur->machine;
-    Machine_pushContainer(this, Container_new(UG_TYPE_SCP, NULL));
+    Machine_pushHolder(this, Holdable_new(UG_TYPE_SCP, NULL));
     for (size_t i = 0; i < 100; i++) {
         log_warn("---------------------test%i", i);
         for (size_t j = 0; j < 1000000; j++) {
-            Container_newBox(NULL);
+            Holdable_newBox(NULL);
         }
         Machine_runGC(this);
         time_sleep_seconds(1);

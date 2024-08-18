@@ -48,8 +48,8 @@ void native_import(Bridge *bridge)
 {
     char *path = Bridge_receiveString(bridge);
     Uyghur *uyghur = bridge->uyghur;
-    Container *container = uyghur->executer->globalScope;
-    Value *box = Container_getLocation(container, path);
+    Holdable *global = uyghur->executer->globalScope;
+    Value *box = Container_getLocation(global, path);
     if (box == NULL) box = Uyghur_runPath(uyghur, path);
     if (box == NULL) box = Value_newEmpty(NULL);
     Bridge_returnValue(bridge, box);

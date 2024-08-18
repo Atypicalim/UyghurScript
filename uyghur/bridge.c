@@ -136,21 +136,21 @@ void Bridge_register(Bridge *this, char *boxName)
 {
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, box expected for register");
     tools_assert(this->last == BRIDGE_ITEM_TP_VAL, "invalid bridge status");
-    Container *global = this->uyghur->executer->globalScope;
-    Container *container = boxName == NULL ? global : Container_newBox(NULL);
+    Holdable *global = this->uyghur->executer->globalScope;
+    Holdable *holdable = boxName == NULL ? global : Holdable_newBox(NULL);
     Value *value = Stack_pop(this->stack);
     while (value != NULL)
     {
         Value *key = Stack_pop(this->stack);
         char *_key =  String_get(key->string);
-        helper_set_aliased_key(container, _key, value);
+        helper_set_aliased_key(holdable, _key, value);
         Machine_releaseObj(key);
         value = Stack_pop(this->stack);
     }
     if (boxName != NULL)
     {
-        Machine_retainObj(container);
-        helper_set_aliased_key(global, boxName, container);
+        Machine_retainObj(holdable);
+        helper_set_aliased_key(global, boxName, holdable);
     }
 }
 

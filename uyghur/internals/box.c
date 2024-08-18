@@ -9,7 +9,7 @@ void native_box_iterate(Bridge *bridge)
     void (*_wkr)() = wkr->obj;
     // 
     Executer *exe = bridge->uyghur->executer;
-    Hashmap *map = ((Container*)box)->map;
+    Hashmap *map = ((Holdable*)box)->map;
     Hashkey *ptr;
     for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
         ptr = map->bucket[i];

@@ -225,7 +225,7 @@ bool is_scope(UCHAR c)
 
 //
 
-bool is_type_container(char tp) {
+bool is_type_holdable(char tp) {
     return tp == UG_TYPE_BOX
     || tp == UG_TYPE_SCP
     || tp == UG_TYPE_MDL;

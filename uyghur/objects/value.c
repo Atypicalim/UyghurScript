@@ -107,9 +107,9 @@ bool Value_isString(Value *this)
     return this != NULL && this->type == UG_TYPE_STR;
 }
 
-bool Value_isContainer(Value *this)
+bool Value_isHoldable(Value *this)
 {
-    return this != NULL && is_type_container(this->type);
+    return this != NULL && is_type_holdable(this->type);
 }
 
 bool Value_isObjective(Value *this)
@@ -146,9 +146,9 @@ void Value_print(Value *this)
         char *value = String_get(this->string);
         printf("<V:String => v:%s p:%p>\n", value, this);
     }
-    else if (is_type_container(this->type))
+    else if (is_type_holdable(this->type))
     {
-        Container_print(this);
+        Holdable_print(this);
     }
     else if (is_type_objective(this->type))
     {
@@ -175,8 +175,8 @@ char *Value_toString(Value *this)
         return tools_number_to_string(this->number);
     } if (this->type == UG_TYPE_STR) {
         return String_dump(this->string);
-    } if (is_type_container(this->type)) {
-        return Container_toString(this);
+    } if (is_type_holdable(this->type)) {
+        return Holdable_toString(this);
     } if (is_type_objective(this->type)) {
         return Objective_toString(this);
     } if (is_type_runnable(this->type)) {
@@ -266,12 +266,49 @@ void Value_free(Value *this)
     // }
     if (this->type == UG_TYPE_STR) {
         Machine_releaseObj(this->string);
-    } else if (is_type_container(this->type)) {
+    } else if (is_type_holdable(this->type)) {
+        Machine_releaseObj(this->map);
+    } else if (is_type_objective(this->type)) {
         Machine_releaseObj(this->map);
     }
     if (this != Value_EMPTY && this != Value_TRUE && this != Value_FALSE) {
         Machine_freeObj(this);
     }
 }
+
+//
+
+void __Container_copyTo(Hashkey *hashkey, Hashmap *other)
+{
+    String *key = hashkey->key;
+    Value *val = hashkey->value;
+    char *_key = String_get(key);
+    Hashmap_set(other, _key, val);
+}
+
+void Container_copyTo(Value *this, Value *other)
+{
+    Hashmap_foreachItem(this->map, __Container_copyTo, other->map);
+}
+
+//
+
+void Container_delLocation(Value *this, char *key)
+{
+    Hashmap_del(this->map, key);
+}
+
+void *Container_getLocation(Value *this, char *key)
+{
+    return Hashmap_get(this->map, key);
+}
+
+void Container_setLocation(Value *this, char *key, void *value)
+{
+    if (value == NULL) return Container_delLocation(this, key);
+    Hashmap_set(this->map, key, value);
+}
+
+//
 
 #endif

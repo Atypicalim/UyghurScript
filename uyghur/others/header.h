@@ -139,15 +139,15 @@ Objective *Objective_new(char, void*);
 char *Objective_toString(Objective *);
 void Objective_print(Objective *);
 
-// container
+// holdable
 
-typedef struct _Container {
+typedef struct _Holdable {
     struct _Value;
-} Container;
+} Holdable;
 
-Container *Container_new(char, void*);
-char *Container_toString(Container *);
-void Container_print(Container *);
+Holdable *Holdable_new(char, void*);
+char *Holdable_toString(Holdable *);
+void Holdable_print(Holdable *);
 
 // 
 
@@ -157,13 +157,12 @@ void Container_print(Container *);
 #include "../objects/leaf.c"
 
 typedef void (*WORKER)(Leaf *);
-typedef void (*CONTAINER)(Container *);
 typedef void (*NATIVE)(Bridge *);
 
 #include "../objects/value.c"
 #include "../objects/runnable.c"
 #include "../objects/objective.c"
-#include "../objects/container.c"
+#include "../objects/holdable.c"
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -200,7 +199,7 @@ Uyghur *__uyghur = NULL;
 #include "helpers.c"
 
 void *INVALID_PTR = NULL;
-Container *INVALID_CTN = NULL;
+Value *INVALID_CTN = NULL;
 Value *INVALID_VAL = NULL;
 
 ////////////////////////////////////////////////////////////////////////////
@@ -240,9 +239,9 @@ struct Machine {
     bool freezing;
     bool collects;
     Stack *calls;
-    Container *globals;
-    Container *rootModule;
-    Container *currContainer;
+    Holdable *globals;
+    Holdable *rootModule;
+    Holdable *currHoldable;
     int numObjects;
     int maxObjects;
 };
