@@ -39,17 +39,17 @@ Holdable *Holdable_newBox(void *extra)
 
 bool Holdable_isModule(Holdable *this)
 {
-    return this->type == UG_TYPE_MDL;
+    return this != NULL && this->type == UG_TYPE_MDL;
 }
 
 bool Holdable_isScope(Holdable *this)
 {
-    return this->type == UG_TYPE_SCP;
+    return this != NULL && this->type == UG_TYPE_SCP;
 }
 
 bool Holdable_isBox(Holdable *this)
 {
-    return this->type == UG_TYPE_BOX;
+    return this != NULL && this->type == UG_TYPE_BOX;
 }
 
 // 

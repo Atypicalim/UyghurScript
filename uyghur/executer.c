@@ -87,34 +87,11 @@ void Executer_popScope(Executer *this)
     Machine_releaseObj(holdable);
 }
 
-Holdable *Executer_getCurrentGlobal(Executer *this, Token *token)
-{
-    Holdable *holdable = this->globalScope;
-    Executer_assert(this, holdable != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-    return holdable;
-}
-
-Holdable *Executer_getCurrentModule(Executer *this, Token *token)
-{
-    Holdable *holdable = Machine_getCurrentModule(this->machine, token);
-    Executer_assert(this, Holdable_isModule(holdable), token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-    return holdable;
-}
-
 Holdable *Executer_getCurrentScope(Executer *this, Token *token)
 {
     Holdable *holdable = this->machine->currHoldable;
     Executer_assert(this, holdable != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
     return holdable;
-}
-
-Value *Executer_getCurrentSelf(Executer *this, Token *token)
-{
-    Value *value = Machine_getCurrentSelf(this->machine, token);
-    if (!Objective_isCtr(value) && !Objective_isObj(value) && !Holdable_isBox(value)) {
-        Executer_error(this, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-    }
-    return value;
 }
 
 void Executer_findValueByLocation(Executer *this, char *key, Value **rContainer, Value **rValue)
@@ -160,9 +137,21 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
     // const
     Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_INVALID_KEY);
     Token *extra = (Token *)token->extra;
-    if (is_eq_string(extra->value, SCOPE_ALIAS_PRG)) *rContainer = Executer_getCurrentGlobal(this, token);
-    if (is_eq_string(extra->value, SCOPE_ALIAS_MDL)) *rContainer = Executer_getCurrentModule(this, token);
-    if (is_eq_string(extra->value, SCOPE_ALIAS_SLF)) *rContainer = Executer_getCurrentSelf(this, token);
+    if (is_eq_string(extra->value, SCOPE_ALIAS_PRG)) {
+        *rContainer = this->globalScope;
+        Executer_assert(this, *rContainer != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
+        Executer_assert(this, Holdable_isScope(*rContainer), token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
+    } else if (is_eq_string(extra->value, SCOPE_ALIAS_MDL)) {
+        *rContainer = Machine_getCurrentModule(this->machine);
+        Executer_assert(this, *rContainer != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
+        Executer_assert(this, Holdable_isModule(*rContainer), token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
+    } else if (is_eq_string(extra->value, SCOPE_ALIAS_SLF)) {
+        *rContainer = Machine_getCurrentSelf(this->machine);
+        Executer_assert(this, *rContainer != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
+        if (!Objective_isCtr(*rContainer) && !Objective_isObj(*rContainer) && !Holdable_isBox(*rContainer)) {
+            Executer_error(this, token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
+        }
+    }
     // box
     Value *value = NULL;
     if (*rContainer == NULL) {
@@ -175,12 +164,14 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
     // key
     char *location = convert_string_to_location(token->value, UG_TYPE_STR);
     // 
-    if (Objective_isCtr(*rContainer) || Objective_isObj(*rContainer)) {
+    if (Objective_isObj(*rContainer)) {
         *rValue = Container_getLocation(*rContainer, location);
-        Value *creator = value == NULL ? NULL : value->extra;
-        while (*rValue == NULL && creator != NULL) {
-            *rValue = Container_getLocation(creator, location);
-            creator = creator->extra;
+        Queue *parents = (*rContainer)->extra;
+        Queue_RESTE(parents);
+        Objective *parent = Queue_NEXT(parents);
+        while (*rValue == NULL && parent != NULL) {
+            *rValue = Container_getLocation(parent, location);
+            parent = Queue_NEXT(parents);
         }
     } else {
         *rValue = Container_getLocation(*rContainer, location);
@@ -776,7 +767,7 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     Executer_consumeTree(this, leaf);
 }
 
-Value *Executer_applyWorker(Executer *this, Value *workerValue, Value *container)
+Value *Executer_applyWorker(Executer *this, Token *token, Value *workerValue, Value *container)
 {
     Holdable *self = container != NULL ? container : this->globalScope;
     Machine_retainObj(self);
@@ -796,14 +787,17 @@ Value *Executer_applyWorker(Executer *this, Value *workerValue, Value *container
     return r;
 }
 
-Value *Executer_applyCreator(Executer *this, Value *creatorValue, Value *container)
+Value *Executer_applyCreator(Executer *this, Token *token, Value *creatorValue, Value *container)
 {
-    Value *funV = Executer_getValueFromContainer(this, creatorValue, Token_function());
-    Objective *self = Objective_newObj(creatorValue);
+    Value *constructor = Executer_getValueFromContainer(this, creatorValue, Token_function());
+    Executer_assert(this, Runnable_isWorker(constructor), token, LANG_ERR_EXECUTER_APPLY_NOT_VALID);
+    Queue *parent = Queue_new();
+    Queue_push(parent, creatorValue);
+    Objective *self = Objective_newObj(parent);
     //
     Executer_pushScope(this);
     Container_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
-    Executer_consumeLeaf(this, funV->obj);
+    Executer_consumeLeaf(this, constructor->obj);
     Executer_popScope(this);
     //
     Machine_releaseObj(self);
@@ -818,17 +812,19 @@ Value *Executer_applyCreator(Executer *this, Value *creatorValue, Value *contain
     return r;
 }
 
-Value *Executer_applyAssister(Executer *this, Value *assisterValue, Value *container)
+Value *Executer_applyAssister(Executer *this, Token *token, Value *assisterValue, Value *container)
 {
-    Value *funV = Executer_getValueFromContainer(this, assisterValue, Token_function());
-    Objective *self = Objective_newObj(assisterValue);
+    Value *constructor = Executer_getValueFromContainer(this, assisterValue, Token_function());
+    Objective *self = Machine_getCurrentSelf(this->machine);
+    Executer_assert(this, Objective_isObj(self), token, LANG_ERR_EXECUTER_APPLY_NOT_VALID);
+    Queue *parent = self->extra;
+    Queue_push(parent, assisterValue);
     //
     Executer_pushScope(this);
     Container_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
-    Executer_consumeLeaf(this, funV->obj);
+    Executer_consumeLeaf(this, constructor->obj);
     Executer_popScope(this);
     //
-    Machine_releaseObj(self);
     this->isReturn = false;
     // 
     Value *r = Stack_pop(this->callStack);
@@ -840,7 +836,7 @@ Value *Executer_applyAssister(Executer *this, Value *assisterValue, Value *conta
     return r;
 }
 
-Value *Executer_applyNative(Executer *this, Value *nativeValue, Holdable *container)
+Value *Executer_applyNative(Executer *this, Token *token, Value *nativeValue, Holdable *container)
 {
     Bridge *bridge = this->uyghur->bridge;
     Bridge_startArgument(bridge);
@@ -889,7 +885,6 @@ void Executer_consumeApply(Executer *this, Leaf *leaf)
         arg = Stack_NEXT(leaf->tokens);
     }
     // get runable
-    
     Value *runnableValue = NULL;
     Value *runnableContainer = NULL;
     Value *selfValue = NULL;
@@ -900,13 +895,13 @@ void Executer_consumeApply(Executer *this, Leaf *leaf)
     Value *r = NULL;
     Debug_pushTrace(this->uyghur->debug, runnableName);
     if (runnableValue->type == UG_TYPE_WKR) {
-        r = Executer_applyWorker(this, runnableValue, runnableContainer);
+        r = Executer_applyWorker(this, runnableName, runnableValue, runnableContainer);
     } else if (runnableValue->type == UG_TYPE_CTR) {
-        r = Executer_applyCreator(this, runnableValue, runnableContainer);
+        r = Executer_applyCreator(this, runnableName, runnableValue, runnableContainer);
     } else if (runnableValue->type == UG_TYPE_ATR) {
-        r = Executer_applyAssister(this, runnableValue, runnableContainer);
+        r = Executer_applyAssister(this, runnableName, runnableValue, runnableContainer);
     } else if (runnableValue->type == UG_TYPE_NTV) {
-        r = Executer_applyNative(this, runnableValue, runnableContainer);
+        r = Executer_applyNative(this, runnableName, runnableValue, runnableContainer);
     } else {
         Executer_error(this, runnableName, "LANG_ERR_EXECUTER_RUNNABLE_NOT_VALID");
     }

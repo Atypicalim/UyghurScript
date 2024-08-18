@@ -26,6 +26,7 @@
 
 // 
 
+#define IS_DEVELOP true
 bool isTest = false;
 #define MAX_STACK_SIZE 1000
 #define MAX_TRACE_SIZE 5

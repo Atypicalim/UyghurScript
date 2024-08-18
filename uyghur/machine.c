@@ -66,7 +66,7 @@ Object* Machine_popHolder(Machine *this) {
     return holdable;
 }
 
-Holdable *Machine_getCurrentModule(Machine *this, Token *token)
+Holdable *Machine_getCurrentModule(Machine *this)
 {
     Stack_RESTE(this->stack);
     Holdable *holdable = NULL;
@@ -77,7 +77,7 @@ Holdable *Machine_getCurrentModule(Machine *this, Token *token)
     return holdable;
 }
 
-Value *Machine_getCurrentSelf(Machine *this, Token *token)
+Value *Machine_getCurrentSelf(Machine *this)
 {
     Stack_RESTE(this->stack);
     Value *value = NULL;

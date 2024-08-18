@@ -10,7 +10,7 @@
 
 int main(int argc, char const *argv[])
 {
-    INCBIN(Script, UG_SCRIPT_PATH);
+    INCTXT(Script, UG_SCRIPT_PATH);
     //
     log_set_file("./test.log");
     log_set_level(0);

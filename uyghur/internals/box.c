@@ -20,7 +20,7 @@ void native_box_iterate(Bridge *bridge)
             Executer_clearStack(exe);
             Executer_pushStack(exe, val);
             Executer_pushStack(exe, key);
-            Executer_applyWorker(exe, wkr, NULL);
+            Executer_applyWorker(exe, Token_empty(), wkr, NULL);
             // 
             ptr = ptr->next;
         }

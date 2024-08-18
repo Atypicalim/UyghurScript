@@ -308,6 +308,13 @@ LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND:
   uz: "Tasdiqlash qutisi topilmadi"
   tr: "nişan sandık bulunamadı"
   kz: "мақсат сандық табылмады"
+LANG_ERR_EXECUTER_CONTAINER_NOT_VALID:
+  en: "target box not valid"
+  uy: "نىشانلانغان ساندۇق ئىناۋەتسىز"
+  ug: "nishanlanghan sanduq inawetsiz"
+  uz: "Tasdiqlash qutisi Yaroqsiz"
+  tr: "nişan sandık geçersiz"
+  kz: "мақсат сандық жарамсыз"
 LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND:
   en: "target runnable not found"
   uy: "نىشانلانغان يۈگۈرگۈچى تېپىلمىدى"
@@ -322,6 +329,13 @@ LANG_ERR_EXECUTER_RUNNABLE_NOT_VALID:
   uz: "Maqsadli yuguruvchi Yaroqsiz"
   tr: "nişan koşucu geçersiz"
   kz: "мақсат жүгіруші жарамсыз"
+LANG_ERR_EXECUTER_APPLY_NOT_VALID:
+  en: "apply action not valid"
+  uy: "ئىشلىتىش مەشغۇلاتى ئىناۋەتسىز"
+  ug: "ishlitish meshghulati inawetsiz"
+  uz: "ishlatish operatsiyasi yaroqsiz"
+  tr: "kullanmak işlemi geçersiz"
+  kz: "қолдану операциясы жарамсыз"
 #
 LANG_ERR_EXECUTER_BRIDGE_INVALID_RESULT:
   en: "bridge returned invalid result"

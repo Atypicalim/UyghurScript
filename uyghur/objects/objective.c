@@ -38,17 +38,17 @@ Objective *Objective_newObj(void *extra)
 
 bool Objective_isCtr(Objective *this)
 {
-    return this->type == UG_TYPE_CTR;
+    return this != NULL && this->type == UG_TYPE_CTR;
 }
 
 bool Objective_isAtr(Objective *this)
 {
-    return this->type == UG_TYPE_ATR;
+    return this != NULL && this->type == UG_TYPE_ATR;
 }
 
 bool Objective_isObj(Objective *this)
 {
-    return this->type == UG_TYPE_OBJ;
+    return this != NULL && this->type == UG_TYPE_OBJ;
 }
 
 // 
