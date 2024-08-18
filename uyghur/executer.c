@@ -304,8 +304,13 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
     int sameType = compCode != CODE_FAIL;
     if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_ALL)) {
         if (is_eq_string(sign, TVALUE_SIGN_EQUAL)) {
-            bool r = sameType && compCode == CODE_NONE;
-            result = Value_newBoolean(r, token);
+            if (Objective_isObj(left) && !Objective_isObj(right)) {
+                bool r = Objective_isInstanceOf(left, right);
+                result = Value_newBoolean(r, token);
+            } else {
+                bool r = sameType && compCode == CODE_NONE;
+                result = Value_newBoolean(r, token);
+            }
         } else if (sameType && is_eq_string(sign, TVALUE_SIGN_MORE)) {
             bool r = compCode == CODE_TRUE;
             result = Value_newBoolean(r, token);
@@ -728,7 +733,7 @@ void Executer_consumeCreator(Executer *this, Leaf *leaf)
     Token *func; Leaf *code;
     _Executer_parseAppliable(this, leaf, true, &func, &code);
     //
-    Objective *self = Objective_newCtr(NULL);
+    Objective *self = Objective_newCtr();
     Value *funV = Runnable_newWorker(code, NULL);
     Executer_setValueToContainer(this, self, Token_function(), funV);
     Machine_releaseObj(funV);
@@ -741,7 +746,7 @@ void Executer_consumeAssister(Executer *this, Leaf *leaf)
     Token *func; Leaf *code;
     _Executer_parseAppliable(this, leaf, true, &func, &code);
     //
-    Objective *self = Objective_newAtr(NULL);
+    Objective *self = Objective_newAtr();
     Value *funV = Runnable_newWorker(code, NULL);
     Executer_setValueToContainer(this, self, Token_function(), funV);
     Machine_releaseObj(funV);

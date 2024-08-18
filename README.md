@@ -80,6 +80,35 @@ m qimmiti logika bolsun
 buyruq m yezilsun
 ```
 
+* calculation
+
+```powershell
+# arthimetic
+x = 1 + 2 # 3
+x = 1 + 2 * 3 # 9
+x = 1 + (2 * 3) # 7
+x = 64 ^ (1 / 3) # 4
+
+# bitwise
+x = 3 & 2 # 2
+x = 3 | 2 # 3
+x = 3 ~ 2 # 1
+
+# boolean
+x = rast & yalghan # yalghan
+x = rast | yalghan # rast
+x = rast ~ yalghan # rast
+
+# logic
+x = [2] ? 2 # false
+x = 2 < 3 # true
+x = [ab] > [ac] # false 
+
+# string
+x = [ab] + [cd] # abcd
+x = [ab] * 2 # abab
+```
+
 * command
 
 ```powershell
@@ -142,28 +171,6 @@ fonkisiye f bilen 10 20 ishlitilsun we r elinsun
 buyruq r yezilsun
 ```
 
-* objective
-
-```powershell
-# an assister with one argument
-yasighuchi X miqdar x mezmuni
-    @-[x] = x
-tamamlansun
-
-# a creator with one arguments
-yasighuchi Y miqdar y mezmuni
-    yasighuchi X bilen 123 ishlitilsun 
-    @-[y] = y
-tamamlansun
-
-# call creator using an assister and receive object
-yasighuchi X bilen [abc...] ishlitilsun we r elinsun
-
-# print the object value received
-buyruq @r[x] yezilsun
-buyruq @r[y] yezilsun
-```
-
 * exception
 
 ```powershell
@@ -183,36 +190,7 @@ bolmisa
 tamamlansun
 ```
 
-* calculate
-
-```powershell
-# arthimetic
-x = 1 + 2 # 3
-x = 1 + 2 * 3 # 9
-x = 1 + (2 * 3) # 7
-x = 64 ^ (1 / 3) # 4
-
-# bitwise
-x = 3 & 2 # 2
-x = 3 | 2 # 3
-x = 3 ~ 2 # 1
-
-# boolean
-x = rast & yalghan # yalghan
-x = rast | yalghan # rast
-x = rast ~ yalghan # rast
-
-# logic
-x = [2] ? 2 # false
-x = 2 < 3 # true
-x = [ab] > [ac] # false 
-
-# string
-x = [ab] + [cd] # abcd
-x = [ab] * 2 # abab
-```
-
-* box
+* holdable
 
 ```powershell
 #  declare a box
@@ -235,6 +213,33 @@ tamamlansun
 # variable: @boxName{variableName}
 # string: @boxName[stringKey]
 # number: @boxName(123)
+```
+
+* objective
+
+```powershell
+# an assister with one argument
+yardemchi X miqdar x mezmuni
+    @-[x] = x
+tamamlansun
+
+# a creator with one arguments
+yasighuchi Y miqdar y mezmuni
+    yasighuchi X bilen 123 ishlitilsun 
+    @-[y] = y
+tamamlansun
+
+# call creator using an assister and receive object
+yasighuchi Y bilen [abc...] ishlitilsun we r elinsun
+
+# print the object value received
+buyruq @r[x] yezilsun # 123
+buyruq @r[y] yezilsun # abc...
+
+# check obj is created by or assisted by
+eger r ? X bolsa
+    buyruq [yes] yezilsun # yes
+tamamlansun
 ```
 
 * import

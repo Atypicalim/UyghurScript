@@ -12,33 +12,21 @@
 
 # ######################################################### oop
 
-yardemchi Yuguresh miqdar x mezmuni
-
-
-tamamlansun
-
-yasighuchi Name miqdar x y mezmuni
-    yasighuchi Yuguresh bilen 10 20 yardemleshsun 
+yardemchi X miqdar x mezmuni
     @-[x] = x
-    @-[y] = y
-    fonkisiye @_[other] bilen 10 20 ishlitilsun we obj elinsun 
 tamamlansun
 
-fonkisiye @Yuguresh[yururesh] bilen 10 ishlitilsun
+yasighuchi Y miqdar y mezmuni
+    yardemchi X bilen 10 yardemleshsun
+    @X[x] = 20
+    @-[y] = y
+tamamlansun
 
 @?{key}
 
-örnek
-tur
-tuxum
-torelme
-yiltiz
-uruq
-
 # ######################################################### function
 
-fonkisiye f miqdar a roli quruq mezmuni
-    netije r qayturulsun
+fonkisiye f miqdar a mezmuni
 tamamlansun
 
 fonkisiye f bilen a b ishlitilsun we r elinsun 

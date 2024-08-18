@@ -1,13 +1,17 @@
 
 
+yardemchi W miqdar w mezmuni
+    @-[w] = w
+tamamlansun
+
 yardemchi X miqdar x mezmuni
     @-[x] = x
 tamamlansun
 
 fonkisiye @X[xxx] miqdar a mezmuni
-    buyruq @-[x] yezilsun
-    buyruq a yezilsun
-    netije [www\n] qayturulsun
+    # buyruq @-[x] yezilsun
+    # buyruq a yezilsun
+    # netije [www\n] qayturulsun
 tamamlansun
 
 yasighuchi Y miqdar y mezmuni
@@ -16,8 +20,11 @@ yasighuchi Y miqdar y mezmuni
 tamamlansun
 
 yasighuchi Y bilen [abc...\n] ishlitilsun we r elinsun
-buyruq @r[x] yezilsun
-buyruq @r[y] yezilsun
 
-fonkisiye @r[xxx] bilen [123...\n] ishlitilsun we rr elinsun
-buyruq rr yezilsun
+eger r ? W bolsa
+    buyruq [yes\n] yezilsun
+bolmisa
+    buyruq [no\n] yezilsun
+tamamlansun
+
+# memory leak

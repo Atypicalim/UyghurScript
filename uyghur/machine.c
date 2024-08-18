@@ -38,9 +38,11 @@ void _machine_free_object(Machine *this, Object* object) {
     if (object->objType == PCT_OBJ_VALUE) {
         Value *value = object;
         if (value->type == UG_TYPE_STR) {
+            // log_info("free str %p", object);
             String_free(value->string);
         } else if (value->type == UG_TYPE_OBJ) {
             // log_info("free obj %p", object);
+            Queue_free(value->extra);
         }
         free(object);
     } else if (object->objType == PCT_OBJ_HASHMAP) {
@@ -132,6 +134,9 @@ void _machine_mark_holdable(Holdable *holdable) {
     _machine_mark_object(holdable);
     _machine_mark_object(holdable->map);
     Hashmap_foreachItem(holdable->map, _machine_mark_hashkey, NULL);
+    if(Holdable_isBox(holdable)) {
+        
+    }
 }
 
 void _machine_mark_objective(Objective *objective) {
@@ -141,6 +146,17 @@ void _machine_mark_objective(Objective *objective) {
     _machine_mark_object(objective);
     _machine_mark_object(objective->map);
     Hashmap_foreachItem(objective->map, _machine_mark_hashkey, NULL);
+    if(Objective_isObj(objective)) {
+        Queue *parents = objective->extra;
+        if (parents != NULL) {
+            Queue_RESTE(parents);
+            Objective *parent = Queue_NEXT(parents);
+            while (parent != NULL) {
+                _machine_mark_objective(parent);
+                parent = Queue_NEXT(parents);
+            }
+        }
+    }
 }
 
 void _machine_mark_cstack(void *ptr, void *other) {

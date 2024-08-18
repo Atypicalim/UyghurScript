@@ -2,13 +2,13 @@
 hello:
 variable:
 type:
+calculation:
 command:
 if:
 while:
 spread:
 worker:
-objective:
 exception:
-calculate:
-box:
+holdable:
+objective:
 import:

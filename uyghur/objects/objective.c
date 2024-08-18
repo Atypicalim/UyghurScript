@@ -19,14 +19,14 @@ Objective *Objective_new(char tp, void *extra)
     return objective;
 }
 
-Objective *Objective_newCtr(void *extra)
+Objective *Objective_newCtr()
 {
-    return Objective_new(UG_TYPE_CTR, extra);
+    return Objective_new(UG_TYPE_CTR, NULL);
 }
 
-Objective *Objective_newAtr(void *extra)
+Objective *Objective_newAtr()
 {
-    return Objective_new(UG_TYPE_ATR, extra);
+    return Objective_new(UG_TYPE_ATR, NULL);
 }
 
 Objective *Objective_newObj(void *extra)
@@ -53,17 +53,18 @@ bool Objective_isObj(Objective *this)
 
 // 
 
-void __Objective_copyTo(Hashkey *hashkey, Hashmap *other)
-{
-    String *key = hashkey->key;
-    Value *val = hashkey->value;
-    char *_key = String_get(key);
-    Hashmap_set(other, _key, val);
-}
-
-void Objective_copyTo(Objective *this, Objective *other)
-{
-    Hashmap_foreachItem(this->map, __Objective_copyTo, other->map);
+bool Objective_isInstanceOf(Objective *this, Value *other) {
+    if (!Objective_isCtr(other) && !Objective_isAtr(other)) return false;
+    Queue *parents = this->extra;
+    Queue_RESTE(parents);
+    Objective *parent = Queue_NEXT(parents);
+    while (parent != NULL) {
+        if (parent == other) {
+            return true;
+        }
+        parent = Queue_NEXT(parents);
+    }
+    return false;
 }
 
 // 
