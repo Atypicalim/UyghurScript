@@ -137,15 +137,15 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
     // keys
     Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_INVALID_KEY);
     Token *extra = (Token *)token->extra;
-    if (is_eq_string(extra->value, SCOPE_ALIAS_PRG)) {
+    if (is_eq_string(extra->value, SCOPE_ALIAS_GLB) || is_eq_string(extra->value, TVALUE_GLOBAL)) {
         *rContainer = this->globalScope;
         Executer_assert(this, *rContainer != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
         Executer_assert(this, Holdable_isScope(*rContainer), token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
-    } else if (is_eq_string(extra->value, SCOPE_ALIAS_MDL)) {
+    } else if (is_eq_string(extra->value, SCOPE_ALIAS_MDL) || is_eq_string(extra->value, TVALUE_MODULE)) {
         *rContainer = Machine_getCurrentModule(this->machine);
         Executer_assert(this, *rContainer != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
         Executer_assert(this, Holdable_isModule(*rContainer), token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
-    } else if (is_eq_string(extra->value, SCOPE_ALIAS_SLF)) {
+    } else if (is_eq_string(extra->value, SCOPE_ALIAS_SLF) || is_eq_string(extra->value, TVALUE_THIS)) {
         *rContainer = Machine_getCurrentSelf(this->machine);
         Executer_assert(this, *rContainer != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
         if (!Objective_isCtr(*rContainer) && !Objective_isObj(*rContainer) && !Holdable_isBox(*rContainer)) {

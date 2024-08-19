@@ -221,12 +221,12 @@ const UG_PAIRS UG_WORDS_MAP[] = {
 
 #define CACHE_STRING_MAX_LENGTH 128
 
-#define SCOPE_ALIAS_PRG "*"
+#define SCOPE_ALIAS_GLB "*"
 #define SCOPE_ALIAS_MDL "+"
 #define SCOPE_ALIAS_SLF "-"
 
-#define TEXT_VARIABLE "_"
-#define TEXT_FUNCTION "__"
+#define TEXT_VARIABLE "__var"
+#define TEXT_FUNCTION "__fun"
 
 #define CODE_FALSE -1
 #define CODE_TRUE 1
