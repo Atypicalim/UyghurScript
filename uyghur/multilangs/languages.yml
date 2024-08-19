@@ -158,21 +158,21 @@ LANG_ERR_PARSER_INVALID_VARIABLE:
   uy: "كۈتكەن قىممەت ئىناۋەتسىز"
   ug: "kutken qimmet inawetsiz"
   uz: "Kutilayotgan qiymat noto'g'ri"
-  tr: "istenen kıymet eçersiz"
+  tr: "istenen kıymet geçersiz"
   kz: "күтілген қиммет жарамсыз"
 LANG_ERR_PARSER_INVALID_IF:
   en: "found invalid if"
   uy: "ئەگەر جۈملىسى ئىناۋەتسىز"
   ug: "eger jumlisi inawetsiz"
   uz: "agar bayonoti noto'g'ri"
-  tr: "eğer cümlesi eçersiz"
+  tr: "eğer cümlesi geçersiz"
   kz: "егер сөйлем жарамсыз"
 LANG_ERR_PARSER_INVALID_CALCULATOR:
   en: "found invalid calculator"
   uy: "ھېسابلاش مەشغۇلاتى ئىناۋەتسىز"
   ug: "hisablash meshghulati inawetsiz"
   uz: "hisoblash operatsiyasi yaroqsiz"
-  tr: "hesaplama işlemi eçersiz"
+  tr: "hesaplama işlemi geçersiz"
   kz: "есептеу операциясы жарамсыз"
 
 
@@ -276,7 +276,7 @@ LANG_ERR_EXECUTER_INVALID_IF:
   uy: "ئەگەر جۈملىسى ئىناۋەتسىز"
   ug: "eger jumlisi inawetsiz"
   uz: "agar bayonot noto'g'ri"
-  tr: "eğer cümlesi eçersiz"
+  tr: "eğer cümlesi geçersiz"
   kz: "егер сөйлем жарамсыз"
 # 
 LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED:
@@ -290,10 +290,16 @@ LANG_ERR_EXECUTER_VARIABLE_FAILURE_DEFINED:
   en: "variable failure defined"
   uy: "مىقدار مۇۋەپپىقيەتلىك ئىنىقلانمىدى"
   ug: "miqdar muweppiqyetlik iniqlanmini"
-  uz: "Miqdor muvaffaqiyatli aniqlanmadi"
+  uz: "miqdor muvaffaqiyatli aniqlanmadi"
   tr: "değişken başarısızlıkla tanımlanmış"
   kz: "айнымалы сәтсіздік анықталды"
-#
+LANG_ERR_EXECUTER_VARIABLE_INVALID_TYPE:
+  en: "variable invalid type"
+  uy: "مىقدار تىپى ئىناۋەتسىز"
+  ug: "miqdar tipi inawetsiz"
+  uz: "miqdor turi noto'g'ri"
+  tr: "değişken türü geçersiz"
+  kz: "айнымалы түрі жарамсыз"
 LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND:
   en: "target variable not found"
   uy: "نىشانلانغان مىقدار تېپىلمىدى"
@@ -301,6 +307,7 @@ LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND:
   uz: "Maqsadli miqdor topilmadi"
   tr: "nişan değişken bulunamadı"
   kz: "мақсат айнымалы табылмады"
+#
 LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND:
   en: "target box not found"
   uy: "نىشانلانغان ساندۇق تېپىلمىدى"

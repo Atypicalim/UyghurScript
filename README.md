@@ -56,14 +56,20 @@
 * variable
 
 ```powershell
-# declare variable
+# declare a dynamic variable
 miqdar m qimmiti quruq bolsun
 
+# declare a static variable
+miqdar n qimmiti san bolsun
+
 # set value
-m = [hello world!]
+m = [salam dunya!]
 
 # free variable
 m qimmiti quruq bolsun
+
+# type error
+n = [sinaq...]
 ```
 
 * type
@@ -176,11 +182,12 @@ buyruq r yezilsun
 ```powershell
 miqdar x qimmiti quruq bolsun
 
+# try block
 xataliq e bulup
     x = 3 / 0
 tamamlansun
 
-# catrch block
+# catch block
 eger e bolsa
     buyruq [exception:\n] yezilsun
     buyruq e yezilsun

@@ -61,6 +61,13 @@ void Executer_assert(Executer *this, bool value, Token *token, char *msg)
     Executer_error(this, token, msg);
 }
 
+void Runtime_error(char *msg) {
+    Executer_error(__uyghur->executer, NULL, msg);
+}
+void Runtime_assert(bool value, char *msg) {
+    Executer_assert(__uyghur->executer, value, NULL, msg);
+}
+
 void Executer_pushScope(Executer *this)
 {
     Holdable *holdable = Holdable_new(UG_TYPE_SCP, NULL);
@@ -312,11 +319,6 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
         } else if (sameType && is_eq_string(sign, TVALUE_SIGN_LESS)) {
             bool r = compCode == CODE_FALSE;
             result = Value_newBoolean(r, token);
-        } else if (is_eq_string(sign, TVALUE_SIGN_PER)) {
-            if (is_type_objective(lType) && is_type_objective(rType)) {
-                bool r = Objective_isInstanceOf(left, right);
-                result = Value_newBoolean(r, token);
-            }
         }
     } else if (sameType) {
         if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_NUM) && lType == UG_TYPE_NUM) {
@@ -332,6 +334,9 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
             String *r = Executer_calculateStrings(this, left->string, sign, right->string, token);
             result = Value_newString(r, token);
         }
+    } else if (is_eq_string(sign, TVALUE_SIGN_PER) && is_type_objective(lType) && is_type_objective(rType)) {
+        bool r = Objective_isInstanceOf(left, right);
+        result = Value_newBoolean(r, token);
     } else {
         bool bLeftStr = lType == UG_TYPE_STR;
         bool bRightStr = rType == UG_TYPE_STR;
@@ -367,14 +372,19 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     Value *new = NULL;
     if (Token_isEmpty(token)) {
         new = Value_newEmpty(token);
+        new->fixed = false;
     } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_LOGIC)) {
         new = Value_newBoolean(false, token);
+        new->fixed = true;
     } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_NUM)) {
         new = Value_newNumber(0, token);
+        new->fixed = true;
     } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_STR)) {
         new = Value_newString(String_new(), token);
+        new->fixed = true;
     } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_BOX)) {
         new = Holdable_newBox(name);
+        new->fixed = true;
     } else {
         new = Executer_getValueByToken(this, token, true); // todo
     }

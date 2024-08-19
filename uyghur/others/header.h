@@ -108,6 +108,7 @@ typedef struct _Value {
     struct _Object;
     char type;
     void *extra;
+    void *fixed;
     union { 
         bool boolean;
         double number;
@@ -157,6 +158,11 @@ typedef struct _Holdable {
 Holdable *Holdable_new(char, void*);
 char *Holdable_toString(Holdable *);
 void Holdable_print(Holdable *);
+
+// 
+
+void Runtime_error(char *);
+void Runtime_assert(bool, char *);
 
 // 
 

@@ -30,6 +30,7 @@ Value *_value_newValueBySize(bool freeze, char typ, size_t size) {
         value = Machine_createObjByCurrentFreezeFlag(PCT_OBJ_VALUE, size);
     }
     value->type = typ;
+    value->fixed = false;
     value->obj = NULL;
     value->extra = NULL;
     // log_debug("new=%s: %p", get_value_name(typ, "value"), value);
@@ -303,10 +304,22 @@ void *Container_getLocation(Value *this, char *key)
     return Hashmap_get(this->map, key);
 }
 
+
+bool _hashmap_set_check_container(Value *old, Value *new) {
+    if (!old || old->type == UG_TYPE_NIL) return true;
+    if (!new || new->type == UG_TYPE_NIL) return true;
+    if (old->fixed && old->type != new->type) {
+        Runtime_error(LANG_ERR_EXECUTER_VARIABLE_INVALID_TYPE);
+        return false;
+    }
+    new->fixed = old->fixed;
+    return true;
+}
+
 void Container_setLocation(Value *this, char *key, void *value)
 {
     if (value == NULL) return Container_delLocation(this, key);
-    Hashmap_set(this->map, key, value);
+    Hashmap_setCheck(this->map, key, value, _hashmap_set_check_container);
 }
 
 //

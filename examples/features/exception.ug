@@ -1,11 +1,12 @@
 
 miqdar x qimmiti quruq bolsun
 
+# try block
 xataliq e bulup
     x = 3 / 0
 tamamlansun
 
-# catrch block
+# catch block
 eger e bolsa
     buyruq [exception:\n] yezilsun
     buyruq e yezilsun

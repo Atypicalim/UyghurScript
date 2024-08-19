@@ -1,9 +1,15 @@
 
-# declare variable
+# declare a dynamic variable
 miqdar m qimmiti quruq bolsun
 
+# declare a static variable
+miqdar n qimmiti san bolsun
+
 # set value
-m = [hello world!]
+m = [salam dunya!]
 
 # free variable
 m qimmiti quruq bolsun
+
+# type error
+n = [sinaq...]
