@@ -70,8 +70,6 @@ void Machine_freeObj(Object*);
 // uyghur
 
 typedef struct _Uyghur Uyghur;
-typedef struct Parser Parser;
-typedef struct Executer Executer;
 typedef struct Machine Machine;
 typedef struct Debug Debug;
 typedef struct _Bridge Bridge;
@@ -93,6 +91,16 @@ typedef struct _Token {
 Token *Token_EMPTY;
 Token *Token_VARIABLE;
 Token *Token_FUNCTION;
+
+// leaf
+
+typedef struct _Leaf {
+    struct _Object;
+    char type; // ast type
+    struct _Leaf *parent; // parent leaf
+    Stack *tokens; // tokens of this ast leaf (params of expression, statement or func)
+    Queue *leafs; // programs of this ast leaf (sub code block of statement or func)
+} Leaf;
 
 // value
 
@@ -116,9 +124,9 @@ bool Value_isFlt(Value*);
 bool Value_isString(Value*);
 char *Value_toString(Value*);
 
-Value *Value_EMPTY;
-Value *Value_TRUE;
-Value *Value_FALSE;
+Value *Value_EMPTY = NULL;
+Value *Value_TRUE = NULL;
+Value *Value_FALSE = NULL;
 
 // runnable
 
@@ -162,8 +170,8 @@ typedef void (*NATIVE)(Bridge *);
 
 #include "../objects/value.c"
 #include "../objects/runnable.c"
-#include "../objects/objective.c"
 #include "../objects/holdable.c"
+#include "../objects/objective.c"
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -180,6 +188,29 @@ typedef struct _Tokenizer {
     utf8_iter *iterDynamic;
 } Tokenizer;
 
+typedef struct _Parser
+{
+    Uyghur *uyghur;
+    Token *tokens;
+    Token *token;
+    Leaf *tree;
+    Leaf *leaf;
+} Parser;
+
+typedef struct _Executer {
+    Uyghur *uyghur;
+    Machine *machine;
+    Debug *debug;
+    Bridge *bridge;
+    Leaf *tree;
+    Leaf *leaf;
+    Holdable *globalScope;
+    Stack *callStack;
+    bool isReturn;
+    bool isCatch;
+    char *errorMsg;
+} Executer;
+
 typedef struct _Uyghur {
     bool running;
     Hashmap *lettersMap;
@@ -194,6 +225,7 @@ typedef struct _Uyghur {
 } Uyghur;
 
 Uyghur *__uyghur = NULL;
+Value *Uyghur_runPath(Uyghur *, char *);
 
 ////////////////////////////////////////////////////////////////////////////
 

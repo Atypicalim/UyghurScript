@@ -4,20 +4,37 @@ yardemchi X miqdar x mezmuni
     @-[x] = x
 tamamlansun
 
+# assister func
+fonkisiye @X[test] mezmuni
+    buyruq [X.test...\n] yezilsun
+tamamlansun
+
 # a creator with one arguments
 yasighuchi Y miqdar y mezmuni
-    yasighuchi X bilen 123 ishlitilsun 
+    yasighuchi X bilen [arg xxx ...\n] ishlitilsun 
     @-[y] = y
 tamamlansun
 
+# creator func
+fonkisiye @Y[test] mezmuni
+    fonkisiye @X[test] ishlitilsun
+    buyruq [Y.test...\n] yezilsun
+tamamlansun
+
 # call creator using an assister and receive object
-yasighuchi Y bilen [abc...] ishlitilsun we r elinsun
+yasighuchi Y bilen [arg yyy ...\n] ishlitilsun we r elinsun
 
 # print the object value received
-buyruq @r[x] yezilsun # 123
-buyruq @r[y] yezilsun # abc...
+buyruq @r[x] yezilsun # arg xxx ...
+buyruq @r[y] yezilsun # arg yyy ...
+
+# call creator func which calling assister func inside
+fonkisiye @r[test] ishlitilsun
+# X.test...
+# Y.test...
 
 # check obj is created by or assisted by
-eger r ? X bolsa
-    buyruq [yes] yezilsun # yes
+eger r % X bolsa
+    buyruq [yes\n] yezilsun
 tamamlansun
+# yes

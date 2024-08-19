@@ -12,6 +12,9 @@
 #include "debug.c"
 #include "bridge.c"
 
+#include "internals/header.h"
+#include "externals/header.h"
+
 void Uyghur_init(Uyghur *this)
 {
     this->lettersMap = Hashmap_new(false);
@@ -68,9 +71,14 @@ Value *Uyghur_runCode(Uyghur *this, char *code, char *path)
 Value *Uyghur_runPath(Uyghur *this, char *path)
 {
     char *code = file_read(path);
-    if (code == NULL) return NULL;
-    Value *value = Uyghur_runCode(this, code, path);
-    free(code);
+    Value *value = NULL;
+    if (code != NULL) {
+        value = Uyghur_runCode(this, code, path);
+        free(code);
+    }
+    if (value == NULL) {
+        value = Value_newEmpty(NULL);
+    }
     return value;
 }
 

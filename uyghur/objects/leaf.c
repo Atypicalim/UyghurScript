@@ -9,14 +9,6 @@
 
 #include "token.c"
 
-typedef struct LeafNode {
-    struct _Object;
-    char type; // ast type
-    struct LeafNode *parent; // parent leaf
-    Stack *tokens; // tokens of this ast leaf (params of expression, statement or func)
-    Queue *leafs; // programs of this ast leaf (sub code block of statement or func)
-} Leaf;
-
 Leaf *Leaf_new(char type)
 {
     Leaf *leaf = malloc(sizeof(Leaf));

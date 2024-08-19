@@ -19,14 +19,14 @@ Objective *Objective_new(char tp, void *extra)
     return objective;
 }
 
-Objective *Objective_newCtr()
+Objective *Objective_newCtr(Token *name)
 {
-    return Objective_new(UG_TYPE_CTR, NULL);
+    return Objective_new(UG_TYPE_CTR, name);
 }
 
-Objective *Objective_newAtr()
+Objective *Objective_newAtr(Token *name)
 {
-    return Objective_new(UG_TYPE_ATR, NULL);
+    return Objective_new(UG_TYPE_ATR, name);
 }
 
 Objective *Objective_newObj(void *extra)
@@ -54,12 +54,14 @@ bool Objective_isObj(Objective *this)
 // 
 
 bool Objective_isInstanceOf(Objective *this, Value *other) {
+    if (!Objective_isObj(this)) return false;
     if (!Objective_isCtr(other) && !Objective_isAtr(other)) return false;
+    Objective *_other = other;
     Queue *parents = this->extra;
     Queue_RESTE(parents);
     Objective *parent = Queue_NEXT(parents);
     while (parent != NULL) {
-        if (parent == other) {
+        if (parent == _other) {
             return true;
         }
         parent = Queue_NEXT(parents);
@@ -71,9 +73,26 @@ bool Objective_isInstanceOf(Objective *this, Value *other) {
 
 char *Objective_toString(Objective *this)
 {
+    Token *token = NULL;
+    if (Objective_isCtr(this) || Objective_isAtr(this)) {
+        token = this->extra;
+    } else if (Objective_isObj(this)) {
+        Queue *parents = this->extra;
+        Queue_RESTE(parents);
+        Objective *parent = Queue_NEXT(parents);
+        if (parent != NULL) token = parent->extra;
+    }
     char *name = get_value_name(this->type, "objective");
-    return tools_format("<%s p:%p>", name, this);
+    char *desc = token != NULL ? token->value : "?";
+    return tools_format("<%s %p %s>", name, this, desc);
 }
 
+void Objective_print(Objective *this)
+{
+    printf("%s\n", Objective_toString(this));
+    // printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Objective"), this, this->map);
+    // _hashmap_print_with_callback(this->map, "|", _container_key_print_callback);
+    // printf("[Objective]\n");
+}
 
 #endif

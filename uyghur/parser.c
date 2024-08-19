@@ -2,15 +2,6 @@
 
 #include "others/header.h"
 
-struct Parser
-{
-    Uyghur *uyghur;
-    Token *tokens;
-    Token *token;
-    Leaf *tree;
-    Leaf *leaf;
-};
-
 void Parser_reset(Parser *this)
 {
     this->tokens = NULL;
@@ -199,7 +190,11 @@ void Parser_consumeAstCommand(Parser *this)
     Token *name = Parser_moveToken(this, 1); 
     Token *action = Parser_checkWord(this, 1, TVALUE_COMMANDS);
     if (is_eq_string(action->value, TVALUE_CMD_OUTPUT)) {
-        if (!helper_token_is_values(name, TVAUES_GROUP_UTYPES) && !helper_token_is_types(name, TTYPES_GROUP_VALUES)) {
+        if (
+            !helper_token_is_values(name, TVAUES_GROUP_UTYPES)
+            && !helper_token_is_types(name, TTYPES_GROUP_VALUES)
+            && !helper_token_is_values(name, TVAUES_GROUP_NICKNAME)
+        ) {
             Parser_error(this, LANG_ERR_INVALID_TYPE);
         }
     } else if (is_eq_string(action->value, TVALUE_CMD_INPUT)) {
@@ -343,7 +338,7 @@ void _parser_continueAstBody(Parser *this) {
 
 }
 
-void _Parser_continueAstAppliable(Parser *this, char *appliableType, Token *name) {
+void _Parser_continueAstAppliable(Parser *this, char appliableType, Token *name) {
     // begin
     Leaf *leaf = Leaf_new(appliableType);
     Leaf *code = Leaf_new(UG_ATYPE_CODE);

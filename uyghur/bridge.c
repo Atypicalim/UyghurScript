@@ -129,7 +129,7 @@ void Bridge_bindString(Bridge *this, UG_NAMES name, char *str)
 void Bridge_bindNative(Bridge *this, UG_NAMES name, NATIVE fun)
 {
     Bridge_pushKey(this, name);
-    Bridge_pushValue(this, Runnable_newNative(fun, NULL));
+    Bridge_pushValue(this, Runnable_newNative(fun, name));
 }
 
 void Bridge_register(Bridge *this, char *boxName)

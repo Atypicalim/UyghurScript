@@ -19,9 +19,9 @@ Holdable *Holdable_new(char tp, void *extra)
     return holdable;
 }
 
-Holdable *Holdable_newModule()
+Holdable *Holdable_newModule(char *path)
 {
-    return Holdable_new(UG_TYPE_MDL, NULL);
+    return Holdable_new(UG_TYPE_MDL, path);
 }
 
 Holdable *Holdable_newScope()
@@ -56,8 +56,24 @@ bool Holdable_isBox(Holdable *this)
 
 char *Holdable_toString(Holdable *this)
 {
+    char *desc = "?";
+    if (Holdable_isBox(this)) {
+        Token *token = this->extra;
+        desc = token != NULL ? token->value : "?";
+    } else if (Holdable_isModule(this)) {
+        desc = this->extra;
+    }
     char *name = get_value_name(this->type, "holdable");
-    return tools_format("<%s p:%p>", name, this);
+    return tools_format("<%s %p %s>", name, this, desc);
 }
+
+void Holdable_print(Holdable *this)
+{
+    printf("%s\n", Holdable_toString(this));
+    // printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Holdable"), this, this->map);
+    // _hashmap_print_with_callback(this->map, "|", _container_key_print_callback);
+    // printf("[Holdable]\n");
+}
+
 
 #endif

@@ -3,19 +3,6 @@
 #include "others/header.h"
 
 jmp_buf jump_buffer;
-struct Executer {
-    Uyghur *uyghur;
-    Machine *machine;
-    Debug *debug;
-    Bridge *bridge;
-    Leaf *tree;
-    Leaf *leaf;
-    Holdable *globalScope;
-    Stack *callStack;
-    bool isReturn;
-    bool isCatch;
-    char *errorMsg;
-};
 
 void Executer_consumeLeaf(Executer *, Leaf *);
 bool Executer_consumeTree(Executer *, Leaf *);
@@ -134,7 +121,20 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
         pct_free(location);
         return;
     }
-    // const
+    // word
+    if (Token_isWord(token)) {
+        if (is_eq_string(token->value, TVALUE_THIS)) {
+            *rValue = Machine_getCurrentSelf(this->machine);
+            return;
+        } else if (is_eq_string(token->value, TVALUE_MODULE)) {
+            *rValue = Machine_getCurrentModule(this->machine);
+            return;
+        } else if (is_eq_string(token->value, TVALUE_GLOBAL)) {
+            *rValue = this->globalScope;
+            return;
+        }
+    }
+    // keys
     Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_INVALID_KEY);
     Token *extra = (Token *)token->extra;
     if (is_eq_string(extra->value, SCOPE_ALIAS_PRG)) {
@@ -304,19 +304,19 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
     int sameType = compCode != CODE_FAIL;
     if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_ALL)) {
         if (is_eq_string(sign, TVALUE_SIGN_EQUAL)) {
-            if (Objective_isObj(left) && !Objective_isObj(right)) {
-                bool r = Objective_isInstanceOf(left, right);
-                result = Value_newBoolean(r, token);
-            } else {
-                bool r = sameType && compCode == CODE_NONE;
-                result = Value_newBoolean(r, token);
-            }
+            bool r = sameType && compCode == CODE_NONE;
+            result = Value_newBoolean(r, token);
         } else if (sameType && is_eq_string(sign, TVALUE_SIGN_MORE)) {
             bool r = compCode == CODE_TRUE;
             result = Value_newBoolean(r, token);
         } else if (sameType && is_eq_string(sign, TVALUE_SIGN_LESS)) {
             bool r = compCode == CODE_FALSE;
             result = Value_newBoolean(r, token);
+        } else if (is_eq_string(sign, TVALUE_SIGN_PER)) {
+            if (is_type_objective(lType) && is_type_objective(rType)) {
+                bool r = Objective_isInstanceOf(left, right);
+                result = Value_newBoolean(r, token);
+            }
         }
     } else if (sameType) {
         if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_NUM) && lType == UG_TYPE_NUM) {
@@ -374,7 +374,7 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_STR)) {
         new = Value_newString(String_new(), token);
     } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_BOX)) {
-        new =Holdable_newBox(token);
+        new = Holdable_newBox(name);
     } else {
         new = Executer_getValueByToken(this, token, true); // todo
     }
@@ -599,13 +599,16 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
     Token *target = Stack_NEXT(leaf->tokens);
     Token *iter1 = Stack_NEXT(leaf->tokens);
     Token *iter2 = Stack_NEXT(leaf->tokens);
-    Token_print(target);
-    Token_print(iter1);
-    Token_print(iter2);
     //
     Value *value = NULL;
     if (!Token_isWord(target)) {
         value = Executer_getValueByToken(this, target, true);
+    } else if (is_eq_string(target->value, TVALUE_THIS)) {
+        value = Machine_getCurrentSelf(this->machine);
+    } else if (is_eq_string(target->value, TVALUE_MODULE)) {
+        value = Machine_getCurrentModule(this->machine);
+    } else if (is_eq_string(target->value, TVALUE_GLOBAL)) {
+        value = this->globalScope;
     } else if (
         is_eq_string(target->value, TVALUE_NUM)
         || is_eq_string(target->value, TVALUE_STR)
@@ -724,7 +727,7 @@ void Executer_consumeWorker(Executer *this, Leaf *leaf)
     Token *func; Leaf *code;
     _Executer_parseAppliable(this, leaf, false, &func, &code);
     //
-    Runnable *wkr = Runnable_newWorker(code, NULL);
+    Runnable *wkr = Runnable_newWorker(code, func);
     Executer_setValueByToken(this, func, wkr, true);
 }
 
@@ -733,8 +736,8 @@ void Executer_consumeCreator(Executer *this, Leaf *leaf)
     Token *func; Leaf *code;
     _Executer_parseAppliable(this, leaf, true, &func, &code);
     //
-    Objective *self = Objective_newCtr();
-    Value *funV = Runnable_newWorker(code, NULL);
+    Objective *self = Objective_newCtr(func);
+    Value *funV = Runnable_newWorker(code, func);
     Executer_setValueToContainer(this, self, Token_function(), funV);
     Machine_releaseObj(funV);
     //
@@ -746,8 +749,8 @@ void Executer_consumeAssister(Executer *this, Leaf *leaf)
     Token *func; Leaf *code;
     _Executer_parseAppliable(this, leaf, true, &func, &code);
     //
-    Objective *self = Objective_newAtr();
-    Value *funV = Runnable_newWorker(code, NULL);
+    Objective *self = Objective_newAtr(func);
+    Value *funV = Runnable_newWorker(code, func);
     Executer_setValueToContainer(this, self, Token_function(), funV);
     Machine_releaseObj(funV);
     //
@@ -774,8 +777,15 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
 
 Value *Executer_applyWorker(Executer *this, Token *token, Value *workerValue, Value *container)
 {
-    Holdable *self = container != NULL ? container : this->globalScope;
-    Machine_retainObj(self);
+    Holdable *self = NULL;
+    if (Objective_isAtr(container)) {
+        self = Machine_getCurrentSelf(this->machine);
+    } else if (Objective_isObj(container) || Holdable_isBox(container)) {
+        self = container;
+    }
+    if (!self) {
+        Machine_retainObj(self);
+    }
     //
     Value *func = workerValue;
     //
@@ -796,9 +806,9 @@ Value *Executer_applyCreator(Executer *this, Token *token, Value *creatorValue, 
 {
     Value *constructor = Executer_getValueFromContainer(this, creatorValue, Token_function());
     Executer_assert(this, Runnable_isWorker(constructor), token, LANG_ERR_EXECUTER_APPLY_NOT_VALID);
-    Queue *parent = Queue_new();
-    Queue_push(parent, creatorValue);
-    Objective *self = Objective_newObj(parent);
+    Queue *parents = Queue_new();
+    Queue_push(parents, creatorValue);
+    Objective *self = Objective_newObj(parents);
     //
     Executer_pushScope(this);
     Container_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
@@ -892,7 +902,6 @@ void Executer_consumeApply(Executer *this, Leaf *leaf)
     // get runable
     Value *runnableValue = NULL;
     Value *runnableContainer = NULL;
-    Value *selfValue = NULL;
     Executer_findValueByToken(this, runnableName, &runnableContainer, &runnableValue);
     Executer_assert(this, runnableContainer != NULL, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND);
     Executer_assert(this, runnableValue != NULL, runnableName, LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND);
@@ -1086,7 +1095,7 @@ bool Executer_consumeTree(Executer *this, Leaf *tree)
 Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
 {
     //
-    Holdable *module = Holdable_new(UG_TYPE_MDL, NULL);
+    Holdable *module = Holdable_newModule(path);
     Machine_pushHolder(this->machine, module);
     //
     Executer_consumeTree(this, tree);

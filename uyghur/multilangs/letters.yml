@@ -262,3 +262,27 @@ TVALUE_RECIEVED:
   uz: olinsin
   tr: alısın
   kz: алынсын
+
+TVALUE_THIS:
+  en: this
+  uy: بۇ
+  ug: bu
+  uz: bu
+  tr: bu
+  kz: бұ
+
+TVALUE_MODULE:
+  en: global
+  uy: بۆلەك
+  ug: bolek
+  uz: bo'lak
+  tr: bölge
+  kz: бөлек
+
+TVALUE_GLOBAL:
+  en: global
+  uy: دۇنيا
+  ug: dunya
+  uz: dunyo
+  tr: dünya
+  kz: дүние

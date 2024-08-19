@@ -2,8 +2,6 @@
 
 #include "incbin.h"
 #include "uyghur/uyghur.c"
-#include "uyghur/internals/header.h"
-#include "uyghur/externals/header.h"
 
 #include <locale.h>
 #include <wchar.h>

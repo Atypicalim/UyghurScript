@@ -43,8 +43,21 @@ bool Runnable_isNative(Runnable *this)
 
 char *Runnable_toString(Runnable *this)
 {
+    char *desc = "?";
+    if (Runnable_isWorker(this)) {
+        Token *token = this->extra;
+        desc = token != NULL ? token->value : "?";
+    } else if (Runnable_isNative(this)) {
+        desc = this->extra;
+    }
     char *name = get_value_name(this->type, "runnable");
-    return tools_format("<%s p:%p>", name, this);
+    return tools_format("<%s %p %s>", name, this, desc);
+}
+
+void Runnable_print(Runnable *this)
+{
+    printf("%s\n", Runnable_toString(this));
+    // printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Runnable"), this, this->obj);
 }
 
 #endif

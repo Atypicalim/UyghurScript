@@ -10,26 +10,25 @@
 # turaqliq x qimmiti quruq bolsun
 # turaqsiz x qimmiti quruq bolsun
 
-# ######################################################### oop
+# ######################################################### other
 
-yardemchi X miqdar x mezmuni
-    @-[x] = x
-tamamlansun
+@?{key} # recursive search
 
-yasighuchi Y miqdar y mezmuni
-    yardemchi X bilen 10 yardemleshsun
-    @X[x] = 20
-    @-[y] = y
-tamamlansun
+miqdar a qimmiti tiziq bolsun
+miqdar b qimmiti lughet bolsun
+miqdar c qimmiti sanduq bolsun
 
-@?{key}
+a = [123, 345, 567, "abc"]
+b = {
+    a: 123,
+    b: 'abc',
+}
 
-# ######################################################### function
-
-fonkisiye f miqdar a mezmuni
-tamamlansun
-
-fonkisiye f bilen a b ishlitilsun we r elinsun 
+c = {123, [abc]}
+c = {
+    a: 123, 
+    b: [abc],
+}
 
 # ######################################################### exception
 
@@ -39,4 +38,3 @@ tamamlansun
 sinaq
 sinalsun we e elinsun
 
-# ######################################################### repeat
