@@ -319,7 +319,8 @@ bool _hashmap_set_check_container(Value *old, Value *new) {
 void Container_setLocation(Value *this, char *key, void *value)
 {
     if (value == NULL) return Container_delLocation(this, key);
-    Hashmap_setCheck(this->map, key, value, _hashmap_set_check_container);
+    // Hashmap_setCheck(this->map, key, value, _hashmap_set_check_container);
+    Hashmap_set(this->map, key, value);
 }
 
 //

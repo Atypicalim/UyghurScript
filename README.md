@@ -219,7 +219,7 @@ tamamlansun
 # supported keys
 # variable: @boxName{variableName}
 # string: @boxName[stringKey]
-# number: @boxName(123)
+# number: @boxName{123}
 ```
 
 * objective

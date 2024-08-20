@@ -204,6 +204,8 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
     this->code = code;
     UCHAR tempChar = NULL;
     UCHAR currChar = NULL;
+    bool numGenerator = 0;
+    bool isGenerator = false;
     bool isCalculator = false;
     String *scopeObject = NULL;
 
@@ -236,6 +238,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             this->column = 1;
             Tokenizer_skipN(this, 1);
             isCalculator = false;
+            isGenerator = numGenerator > 0;
             continue;
         }
         // empty
@@ -283,17 +286,19 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             // get key
             String *txt = NULL;
             char *typ = NULL;
-            if (is_uchar_eq_uchar(openChar, SIGN_OPEN_MIDDLE)) {
-                txt = Tokenizer_readLetter(this);
-                Token *_tkn = Tokenizer_parseLetter(this, txt, false);
-                Tokenizer_assert(this, _tkn == NULL || Token_isName(_tkn), LANG_ERR_TOKENIZER_INVALID_KEY);
-                typ = UG_TTYPE_NAM;
-            } else if (is_uchar_eq_uchar(openChar, SIGN_OPEN_BIG)) {
+            if (is_uchar_eq_uchar(openChar, SIGN_OPEN_BIG)) {
                 txt = Tokenizer_readString(this);
                 typ = UG_TTYPE_STR;
-            } else if (is_uchar_eq_uchar(openChar, SIGN_OPEN_SMALL)) {
-                txt = Tokenizer_readNumber(this, false);
-                typ = UG_TTYPE_NUM;
+            } else if (is_uchar_eq_uchar(openChar, SIGN_OPEN_MIDDLE)) {
+                if (is_digit(c)) {
+                    txt = Tokenizer_readNumber(this, false);
+                    typ = UG_TTYPE_NUM;
+                } else {
+                    txt = Tokenizer_readLetter(this);
+                    Token *_tkn = Tokenizer_parseLetter(this, txt, false);
+                    Tokenizer_assert(this, _tkn == NULL || Token_isName(_tkn), LANG_ERR_TOKENIZER_INVALID_KEY);
+                    typ = UG_TTYPE_NAM;
+                }
             }
             // normal close
             bool isClosed = Tokenizer_isChar(this, 0, closeChar);
@@ -309,12 +314,38 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             Token_addToken(this, token);
             continue;
         }
-        // calculator
-        if (is_calculator(currChar))
+        // equaling
+        if (is_equaling(currChar))
         {
-            Tokenizer_addLetter(this, String_format("%s", TVALUE_CALCULATOR));
+            Tokenizer_addLetter(this, String_format("%s", TVALUE_EQUALING));
+            UCHAR c = Tokenizer_getValidChar(this, 1);
             Tokenizer_skipN(this, 1);
-            isCalculator = true;
+            if (is_uchar_eq_uchar(c, SIGN_OPEN_MIDDLE)) {
+                isGenerator = true;
+            } else {
+                isCalculator = true;
+            }
+            continue;
+        }
+        // generation
+        if (isGenerator && is_uchar_eq_uchar(currChar, SIGN_OPEN_MIDDLE))
+        {
+            numGenerator++;
+            Tokenizer_addLetter(this, String_format("%s", SIGN_OPEN_MIDDLE));
+            Tokenizer_skipN(this, 1);
+            continue;
+        }
+        if (isGenerator && is_uchar_eq_uchar(currChar, SIGN_CLOSE_MIDDLE))
+        {
+            numGenerator--;
+            Tokenizer_addLetter(this, String_format("%s", SIGN_CLOSE_MIDDLE));
+            Tokenizer_skipN(this, 1);
+            continue;
+        }
+        if (isGenerator && (is_uchar_eq_uchar(currChar, TVALUE_COLON) || is_uchar_eq_uchar(currChar, TVALUE_COMMA)))
+        {
+            Tokenizer_addLetter(this, String_format("%s", currChar));
+            Tokenizer_skipN(this, 1);
             continue;
         }
         // calculation

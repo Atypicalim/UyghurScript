@@ -428,7 +428,7 @@ void Parser_consumeAstApply(Parser *this)
 void Parser_consumeAstCalculator(Parser *this)
 {
     Token *target = Parser_checkType(this, 0, TVAUES_GROUP_CHANGEABLE);
-    Parser_checkWord(this, 1, 1, TVALUE_CALCULATOR);
+    Parser_checkWord(this, 1, 1, TVALUE_EQUALING);
     Token *tempT = NULL;
     Foliage *tempF = NULL;
     Foliage *current = NULL;
@@ -494,8 +494,70 @@ void Parser_consumeAstCalculator(Parser *this)
         break;
     }
     current = (Foliage*)currents->head->data;
-    Token *body = Token_new(UG_TTYPE_CLC, current);
+    Token *body = Token_new(TVALUE_EQUALING, current);
     Parser_pushLeaf(this, UG_ATYPE_CLC, 2, target, body);
+}
+
+void Parser_consumeAstGenerator(Parser *this)
+{
+    Token *target = Parser_checkType(this, 0, TVAUES_GROUP_CHANGEABLE);
+    Parser_checkWord(this, 1, 1, TVALUE_EQUALING);
+    Token *tempT = NULL;
+    Block *waitingKey = NULL;
+    Stack *current = NULL;
+    Stack *currents = Stack_new();
+    Stack *root = NULL;
+    char *lastType = NULL;
+    int depth = 0;
+    while (true) {
+        current = currents->tail != NULL ? currents->tail->data : NULL;
+        if (Parser_isWord(this, 1, SIGN_OPEN_MIDDLE)) {
+            depth++;
+            Parser_checkWord(this, 1, 1, SIGN_OPEN_MIDDLE);
+            Stack *stack = Stack_new();
+            if (waitingKey) {
+                Block *block = Block_new(stack);
+                block->next = waitingKey;
+                Stack_push(current, block);
+                waitingKey = NULL;
+            }
+            Stack_push(currents, stack);
+            if (!root) root = stack;
+            lastType = SIGN_OPEN_MIDDLE;
+            // 
+            continue;
+        } else if (Parser_isWord(this, 1, SIGN_CLOSE_MIDDLE)) {
+            depth--;
+            Parser_checkWord(this, 1, 1, SIGN_CLOSE_MIDDLE);
+            Stack *pos = Stack_pop(currents);
+            lastType = SIGN_CLOSE_MIDDLE;
+            continue;
+        } else if (Parser_isWord(this, 2, TVALUE_COLON)) {
+            Token *key = Parser_checkType(this, 1, TTYPES_GROUP_STRING);
+            waitingKey = key;
+            Parser_checkWord(this, 1, 1, TVALUE_COLON);
+            continue;
+        } else if (Parser_isWord(this, 1, TVALUE_COMMA)) {
+            Parser_checkWord(this, 1, 1, TVALUE_COMMA);
+            continue; 
+        } else if (Parser_isTypes(this, 1, TTYPES_GROUP_VALUES)) {
+            Token *val = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+            Token *tmp = Parser_getToken(this, 1);
+            Block *block = Block_new(val);
+            if (waitingKey) {
+                block->next = waitingKey;
+                waitingKey = NULL;
+            }
+            Stack_push(current, block);
+            continue; 
+        }
+        break;
+    }
+    tools_assert(is_eq_string(lastType, SIGN_CLOSE_MIDDLE), "found invalid generator syntax");
+    tools_assert(depth == 0, "found invalid generator syntax");
+    tools_assert(root != NULL, "found invalid generator syntax");
+    Token *body = Token_new(TVALUE_EQUALING, root);
+    Parser_pushLeaf(this, UG_ATYPE_GNR, 2, target, body);  
 }
 
 void Parser_consumeToken(Parser *this, Token *token)
@@ -593,9 +655,13 @@ void Parser_consumeToken(Parser *this, Token *token)
         return;
     }
     // calculate
-    if ((is_eq_string(t, UG_TTYPE_NAM) || is_eq_string(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_CALCULATOR))
+    if ((is_eq_string(t, UG_TTYPE_NAM) || is_eq_string(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_EQUALING))
     {
-        Parser_consumeAstCalculator(this);
+        if (Parser_isWord(this, 2, SIGN_OPEN_MIDDLE)) {
+            Parser_consumeAstGenerator(this);
+        } else {
+            Parser_consumeAstCalculator(this);
+        }
         return;
     }
     // command

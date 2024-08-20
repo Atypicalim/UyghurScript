@@ -89,7 +89,7 @@ bool is_digit(UCHAR uChar) {
 int is_sign(UCHAR uChar) {
     if (uChar[1] != '\0') return false;
     char c = uChar[0];
-    return isprint(c) && !isalpha(c);
+    return isprint(c) && !isalpha(c) && !isdigit(c);
 }
 
 bool is_special(UCHAR uChar) {
@@ -213,7 +213,7 @@ bool is_border_close(UCHAR c) {
     return is_uchar_eq_char(c, '}') || is_uchar_eq_char(c, ']') || is_uchar_eq_char(c, ')');
 }
 
-bool is_calculator(UCHAR c)
+bool is_equaling(UCHAR c)
 {
     return is_uchar_eq_char(c, '=');
 }

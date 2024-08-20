@@ -45,9 +45,14 @@ function colorize_ug_code(code, isColorized) {
         if ("+-*/%^".includes(block)) {
             return `<red>${block}</red>`;
         }
-        block = block.replaceAll(/@(\S+)\[(\S+)\]/gi, `<orange>@$1</orange>[<yellow>$2</yellow>]`);
-        block = block.replaceAll(/@(\S+)\{(\S+)\}/gi, `<orange>@$1</orange>[<white>$2</white>]`);
-        block = block.replaceAll(/@(\S+)\((\S+)\)/gi, `<orange>@$1</orange>[<purple>$2</purple>]`);
+
+        let yBgn = "<yellow>";
+        let yEnd = "</yellow>";
+        let prefix = `<orange>@$1</orange>${yBgn}`;
+
+        block = block.replaceAll(/@(\S+)\[(\S+)\]/gi, `${prefix}[${yEnd}<yellow>$2</yellow${yBgn}]${yEnd}`);
+        block = block.replaceAll(/@(\S+)\{(\d+)\}/gi, `${prefix}{${yEnd}<purple>$2</purple>${yBgn}}${yEnd}`);
+        block = block.replaceAll(/@(\S+)\{(\S+)\}/gi, `${prefix}{${yEnd}<white>$2</white>${yBgn}}${yEnd}`);
         return block;
     }
     //

@@ -6,7 +6,6 @@ jmp_buf jump_buffer;
 
 void Executer_consumeLeaf(Executer *, Leaf *);
 bool Executer_consumeTree(Executer *, Leaf *);
-char *Executer_getLocationOfToken(Executer *, Token *);
 
 void Executer_reset(Executer *this)
 {
@@ -197,7 +196,7 @@ char *Executer_getLocationOfToken(Executer *this, Token *token)
         Value *value = NULL;
         Executer_findValueByLocation(this, location, &holdable, &value);
         pct_free(location);
-        Executer_assert(this, holdable!= NULL && value!= NULL, token, LANG_ERR_EXECUTER_INVALID_BOX);
+        Executer_assert(this, holdable!= NULL && value!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
         char *text = Value_toString(value);
         key = convert_string_to_location(text, value->type);
         pct_free(text);
@@ -254,7 +253,7 @@ void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool 
     Holdable *holdable = NULL;
     Executer_findValueByToken(this, token, &holdable, &INVALID_VAL);
     if (withDeclare && holdable == NULL) holdable = this->machine->currHoldable;
-    Executer_assert(this, holdable != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
+    Executer_assert(this, holdable != NULL, token, LANG_ERR_EXECUTER_INVALID_BOX);
     Executer_setValueToContainer(this, holdable, token, value);
     Machine_releaseObj(value);
 }
@@ -502,7 +501,7 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
     {
         r = Executer_getValueByToken(this, action, true);
     }
-    tools_assert(r != NULL, "%s:[%s]", LANG_ERR_EXECUTER_CALCULATION_INVALID, act);
+    tools_assert(r != NULL, "%s:[%s]", LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS, act);
     Executer_setValueByToken(this, target, r, false);
     Machine_releaseObj(value);
 }
@@ -984,7 +983,21 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
     // TODO:free r object
     Value *r = Executer_calculateBTree(this, root);
     //
-    Executer_assert(this, r != NULL, target, LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);
+    Executer_assert(this, r != NULL, target, LANG_ERR_EXECUTER_CALCULATION_INVALID);
+    Executer_setValueByToken(this, target, r, false);
+}
+
+void Executer_consumeGenerator(Executer *this, Leaf *leaf)
+{
+    Stack_RESTE(leaf->tokens);
+    Token *body = Stack_NEXT(leaf->tokens);
+    Token *target = Stack_NEXT(leaf->tokens);
+    Stack *root = (Foliage *)body->value;
+    //
+    // TODO:free r object
+    Value *r = NULL;
+    //
+    Executer_assert(this, r != NULL, target, LANG_ERR_EXECUTER_GENERATION_INVALID);
     Executer_setValueByToken(this, target, r, false);
 }
 
@@ -1077,13 +1090,19 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
         Executer_consumeCalculator(this, leaf);
         return;
     }
+    // generator
+    if (tp == UG_ATYPE_GNR)
+    {
+        Executer_consumeGenerator(this, leaf);
+        return;
+    }
     // end
     if(tp == UG_ATYPE_END)
     {
         return;
     }
     //
-    log_error("executer.error: %s", tp);
+    log_error("executer.error: %c", tp);
     helper_print_leaf(leaf, " ");
     tools_error("%s:[%c]", LANG_ERR_EXECUTER_NOT_IMPLEMENTED, tp);
 }

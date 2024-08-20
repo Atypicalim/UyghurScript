@@ -255,6 +255,14 @@ LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS:
   uz: "Yaroqsiz hisoblash qiymatlari"
   tr: "hesaplama değişkenleri geçersiz"
   kz: "есептеу айнымалылары жарамсыз"
+  #
+LANG_ERR_EXECUTER_GENERATION_INVALID:
+  en: "found invalid generation"
+  uy: "ھاسىللاش مەشغۇلاتى ئىناۋەتسىز"
+  ug: "hasillash meshghulati inawetsiz"
+  uz: "hosillash operatsiyasi yaroqsiz"
+  tr: "yapmak işlemi geçersiz"
+  kz: "жасау операциясы жарамсыз"
 #
 LANG_ERR_EXECUTER_INVALID_DEVIDE:
   en: "devider can not be zero"

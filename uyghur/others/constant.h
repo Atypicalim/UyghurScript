@@ -44,7 +44,6 @@
 #define SIGN_CLOSE_MIDDLE "}"
 #define SIGN_OPEN_BIG "["
 #define SIGN_CLOSE_BIG "]"
-#define SIGN_ ""
 
 // token type
 #define UG_TTYPE_NAM "NAM"
@@ -77,6 +76,7 @@
 #define UG_ATYPE_CVT 'c'
 #define UG_ATYPE_CMD '%'
 #define UG_ATYPE_CLC '='
+#define UG_ATYPE_GNR '@'
 
 // object type
 #define PCT_OBJ_TOKEN 't'
@@ -84,11 +84,13 @@
 #define PCT_OBJ_VALUE '$'
 
 // token value of keywords
+#define TVALUE_COLON ":"
+#define TVALUE_COMMA ","
 #define TVALUE_DOT "."
 #define TVALUE_AT "@"
 
 // calculate
-#define TVALUE_CALCULATOR "="
+#define TVALUE_EQUALING "="
 // number
 #define TVALUE_SIGN_ADD "+"
 #define TVALUE_SIGN_SUB "-"
@@ -179,7 +181,8 @@ const UG_PAIRS UG_WORDS_MAP[] = {
     {TVALUE_FALSE, UG_TTYPE_BOL},
     {TVALUE_EMPTY, UG_TTYPE_EMP},
     // 
-    {TVALUE_CALCULATOR, 0},
+    {TVALUE_EQUALING, 0},
+    //
     {TVALUE_SIGN_ADD, UG_TTYPE_CLC},
     {TVALUE_SIGN_SUB, UG_TTYPE_CLC},
     {TVALUE_SIGN_MUL, UG_TTYPE_CLC},
@@ -194,8 +197,17 @@ const UG_PAIRS UG_WORDS_MAP[] = {
     {TVALUE_SIGN_ORR, UG_TTYPE_CLC},
     {TVALUE_SIGN_LNK, UG_TTYPE_CLC},
     //
-    {TVALUE_OPEN, 0},
-    {TVALUE_CLOSE, 0},
+    {TVALUE_COLON, 0},
+    {TVALUE_COMMA, 0},
+    {TVALUE_DOT, 0},
+    {TVALUE_AT, 0},
+    //
+    {SIGN_OPEN_BIG, 0},
+    {SIGN_CLOSE_BIG, 0},
+    {SIGN_OPEN_MIDDLE, 0},
+    {SIGN_CLOSE_MIDDLE, 0},
+    {SIGN_OPEN_SMALL, 0},
+    {SIGN_CLOSE_SMALL, 0},
 };
 
 #define TVAUES_GROUP_UTYPES 5, TVALUE_EMPTY, TVALUE_LOGIC, TVALUE_NUM, TVALUE_STR, TVALUE_BOX

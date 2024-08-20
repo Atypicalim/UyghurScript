@@ -1,20 +1,23 @@
 
-yardemchi X mezmuni
-    buyruq [X\n] yezilsun
-    buyruq bu yezilsun
+miqdar r qimmiti sanduq bolsun
+miqdar key qimmiti [key] bolsun
+miqdar val qimmiti [val] bolsun
+
+# @r[xxx] = [xxx...]
+# @r{123} = 456
+# @r{key} = val
+
+# r = {123, 456 , 789, [abc]}
+
+r = {123, 456, [abc], aaa: {
+    12,
+    ab: 45,
+}}
+
+buyruq [===>\n] yezilsun
+yeyilghan r miqdar k v bulup
+    buyruq k yezilsun
+    buyruq [---] yezilsun
+    buyruq v yezilsun
+    buyruq [\n] yezilsun
 tamamlansun
-
-fonkisiye @X[xxx] mezmuni
-    buyruq [xxx\n] yezilsun
-    buyruq bu yezilsun
-tamamlansun
-
-yasighuchi Y mezmuni
-    buyruq [Y\n] yezilsun
-    buyruq bu yezilsun
-    yardemchi X bilen [xxx...\n] ishlitilsun
-    fonkisiye @bu[xxx] bilen [123...\n] ishlitilsun
-tamamlansun
-
-yasighuchi Y ishlitilsun we r elinsun
-

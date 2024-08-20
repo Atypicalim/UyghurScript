@@ -3,7 +3,7 @@ miqdar s qimmiti sanduq bolsun
 miqdar k qimmiti [key] bolsun
 
 @s[abc] = [str...]
-@s(123) = 456
+@s{123} = 456
 
 fonkisiye func miqdar k v mezmuni
     buyruq k yezilsun
