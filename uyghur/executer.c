@@ -987,6 +987,47 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
     Executer_setValueByToken(this, target, r, false);
 }
 
+Value *Executer_generateNStack(Executer *this, Stack *);
+Value *Executer_generateNStack(Executer *this, Stack *stack)
+{
+    Value *result = Holdable_newBox(NULL);
+    Stack_reverse(stack);
+    Stack_RESTE(stack);
+    Block *block = Stack_NEXT(stack);
+    bool isArray = block == NULL || block->next == NULL;
+    int arrIndex = 0;
+    while(block != NULL)
+    {
+        Token *key = block->next;
+        Object *val = block->data;
+        bool noKey = key == NULL;
+        Executer_assert(this, isArray == noKey, NULL, LANG_ERR_EXECUTER_GENERATION_INVALID_KEY);
+        //
+        Value *value = NULL;
+        if (val->objType == PCT_OBJ_STACK) {
+            value = Executer_generateNStack(this, val);
+        } else {
+            value = Executer_getValueByToken(this, val, false);
+        }
+        //
+        char *location = NULL;
+        if (key != NULL) {
+            location = Executer_getLocationOfToken(this, key);
+        } else {
+            location = tools_number_to_string(arrIndex);
+        }
+        //
+        if (location != NULL && value != NULL) {
+            Container_setLocation(result, location, value);
+        }
+        if (location != NULL) pct_free(location);
+        //
+        arrIndex++;
+        block = Stack_NEXT(stack);
+    }
+    return result;
+}
+
 void Executer_consumeGenerator(Executer *this, Leaf *leaf)
 {
     Stack_RESTE(leaf->tokens);
@@ -995,7 +1036,7 @@ void Executer_consumeGenerator(Executer *this, Leaf *leaf)
     Stack *root = (Foliage *)body->value;
     //
     // TODO:free r object
-    Value *r = NULL;
+    Value *r = Executer_generateNStack(this, root);
     //
     Executer_assert(this, r != NULL, target, LANG_ERR_EXECUTER_GENERATION_INVALID);
     Executer_setValueByToken(this, target, r, false);

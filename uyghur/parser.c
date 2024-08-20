@@ -515,14 +515,17 @@ void Parser_consumeAstGenerator(Parser *this)
             depth++;
             Parser_checkWord(this, 1, 1, SIGN_OPEN_MIDDLE);
             Stack *stack = Stack_new();
-            if (waitingKey) {
+            if (!root) {
+                root = stack;
+            } else {
                 Block *block = Block_new(stack);
-                block->next = waitingKey;
+                if (waitingKey) {
+                    block->next = waitingKey;
+                    waitingKey = NULL;
+                }
                 Stack_push(current, block);
-                waitingKey = NULL;
             }
             Stack_push(currents, stack);
-            if (!root) root = stack;
             lastType = SIGN_OPEN_MIDDLE;
             // 
             continue;

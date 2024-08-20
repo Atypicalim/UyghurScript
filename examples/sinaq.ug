@@ -1,4 +1,5 @@
 
+miqdar t qimmiti quruq bolsun
 miqdar r qimmiti sanduq bolsun
 miqdar key qimmiti [key] bolsun
 miqdar val qimmiti [val] bolsun
@@ -9,9 +10,9 @@ miqdar val qimmiti [val] bolsun
 
 # r = {123, 456 , 789, [abc]}
 
-r = {123, 456, [abc], aaa: {
-    12,
-    ab: 45,
+r = {123, 456, [abc], {
+    a: 12,
+    b: 45,
 }}
 
 buyruq [===>\n] yezilsun
@@ -21,3 +22,8 @@ yeyilghan r miqdar k v bulup
     buyruq v yezilsun
     buyruq [\n] yezilsun
 tamamlansun
+
+buyruq [===>\n] yezilsun
+t = @r{2}
+buyruq t yezilsun
+buyruq [\n] yezilsun

@@ -255,7 +255,7 @@ LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS:
   uz: "Yaroqsiz hisoblash qiymatlari"
   tr: "hesaplama değişkenleri geçersiz"
   kz: "есептеу айнымалылары жарамсыз"
-  #
+# generate
 LANG_ERR_EXECUTER_GENERATION_INVALID:
   en: "found invalid generation"
   uy: "ھاسىللاش مەشغۇلاتى ئىناۋەتسىز"
@@ -263,6 +263,13 @@ LANG_ERR_EXECUTER_GENERATION_INVALID:
   uz: "hosillash operatsiyasi yaroqsiz"
   tr: "yapmak işlemi geçersiz"
   kz: "жасау операциясы жарамсыз"
+LANG_ERR_EXECUTER_GENERATION_INVALID_KEY:
+  en: "found invalid generation key"
+  uy: "ھاسىللاش ئاچقۇچى ئىناۋەتسىز"
+  ug: "hasillash achquchi inawetsiz"
+  uz: "Yaroqsiz hosillash Kaliti"
+  tr: "yapmak anahtari geçersiz"
+  kz: "жасау кілты жарамсыз"
 #
 LANG_ERR_EXECUTER_INVALID_DEVIDE:
   en: "devider can not be zero"
