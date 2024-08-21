@@ -108,6 +108,16 @@ bool Value_isString(Value *this)
     return this != NULL && this->type == UG_TYPE_STR;
 }
 
+bool Value_isListable(Value *this)
+{
+    return this != NULL && is_type_listable(this->type);
+}
+
+bool Value_isDictable(Value *this)
+{
+    return this != NULL && is_type_dictable(this->type);
+}
+
 bool Value_isHoldable(Value *this)
 {
     return this != NULL && is_type_holdable(this->type);
@@ -130,7 +140,7 @@ void Value_print(Value *this)
     }
     else if (this->type == UG_TYPE_NIL)
     {
-        printf("<V:Empty>\n p:%p", TVALUE_EMPTY, this);
+        printf("<V:Empty p:%p>\n", TVALUE_EMPTY, this);
     }
     else if (this->type == UG_TYPE_BOL)
     {
@@ -146,6 +156,14 @@ void Value_print(Value *this)
     {
         char *value = String_get(this->string);
         printf("<V:String => v:%s p:%p>\n", value, this);
+    }
+    else if (is_type_listable(this->type))
+    {
+        Listable_print(this);
+    }
+    else if (is_type_dictable(this->type))
+    {
+        Dictable_print(this);
     }
     else if (is_type_holdable(this->type))
     {
@@ -176,6 +194,10 @@ char *Value_toString(Value *this)
         return tools_number_to_string(this->number);
     } if (this->type == UG_TYPE_STR) {
         return String_dump(this->string);
+    } if (is_type_listable(this->type)) {
+        return Holdable_toString(this);
+    } if (is_type_dictable(this->type)) {
+        return Holdable_toString(this);
     } if (is_type_holdable(this->type)) {
         return Holdable_toString(this);
     } if (is_type_objective(this->type)) {
@@ -267,6 +289,10 @@ void Value_free(Value *this)
     // }
     if (this->type == UG_TYPE_STR) {
         Machine_releaseObj(this->string);
+    } else if (is_type_listable(this->type)) {
+        Machine_releaseObj(this->map);
+    } else if (is_type_dictable(this->type)) {
+        Machine_releaseObj(this->map);
     } else if (is_type_holdable(this->type)) {
         Machine_releaseObj(this->map);
     } else if (is_type_objective(this->type)) {

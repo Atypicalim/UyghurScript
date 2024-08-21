@@ -1,8 +1,8 @@
 
 miqdar t qimmiti quruq bolsun
-miqdar r qimmiti sanduq bolsun
-miqdar key qimmiti [key] bolsun
-miqdar val qimmiti [val] bolsun
+miqdar r qimmiti quruq bolsun
+miqdar key qimmiti 1 bolsun
+miqdar val qimmiti [val...] bolsun
 
 # @r[xxx] = [xxx...]
 # @r{123} = 456
@@ -10,11 +10,29 @@ miqdar val qimmiti [val] bolsun
 
 # r = {123, 456 , 789, [abc]}
 
-r = {123, 456, [abc], {
-    a: 12,
-    b: 45,
-}}
+# r = {123, 456, [abc], val, {
+#     a: 12,
+#     b: 45,
+# }}
 
+r = {
+    a: [abc],
+    b: 123,
+    abc: quruq,
+    d: {},
+}
+
+r = {
+    123,
+    456,
+    789,
+}
+
+@r{key} = val
+
+# r qimmiti sanduq bolsun
+
+buyruq r yezilsun
 buyruq [===>\n] yezilsun
 yeyilghan r miqdar k v bulup
     buyruq k yezilsun
@@ -23,7 +41,18 @@ yeyilghan r miqdar k v bulup
     buyruq [\n] yezilsun
 tamamlansun
 
-buyruq [===>\n] yezilsun
-t = @r{2}
-buyruq t yezilsun
-buyruq [\n] yezilsun
+# buyruq [===>\n] yezilsun
+# buyruq r yezilsun
+# t = @r[b]
+# buyruq @r{1} yezilsun
+# buyruq [\n] yezilsun
+
+# tiziq
+# jedvel
+
+# sira
+# dizilis
+# tertip
+
+
+# 

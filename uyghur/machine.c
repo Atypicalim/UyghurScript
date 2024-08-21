@@ -32,7 +32,6 @@ void _machine_mark_object(Object *object) {
 
 void _machine_free_object(Machine *this, Object* object) {
     if (object->gcFreeze) return;
-    // Holdable *holdable = object;
     // add hashmap and hashkey to vm
     // log_debug("free_object:%c %p", object->objType, object);
     if (object->objType == PCT_OBJ_VALUE) {
@@ -95,7 +94,8 @@ Value *Machine_getCurrentSelf(Machine *this)
     return value;
 }
 
-void _machine_mark_holdable(Holdable *);
+void _machine_mark_listable(Listable *);
+void _machine_mark_dictable(Dictable *);
 void _machine_mark_objective(Objective *);
 void _machine_mark_hashkey(Hashkey *, void *);
 void _machine_mark_value(Value *);
@@ -108,8 +108,12 @@ void _machine_mark_value(Value *value) {
     } else if (value->type == UG_TYPE_STR) {
         _machine_mark_object(value);
         // _machine_mark_object(value->string);
+    } else if (is_type_listable(value->type)) {
+        _machine_mark_listable(value);
+    } else if (is_type_dictable(value->type)) {
+        _machine_mark_dictable(value);
     } else if (is_type_holdable(value->type)) {
-        _machine_mark_holdable(value);
+        _machine_mark_dictable(value);
     } else if (is_type_objective(value->type)) {
         _machine_mark_objective(value);
     } else if (is_type_runnable(value->type)) {
@@ -120,6 +124,19 @@ void _machine_mark_value(Value *value) {
     }
 }
 
+void _machine_mark_arrkey(int key, Value *val, void *other) {
+    _machine_mark_value(val);
+}
+
+void _machine_mark_listable(Listable *listable) {
+    if (listable->gcMark) return;
+    // Machine *this = __uyghur->machine;
+    // log_info("mark_listable %p %c %i %i", listable, listable->type, listable == this->globals, listable == this->rootModule);
+    _machine_mark_object(listable);
+    _machine_mark_object(listable->arr);
+    Array_foreachItem(listable->arr, _machine_mark_arrkey, NULL);
+}
+
 void _machine_mark_hashkey(Hashkey *hashkey, void *other) {
     String *key = hashkey->key;
     Value *val = hashkey->value;
@@ -127,25 +144,20 @@ void _machine_mark_hashkey(Hashkey *hashkey, void *other) {
     _machine_mark_value(val);
 }
 
-void _machine_mark_holdable(Holdable *holdable) {
-    if (holdable->gcMark) return;
+void _machine_mark_dictable(Dictable *dictable) {
+    if (dictable->gcMark) return;
     // Machine *this = __uyghur->machine;
-    // log_info("mark_holdable %p %c %i %i", holdable, holdable->type, holdable == this->globals, holdable == this->rootModule);
-    _machine_mark_object(holdable);
-    _machine_mark_object(holdable->map);
-    Hashmap_foreachItem(holdable->map, _machine_mark_hashkey, NULL);
-    if(Holdable_isBox(holdable)) {
-        
-    }
+    // log_info("mark_dictable %p %c %i %i", dictable, dictable->type, dictable == this->globals, dictable == this->rootModule);
+    _machine_mark_object(dictable);
+    _machine_mark_object(dictable->map);
+    Hashmap_foreachItem(dictable->map, _machine_mark_hashkey, NULL);
 }
 
 void _machine_mark_objective(Objective *objective) {
     if (objective->gcMark) return;
     // Machine *this = __uyghur->machine;
     // log_info("mark_objective %p %c %i %i", objective, objective->type, objective == this->globals, objective == this->rootModule);
-    _machine_mark_object(objective);
-    _machine_mark_object(objective->map);
-    Hashmap_foreachItem(objective->map, _machine_mark_hashkey, NULL);
+    _machine_mark_dictable(objective);
     if(Objective_isObj(objective)) {
         Queue *parents = objective->extra;
         if (parents != NULL) {
@@ -162,9 +174,9 @@ void _machine_mark_objective(Objective *objective) {
 void _machine_mark_cstack(void *ptr, void *other) {
     
     // Machine *this = __uyghur->machine;
-    // holdable *ctnr = ptr;
+    // Holdable *ctnr = ptr;
     // log_debug("mark_stack %p %p", ctnr, this->stack->tail->data);
-    _machine_mark_holdable(ptr);
+    _machine_mark_dictable(ptr);
 }
 
 void _machine_mark_vstack(void *ptr, void *other) {
@@ -173,7 +185,7 @@ void _machine_mark_vstack(void *ptr, void *other) {
 
 void Machine_mark(Machine *this)
 {
-    _machine_mark_holdable(this->globals);
+    _machine_mark_dictable(this->globals);
     Stack_foreachItem(this->stack, _machine_mark_cstack, NULL);
     Stack_foreachItem(this->calls, _machine_mark_vstack, NULL);
 }
@@ -298,11 +310,11 @@ void Machine_freeObj(Object* object) {
 void Machine_testGC() {
     log_warn("\n\n\n---------------------TEST:");
     Machine* this = __uyghur->machine;
-    Machine_pushHolder(this, Holdable_new(UG_TYPE_SCP, NULL));
+    Machine_pushHolder(this, Holdable_newScope(NULL));
     for (size_t i = 0; i < 100; i++) {
         log_warn("---------------------test%i", i);
         for (size_t j = 0; j < 1000000; j++) {
-            Holdable_newBox(NULL);
+            Holdable_newScope(NULL);
         }
         Machine_runGC(this);
         time_sleep_seconds(1);

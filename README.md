@@ -197,14 +197,16 @@ bolmisa
 tamamlansun
 ```
 
-* holdable
+* container
 
 ```powershell
-#  declare a box
+#  declare a list
+t qimmiti tertip bolsun
+#  declare a dict
 s qimmiti sanduq bolsun
 
-# put a number
-@s[v] qimmiti 0 bolsun
+# put number to dict
+@s[v] = 123
 
 # set a method
 fonkisiye @s[f] miqdar x y mezmuni

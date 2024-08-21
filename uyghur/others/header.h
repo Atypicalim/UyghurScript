@@ -108,12 +108,13 @@ typedef struct _Value {
     struct _Object;
     char type;
     void *extra;
-    void *fixed;
+    bool fixed;
     union { 
         bool boolean;
         double number;
         String *string;
         Object *obj;
+        Array *arr;
         Hashmap *map;
     };
 } Value;
@@ -128,6 +129,26 @@ char *Value_toString(Value*);
 Value *Value_EMPTY = NULL;
 Value *Value_TRUE = NULL;
 Value *Value_FALSE = NULL;
+
+// listable
+
+typedef struct _Listable {
+    struct _Value;
+} Listable;
+
+Listable *Listable_new(char, void*);
+char *Listable_toString(Listable *);
+void Listable_print(Listable *);
+
+// dictable
+
+typedef struct _Dictable {
+    struct _Value;
+} Dictable;
+
+Dictable *Dictable_new(char, void*);
+char *Dictable_toString(Dictable *);
+void Dictable_print(Dictable *);
 
 // runnable
 
@@ -176,6 +197,8 @@ typedef void (*NATIVE)(Bridge *);
 
 #include "../objects/value.c"
 #include "../objects/runnable.c"
+#include "../objects/listable.c"
+#include "../objects/dictable.c"
 #include "../objects/holdable.c"
 #include "../objects/objective.c"
 

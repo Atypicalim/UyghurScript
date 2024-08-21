@@ -10,13 +10,7 @@
 Objective *Objective_new(char tp, void *extra)
 {
     tools_assert(is_type_objective(tp), "invalid objective type for new");
-    Objective *objective = _value_newValueBySize(false, tp, sizeof(Objective));
-    objective->map = Hashmap_new(true);
-    // log_debug("new-%s: %p %p", get_value_name(tp, "objective"), objective, objective->map);
-    Machine_tryLinkForGC(objective->map);
-    objective->type = tp;
-    objective->extra = extra;
-    return objective;
+    return _Dictable_new(tp, extra);
 }
 
 Objective *Objective_newCtr(Token *name)

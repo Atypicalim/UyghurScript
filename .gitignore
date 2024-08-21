@@ -5,3 +5,4 @@ my-build-tools/
 /*.vsix
 /*.exe
 /*.log
+/.vscode/settings.json

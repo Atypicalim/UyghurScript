@@ -174,7 +174,13 @@ LANG_ERR_PARSER_INVALID_CALCULATOR:
   uz: "hisoblash operatsiyasi yaroqsiz"
   tr: "hesaplama işlemi geçersiz"
   kz: "есептеу операциясы жарамсыз"
-
+LANG_ERR_PARSER_INVALID_GENERATOR:
+  en: "found invalid generator"
+  uy: "ھاسىللاش مەشغۇلاتى ئىناۋەتسىز"
+  ug: "hasillash meshghulati inawetsiz"
+  uz: "hosillash operatsiyasi yaroqsiz"
+  tr: "yapmak işlemi geçersiz"
+  kz: "жасау операциясы жарамсыз"
 
 # executer
 LANG_ERR_EXECUTER_EXCEPTION:

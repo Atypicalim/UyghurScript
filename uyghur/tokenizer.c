@@ -204,7 +204,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
     this->code = code;
     UCHAR tempChar = NULL;
     UCHAR currChar = NULL;
-    bool numGenerator = 0;
+    int numGenerator = 0;
     bool isGenerator = false;
     bool isCalculator = false;
     String *scopeObject = NULL;

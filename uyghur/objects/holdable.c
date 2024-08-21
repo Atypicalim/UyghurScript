@@ -4,19 +4,13 @@
 #include "../others/header.h"
 #endif
 
-#ifndef H_UG_BOX
-#define H_UG_BOX
+#ifndef H_UG_HOLDABLE
+#define H_UG_HOLDABLE
 
 Holdable *Holdable_new(char tp, void *extra)
 {
     tools_assert(is_type_holdable(tp), "invalid holdable type for new");
-    Holdable *holdable = _value_newValueBySize(false, tp, sizeof(Holdable));
-    holdable->map = Hashmap_new(true);
-    // log_debug("new-%s: %p %p", get_value_name(tp, "holdable"), holdable, holdable->map);
-    Machine_tryLinkForGC(holdable->map);
-    holdable->type = tp;
-    holdable->extra = extra;
-    return holdable;
+    return _Dictable_new(tp, extra);
 }
 
 Holdable *Holdable_newModule(char *path)
@@ -50,6 +44,10 @@ bool Holdable_isScope(Holdable *this)
 bool Holdable_isBox(Holdable *this)
 {
     return this != NULL && this->type == UG_TYPE_BOX;
+}
+
+bool Holdable_isDct(Holdable *this)
+{
 }
 
 // 

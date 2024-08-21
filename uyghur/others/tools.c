@@ -213,6 +213,14 @@ bool is_border_close(UCHAR c) {
     return is_uchar_eq_char(c, '}') || is_uchar_eq_char(c, ']') || is_uchar_eq_char(c, ')');
 }
 
+bool can_generate_open(char *last) {
+    return last == NULL || is_eq_string(last, TVALUE_COLON) || is_eq_string(last, TVALUE_COMMA);
+}
+
+bool can_generate_close(char *last) {
+    return last == NULL || !is_eq_string(last, TVALUE_COLON);
+}
+
 bool is_equaling(UCHAR c)
 {
     return is_uchar_eq_char(c, '=');
@@ -224,6 +232,14 @@ bool is_scope(UCHAR c)
 }
 
 //
+
+bool is_type_listable(char tp) {
+    return tp == UG_TYPE_LST;
+}
+
+bool is_type_dictable(char tp) {
+    return tp == UG_TYPE_DCT;
+}
 
 bool is_type_holdable(char tp) {
     return tp == UG_TYPE_BOX
@@ -244,6 +260,8 @@ bool is_type_runnable(char tp) {
 char* get_value_name(char tp, char* def) {
     switch (tp) {
         case UG_TYPE_BOX: return "box";
+        case UG_TYPE_LST: return "lst";
+        case UG_TYPE_DCT: return "dct";
         case UG_TYPE_SCP: return "scp";
         case UG_TYPE_MDL: return "mdl";
         //
@@ -341,6 +359,17 @@ char *escape_cstring(const char *src) {
     }
     pw[i+j] = '\0';
     return pw;
+}
+
+// TODO:move
+
+typedef void (*ARRAY_FOREACH_FUNC)(int, void *, void *);
+
+void Array_foreachItem(Array *this, ARRAY_FOREACH_FUNC func, void *arg) {
+    for (int i = 0; i < this->length; i++) {
+        void *ptr = Array_get(this, i);
+        func(i, ptr, arg);
+    }
 }
 
 #endif

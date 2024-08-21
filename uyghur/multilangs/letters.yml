@@ -28,8 +28,15 @@ TVALUE_STR:
   uz: xat
   tr: dize
   kz: хат
-TVALUE_BOX:
-  en: box
+TVALUE_LST:
+  en: list
+  uy: تەرتىپ
+  ug: tertip
+  uz: tartib
+  tr: tertip
+  kz: тертіп
+TVALUE_DCT:
+  en: dict
   uy: ساندۇق
   ug: sanduq
   uz: sandiq

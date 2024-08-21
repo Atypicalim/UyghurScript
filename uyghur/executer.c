@@ -4,6 +4,7 @@
 
 jmp_buf jump_buffer;
 
+Value *Executer_getValueByToken(Executer *, Token *, bool);
 void Executer_consumeLeaf(Executer *, Leaf *);
 bool Executer_consumeTree(Executer *, Leaf *);
 
@@ -157,21 +158,39 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
         if (!Objective_isCtr(*rContainer) && !Objective_isObj(*rContainer) && !Holdable_isBox(*rContainer)) {
             Executer_error(this, token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
         }
-    }
-    // box
-    Value *value = NULL;
-    if (*rContainer == NULL) {
+    } else {
+        Value *value = NULL;
         char *location = convert_string_to_location(extra->value, UG_TYPE_STR);
         Executer_findValueByLocation(this, location, &INVALID_CTN, &value);
         pct_free(location);
         if (value != NULL) *rContainer = value;
     }
+    // container
     if (*rContainer == NULL) return;
-    // key
+    // list get
+    if (Value_isListable(*rContainer)) {
+        int index = -1;
+        if (Token_isKeyOfNumber(token)) {
+            index = atof(token->value);
+        } else if (Token_isKeyOfName(token)) {
+            Token *_extra = (Token *)token->extra;
+            Token *_token = Token_new(_extra->type, token->value);
+            Value *value;
+            Executer_findValueByToken(this, _token, &INVALID_CTN, &value);
+            Object_release(_token);
+            if (Value_isNumber(value)) {
+                index = value->number;
+            }
+        }
+        Executer_assert(this, index >= 0, token, "getting invalid key from list");
+        *rValue = Listable_getIndex(*rContainer, index);
+        return;
+    }
+    // dict get
+    Executer_assert(this, Token_isKeyOfString(token), token, "getting invalid key from dict");
     char *location = convert_string_to_location(token->value, UG_TYPE_STR);
-    // 
-    if (Objective_isObj(*rContainer)) {
-        *rValue = Container_getLocation(*rContainer, location);
+    *rValue = Container_getLocation(*rContainer, location);
+    if (*rValue == NULL && Objective_isObj(*rContainer)) {
         Queue *parents = (*rContainer)->extra;
         Queue_RESTE(parents);
         Objective *parent = Queue_NEXT(parents);
@@ -179,10 +198,7 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
             *rValue = Container_getLocation(parent, location);
             parent = Queue_NEXT(parents);
         }
-    } else {
-        *rValue = Container_getLocation(*rContainer, location);
     }
-    // 
     pct_free(location);
 }
 
@@ -224,11 +240,31 @@ Value *Executer_getValueFromContainer(Executer *this, Holdable *holdable, Token 
     return value;
 }
 
-void Executer_setValueToContainer(Executer *this, Holdable *holdable, Token *token, Value *value)
+void Executer_setValueToContainer(Executer *this, Value *container, Token *token, Value *value)
 {
-    Executer_assert(this, holdable != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
+    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
+    // list set
+    if (Value_isListable(container)) {
+        int index = -1;
+        if (Token_isKeyOfNumber(token)) {
+            index = atof(token->value);
+        } else if (Token_isKeyOfName(token)) {
+            Token *_extra = (Token *)token->extra;
+            Token *_token = Token_new(_extra->type, token->value);
+            Value *value;
+            Executer_findValueByToken(this, _token, &INVALID_CTN, &value);
+            Object_release(_token);
+            if (Value_isNumber(value)) {
+                index = value->number;
+            }
+        }
+        Executer_assert(this, index >= 0, token, "setting invalid key to list");
+        Listable_setIndex(container, index, value);
+        return;
+    }
+    // dict set
     char *location = Executer_getLocationOfToken(this, token);
-    Container_setLocation(holdable, location, value);
+    Container_setLocation(container, location, value);
     pct_free(location);
 }
 
@@ -250,11 +286,11 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
 
 void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool withDeclare)
 {
-    Holdable *holdable = NULL;
-    Executer_findValueByToken(this, token, &holdable, &INVALID_VAL);
-    if (withDeclare && holdable == NULL) holdable = this->machine->currHoldable;
-    Executer_assert(this, holdable != NULL, token, LANG_ERR_EXECUTER_INVALID_BOX);
-    Executer_setValueToContainer(this, holdable, token, value);
+    Value *container = NULL;
+    Executer_findValueByToken(this, token, &container, &INVALID_VAL);
+    if (withDeclare && container == NULL) container = this->machine->currHoldable;
+    Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_BOX);
+    Executer_setValueToContainer(this, container, token, value);
     Machine_releaseObj(value);
 }
 
@@ -381,8 +417,11 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_STR)) {
         new = Value_newString(String_new(), token);
         new->fixed = true;
-    } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_BOX)) {
-        new = Holdable_newBox(name);
+    } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_LST)) {
+        new = Listable_newLst(name);
+        new->fixed = true;
+    } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_DCT)) {
+        new = Dictable_newDct(name);
         new->fixed = true;
     } else {
         new = Executer_getValueByToken(this, token, true); // todo
@@ -414,7 +453,11 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
             value = Executer_getValueByToken(this, name, true);
             Executer_assert(this, value != NULL, name, LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND);
         }
-        if (Value_isHoldable(value)) {
+        if (Value_isListable(value)) {
+            Listable_print(value);
+        } else if (Value_isDictable(value)) {
+            Dictable_print(value);
+        } else if (Value_isHoldable(value)) {
             Holdable_print(value);
         } else if (Value_isObjective(value)) {
             Objective_print(value);
@@ -621,7 +664,8 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
     } else if (
         is_eq_string(target->value, TVALUE_NUM)
         || is_eq_string(target->value, TVALUE_STR)
-        || is_eq_string(target->value, TVALUE_BOX)
+        || is_eq_string(target->value, TVALUE_LST)
+        || is_eq_string(target->value, TVALUE_DCT)
     ) {
         char *location = convert_string_to_location(target->extra, UG_TYPE_STR);
         value = Container_getLocation(this->globalScope, location);
@@ -657,7 +701,20 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
             Executer_popScope(this);
             if (this->errorMsg != NULL) break;
         }
-    } else if (Value_isHoldable(value) || Value_isObjective(value)) {
+    } else if (Value_isListable(value)) {
+        for (int i = 0; i < value->arr->length; i++) {
+            Value *val = Array_get(value->arr, i);
+            //
+            Executer_pushScope(this);
+            current1 = Value_newNumber(i, iter1);
+            Executer_setValueByToken(this, iter1, current1, true);
+            current2 = val;
+            Executer_setValueByToken(this, iter2, current2, true);
+            Executer_consumeTree(this, leaf);
+            Executer_popScope(this);
+            if (this->errorMsg != NULL) break;
+        }
+    } else if (Value_isDictable(value) || Value_isHoldable(value) || Value_isObjective(value)) {
         Value *box = value;
         Hashmap *map = box->map;
         Hashkey *ptr;
@@ -990,12 +1047,11 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
 Value *Executer_generateNStack(Executer *this, Stack *);
 Value *Executer_generateNStack(Executer *this, Stack *stack)
 {
-    Value *result = Holdable_newBox(NULL);
     Stack_reverse(stack);
     Stack_RESTE(stack);
     Block *block = Stack_NEXT(stack);
     bool isArray = block == NULL || block->next == NULL;
-    int arrIndex = 0;
+    Value *result = isArray ? (Value *)Listable_newLst(NULL) : (Value *)Dictable_newDct(NULL);
     while(block != NULL)
     {
         Token *key = block->next;
@@ -1010,19 +1066,16 @@ Value *Executer_generateNStack(Executer *this, Stack *stack)
             value = Executer_getValueByToken(this, val, false);
         }
         //
-        char *location = NULL;
-        if (key != NULL) {
-            location = Executer_getLocationOfToken(this, key);
-        } else {
-            location = tools_number_to_string(arrIndex);
+        if (value != NULL) {
+            if (isArray) {
+                Listable_push(result, value);
+            } else {
+                char *location = Executer_getLocationOfToken(this, key);
+                Container_setLocation(result, location, value);
+                pct_free(location);
+            }
         }
         //
-        if (location != NULL && value != NULL) {
-            Container_setLocation(result, location, value);
-        }
-        if (location != NULL) pct_free(location);
-        //
-        arrIndex++;
         block = Stack_NEXT(stack);
     }
     return result;
