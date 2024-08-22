@@ -38,9 +38,8 @@ Uyghur *Uyghur_instance()
     register_internal_libraries(uyghur->bridge);
     register_external_libraries(uyghur->bridge);
     //
-    uyghur->machine->sweeping = true;
+    uyghur->machine->sweeping = IS_GC_SWEEPING;
     uyghur->machine->freezing = false;
-    uyghur->machine->collects = true;
     Machine_runGC(uyghur->machine);
     //
     return __uyghur;

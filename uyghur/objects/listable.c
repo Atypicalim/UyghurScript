@@ -11,7 +11,7 @@ Listable *Listable_new(char tp, void *extra)
 {
     tools_assert(is_type_listable(tp), "invalid listable type for new");
     Listable *listable = _value_newValueBySize(false, tp, sizeof(Listable));
-    listable->arr = Array_new();
+    listable->arr = Array_new(IS_GC_COUNTING);
     Machine_tryLinkForGC(listable->arr);
     // log_debug("new-%s: %p %p", get_value_name(tp, "listable"), listable, listable->arr);
     listable->type = tp;

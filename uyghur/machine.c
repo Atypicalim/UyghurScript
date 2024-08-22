@@ -14,7 +14,6 @@ Machine *Machine_new(Uyghur *uyghur) {
     vm->first = NULL;
     vm->sweeping = false;
     vm->freezing = true;
-    vm->collects = false;
     vm->calls = NULL;
     vm->globals = NULL;
     vm->rootModule = NULL;
@@ -33,7 +32,6 @@ void _machine_mark_object(Object *object) {
 void _machine_free_object(Machine *this, Object* object) {
     if (object->gcFreeze) return;
     // add hashmap and hashkey to vm
-    // log_debug("free_object:%c %p", object->objType, object);
     if (object->objType == PCT_OBJ_VALUE) {
         Value *value = object;
         if (value->type == UG_TYPE_STR) {
@@ -44,9 +42,11 @@ void _machine_free_object(Machine *this, Object* object) {
             Queue_free(value->extra);
         }
         free(object);
+    } else if (object->objType == PCT_OBJ_ARRAY) {
+        // log_info("free arr %p", object);
+        Array_free(object);
     } else if (object->objType == PCT_OBJ_HASHMAP) {
         // log_info("free map %p", object);
-        // free(object);
         Hashmap_free(object);
     } else {
         free(object);
@@ -199,7 +199,7 @@ void Machine_sweep(Machine *this)
     Object* previous = NULL;
     Object* object = this->first;
     while (object) {
-        // log_info("--->seeep:%i %i %p %i", object->gcMark, object != NULL, object, object == this->globals);
+        // log_info("--->seeep:%i %c %p", object->gcMark, object->objType, object);
         // Object_print(object);
         if (object->gcMark) {
             object->gcMark = 0;
@@ -233,12 +233,12 @@ void Machine_runGC(Machine *this) {
     double swpTime = endTime - bgnTime;
     int endCount = this->numObjects;
     int delCount = bgnCount - endCount;
-    this->maxObjects = endCount * 2 + 10000; // TODO:gc issue
+    this->maxObjects = endCount * 2 + 0; // TODO:gc issue
     log_debug("========gc_end! %f %d - %d = %d", swpTime, bgnCount, delCount, endCount);
 }
 
 void Machine_tryGC(Machine *this) {
-    if (this->sweeping && this->collects && this->numObjects >= this->maxObjects) {
+    if (this->sweeping && this->numObjects >= this->maxObjects) {
         Machine_runGC(this);
     }
 }
@@ -288,21 +288,21 @@ Object* Machine_createObjAndFreeze(char type, size_t size) {
 
 void Machine_retainObj(Object* object) {
     Machine* this = __uyghur->machine;
-    if (!this->sweeping && this->collects) {
+    if (!this->sweeping) {
         Object_retain(object);
     }
 }
 
 void Machine_releaseObj(Object* object) {
     Machine* this = __uyghur->machine;
-    if (!this->sweeping && this->collects) {
+    if (!this->sweeping) {
         Object_release(object);
     }
 }
 
 void Machine_freeObj(Object* object) {
     Machine* this = __uyghur->machine;
-    if (!this->sweeping && this->collects) {
+    if (!this->sweeping) {
         Object_free(object);
     }
 }

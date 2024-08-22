@@ -28,6 +28,8 @@
 
 #define IS_DEVELOP true
 bool isTest = false;
+#define IS_GC_SWEEPING true
+#define IS_GC_COUNTING !IS_GC_SWEEPING
 #define MAX_STACK_SIZE 1000
 #define MAX_TRACE_SIZE 5
 
@@ -299,7 +301,6 @@ struct Machine {
     Object* first;
     bool sweeping;
     bool freezing;
-    bool collects;
     Stack *calls;
     Holdable *globals;
     Holdable *rootModule;

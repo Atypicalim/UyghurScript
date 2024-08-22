@@ -1052,32 +1052,32 @@ Value *Executer_generateNStack(Executer *this, Stack *stack)
     Block *block = Stack_NEXT(stack);
     bool isArray = block == NULL || block->next == NULL;
     Value *result = isArray ? (Value *)Listable_newLst(NULL) : (Value *)Dictable_newDct(NULL);
-    while(block != NULL)
-    {
-        Token *key = block->next;
-        Object *val = block->data;
-        bool noKey = key == NULL;
-        Executer_assert(this, isArray == noKey, NULL, LANG_ERR_EXECUTER_GENERATION_INVALID_KEY);
-        //
-        Value *value = NULL;
-        if (val->objType == PCT_OBJ_STACK) {
-            value = Executer_generateNStack(this, val);
-        } else {
-            value = Executer_getValueByToken(this, val, false);
-        }
-        //
-        if (value != NULL) {
-            if (isArray) {
-                Listable_push(result, value);
-            } else {
-                char *location = Executer_getLocationOfToken(this, key);
-                Container_setLocation(result, location, value);
-                pct_free(location);
-            }
-        }
-        //
-        block = Stack_NEXT(stack);
-    }
+    // while(block != NULL)
+    // {
+    //     Token *key = block->next;
+    //     Object *val = block->data;
+    //     bool noKey = key == NULL;
+    //     Executer_assert(this, isArray == noKey, NULL, LANG_ERR_EXECUTER_GENERATION_INVALID_KEY);
+    //     //
+    //     Value *value = NULL;
+    //     if (val->objType == PCT_OBJ_STACK) {
+    //         value = Executer_generateNStack(this, val);
+    //     } else {
+    //         value = Executer_getValueByToken(this, val, false);
+    //     }
+    //     //
+    //     if (value != NULL) {
+    //         if (isArray) {
+    //             Listable_push(result, value);
+    //         } else {
+    //             char *location = Executer_getLocationOfToken(this, key);
+    //             Container_setLocation(result, location, value);
+    //             pct_free(location);
+    //         }
+    //     }
+    //     //
+    //     block = Stack_NEXT(stack);
+    // }
     return result;
 }
 
