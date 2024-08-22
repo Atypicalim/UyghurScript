@@ -277,11 +277,11 @@ bool helper_token_is_values(Token *token, int num, char *s, ...)
 typedef void (*HASHKEY_PRINT_CALLBACK)(Hashkey *, char *);
 
 void _container_key_print_callback(Hashkey *this, char *prefix) {
-    printf("%s %s -> %s \n", prefix, this->key->data, Value_toString(this->value));
+    printf("%s %s -> %p \n", prefix, this->key->data, this->value);
 }
 
 void _hashmap_key_print_callback(Hashkey *this, char *prefix) {
-    printf("%s %s -> %i \n", prefix, this->key->data, this->value);
+    printf("%s %s -> %p \n", prefix, this->key->data, this->value);
 }
 
 void _hashmap_print_with_callback(Hashmap *this, char *prefix, HASHKEY_PRINT_CALLBACK callback)
@@ -302,7 +302,7 @@ void _array_print_without_callback(Array *this, char *prefix)
     if (prefix == NULL) prefix = "";
     for (int i = 0; i < this->length; i++) {
         void *element = this->elements[i];
-        printf("%s - %d => %i \n", prefix, i, element);
+        printf("%s - %d => %p \n", prefix, i, element);
     } 
 }
 
@@ -418,7 +418,7 @@ void helper_set_aliased_key(Value *container, char *_key, Value *value) {
     {
         PAIR_ALIASES pair = pairs[i];
         char *location = convert_string_to_location(pair.val, UG_TYPE_STR);
-        Container_setLocation(container, location, value);
+        Dictable_setLocation(container, location, value);
         pct_free(location);
     }
 }
@@ -431,7 +431,7 @@ Value *helper_get_aliased_key(Value *container, char *_key) {
     {
         PAIR_ALIASES pair = pairs[i];
         char *location = convert_string_to_location(pair.val, UG_TYPE_STR);
-        Value *result = Container_getLocation(container, location);
+        Value *result = Dictable_getLocation(container, location);
         pct_free(location);
         if (result!= NULL) return result;
     }

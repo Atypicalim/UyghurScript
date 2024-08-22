@@ -37,6 +37,13 @@ Token *Token_empty()
     return Token_EMPTY;
 }
 
+Token *Token_getTemporary() {
+    if (Token_TEMPORARY == NULL) {
+        Token_TEMPORARY = Token_new(UG_TTYPE_EMP, TVALUE_EMPTY);
+    }
+    return Token_TEMPORARY;
+}
+
 Token *Token_variable()
 {
     if (Token_VARIABLE == NULL) {

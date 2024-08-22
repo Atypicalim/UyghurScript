@@ -36,6 +36,37 @@ bool Dictable_isDct(Dictable *this)
 
 // 
 
+void Dictable_delLocation(Dictable *this, char *key)
+{
+    Hashmap_del(this->map, key);
+}
+
+void *Dictable_getLocation(Value *this, char *key)
+{
+    return Hashmap_get(this->map, key);
+}
+
+
+bool _hashmap_set_check_dictable(Value *old, Value *new) {
+    if (!old || old->type == UG_TYPE_NIL) return true;
+    if (!new || new->type == UG_TYPE_NIL) return true;
+    if (old->fixed && old->type != new->type) {
+        Runtime_error(LANG_ERR_EXECUTER_VARIABLE_INVALID_TYPE);
+        return false;
+    }
+    new->fixed = old->fixed;
+    return true;
+}
+
+void Dictable_setLocation(Value *this, char *key, void *value)
+{
+    if (value == NULL) return Dictable_delLocation(this, key);
+    // Hashmap_set(this->map, key, value);
+    Hashmap_setByCheck(this->map, key, value, _hashmap_set_check_dictable);
+}
+
+// 
+
 char *Dictable_toString(Dictable *this)
 {
     char *desc = "?";

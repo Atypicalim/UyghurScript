@@ -11,7 +11,7 @@ Debug *Debug_new(Uyghur *uyghur)
 {
     Debug *debug = malloc(sizeof(Debug));
     debug->uyghur = uyghur;
-    debug->trace = Array_new();
+    debug->trace = Array_new(false);
     return debug;
 }
 

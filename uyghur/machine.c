@@ -85,7 +85,7 @@ Value *Machine_getCurrentSelf(Machine *this)
     while ((value = Stack_NEXT(this->stack)) != NULL)
     {
         if (!Holdable_isScope(value)) break;
-        Value *self = Container_getLocation(value, SCOPE_ALIAS_SLF);
+        Value *self = Dictable_getLocation(value, SCOPE_ALIAS_SLF);
         if (self != NULL) {
             value = self;
             break;
@@ -233,7 +233,7 @@ void Machine_runGC(Machine *this) {
     double swpTime = endTime - bgnTime;
     int endCount = this->numObjects;
     int delCount = bgnCount - endCount;
-    this->maxObjects = endCount * 2 + 0; // TODO:gc issue
+    this->maxObjects = endCount * 2 + 10000; // TODO:gc issue
     log_debug("========gc_end! %f %d - %d = %d", swpTime, bgnCount, delCount, endCount);
 }
 

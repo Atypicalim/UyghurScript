@@ -49,7 +49,7 @@ void native_import(Bridge *bridge)
     char *path = Bridge_receiveString(bridge);
     Uyghur *uyghur = bridge->uyghur;
     Holdable *global = uyghur->executer->globalScope;
-    Value *box = Container_getLocation(global, path);
+    Value *box = Dictable_getLocation(global, path);
     if (box == NULL) box = Uyghur_runPath(uyghur, path);
     if (box == NULL) box = Value_newEmpty(NULL);
     Bridge_returnValue(bridge, box);
@@ -58,7 +58,7 @@ void native_import(Bridge *bridge)
 void native_clean(Bridge *bridge)
 {
     char *path = Bridge_receiveString(bridge);
-    Container_delLocation(bridge->uyghur->executer->globalScope, path);
+    Dictable_delLocation(bridge->uyghur->executer->globalScope, path);
     Bridge_returnEmpty(bridge);
 }
 

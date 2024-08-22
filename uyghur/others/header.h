@@ -90,9 +90,10 @@ typedef struct _Token {
     void *last;
 } Token;
 
-Token *Token_EMPTY;
-Token *Token_VARIABLE;
-Token *Token_FUNCTION;
+Token *Token_EMPTY = NULL;
+Token *Token_VARIABLE = NULL;
+Token *Token_FUNCTION = NULL;
+Token *Token_TEMPORARY = NULL;
 
 // leaf
 
@@ -131,6 +132,7 @@ char *Value_toString(Value*);
 Value *Value_EMPTY = NULL;
 Value *Value_TRUE = NULL;
 Value *Value_FALSE = NULL;
+Value *Value_TEMPORARY = NULL;
 
 // listable
 

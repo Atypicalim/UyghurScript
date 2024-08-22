@@ -49,6 +49,13 @@ Value *Value_newEmpty(void *extra)
     return Value_EMPTY;
 }
 
+Value *Value_getTemporary() {
+    if (Value_TEMPORARY == NULL) {
+        Value_TEMPORARY = _value_newValue(true, UG_TYPE_NIL);
+    }
+    return Value_TEMPORARY;
+}
+
 Value *Value_newBoolean(bool boolean, void *extra)
 {
     if (Value_TRUE == NULL) {
@@ -301,52 +308,6 @@ void Value_free(Value *this)
     if (this != Value_EMPTY && this != Value_TRUE && this != Value_FALSE) {
         Machine_freeObj(this);
     }
-}
-
-//
-
-void __Container_copyTo(Hashkey *hashkey, Hashmap *other)
-{
-    String *key = hashkey->key;
-    Value *val = hashkey->value;
-    char *_key = String_get(key);
-    Hashmap_set(other, _key, val);
-}
-
-void Container_copyTo(Value *this, Value *other)
-{
-    Hashmap_foreachItem(this->map, __Container_copyTo, other->map);
-}
-
-//
-
-void Container_delLocation(Value *this, char *key)
-{
-    Hashmap_del(this->map, key);
-}
-
-void *Container_getLocation(Value *this, char *key)
-{
-    return Hashmap_get(this->map, key);
-}
-
-
-bool _hashmap_set_check_container(Value *old, Value *new) {
-    if (!old || old->type == UG_TYPE_NIL) return true;
-    if (!new || new->type == UG_TYPE_NIL) return true;
-    if (old->fixed && old->type != new->type) {
-        Runtime_error(LANG_ERR_EXECUTER_VARIABLE_INVALID_TYPE);
-        return false;
-    }
-    new->fixed = old->fixed;
-    return true;
-}
-
-void Container_setLocation(Value *this, char *key, void *value)
-{
-    if (value == NULL) return Container_delLocation(this, key);
-    // Hashmap_setCheck(this->map, key, value, _hashmap_set_check_container);
-    Hashmap_set(this->map, key, value);
 }
 
 //

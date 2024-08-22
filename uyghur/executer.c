@@ -94,7 +94,7 @@ void Executer_findValueByLocation(Executer *this, char *key, Value **rContainer,
     *rValue = NULL;
     Block *block = this->machine->stack->tail;
     while (block != NULL) {
-        Value *value = Container_getLocation(block->data, key);
+        Value *value = Dictable_getLocation(block->data, key);
         if (value != NULL) {
             *rContainer = block->data;
             *rValue = value;
@@ -105,7 +105,7 @@ void Executer_findValueByLocation(Executer *this, char *key, Value **rContainer,
         block = block->last;
     }
     if (*rContainer == NULL || *rValue == NULL) {
-        Value *value = Container_getLocation(this->globalScope, key);
+        Value *value = Dictable_getLocation(this->globalScope, key);
         if (value != NULL) {
             *rContainer = this->globalScope;
             *rValue = value;
@@ -174,10 +174,11 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
             index = atof(token->value);
         } else if (Token_isKeyOfName(token)) {
             Token *_extra = (Token *)token->extra;
-            Token *_token = Token_new(_extra->type, token->value);
+            Token *_token = Token_getTemporary();
+            _token->type = _extra->type;
+            _token->value = token->value;
             Value *value;
             Executer_findValueByToken(this, _token, &INVALID_CTN, &value);
-            Object_release(_token);
             if (Value_isNumber(value)) {
                 index = value->number;
             }
@@ -189,13 +190,13 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
     // dict get
     Executer_assert(this, Token_isKeyOfString(token), token, "getting invalid key from dict");
     char *location = convert_string_to_location(token->value, UG_TYPE_STR);
-    *rValue = Container_getLocation(*rContainer, location);
+    *rValue = Dictable_getLocation(*rContainer, location);
     if (*rValue == NULL && Objective_isObj(*rContainer)) {
         Queue *parents = (*rContainer)->extra;
         Queue_RESTE(parents);
         Objective *parent = Queue_NEXT(parents);
         while (*rValue == NULL && parent != NULL) {
-            *rValue = Container_getLocation(parent, location);
+            *rValue = Dictable_getLocation(parent, location);
             parent = Queue_NEXT(parents);
         }
     }
@@ -234,7 +235,7 @@ Value *Executer_getValueFromContainer(Executer *this, Holdable *holdable, Token 
 {
     Executer_assert(this, holdable != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     char *location = Executer_getLocationOfToken(this, token);
-    Value *value = Container_getLocation(holdable, location);
+    Value *value = Dictable_getLocation(holdable, location);
     if (value != NULL) Machine_retainObj(value);
     pct_free(location);
     return value;
@@ -250,10 +251,11 @@ void Executer_setValueToContainer(Executer *this, Value *container, Token *token
             index = atof(token->value);
         } else if (Token_isKeyOfName(token)) {
             Token *_extra = (Token *)token->extra;
-            Token *_token = Token_new(_extra->type, token->value);
+            Token *_token = Token_getTemporary();
+            _token->type = _extra->type;
+            _token->value = token->value;
             Value *value;
             Executer_findValueByToken(this, _token, &INVALID_CTN, &value);
-            Object_release(_token);
             if (Value_isNumber(value)) {
                 index = value->number;
             }
@@ -264,7 +266,7 @@ void Executer_setValueToContainer(Executer *this, Value *container, Token *token
     }
     // dict set
     char *location = Executer_getLocationOfToken(this, token);
-    Container_setLocation(container, location, value);
+    Dictable_setLocation(container, location, value);
     pct_free(location);
 }
 
@@ -668,7 +670,7 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
         || is_eq_string(target->value, TVALUE_DCT)
     ) {
         char *location = convert_string_to_location(target->extra, UG_TYPE_STR);
-        value = Container_getLocation(this->globalScope, location);
+        value = Dictable_getLocation(this->globalScope, location);
         pct_free(location);
         if (value != NULL) Machine_retainObj(value);
     }
@@ -856,7 +858,7 @@ Value *Executer_applyWorker(Executer *this, Token *token, Value *workerValue, Va
     Value *func = workerValue;
     //
     Executer_pushScope(this);
-    Container_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
+    Dictable_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
     Executer_consumeLeaf(this, func->obj);
     Executer_popScope(this);
     //
@@ -877,7 +879,7 @@ Value *Executer_applyCreator(Executer *this, Token *token, Value *creatorValue, 
     Objective *self = Objective_newObj(parents);
     //
     Executer_pushScope(this);
-    Container_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
+    Dictable_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
     Executer_consumeLeaf(this, constructor->obj);
     Executer_popScope(this);
     //
@@ -902,7 +904,7 @@ Value *Executer_applyAssister(Executer *this, Token *token, Value *assisterValue
     Queue_push(parent, assisterValue);
     //
     Executer_pushScope(this);
-    Container_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
+    Dictable_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
     Executer_consumeLeaf(this, constructor->obj);
     Executer_popScope(this);
     //
@@ -1039,7 +1041,7 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
     //
     // TODO:free r object
     Value *r = Executer_calculateBTree(this, root);
-    //
+    // 
     Executer_assert(this, r != NULL, target, LANG_ERR_EXECUTER_CALCULATION_INVALID);
     Executer_setValueByToken(this, target, r, false);
 }
@@ -1071,7 +1073,7 @@ Value *Executer_generateNStack(Executer *this, Stack *stack)
     //             Listable_push(result, value);
     //         } else {
     //             char *location = Executer_getLocationOfToken(this, key);
-    //             Container_setLocation(result, location, value);
+    //             Dictable_setLocation(result, location, value);
     //             pct_free(location);
     //         }
     //     }
@@ -1227,7 +1229,7 @@ Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
     Holdable *holdable = Machine_popHolder(this->machine);
     tools_assert(holdable != NULL && holdable->type == UG_TYPE_MDL, LANG_ERR_EXECUTER_INVALID_STATE);
     //
-    Container_setLocation(this->globalScope, path, holdable);
+    Dictable_setLocation(this->globalScope, path, holdable);
     return holdable;
 }
 
