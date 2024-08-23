@@ -219,6 +219,15 @@ char *convert_string_to_location(char *str, char rType)
     }
 }
 
+char *convert_alias_to_token(char *alias)
+{
+    if (is_eq_string(ALIAS_NUMBER, alias)) return TVALUE_NUM;
+    if (is_eq_string(ALIAS_STRING, alias)) return TVALUE_STR;
+    if (is_eq_string(ALIAS_LIST, alias)) return TVALUE_LST;
+    if (is_eq_string(ALIAS_DICT, alias)) return TVALUE_DCT;
+    return alias;
+}
+
 // 
 
 bool helper_token_is_types_list(Token *token, int num, char *s, va_list valist)
@@ -412,6 +421,12 @@ void helper_add_languages(Uyghur *uyghur, char *tp) {
 
 void helper_set_aliased_key(Value *container, char *_key, Value *value) {
     // log_warn("helper.set.aliased: %s", _key);
+    // 
+    char *token = convert_alias_to_token(_key);
+    char *location = convert_string_to_location(token, UG_TYPE_STR);
+    Dictable_setLocation(container, location, value);
+    pct_free(location);
+    // 
     int size = aliases_get_size_by_name(_key);
     const PAIR_ALIASES* pairs = aliases_get_conf_by_name(_key);
     for (size_t i = 0; i < size; i++)

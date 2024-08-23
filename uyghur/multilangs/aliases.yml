@@ -56,204 +56,6 @@ ALIAS_clean:
   tr: temizlemek
   kz: тазалау
 
-############################# time
-ALIAS_TIME:
-  en: time
-  uy: ۋاقىت
-  ug: waqit
-  uz: vaqt
-  tr: vakit
-  kz: уақыт
-ALIAS_time_get_zone:
-  en: get_zone
-  uy: رايۇن_ئېلىش
-  ug: rayunElish
-  uz: rayun_olish
-  tr: bölge_almak
-  kz: белдеуін_алу
-ALIAS_time_get_seconds:
-  en: get_seconds
-  uy: سىكۇنىت_ئېلىش
-  ug: sikuntElish
-  uz: soniya_olish
-  tr: ikinci_almak
-  kz: секунды_алу
-ALIAS_time_convert_to_seconds:
-  en: convert_to_seconds
-  uy: سىكۇنىتقا_ئايلاندۇرۇش
-  ug: sikuntqaAylandurush
-  uz: soniyaga_aylantirish
-  tr: ikinciye_dönüştürmek
-  kz: секундқа_түрлендіру
-ALIAS_time_convert_from_seconds:
-  en: convert_from_seconds
-  uy: سىكۇنىتنى_ئايلاندۇرۇش
-  ug: sikuntniAylandurush
-  uz: soniyani_aylantirish
-  tr: ikinciyi_dönüştürmek
-  kz: cекундтан_түрлендіру
-ALIAS_time_get_time:
-  en: get_time
-  uy: ۋاقىت_ئېلىش
-  ug: waqitElish
-  uz: vaqt_olish
-  tr: vakit_almak
-  kz: уақыт_алу
-ALIAS_time_get_clock:
-  en: get_clock
-  uy: ساناق_ۋاقىت
-  ug: sanaqElish
-  uz: sanoq_olish
-  tr: sayaç_almak
-  kz: санауыш_алу
-ALIAS_time_sleep_seconds:
-  en: sleep_seconds
-  uy: پىروگراممىنى_ئۇخلىتىش
-  ug: programminiUxlitish
-  uz: dasturni_uxlatish
-  tr: programani_uyutmak
-  kz: бағдарламаны_ұйықтау
-
-############################# system
-ALIAS_SYSTEM:
-  en: system
-  uy: سېستىما
-  ug: sestima
-  uz: dastur
-  tr: sistem
-  kz: жүйе
-ALIAS_system_get_name:
-  en: get_name
-  uy: ئىسمىنى_ئېلىش
-  ug: isminiElish
-  uz: nomini_olish
-  tr: adını_almak
-  kz: атын_алу
-ALIAS_system_exit_program:
-  en: exit_program
-  uy: پروگراممىدىن_چېكىنىش
-  ug: programmidinChikinish
-  uz: dasturdan_chiqish
-  tr: programdan_çıkmak
-  kz: бағдарламадан_шығу
-ALIAS_system_execute_command:
-  en: execute_command
-  uy: ئىجرا_قىلىش
-  ug: ijraQilish
-  uz: ijro_qilish
-  tr: buyruk_çalıştırmak
-  kz: бұйрық_орындау
-ALIAS_system_set_env:
-  en: set_env
-  uy: مۇھىت_قىممىتى_يېزىش
-  ug: muhitQimmitiYezish
-  uz: muhit_o'zgaruvchi_yozish
-  tr: etraf_değişkeni_yazmak
-  kz: мойындау_айнымалы_жазу
-ALIAS_system_get_env:
-  en: get_env
-  uy: مۇھىت_قىممىتى_ئوقۇش
-  ug: muhitQimmitiOqush
-  uz: muhit_o'zgaruvchi_o'qish
-  tr: etraf_değişkeni_okumak
-  kz: мойындау_айнымалы_оқу
-
-############################# string
-ALIAS_STRING:
-  en: string
-  uy: خەت
-  ug: xet
-  uz: xat
-  tr: dize
-  kz: хат
-# 
-ALIAS_string_replace:
-  en: replace
-  uy: ئالماشتۇرۇش
-  ug: almashturush
-  uz: almashtirish
-  tr: değiştirmek
-  kz: алмастыру
-ALIAS_string_replace_first:
-  en: replace_first
-  uy: بىرىنچىسىنى_ئالماشتۇرۇش
-  ug: birinchisiniAlmashturush
-  uz: birinchini_almashtirish
-  tr: birincini_değiştirmek
-  kz: бірінші_алмастыру
-ALIAS_string_replace_last:
-  en: replace_last
-  uy: ئاخىرقىسىنى_ئالماشتۇرۇش
-  ug: axirqisiniAlmashturush
-  uz: oxirgini_almashtirish
-  tr: sonuncusunu_değiştirmek
-  kz: соңғысы_алмастыру
-ALIAS_string_replace_all:
-  en: replace_all
-  uy: ھەممىسىنى_ئالماشتۇرۇش
-  ug: hemmisiniAlmashturush
-  uz: hammasini_almashtirish
-  tr: hepsini_değiştirmek
-  kz: барлығы_алмастыру
-# 
-ALIAS_string_find:
-  en: find
-  uy: تېپىش
-  ug: tepish
-  uz: topish
-  tr: bulmak
-  kz: табу
-ALIAS_string_find_first:
-  en: find_first
-  uy: بىرىنچىسىنى_تېپىش
-  ug: birinchisiniTepish
-  uz: birinchini_topish
-  tr: birincini_bulmak
-  kz: бірінші_табу
-ALIAS_string_find_last:
-  en: find_last
-  uy: ئاخىرقىسىنى_تېپىش
-  ug: axirqisiniTepish
-  uz: oxirgini_topish
-  tr: sonuncusunu_bulmak
-  kz: соңғысы_табу
-# 
-ALIAS_string_count:
-  en: count
-  uy: ساناش
-  ug: sanash
-  uz: hisoblash
-  tr: saymak
-  kz: санау
-ALIAS_string_cut:
-  en: cut
-  uy: كېسىش
-  ug: kisish
-  uz: kesish
-  tr: kesmek
-  kz: кесу
-ALIAS_string_link:
-  en: link
-  uy: ئۇلاش
-  ug: ulash
-  uz: ulash
-  tr: ulamak
-  kz: қосылу
-ALIAS_string_format:
-  en: format
-  uy: فورماتلاش
-  ug: formatlash
-  uz: formatlash
-  tr: formatlamak
-  kz: пішімдеу
-ALIAS_string_fill:
-  en: fill
-  uy: تولدۇرۇش
-  ug: toldurush
-  uz: to'ldirish
-  tr: doldurmak
-  kz: толтыру
-
 ############################# number
 ALIAS_NUMBER:
   en: number
@@ -418,6 +220,226 @@ ALIAS_number_dec_part:
   tr: parça_kısmını_almak
   kz: бөлшек_бөлігін_алу
 
+############################# string
+ALIAS_STRING:
+  en: string
+  uy: خەت
+  ug: xet
+  uz: xat
+  tr: dize
+  kz: хат
+# 
+ALIAS_string_replace:
+  en: replace
+  uy: ئالماشتۇرۇش
+  ug: almashturush
+  uz: almashtirish
+  tr: değiştirmek
+  kz: алмастыру
+ALIAS_string_replace_first:
+  en: replace_first
+  uy: بىرىنچىسىنى_ئالماشتۇرۇش
+  ug: birinchisiniAlmashturush
+  uz: birinchini_almashtirish
+  tr: birincini_değiştirmek
+  kz: бірінші_алмастыру
+ALIAS_string_replace_last:
+  en: replace_last
+  uy: ئاخىرقىسىنى_ئالماشتۇرۇش
+  ug: axirqisiniAlmashturush
+  uz: oxirgini_almashtirish
+  tr: sonuncusunu_değiştirmek
+  kz: соңғысы_алмастыру
+ALIAS_string_replace_all:
+  en: replace_all
+  uy: ھەممىسىنى_ئالماشتۇرۇش
+  ug: hemmisiniAlmashturush
+  uz: hammasini_almashtirish
+  tr: hepsini_değiştirmek
+  kz: барлығы_алмастыру
+# 
+ALIAS_string_find:
+  en: find
+  uy: تېپىش
+  ug: tepish
+  uz: topish
+  tr: bulmak
+  kz: табу
+ALIAS_string_find_first:
+  en: find_first
+  uy: بىرىنچىسىنى_تېپىش
+  ug: birinchisiniTepish
+  uz: birinchini_topish
+  tr: birincini_bulmak
+  kz: бірінші_табу
+ALIAS_string_find_last:
+  en: find_last
+  uy: ئاخىرقىسىنى_تېپىش
+  ug: axirqisiniTepish
+  uz: oxirgini_topish
+  tr: sonuncusunu_bulmak
+  kz: соңғысы_табу
+# 
+ALIAS_string_count:
+  en: count
+  uy: ساناش
+  ug: sanash
+  uz: hisoblash
+  tr: saymak
+  kz: санау
+ALIAS_string_cut:
+  en: cut
+  uy: كېسىش
+  ug: kisish
+  uz: kesish
+  tr: kesmek
+  kz: кесу
+ALIAS_string_link:
+  en: link
+  uy: ئۇلاش
+  ug: ulash
+  uz: ulash
+  tr: ulamak
+  kz: қосылу
+ALIAS_string_format:
+  en: format
+  uy: فورماتلاش
+  ug: formatlash
+  uz: formatlash
+  tr: formatlamak
+  kz: пішімдеу
+ALIAS_string_fill:
+  en: fill
+  uy: تولدۇرۇش
+  ug: toldurush
+  uz: to'ldirish
+  tr: doldurmak
+  kz: толтыру
+
+############################# list
+ALIAS_LIST:
+  en: list
+  uy: تەرتىپ
+  ug: tertip
+  uz: tartib
+  tr: tertip
+  kz: тертіп
+ALIAS_list_count:
+  en: count
+
+############################# dict
+ALIAS_DICT:
+  en: dict
+  uy: ساندۇق
+  ug: sanduq
+  uz: sandiq
+  tr: sandık
+  kz: сандық
+ALIAS_dict_count:
+  en: count
+
+############################# time
+ALIAS_TIME:
+  en: time
+  uy: ۋاقىت
+  ug: waqit
+  uz: vaqt
+  tr: vakit
+  kz: уақыт
+ALIAS_time_get_zone:
+  en: get_zone
+  uy: رايۇن_ئېلىش
+  ug: rayunElish
+  uz: rayun_olish
+  tr: bölge_almak
+  kz: белдеуін_алу
+ALIAS_time_get_seconds:
+  en: get_seconds
+  uy: سىكۇنىت_ئېلىش
+  ug: sikuntElish
+  uz: soniya_olish
+  tr: ikinci_almak
+  kz: секунды_алу
+ALIAS_time_convert_to_seconds:
+  en: convert_to_seconds
+  uy: سىكۇنىتقا_ئايلاندۇرۇش
+  ug: sikuntqaAylandurush
+  uz: soniyaga_aylantirish
+  tr: ikinciye_dönüştürmek
+  kz: секундқа_түрлендіру
+ALIAS_time_convert_from_seconds:
+  en: convert_from_seconds
+  uy: سىكۇنىتنى_ئايلاندۇرۇش
+  ug: sikuntniAylandurush
+  uz: soniyani_aylantirish
+  tr: ikinciyi_dönüştürmek
+  kz: cекундтан_түрлендіру
+ALIAS_time_get_time:
+  en: get_time
+  uy: ۋاقىت_ئېلىش
+  ug: waqitElish
+  uz: vaqt_olish
+  tr: vakit_almak
+  kz: уақыт_алу
+ALIAS_time_get_clock:
+  en: get_clock
+  uy: ساناق_ۋاقىت
+  ug: sanaqElish
+  uz: sanoq_olish
+  tr: sayaç_almak
+  kz: санауыш_алу
+ALIAS_time_sleep_seconds:
+  en: sleep_seconds
+  uy: پىروگراممىنى_ئۇخلىتىش
+  ug: programminiUxlitish
+  uz: dasturni_uxlatish
+  tr: programani_uyutmak
+  kz: бағдарламаны_ұйықтау
+
+############################# system
+ALIAS_SYSTEM:
+  en: system
+  uy: سېستىما
+  ug: sestima
+  uz: dastur
+  tr: sistem
+  kz: жүйе
+ALIAS_system_get_name:
+  en: get_name
+  uy: ئىسمىنى_ئېلىش
+  ug: isminiElish
+  uz: nomini_olish
+  tr: adını_almak
+  kz: атын_алу
+ALIAS_system_exit_program:
+  en: exit_program
+  uy: پروگراممىدىن_چېكىنىش
+  ug: programmidinChikinish
+  uz: dasturdan_chiqish
+  tr: programdan_çıkmak
+  kz: бағдарламадан_шығу
+ALIAS_system_execute_command:
+  en: execute_command
+  uy: ئىجرا_قىلىش
+  ug: ijraQilish
+  uz: ijro_qilish
+  tr: buyruk_çalıştırmak
+  kz: бұйрық_орындау
+ALIAS_system_set_env:
+  en: set_env
+  uy: مۇھىت_قىممىتى_يېزىش
+  ug: muhitQimmitiYezish
+  uz: muhit_o'zgaruvchi_yozish
+  tr: etraf_değişkeni_yazmak
+  kz: мойындау_айнымалы_жазу
+ALIAS_system_get_env:
+  en: get_env
+  uy: مۇھىت_قىممىتى_ئوقۇش
+  ug: muhitQimmitiOqush
+  uz: muhit_o'zgaruvchi_o'qish
+  tr: etraf_değişkeni_okumak
+  kz: мойындау_айнымалы_оқу
+
 ############################# file
 ALIAS_FILE:
   en: file
@@ -489,28 +511,6 @@ ALIAS_file_create_directory:
   uz: papka_yasash
   tr: klasör_oluşturmak
   kz: папка_жасау
-
-############################# list
-ALIAS_LIST:
-  en: list
-  uy: تەرتىپ
-  ug: tertip
-  uz: tartib
-  tr: tertip
-  kz: тертіп
-ALIAS_list_count:
-  en: count
-
-############################# dict
-ALIAS_DICT:
-  en: dict
-  uy: ساندۇق
-  ug: sanduq
-  uz: sandiq
-  tr: sandık
-  kz: сандық
-ALIAS_dict_count:
-  en: count
 
 ############################# external #############################
 

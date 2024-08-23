@@ -1,15 +1,15 @@
 
-# miqdar t qimmiti tertip bolsun
+miqdar t qimmiti tertip bolsun
 
-# t = {11, 22, 33}
+t = {11, 22, 33}
 
 buyruq dunya yezilsun
 buyruq tertip yezilsun
-# buyruq @dunya[tertip] yezilsun
-# buyruq @tertip[count] yezilsun
+buyruq @dunya[tertip] yezilsun
+buyruq @tertip[count] yezilsun
 
-# fonkisiye @tertip[count] bilen t ishlitilsun we r elinsun
-# buyruq r yezilsun
+fonkisiye @tertip[count] bilen t ishlitilsun we r elinsun
+buyruq r yezilsun
 
 # yeyilghan tertip miqdar k v bulup
 #     buyruq k yezilsun
