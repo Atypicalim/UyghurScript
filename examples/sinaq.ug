@@ -1,58 +1,19 @@
 
-miqdar t qimmiti quruq bolsun
-miqdar r qimmiti quruq bolsun
-miqdar key qimmiti 1 bolsun
-miqdar val qimmiti [val...] bolsun
+# miqdar t qimmiti tertip bolsun
 
-# @r[xxx] = [xxx...]
-# @r{123} = 456
-# @r{key} = val
+# t = {11, 22, 33}
 
-# r = {123, 456 , 789, [abc]}
+buyruq dunya yezilsun
+buyruq tertip yezilsun
+# buyruq @dunya[tertip] yezilsun
+# buyruq @tertip[count] yezilsun
 
-# r = {123, 456, [abc], val, {
-#     a: 12,
-#     b: 45,
-# }}
-
-r = {
-    a: [abc],
-    b: 123,
-    abc: quruq,
-    d: {},
-}
-
-r = {
-    123,
-    456,
-    789,
-}
-
-@r{key} = val
-
-# r qimmiti sanduq bolsun
-
-buyruq r yezilsun
-buyruq [===>\n] yezilsun
-yeyilghan r miqdar k v bulup
-    buyruq k yezilsun
-    buyruq [---] yezilsun
-    buyruq v yezilsun
-    buyruq [\n] yezilsun
-tamamlansun
-
-# buyruq [===>\n] yezilsun
+# fonkisiye @tertip[count] bilen t ishlitilsun we r elinsun
 # buyruq r yezilsun
-# t = @r[b]
-# buyruq @r{1} yezilsun
-# buyruq [\n] yezilsun
 
-# tiziq
-# jedvel
-
-# sira
-# dizilis
-# tertip
-
-
-# 
+# yeyilghan tertip miqdar k v bulup
+#     buyruq k yezilsun
+#     buyruq [--] yezilsun
+#     buyruq v yezilsun
+#     buyruq [\n] yezilsun
+# tamamlansun

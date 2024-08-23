@@ -502,7 +502,6 @@ void Parser_consumeAstCalculator(Parser *this)
 
 void Parser_consumeAstGenerator(Parser *this)
 {
-    log_info("gen 00");
     Token *target = Parser_checkType(this, 0, TVAUES_GROUP_CHANGEABLE);
     Parser_checkWord(this, 1, 1, TVALUE_EQUALING);
     Token *tempT = NULL;
@@ -512,14 +511,10 @@ void Parser_consumeAstGenerator(Parser *this)
     Stack *root = NULL;
     char *lastType = NULL;
     int depth = 0;
-    log_info("gen 11");
     while (true) {
-        log_info("gen-- 22");
         current = currents->tail != NULL ? currents->tail->data : NULL;
-        log_info("gen-- 21");
         if (Parser_isWord(this, 1, SIGN_OPEN_MIDDLE)) {
             Parser_assert(this, can_generate_open(lastType), LANG_ERR_PARSER_INVALID_GENERATOR);
-            log_info("gen 33");
             depth++;
             Parser_checkWord(this, 1, 1, SIGN_OPEN_MIDDLE);
             Stack *stack = Stack_new();
@@ -539,15 +534,10 @@ void Parser_consumeAstGenerator(Parser *this)
             continue;
         } else if (Parser_isWord(this, 1, SIGN_CLOSE_MIDDLE)) {
             Parser_assert(this, depth > 0 && can_generate_close(lastType), LANG_ERR_PARSER_INVALID_GENERATOR);
-            log_info("gen 44");
             depth--;
-            log_info("gen 41");
             Parser_checkWord(this, 1, 1, SIGN_CLOSE_MIDDLE);
-            log_info("gen 42");
             Stack *pos = Stack_pop(currents);
-            log_info("gen 43");
             lastType = SIGN_CLOSE_MIDDLE;
-            log_info("gen 44");
             isTest = true;
             if (depth == 0) {
                 break;
@@ -555,37 +545,29 @@ void Parser_consumeAstGenerator(Parser *this)
                 continue;
             }
         } else if (Parser_isWord(this, 2, TVALUE_COLON)) {
-            log_info("gen 55");
             Token *key = Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
             waitingKey = key;
             Parser_checkWord(this, 1, 1, TVALUE_COLON);
             lastType = TVALUE_COLON;
             continue;
         } else if (Parser_isWord(this, 1, TVALUE_COMMA)) {
-            log_info("gen 66");
             Parser_checkWord(this, 1, 1, TVALUE_COMMA);
             lastType = TVALUE_COMMA;
             continue; 
         } else if (Parser_isTypes(this, 1, TTYPES_GROUP_VALUES)) {
-            log_info("gen 77");
             Token *val = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
             Token *tmp = Parser_getToken(this, 1);
-            log_info("gen 88");
             Block *block = Block_new(val);
             if (waitingKey) {
                 block->next = waitingKey;
                 waitingKey = NULL;
             }
-            log_info("gen 99");
             Stack_push(current, block);
-            log_info("gen 10");
             lastType = SIGN_EQ;
             continue; 
         }
-        log_info("gen break");
         break;
     }
-    log_info("gen 00000000000");
     Parser_assert(this, is_eq_string(lastType, SIGN_CLOSE_MIDDLE), LANG_ERR_PARSER_INVALID_GENERATOR);
     Parser_assert(this, depth == 0, LANG_ERR_PARSER_INVALID_GENERATOR);
     Parser_assert(this, root != NULL, LANG_ERR_PARSER_INVALID_GENERATOR);

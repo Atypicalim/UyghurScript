@@ -490,21 +490,27 @@ ALIAS_file_create_directory:
   tr: klasör_oluşturmak
   kz: папка_жасау
 
-############################# box
-ALIAS_BOX:
-  en: box
+############################# list
+ALIAS_LIST:
+  en: list
+  uy: تەرتىپ
+  ug: tertip
+  uz: tartib
+  tr: tertip
+  kz: тертіп
+ALIAS_list_count:
+  en: count
+
+############################# dict
+ALIAS_DICT:
+  en: dict
   uy: ساندۇق
   ug: sanduq
   uz: sandiq
   tr: sandık
   kz: сандық
-ALIAS_box_iterate:
-  en: box_iterate
-  uy: دەۋرىيلەش
-  ug: dewriylesh
-  uz: aylantirish
-  tr: döngüyelemek
-  kz: айналдыру
+ALIAS_dict_count:
+  en: count
 
 ############################# external #############################
 
