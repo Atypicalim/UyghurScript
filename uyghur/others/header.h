@@ -26,12 +26,15 @@
 
 // 
 
-#define IS_DEVELOP true
+#define IS_DEVELOP false
 bool isTest = false;
-#define IS_GC_SWEEPING true
-#define IS_GC_COUNTING !IS_GC_SWEEPING
 #define MAX_STACK_SIZE 1000
 #define MAX_TRACE_SIZE 5
+
+#define IS_GC_SWEEPING true
+#define IS_GC_COUNTING !IS_GC_SWEEPING
+#define IS_GC_LINK_LISTABLE_ARR true
+#define IS_GC_LINK_DICTABLE_MAP true
 
 typedef char* UG_NAMES;
 typedef const char* UCHAR;
@@ -48,6 +51,12 @@ void Object_initByType(char, void *);
 void Object_freeByType(char, void *);
 void Object_printByType(char, void *);
 #include "../../../pure-c-tools/tools.h"
+
+// 
+
+USTRING helper_translate_letter(char *);
+USTRING helper_translate_alias(char *);
+USTRING helper_translate_something(char *);
 
 // 
 
@@ -134,6 +143,10 @@ Value *Value_TRUE = NULL;
 Value *Value_FALSE = NULL;
 Value *Value_TEMPORARY = NULL;
 
+void *INVALID_PTR = NULL;
+Value *INVALID_CTN = NULL;
+Value *INVALID_VAL = NULL;
+
 // listable
 
 typedef struct _Listable {
@@ -199,13 +212,6 @@ void Runtime_assert(bool, char *);
 typedef void (*WORKER)(Leaf *);
 typedef void (*NATIVE)(Bridge *);
 
-#include "../objects/value.c"
-#include "../objects/runnable.c"
-#include "../objects/listable.c"
-#include "../objects/dictable.c"
-#include "../objects/holdable.c"
-#include "../objects/objective.c"
-
 ////////////////////////////////////////////////////////////////////////////
 
 typedef struct _Tokenizer {
@@ -260,13 +266,25 @@ typedef struct _Uyghur {
 Uyghur *__uyghur = NULL;
 Value *Uyghur_runPath(Uyghur *, char *);
 
-////////////////////////////////////////////////////////////////////////////
-
-#include "helpers.c"
-
-void *INVALID_PTR = NULL;
-Value *INVALID_CTN = NULL;
-Value *INVALID_VAL = NULL;
+struct Machine {
+    Uyghur *uyghur;
+    Stack* stack;
+    Object* first;
+    bool sweeping;
+    bool freezing;
+    Stack *calls;
+    Holdable *globals;
+    Holdable *rootModule;
+    Holdable *currHoldable;
+    Holdable *proxyEmpty;
+    Holdable *proxyLogic;
+    Holdable *proxyNumber;
+    Holdable *proxyString;
+    Holdable *proxyList;
+    Holdable *proxyDict;
+    int numObjects;
+    int maxObjects;
+};
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -297,31 +315,27 @@ void Bridge_run(Bridge *, Value *);
 
 ////////////////////////////////////////////////////////////////////////////
 
-struct Machine {
-    Uyghur *uyghur;
-    Stack* stack;
-    Object* first;
-    bool sweeping;
-    bool freezing;
-    Stack *calls;
-    Holdable *globals;
-    Holdable *rootModule;
-    Holdable *currHoldable;
-    int numObjects;
-    int maxObjects;
-};
-
-////////////////////////////////////////////////////////////////////////////
-
 struct Debug
 {
     Uyghur *uyghur;
     Array *trace;
 };
+
 void Debug_pushTrace(Debug *, Token *);
 void Debug_popTrace(Debug *, Token *);
 void Debug_writeTrace(Debug *);
 void Debug_error(Uyghur *);
 void Debug_assert(Uyghur *);
+
+////////////////////////////////////////////////////////////////////////////
+
+#include "../objects/value.c"
+#include "../objects/runnable.c"
+#include "../objects/listable.c"
+#include "../objects/dictable.c"
+#include "../objects/holdable.c"
+#include "../objects/objective.c"
+
+#include "helpers.c"
 
 #endif

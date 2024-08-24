@@ -1,19 +1,9 @@
 
-miqdar t qimmiti tertip bolsun
+miqdar t qimmiti quruq bolsun
 
-t = {11, 22, 33}
+t = 10 % quruq
+# t = 10 % san
 
-buyruq dunya yezilsun
-buyruq tertip yezilsun
-buyruq @dunya[tertip] yezilsun
-buyruq @tertip[count] yezilsun
+buyruq t yezilsun
 
-fonkisiye @tertip[count] bilen t ishlitilsun we r elinsun
-buyruq r yezilsun
 
-# yeyilghan tertip miqdar k v bulup
-#     buyruq k yezilsun
-#     buyruq [--] yezilsun
-#     buyruq v yezilsun
-#     buyruq [\n] yezilsun
-# tamamlansun

@@ -1,6 +1,15 @@
 
 ############################# internals #############################
 
+ALIAS_TYPE:
+  en: type
+  uy: تىپ
+  ug: tip
+  uz: tur
+  tr: tür
+  kz: түр
+
+
 ############################# global
 # information
 ALIAS_get_language:
@@ -57,14 +66,6 @@ ALIAS_clean:
   kz: тазалау
 
 ############################# number
-ALIAS_NUMBER:
-  en: number
-  uy: سان
-  ug: san
-  uz: son
-  tr: sayı
-  kz: сан
-#
 ALIAS_number_ceil:
   en: ceil
   uy: ئۈستىگە_پۈتۈنلەش
@@ -221,14 +222,6 @@ ALIAS_number_dec_part:
   kz: бөлшек_бөлігін_алу
 
 ############################# string
-ALIAS_STRING:
-  en: string
-  uy: خەت
-  ug: xet
-  uz: xat
-  tr: dize
-  kz: хат
-# 
 ALIAS_string_replace:
   en: replace
   uy: ئالماشتۇرۇش
@@ -317,24 +310,10 @@ ALIAS_string_fill:
   kz: толтыру
 
 ############################# list
-ALIAS_LIST:
-  en: list
-  uy: تەرتىپ
-  ug: tertip
-  uz: tartib
-  tr: tertip
-  kz: тертіп
 ALIAS_list_count:
   en: count
 
 ############################# dict
-ALIAS_DICT:
-  en: dict
-  uy: ساندۇق
-  ug: sanduq
-  uz: sandiq
-  tr: sandık
-  kz: сандық
 ALIAS_dict_count:
   en: count
 

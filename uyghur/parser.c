@@ -235,7 +235,12 @@ void Parser_consumeAstJudge(Parser *this, char aType)
     Token *first = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
     if (Parser_isType(this, 1, UG_TTYPE_CLC)) {
         Token *clcltn = Parser_checkType(this, 1, 1, UG_TTYPE_CLC);
-        Token *second = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+        Token *second = NULL;
+        if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
+            second = Parser_checkValue(this, 1, TVAUES_GROUP_UTYPES);
+        } else {
+            second = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+        }
         Token *action = Parser_checkWord(this, 1, 2, TVALUE_THEN, TVALUE_ELSE);
         Parser_pushLeaf(this, aType, 4, second, clcltn, first, action);
     } else {
@@ -439,13 +444,17 @@ void Parser_consumeAstCalculator(Parser *this)
     char *lastType = NULL;
     while (true) {
         current = (Foliage*)currents->tail->data;
-        if (Parser_isTypes(this, 1, TTYPES_GROUP_VALUES)) {
+        if (Parser_isTypes(this, 1, TTYPES_GROUP_VALUES) || Parser_isValues(this, 1, TVAUES_GROUP_UTYPES)) {
             if (lastType == NULL || is_eq_string(lastType, TVALUE_OPEN)) {
                 tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
                 tempF = Foliage_new(tempT);
                 current->left = tempF;
             } else if (is_calculation_str(lastType)) {
-                tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+                if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
+                    tempT = Parser_checkValue(this, 1, TVAUES_GROUP_UTYPES);
+                } else {
+                    tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+                }
                 tempF = Foliage_new(tempT);
                 current->right = tempF;
             } else {

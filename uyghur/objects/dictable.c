@@ -11,7 +11,9 @@ Dictable *_Dictable_new(char tp, void *extra)
 {
     Dictable *dictable = _value_newValueBySize(false, tp, sizeof(Dictable));
     dictable->map = Hashmap_new(IS_GC_COUNTING);
+    #if IS_GC_LINK_DICTABLE_MAP
     Machine_tryLinkForGC(dictable->map);
+    #endif
     // log_debug("new-%s: %p %p", get_value_name(tp, "dictable"), dictable, dictable->obj);
     dictable->type = tp;
     dictable->extra = extra;
@@ -63,6 +65,19 @@ void Dictable_setLocation(Value *this, char *key, void *value)
     if (value == NULL) return Dictable_delLocation(this, key);
     // Hashmap_set(this->map, key, value);
     Hashmap_setByCheck(this->map, key, value, _hashmap_set_check_dictable);
+}
+
+int Dictable_getCount(Dictable *this) {
+    int count = 0;
+    Hashkey *ptr;
+    for (int i = 0; i < this->map->size; ++i) {
+        ptr = this->map->bucket[i];
+        while (ptr != NULL) {
+            count++;
+            ptr = ptr->next;
+        }
+    }
+    return count;
 }
 
 // 

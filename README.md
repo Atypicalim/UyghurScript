@@ -113,6 +113,11 @@ x = [ab] > [ac] # false
 # string
 x = [ab] + [cd] # abcd
 x = [ab] * 2 # abab
+
+# checking
+x = 10 % 7 # 3
+x = 10 % san # true
+x = 10 % quruq # false
 ```
 
 * command
@@ -205,23 +210,22 @@ t qimmiti tertip bolsun
 #  declare a dict
 s qimmiti sanduq bolsun
 
-# put number to dict
-@s[v] = 123
+# generate a list
+t = {11, 22, [abc]}
+# generate a dict
+s = {a: [aa], b: [bb], c: 123}
 
-# set a method
-fonkisiye @s[f] miqdar x y mezmuni
-  @-[yighinda] = @-[v] * 2
-tamamlansun
+# put a number key
+@t{1} = 456
+# put a string key
+@s[k] = [abc]
+# put a variable key
+@s{v} = val
 
-# supported aliases 
-# box: @-[keyName]
-# module: @+[keyName]
-# global: @*[keyName]
+# alias: this: - bu, module: + bolek, global: * dunya
 
-# supported keys
-# variable: @boxName{variableName}
-# string: @boxName[stringKey]
-# number: @boxName{123}
+# check type
+b = t % tertip
 ```
 
 * objective

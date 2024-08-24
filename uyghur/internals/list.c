@@ -4,11 +4,9 @@
 
 void native_list_count(Bridge *bridge)
 {
-    Value *lst = Bridge_receiveValue(bridge, UG_TYPE_LST);
-    Value *wkr = Bridge_receiveValue(bridge, UG_TYPE_WKR);
-    // 
-    //
-    Bridge_returnEmpty(bridge);
+    Listable *lst = Bridge_receiveValue(bridge, UG_TYPE_LST);
+    int count = Listable_getCount(lst);
+    Bridge_returnNumber(bridge, count);
 }
 
 void lib_list_register(Bridge *bridge)
@@ -17,5 +15,5 @@ void lib_list_register(Bridge *bridge)
     //
     BRIDGE_BIND_NATIVE(list_count);
     //
-    Bridge_register(bridge, ALIAS_LIST);
+    Bridge_register(bridge, TVALUE_LST);
 }

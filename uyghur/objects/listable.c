@@ -12,7 +12,9 @@ Listable *Listable_new(char tp, void *extra)
     tools_assert(is_type_listable(tp), "invalid listable type for new");
     Listable *listable = _value_newValueBySize(false, tp, sizeof(Listable));
     listable->arr = Array_new(IS_GC_COUNTING);
+    #if IS_GC_LINK_LISTABLE_ARR
     Machine_tryLinkForGC(listable->arr);
+    #endif
     // log_debug("new-%s: %p %p", get_value_name(tp, "listable"), listable, listable->arr);
     listable->type = tp;
     listable->extra = extra;
@@ -41,6 +43,10 @@ Value *Listable_getIndex(Listable *this, int index) {
 
 bool Listable_setIndex(Listable *this, int index, Value *item) {
     return Array_set(this->arr, index, item);
+}
+
+int Listable_getCount(Listable *this) {
+    return this->arr->length;
 }
 
 // 

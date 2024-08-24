@@ -136,8 +136,9 @@ void Bridge_register(Bridge *this, char *boxName)
 {
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, box expected for register");
     tools_assert(this->last == BRIDGE_ITEM_TP_VAL, "invalid bridge status");
+    Machine *machine = this->uyghur->machine;
     Holdable *global = this->uyghur->executer->globalScope;
-    Holdable *holdable = boxName == NULL ? global : Holdable_newBox(NULL);
+    Holdable *holdable = boxName == NULL ? global : Holdable_newProxy(boxName);
     Value *value = Stack_pop(this->stack);
     while (value != NULL)
     {
@@ -147,11 +148,15 @@ void Bridge_register(Bridge *this, char *boxName)
         Machine_releaseObj(key);
         value = Stack_pop(this->stack);
     }
-    if (boxName != NULL)
-    {
-        Machine_retainObj(holdable);
-        helper_set_aliased_key(global, boxName, holdable);
-    }
+    if (boxName == NULL) return;
+    Machine_retainObj(holdable);
+    helper_set_aliased_key(global, boxName, holdable);
+    if (is_eq_string(boxName, TVALUE_EMPTY)) machine->proxyEmpty = holdable;
+    if (is_eq_string(boxName, TVALUE_LOGIC)) machine->proxyLogic = holdable;
+    if (is_eq_string(boxName, TVALUE_NUM)) machine->proxyNumber = holdable;
+    if (is_eq_string(boxName, TVALUE_STR)) machine->proxyString = holdable;
+    if (is_eq_string(boxName, TVALUE_LST)) machine->proxyList = holdable;
+    if (is_eq_string(boxName, TVALUE_DCT)) machine->proxyDict = holdable;
 }
 
 // send native call arguments from script
@@ -165,16 +170,6 @@ void Bridge_startArgument(Bridge *this)
 void *Bridge_send(Bridge *this)
 {
     tools_assert(this->type == BRIDGE_STACK_TP_ARG, "invalid bridge status, argument expected for send");
-    Stack_RESTE(this->stack);
-    Value *v = Stack_NEXT(this->stack);
-    while(v != NULL)
-    {
-        if (!is_bridge_type(v->type))
-        {
-            tools_error("invalid bridge status, type %c not available in c", v->type);
-        }
-        v = Stack_NEXT(this->stack);
-    }
     Stack_RESTE(this->stack);
 }
 

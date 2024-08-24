@@ -37,9 +37,26 @@ void _machine_free_object(Machine *this, Object* object) {
         if (value->type == UG_TYPE_STR) {
             // log_info("free str %p", object);
             String_free(value->string);
-        } else if (value->type == UG_TYPE_OBJ) {
-            // log_info("free obj %p", object);
-            Queue_free(value->extra);
+        } else if (is_type_listable(value->type)) {
+            #if !IS_GC_LINK_LISTABLE_ARR
+            Array_free(value->arr);
+            #endif
+        } else if (is_type_dictable(value->type)) {
+            #if !IS_GC_LINK_DICTABLE_MAP
+            Hashmap_free(value->map);
+            #endif
+        } else if (is_type_holdable(value->type)) {
+            #if !IS_GC_LINK_DICTABLE_MAP
+            Hashmap_free(value->map);
+            #endif
+        } else if (is_type_objective(value->type)) {
+            #if !IS_GC_LINK_DICTABLE_MAP
+            Hashmap_free(value->map);
+            #endif
+            if (value->type == UG_TYPE_OBJ) {
+                // log_info("free obj %p", object);
+                Queue_free(value->extra);
+            }
         }
         free(object);
     } else if (object->objType == PCT_OBJ_ARRAY) {
@@ -133,7 +150,9 @@ void _machine_mark_listable(Listable *listable) {
     // Machine *this = __uyghur->machine;
     // log_info("mark_listable %p %c %i %i", listable, listable->type, listable == this->globals, listable == this->rootModule);
     _machine_mark_object(listable);
+    #if IS_GC_LINK_LISTABLE_ARR
     _machine_mark_object(listable->arr);
+    #endif
     Array_foreachItem(listable->arr, _machine_mark_arrkey, NULL);
 }
 
@@ -149,7 +168,9 @@ void _machine_mark_dictable(Dictable *dictable) {
     // Machine *this = __uyghur->machine;
     // log_info("mark_dictable %p %c %i %i", dictable, dictable->type, dictable == this->globals, dictable == this->rootModule);
     _machine_mark_object(dictable);
+    #if IS_GC_LINK_DICTABLE_MAP
     _machine_mark_object(dictable->map);
+    #endif
     Hashmap_foreachItem(dictable->map, _machine_mark_hashkey, NULL);
 }
 

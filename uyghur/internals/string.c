@@ -150,5 +150,5 @@ void lib_string_register(Bridge *bridge)
     BRIDGE_BIND_NATIVE(string_format);
     BRIDGE_BIND_NATIVE(string_fill);
     //
-    Bridge_register(bridge, ALIAS_STRING);
+    Bridge_register(bridge, TVALUE_STR);
 }

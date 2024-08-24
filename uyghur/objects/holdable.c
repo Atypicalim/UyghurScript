@@ -23,11 +23,10 @@ Holdable *Holdable_newScope()
     return Holdable_new(UG_TYPE_SCP, NULL);
 }
 
-Holdable *Holdable_newBox(void *extra)
+Holdable *Holdable_newProxy(void *extra)
 {
-    return Holdable_new(UG_TYPE_BOX, extra);
+    return Holdable_new(UG_TYPE_PXY, extra);
 }
-
 
 //
 
@@ -41,13 +40,23 @@ bool Holdable_isScope(Holdable *this)
     return this != NULL && this->type == UG_TYPE_SCP;
 }
 
-bool Holdable_isBox(Holdable *this)
+bool Holdable_isProxy(Holdable *this)
 {
-    return this != NULL && this->type == UG_TYPE_BOX;
+    return this != NULL && this->type == UG_TYPE_PXY;
 }
 
-bool Holdable_isDct(Holdable *this)
-{
+// 
+
+bool Holdable_isProxyOf(Holdable *this, Value *other) {
+    if (!Holdable_isProxy(this)) return false;
+    Machine *machine = __uyghur->machine;
+    if (this == machine->proxyEmpty && Value_isEmpty(other)) return true;
+    if (this == machine->proxyLogic && Value_isBoolean(other)) return true;
+    if (this == machine->proxyNumber && Value_isNumber(other)) return true;
+    if (this == machine->proxyString && Value_isString(other)) return true;
+    if (this == machine->proxyList && Value_isListable(other)) return true;
+    if (this == machine->proxyDict && Value_isDictable(other)) return true;
+    return false;
 }
 
 // 
@@ -55,9 +64,8 @@ bool Holdable_isDct(Holdable *this)
 char *Holdable_toString(Holdable *this)
 {
     char *desc = "?";
-    if (Holdable_isBox(this)) {
-        Token *token = this->extra;
-        desc = token != NULL ? token->value : "?";
+    if (Holdable_isProxy(this)) {
+        desc = helper_translate_something(this->extra);
     } else if (Holdable_isModule(this)) {
         desc = this->extra;
     }

@@ -191,5 +191,5 @@ void lib_number_register(Bridge *bridge)
     BRIDGE_BIND_NATIVE(number_int_part);
     BRIDGE_BIND_NATIVE(number_dec_part);
     // 
-    Bridge_register(bridge, ALIAS_NUMBER);
+    Bridge_register(bridge, TVALUE_NUM);
 }

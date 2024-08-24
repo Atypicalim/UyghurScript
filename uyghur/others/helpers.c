@@ -121,16 +121,6 @@ void helper_print_btree(Foliage *root, char *_space)
     printf("%s[BTREE]\n", space);
 }
 
-bool is_base_type(char tp)
-{
-    return tp == UG_TYPE_NIL || tp == UG_TYPE_BOL || tp == UG_TYPE_NUM || tp == UG_TYPE_STR;
-}
-
-bool is_bridge_type(char tp)
-{
-    return is_base_type(tp) || tp == UG_TYPE_WKR;
-}
-
 bool is_calculator_common(UCHAR c)
 {
     return is_eq_strings(c, TVAUE_GROUP_CALCULATION_ALL);
@@ -217,15 +207,6 @@ char *convert_string_to_location(char *str, char rType)
     } else {
         return tools_format("%s", str);
     }
-}
-
-char *convert_alias_to_token(char *alias)
-{
-    if (is_eq_string(ALIAS_NUMBER, alias)) return TVALUE_NUM;
-    if (is_eq_string(ALIAS_STRING, alias)) return TVALUE_STR;
-    if (is_eq_string(ALIAS_LIST, alias)) return TVALUE_LST;
-    if (is_eq_string(ALIAS_DICT, alias)) return TVALUE_DCT;
-    return alias;
 }
 
 // 
@@ -350,6 +331,44 @@ void Object_printByType(char type, void *object)
     pct_object_print(object);
 }
 
+USTRING _helper_translate_letter(char *letter, char *def) {
+    char *lang = __uyghur->language;
+    int size = letters_get_size_by_name(letter);
+    const PAIR_LETTERS* pairs = letters_get_conf_by_name(letter);
+    for (size_t i = 0; i < size; i++) {
+        PAIR_LETTERS pair = pairs[i];
+        if (pair.key == lang) return pair.val;
+    }
+    return def;
+}
+
+USTRING helper_translate_letter(char *letter) {
+    return _helper_translate_letter(letter, letter);
+}
+
+USTRING _helper_translate_alias(char *alias, char *def) {
+    char *lang = __uyghur->language;
+    int size = aliases_get_size_by_name(alias);
+    const PAIR_ALIASES* pairs = aliases_get_conf_by_name(alias);
+    for (size_t i = 0; i < size; i++) {
+        PAIR_ALIASES pair = pairs[i];
+        if (pair.key == lang) return pair.val;
+    }
+    return def;
+}
+
+USTRING helper_translate_alias(char *alias) {
+    return _helper_translate_alias(alias, alias);
+}
+
+USTRING helper_translate_something(char *something) {
+    char *_something = NULL;
+    if (_something == NULL) _something = _helper_translate_letter(something, NULL);
+    if (_something == NULL) _something = _helper_translate_alias(something, NULL);
+    if (_something == NULL) _something = something;
+    return _something;
+}
+
 USTRING helper_parse_language(char *path) {
     int size = UG_LANGUAGE_COUNT;
     for (size_t i = 0; i < size; i++)
@@ -422,8 +441,7 @@ void helper_add_languages(Uyghur *uyghur, char *tp) {
 void helper_set_aliased_key(Value *container, char *_key, Value *value) {
     // log_warn("helper.set.aliased: %s", _key);
     // 
-    char *token = convert_alias_to_token(_key);
-    char *location = convert_string_to_location(token, UG_TYPE_STR);
+    char *location = convert_string_to_location(_key, UG_TYPE_STR);
     Dictable_setLocation(container, location, value);
     pct_free(location);
     // 

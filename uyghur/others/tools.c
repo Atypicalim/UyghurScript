@@ -233,6 +233,20 @@ bool is_scope(UCHAR c)
 
 //
 
+bool is_type_simple(char tp)
+{
+    return tp == UG_TYPE_NIL || tp == UG_TYPE_BOL || tp == UG_TYPE_NUM || tp == UG_TYPE_STR;
+}
+
+bool is_type_complex(char tp) {
+    return tp == UG_TYPE_LST || tp == UG_TYPE_DCT;
+}
+
+bool is_bridge_type(char tp)
+{
+    return is_type_simple(tp) || is_type_complex(tp) || tp == UG_TYPE_WKR;
+}
+
 bool is_type_listable(char tp) {
     return tp == UG_TYPE_LST;
 }
@@ -242,7 +256,7 @@ bool is_type_dictable(char tp) {
 }
 
 bool is_type_holdable(char tp) {
-    return tp == UG_TYPE_BOX
+    return tp == UG_TYPE_PXY
     || tp == UG_TYPE_SCP
     || tp == UG_TYPE_MDL;
 }
@@ -258,22 +272,28 @@ bool is_type_runnable(char tp) {
 }
 
 char* get_value_name(char tp, char* def) {
+    char *name = NULL;
     switch (tp) {
-        case UG_TYPE_BOX: return "box";
-        case UG_TYPE_LST: return "lst";
-        case UG_TYPE_DCT: return "dct";
-        case UG_TYPE_SCP: return "scp";
-        case UG_TYPE_MDL: return "mdl";
+        case UG_TYPE_NUM: name = TVALUE_NUM; break;
+        case UG_TYPE_STR: name = TVALUE_STR; break;
+        case UG_TYPE_LST: name = TVALUE_LST; break;
+        case UG_TYPE_DCT: name = TVALUE_DCT; break;
         //
-        case UG_TYPE_CTR: return "ctr";
-        case UG_TYPE_ATR: return "atr";
-        case UG_TYPE_OBJ: return "obj";
+        case UG_TYPE_PXY: name = ALIAS_TYPE;  break;
+        case UG_TYPE_SCP: name = "scp";  break;
+        case UG_TYPE_MDL: name = "mdl";  break;
         //
-        case UG_TYPE_NTV: return "ntv";
-        case UG_TYPE_WKR: return "wkr";
+        case UG_TYPE_CTR: name = TVALUE_CREATOR;  break;
+        case UG_TYPE_ATR: name = TVALUE_ASSISTER;  break;
+        case UG_TYPE_OBJ: name = "obj";  break;
         //
-        default: return def;
+        case UG_TYPE_NTV: name = "ntv";  break;
+        case UG_TYPE_WKR: name = "wkr";  break;
+        //
+        default: name = def;
     }
+    char *_name = helper_translate_something(name);
+    return _name;
 }
 
 // 
@@ -359,17 +379,6 @@ char *escape_cstring(const char *src) {
     }
     pw[i+j] = '\0';
     return pw;
-}
-
-// TODO:move
-
-typedef void (*ARRAY_FOREACH_FUNC)(int, void *, void *);
-
-void Array_foreachItem(Array *this, ARRAY_FOREACH_FUNC func, void *arg) {
-    for (int i = 0; i < this->length; i++) {
-        void *ptr = Array_get(this, i);
-        func(i, ptr, arg);
-    }
 }
 
 #endif

@@ -155,7 +155,7 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
     } else if (is_eq_string(extra->value, SCOPE_ALIAS_SLF) || is_eq_string(extra->value, TVALUE_THIS)) {
         *rContainer = Machine_getCurrentSelf(this->machine);
         Executer_assert(this, *rContainer != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-        if (!Objective_isCtr(*rContainer) && !Objective_isObj(*rContainer) && !Holdable_isBox(*rContainer)) {
+        if (!Objective_isCtr(*rContainer) && !Objective_isObj(*rContainer) && !Holdable_isProxy(*rContainer)) {
             Executer_error(this, token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
         }
     } else {
@@ -167,40 +167,65 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
     }
     // container
     if (*rContainer == NULL) return;
-    // list get
-    if (Value_isListable(*rContainer)) {
-        int index = -1;
-        if (Token_isKeyOfNumber(token)) {
-            index = atof(token->value);
-        } else if (Token_isKeyOfName(token)) {
-            Token *_extra = (Token *)token->extra;
-            Token *_token = Token_getTemporary();
-            _token->type = _extra->type;
-            _token->value = token->value;
-            Value *value;
-            Executer_findValueByToken(this, _token, &INVALID_CTN, &value);
-            if (Value_isNumber(value)) {
-                index = value->number;
-            }
+    // parse keys
+    int index = -1;
+    char *key = NULL;
+    if (Token_isKeyOfNumber(token)) {
+        index = atof(token->value);
+    } else if (Token_isKeyOfString(token)) {
+        key = token->value;
+    } else if (Token_isKeyOfName(token)) {
+        Token *_extra = (Token *)token->extra;
+        Token *_token = Token_getTemporary();
+        _token->type = _extra->type;
+        _token->value = token->value;
+        Value *value;
+        Executer_findValueByToken(this, _token, &INVALID_CTN, &value);
+        if (Value_isNumber(value)) {
+            index = value->number;
+        } else if (Value_isString(value)) {
+            key = value->string;
+        } else {
+            Executer_error(this, token, LANG_ERR_EXECUTER_INVALID_KEY);
         }
-        Executer_assert(this, index >= 0, token, "getting invalid key from list");
-        *rValue = Listable_getIndex(*rContainer, index);
+    }
+    // list
+    if (Value_isListable(*rContainer)) {
+        if (index >= 0) {
+            *rValue = Listable_getIndex(*rContainer, index);
+        } else if (key != NULL) {
+            char *location = convert_string_to_location(key, UG_TYPE_STR);
+            *rValue = Dictable_getLocation(this->machine->proxyList, location);
+            pct_free(location);
+        } else {
+            Executer_error(this, token, LANG_ERR_EXECUTER_INVALID_KEY);
+        }
         return;
     }
-    // dict get
-    Executer_assert(this, Token_isKeyOfString(token), token, "getting invalid key from dict");
-    char *location = convert_string_to_location(token->value, UG_TYPE_STR);
-    *rValue = Dictable_getLocation(*rContainer, location);
-    if (*rValue == NULL && Objective_isObj(*rContainer)) {
-        Queue *parents = (*rContainer)->extra;
-        Queue_RESTE(parents);
-        Objective *parent = Queue_NEXT(parents);
-        while (*rValue == NULL && parent != NULL) {
-            *rValue = Dictable_getLocation(parent, location);
-            parent = Queue_NEXT(parents);
+    // dict
+    if (Value_isDictable(*rContainer)) {
+        char *location = convert_string_to_location(key, UG_TYPE_STR);
+        *rValue = Dictable_getLocation(*rContainer, location);
+        if (*rValue == NULL) {
+            *rValue = Dictable_getLocation(this->machine->proxyDict, location);
         }
+        pct_free(location);
     }
-    pct_free(location);
+    // objective
+    if (Value_isObjective(*rContainer)) {
+        char *location = convert_string_to_location(key, UG_TYPE_STR);
+        *rValue = Dictable_getLocation(*rContainer, location);
+        if (*rValue == NULL && Objective_isObj(*rContainer)) {
+            Queue *parents = (*rContainer)->extra;
+            Queue_RESTE(parents);
+            Objective *parent = Queue_NEXT(parents);
+            while (*rValue == NULL && parent != NULL) {
+                *rValue = Dictable_getLocation(parent, location);
+                parent = Queue_NEXT(parents);
+            }
+        }
+        pct_free(location);
+    }
 }
 
 // need free
@@ -277,7 +302,22 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
 {
     Value *value = convert_token_to_value(token);
     if (value != NULL) return value;
-    Executer_findValueByToken(this, token, &INVALID_CTN, &value);
+    // 
+    if (is_eq_string(token->value, TVALUE_EMPTY)) {
+        value = this->machine->proxyEmpty;
+    } else if (is_eq_string(token->value, TVALUE_LOGIC)) {
+        value = this->machine->proxyLogic;
+    } else if (is_eq_string(token->value, TVALUE_NUM)) {
+        value = this->machine->proxyNumber;
+    } else if (is_eq_string(token->value, TVALUE_STR)) {
+        value = this->machine->proxyString;
+    } else if (is_eq_string(token->value, TVALUE_LST)) {
+        value = this->machine->proxyList;
+    } else if (is_eq_string(token->value, TVALUE_DCT)) {
+        value = this->machine->proxyDict;
+    } else {
+        Executer_findValueByToken(this, token, &INVALID_CTN, &value);
+    }
     if (value != NULL) {
         Machine_retainObj(value);
     } else if (withEmpty) {
@@ -340,10 +380,16 @@ String* Executer_calculateStrings(Executer *this, String *left, char *sign, Stri
 
 Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value *right)
 {
+    tools_assert(left != NULL, "invalid values to calculate");
+    tools_assert(right != NULL, "invalid values to calculate");
     Value *result = NULL;
     char lType = left->type;
     char rType = right->type;
     char *sign = token->value;
+    log_info("--check: %c %c", lType, rType);
+    Token_print(token);
+    Value_print(left);
+    Value_print(right);
     int compCode = Value_compareTo(left, right);
     int sameType = compCode != CODE_FAIL;
     if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_ALL)) {
@@ -356,6 +402,17 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
         } else if (sameType && is_eq_string(sign, TVALUE_SIGN_LESS)) {
             bool r = compCode == CODE_FALSE;
             result = Value_newBoolean(r, token);
+        } else if (is_eq_string(sign, TVALUE_SIGN_PER)) {
+            if (is_type_objective(rType)) {
+                bool r = Objective_isInstanceOf(left, right);
+                result = Value_newBoolean(r, token);
+            } else if (is_type_holdable(rType)) {
+                bool r = Holdable_isProxyOf(right, left);
+                result = Value_newBoolean(r, token);
+            } else if (lType == UG_TYPE_NUM && rType == UG_TYPE_NUM) {
+                double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);
+                result = Value_newNumber(r, token);
+            }
         }
     } else if (sameType) {
         if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_NUM) && lType == UG_TYPE_NUM) {
@@ -371,9 +428,6 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
             String *r = Executer_calculateStrings(this, left->string, sign, right->string, token);
             result = Value_newString(r, token);
         }
-    } else if (is_eq_string(sign, TVALUE_SIGN_PER) && is_type_objective(lType) && is_type_objective(rType)) {
-        bool r = Objective_isInstanceOf(left, right);
-        result = Value_newBoolean(r, token);
     } else {
         bool bLeftStr = lType == UG_TYPE_STR;
         bool bRightStr = rType == UG_TYPE_STR;
@@ -445,7 +499,6 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
     {
         Value *value = NULL;
         if (!Token_isString(name) && helper_token_is_values(name, TVAUES_GROUP_UTYPES)) {
-            printf("<Type n:%s>\n", name->value);
             value = Executer_getValueFromContainer(this, this->globalScope, name);
         } else {
             value = Executer_getValueByToken(this, name, true);
@@ -777,9 +830,9 @@ void _Executer_parseAppliable(Executer *this, Leaf *leaf, bool isCreator, Token 
         Value *place = NULL;
         Executer_findValueByToken(this, *func, &place, &INVALID_VAL);
         Executer_assert(this, place != NULL, *func, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-        if (isCreator && (Holdable_isModule(place))) {
+        if (isCreator && Holdable_isModule(place)) {
             return;
-        } else if (!isCreator && !Holdable_isBox(place)) {
+        } else if (!isCreator && !Holdable_isProxy(place)) {
             return;
         }
     }
@@ -844,7 +897,7 @@ Value *Executer_applyWorker(Executer *this, Token *token, Value *workerValue, Va
     Holdable *self = NULL;
     if (Objective_isAtr(container)) {
         self = Machine_getCurrentSelf(this->machine);
-    } else if (Objective_isObj(container) || Holdable_isBox(container)) {
+    } else if (Objective_isObj(container) || is_type_simple(container->type) || is_type_complex(container->type)) {
         self = container;
     }
     if (!self) {
@@ -919,13 +972,18 @@ Value *Executer_applyNative(Executer *this, Token *token, Value *nativeValue, Ho
 {
     Bridge *bridge = this->uyghur->bridge;
     Bridge_startArgument(bridge);
+    // 
     Stack_RESTE(this->callStack);
     Value *value = Stack_NEXT(this->callStack);
     while (value != NULL)
     {
+        Executer_assert(this, is_bridge_type(value->type), token, "invalid type not available in c");
         Machine_retainObj(value);
         Bridge_pushValue(bridge, value);
         value = Stack_NEXT(this->callStack);
+    }
+    if (container!= NULL && (is_type_simple(container->type) || is_type_complex(container->type))) {
+        Bridge_pushValue(bridge, container);
     }
     Bridge_send(bridge);
     //
@@ -1021,6 +1079,9 @@ Value *Executer_calculateBTree(Executer *this, Foliage *foliage)
         result = Executer_calculateBTree(this, foliage->left);
     } else if (foliage->right != NULL) {
         result = Executer_calculateBTree(this, foliage->right);
+    } else if (is_eq_string(token->type, UG_TTYPE_WRD)) {
+        Executer_assert(this, is_eq_strings(token->value, TVAUES_GROUP_UTYPES), token, LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);
+        result = Executer_getValueByToken(this, token, true);
     } else {
         Executer_assert(this, is_eq_strings(token->type, TTYPES_GROUP_VALUES), token, LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);
         result = Executer_getValueByToken(this, token, true);

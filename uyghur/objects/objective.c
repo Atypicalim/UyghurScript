@@ -23,9 +23,9 @@ Objective *Objective_newAtr(Token *name)
     return Objective_new(UG_TYPE_ATR, name);
 }
 
-Objective *Objective_newObj(void *extra)
+Objective *Objective_newObj(Queue *parents)
 {
-    return Objective_new(UG_TYPE_OBJ, extra);
+    return Objective_new(UG_TYPE_OBJ, parents);
 }
 
 // 

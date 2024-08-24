@@ -23,3 +23,8 @@ x = [ab] > [ac] # false
 # string
 x = [ab] + [cd] # abcd
 x = [ab] * 2 # abab
+
+# checking
+x = 10 % 7 # 3
+x = 10 % san # true
+x = 10 % quruq # false
