@@ -14,10 +14,11 @@ tools = builder.tools
 
 PROJECT_NAME ="UyghurScript"
 PROJECT_REPO ="https://github.com/kompasim/UyghurScript"
-VERSION_CODE = 0.6
-EXTENSION_VERSION = "1.0.6"
+VERSION_CODE = 0.7
+EXTENSION_VERSION = "1.0.7"
 EXAMPLE_LANG = 'ug'
 SUPPORT_LANG = set()
+# SCRIPT_PATH = "./examples/help.ug"
 SCRIPT_PATH = "./examples/sinaq.ug"
 # SCRIPT_PATH = "./examples/externals/yuguresh.ug"
 SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
