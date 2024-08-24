@@ -70,6 +70,32 @@ void _machine_free_object(Machine *this, Object* object) {
     }
 }
 
+Holdable *_Machine_writeProxy(Machine *this, char *name) {
+    Holdable *holdable = Holdable_newProxy(name);
+    Machine_retainObj(holdable);
+    helper_set_aliased_key(this->globals, name, holdable);
+    log_debug("proxy: %s %p", name, holdable);
+    return holdable;
+}
+
+void Machine_initProxies(Machine *this) {
+    this->proxyLogic = _Machine_writeProxy(this, TVALUE_LOGIC);
+    this->proxyNumber = _Machine_writeProxy(this, TVALUE_NUM);
+    this->proxyString = _Machine_writeProxy(this, TVALUE_STR);
+    this->proxyList = _Machine_writeProxy(this, TVALUE_LST);
+    this->proxyDict = _Machine_writeProxy(this, TVALUE_DCT);
+}
+
+Holdable *Machine_readProxy(Machine *this, char *name) {
+    if (name == NULL) return NULL;
+    if (is_eq_string(name, TVALUE_LOGIC)) return this->proxyLogic;
+    if (is_eq_string(name, TVALUE_NUM)) return this->proxyNumber;
+    if (is_eq_string(name, TVALUE_STR)) return this->proxyString;
+    if (is_eq_string(name, TVALUE_LST)) return this->proxyList;
+    if (is_eq_string(name, TVALUE_DCT)) return this->proxyDict;
+    return NULL;
+}
+
 void Machine_pushHolder(Machine *this, Object* object) {
     tools_assert(this->stack->size < MAX_STACK_SIZE, NULL, LANG_ERR_EXECUTER_STACK_OVERFLOW);
     Stack_push(this->stack, object);

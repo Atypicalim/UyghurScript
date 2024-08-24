@@ -50,7 +50,6 @@ bool Holdable_isProxy(Holdable *this)
 bool Holdable_isProxyOf(Holdable *this, Value *other) {
     if (!Holdable_isProxy(this)) return false;
     Machine *machine = __uyghur->machine;
-    if (this == machine->proxyEmpty && Value_isEmpty(other)) return true;
     if (this == machine->proxyLogic && Value_isBoolean(other)) return true;
     if (this == machine->proxyNumber && Value_isNumber(other)) return true;
     if (this == machine->proxyString && Value_isString(other)) return true;

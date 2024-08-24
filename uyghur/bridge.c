@@ -138,7 +138,14 @@ void Bridge_register(Bridge *this, char *boxName)
     tools_assert(this->last == BRIDGE_ITEM_TP_VAL, "invalid bridge status");
     Machine *machine = this->uyghur->machine;
     Holdable *global = this->uyghur->executer->globalScope;
-    Holdable *holdable = boxName == NULL ? global : Holdable_newProxy(boxName);
+    // 
+    Holdable *holdable = boxName == NULL ? global : Machine_readProxy(machine, boxName);
+    if (holdable == NULL) {
+        holdable = Holdable_newProxy(boxName);
+        Machine_retainObj(holdable);
+        helper_set_aliased_key(global, boxName, holdable);
+    }
+    // 
     Value *value = Stack_pop(this->stack);
     while (value != NULL)
     {
@@ -148,15 +155,6 @@ void Bridge_register(Bridge *this, char *boxName)
         Machine_releaseObj(key);
         value = Stack_pop(this->stack);
     }
-    if (boxName == NULL) return;
-    Machine_retainObj(holdable);
-    helper_set_aliased_key(global, boxName, holdable);
-    if (is_eq_string(boxName, TVALUE_EMPTY)) machine->proxyEmpty = holdable;
-    if (is_eq_string(boxName, TVALUE_LOGIC)) machine->proxyLogic = holdable;
-    if (is_eq_string(boxName, TVALUE_NUM)) machine->proxyNumber = holdable;
-    if (is_eq_string(boxName, TVALUE_STR)) machine->proxyString = holdable;
-    if (is_eq_string(boxName, TVALUE_LST)) machine->proxyList = holdable;
-    if (is_eq_string(boxName, TVALUE_DCT)) machine->proxyDict = holdable;
 }
 
 // send native call arguments from script

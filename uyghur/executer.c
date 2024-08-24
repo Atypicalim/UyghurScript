@@ -32,11 +32,16 @@ Executer *Executer_new(Uyghur *uyghur)
     executer->debug = uyghur->debug;
     executer->bridge = uyghur->bridge;
     //
-    executer->machine->stack = Stack_new();
-    executer->machine->calls = Stack_new();
-    executer->machine->globals = Holdable_newScope();
-    executer->callStack = executer->machine->calls;
-    executer->globalScope = executer->machine->globals;
+    Machine *machine = executer->machine;
+    machine->stack = Stack_new();
+    machine->calls = Stack_new();
+    machine->globals = Holdable_newScope();
+    Holdable *globals = machine->globals;
+    //
+    Machine_initProxies(machine);
+    executer->callStack = machine->calls;
+    executer->globalScope = machine->globals;
+    //
     return executer;
 }
 
@@ -302,22 +307,11 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
 {
     Value *value = convert_token_to_value(token);
     if (value != NULL) return value;
-    // 
-    if (is_eq_string(token->value, TVALUE_EMPTY)) {
-        value = this->machine->proxyEmpty;
-    } else if (is_eq_string(token->value, TVALUE_LOGIC)) {
-        value = this->machine->proxyLogic;
-    } else if (is_eq_string(token->value, TVALUE_NUM)) {
-        value = this->machine->proxyNumber;
-    } else if (is_eq_string(token->value, TVALUE_STR)) {
-        value = this->machine->proxyString;
-    } else if (is_eq_string(token->value, TVALUE_LST)) {
-        value = this->machine->proxyList;
-    } else if (is_eq_string(token->value, TVALUE_DCT)) {
-        value = this->machine->proxyDict;
-    } else {
-        Executer_findValueByToken(this, token, &INVALID_CTN, &value);
-    }
+    //
+    value = Machine_readProxy(this->machine, token->value);
+    if (value != NULL) return value;
+    //
+    Executer_findValueByToken(this, token, &INVALID_CTN, &value);
     if (value != NULL) {
         Machine_retainObj(value);
     } else if (withEmpty) {
@@ -386,10 +380,6 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
     char lType = left->type;
     char rType = right->type;
     char *sign = token->value;
-    log_info("--check: %c %c", lType, rType);
-    Token_print(token);
-    Value_print(left);
-    Value_print(right);
     int compCode = Value_compareTo(left, right);
     int sameType = compCode != CODE_FAIL;
     if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_ALL)) {
@@ -408,6 +398,9 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
                 result = Value_newBoolean(r, token);
             } else if (is_type_holdable(rType)) {
                 bool r = Holdable_isProxyOf(right, left);
+                result = Value_newBoolean(r, token);
+            } else if (rType == UG_TYPE_NIL) {
+                bool r = lType == UG_TYPE_NIL;
                 result = Value_newBoolean(r, token);
             } else if (lType == UG_TYPE_NUM && rType == UG_TYPE_NUM) {
                 double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);

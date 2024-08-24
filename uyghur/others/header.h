@@ -276,7 +276,6 @@ struct Machine {
     Holdable *globals;
     Holdable *rootModule;
     Holdable *currHoldable;
-    Holdable *proxyEmpty;
     Holdable *proxyLogic;
     Holdable *proxyNumber;
     Holdable *proxyString;
