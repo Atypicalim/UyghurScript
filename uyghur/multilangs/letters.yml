@@ -293,6 +293,7 @@ TVALUE_RECIEVED:
   tr: alısın
   kz: алынсын
 
+#
 TVALUE_THIS:
   en: this
   uy: بۇ
@@ -300,8 +301,6 @@ TVALUE_THIS:
   uz: bu
   tr: bu
   kz: бұ
-
-#
 TVALUE_PROXY:
   en: proxy
   uy: ۋەكىل
