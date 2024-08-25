@@ -14,8 +14,8 @@ tools = builder.tools
 
 PROJECT_NAME ="UyghurScript"
 PROJECT_REPO ="https://github.com/kompasim/UyghurScript"
-VERSION_CODE = 0.7
-EXTENSION_VERSION = "1.0.7"
+VERSION_CODE = 0.8
+EXTENSION_VERSION = "1.0.8"
 EXAMPLE_LANG = 'ug'
 SUPPORT_LANG = set()
 # SCRIPT_PATH = "./examples/help.ug"
