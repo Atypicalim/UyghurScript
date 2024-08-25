@@ -5,7 +5,7 @@ yardemchi X miqdar x mezmuni
 tamamlansun
 
 # assister func
-fonkisiye @X[test] mezmuni
+xizmetchi @X[test] mezmuni
     buyruq [X.test...\n] yezilsun
 tamamlansun
 
@@ -16,8 +16,8 @@ yasighuchi Y miqdar y mezmuni
 tamamlansun
 
 # creator func
-fonkisiye @Y[test] mezmuni
-    fonkisiye @X[test] ishlitilsun
+xizmetchi @Y[test] mezmuni
+    xizmetchi @X[test] ishlitilsun
     buyruq [Y.test...\n] yezilsun
 tamamlansun
 
@@ -29,7 +29,7 @@ buyruq @r[x] yezilsun # arg xxx ...
 buyruq @r[y] yezilsun # arg yyy ...
 
 # call creator func which calling assister func inside
-fonkisiye @r[test] ishlitilsun
+xizmetchi @r[test] ishlitilsun
 # X.test...
 # Y.test...
 

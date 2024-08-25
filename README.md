@@ -78,7 +78,7 @@ n = [sinaq...]
 miqdar m qimmiti [yezish] bolsun
 
 # get func by string
-m qimmiti fonkisiye bolsun
+m qimmiti xizmetchi bolsun
 buyruq m yezilsun
 
 # convert value to boolean
@@ -170,13 +170,13 @@ tamamlansun
 miqdar t qimmiti 0 bolsun
 
 # a function with two arguments
-fonkisiye f miqdar x y mezmuni
+xizmetchi f miqdar x y mezmuni
     t = x + y
     netije t qayturulsun
 tamamlansun
 
 # call functions and receive result
-fonkisiye f bilen 10 20 ishlitilsun we r elinsun
+xizmetchi f bilen 10 20 ishlitilsun we r elinsun
 
 # print the result value received
 buyruq r yezilsun
@@ -237,7 +237,7 @@ yardemchi X miqdar x mezmuni
 tamamlansun
 
 # assister func
-fonkisiye @X[test] mezmuni
+xizmetchi @X[test] mezmuni
     buyruq [X.test...\n] yezilsun
 tamamlansun
 
@@ -248,8 +248,8 @@ yasighuchi Y miqdar y mezmuni
 tamamlansun
 
 # creator func
-fonkisiye @Y[test] mezmuni
-    fonkisiye @X[test] ishlitilsun
+xizmetchi @Y[test] mezmuni
+    xizmetchi @X[test] ishlitilsun
     buyruq [Y.test...\n] yezilsun
 tamamlansun
 
@@ -261,7 +261,7 @@ buyruq @r[x] yezilsun # arg xxx ...
 buyruq @r[y] yezilsun # arg yyy ...
 
 # call creator func which calling assister func inside
-fonkisiye @r[test] ishlitilsun
+xizmetchi @r[test] ishlitilsun
 # X.test...
 # Y.test...
 
@@ -279,7 +279,7 @@ tamamlansun
 miqdar x qimmiti [other...] bolsun
 
 # main.xx
-fonkisiye ekirish bilen [../other.xx] ishlitilsun we m elinsun
+xizmetchi ekirish bilen [../other.xx] ishlitilsun we m elinsun
 buyruq @m[x] yezilsun
 
 # run the program

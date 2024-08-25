@@ -33,7 +33,7 @@ miqdar buTengmu qimmiti quruq bolsun
 miqdar sinaqQimmet qimmiti quruq bolsun
 
 # get sign
-fonkisiye belgilerniElish miqdar x mezmuni
+xizmetchi belgilerniElish miqdar x mezmuni
     miqdar r qimmiti quruq bolsun
     eger x ? quruq bolsa
         r qimmiti [] bolsun
@@ -68,13 +68,13 @@ fonkisiye belgilerniElish miqdar x mezmuni
     egerde x ? 15 bolsa
         r qimmiti [=] bolsun
     bolmisa
-        fonkisiye @xet[formatlash] bilen [%f] x ishlitilsun we r elinsun # string_format bug
+        xizmetchi @xet[formatlash] bilen [%f] x ishlitilsun we r elinsun # string_format bug
     tamamlansun
     netije r qayturulsun
 tamamlansun
 
 # reset button
-fonkisiye tazilashQayturmisi mezmuni
+xizmetchi tazilashQayturmisi mezmuni
     buyruq [tazilandi] yezilsun
     netijeQimmet qimmiti 0 bolsun
     hazirqiQimmet qimmiti 0 bolsun
@@ -83,7 +83,7 @@ fonkisiye tazilashQayturmisi mezmuni
 tamamlansun
 
 # calculate result
-fonkisiye netijiniHisablash mezmuni
+xizmetchi netijiniHisablash mezmuni
     eger herketQimmet ? quruq bolsa
         netijeQimmet qimmiti hazirqiQimmet bolsun
     egerde herketQimmet ? 11 bolsa
@@ -100,7 +100,7 @@ fonkisiye netijiniHisablash mezmuni
 tamamlansun
 
 # buttons callback
-fonkisiye kunupkaQauturmisi miqdar id mezmuni
+xizmetchi kunupkaQauturmisi miqdar id mezmuni
     # check
     test1 = aldinqiQimmet > 0
     test2 = aldinqiQimmet < 11
@@ -158,23 +158,23 @@ fonkisiye kunupkaQauturmisi miqdar id mezmuni
     tamamlansun
     # input action
     eger buHerketmu bolsa
-        fonkisiye netijiniHisablash ishlitilsun
+        xizmetchi netijiniHisablash ishlitilsun
         hazirqiQimmet qimmiti 0 bolsun
         herketQimmet qimmiti id bolsun
     tamamlansun
     # equal button
     eger buTengmu bolsa
-        fonkisiye netijiniHisablash ishlitilsun
+        xizmetchi netijiniHisablash ishlitilsun
         hazirqiQimmet qimmiti 0 bolsun
         herketQimmet qimmiti quruq bolsun
     tamamlansun
 tamamlansun
 
 # draw button
-fonkisiye kunupkaSizish miqdar id mezmuni
+xizmetchi kunupkaSizish miqdar id mezmuni
     # 2d point
-    fonkisiye @san[qalduqniHisablash] bilen id 5 ishlitilsun we kordinatX elinsun
-    fonkisiye @san[bulunminiHisablash] bilen id 5 ishlitilsun we kordinatY elinsun
+    xizmetchi @san[qalduqniHisablash] bilen id 5 ishlitilsun we kordinatX elinsun
+    xizmetchi @san[bulunminiHisablash] bilen id 5 ishlitilsun we kordinatY elinsun
     eger kordinatX ? 0 bolsa
         kordinatX qimmiti 5 bolsun
         kordinatY = kordinatY - 1
@@ -186,43 +186,43 @@ fonkisiye kunupkaSizish miqdar id mezmuni
     kunupkaOrniY = 51 * kordinatY
     kunupkaOrniX = kunupkaOrniX + 5
     kunupkaOrniY = kunupkaOrniY + 15
-    fonkisiye belgilerniElish bilen id ishlitilsun we kunupkaXeti elinsun
+    xizmetchi belgilerniElish bilen id ishlitilsun we kunupkaXeti elinsun
     # button
-    fonkisiye @zapchas[kunupkaKorsitish] bilen kunupkaOrniX kunupkaOrniY 100 50 kunupkaXeti ishlitilsun we rr elinsun
+    xizmetchi @zapchas[kunupkaKorsitish] bilen kunupkaOrniX kunupkaOrniY 100 50 kunupkaXeti ishlitilsun we rr elinsun
     eger rr bolsa
-        fonkisiye kunupkaQauturmisi bilen id ishlitilsun
+        xizmetchi kunupkaQauturmisi bilen id ishlitilsun
     tamamlansun
 
 tamamlansun
 
-fonkisiye @*[doska_sizish_qayturmisi] mezmuni
+xizmetchi @*[doska_sizish_qayturmisi] mezmuni
 
     # buttons
     kunupkaNumuri qimmiti 1 bolsun
     tekshuruldighanQimmet = kunupkaNumuri < kunupkaSani
     nawada tekshuruldighanQimmet bolsa
-        fonkisiye kunupkaSizish bilen kunupkaNumuri ishlitilsun
+        xizmetchi kunupkaSizish bilen kunupkaNumuri ishlitilsun
         kunupkaNumuri = kunupkaNumuri + 1
         tekshuruldighanQimmet = kunupkaNumuri < kunupkaSani
     tamamlansun
     # screen
-    fonkisiye @taxta[totTereplikToldurushAylandurulghan] bilen 7 5 500 55 [555555] 0 0 0 ishlitilsun
-    fonkisiye @taxta[totTereplikToldurushAylandurulghan] bilen 12 10 333 45 [333333] 0 0 0 ishlitilsun
-    fonkisiye @taxta[totTereplikToldurushAylandurulghan] bilen 350 20 70 35 [88888833] 0 0 0 ishlitilsun
+    xizmetchi @taxta[totTereplikToldurushAylandurulghan] bilen 7 5 500 55 [555555] 0 0 0 ishlitilsun
+    xizmetchi @taxta[totTereplikToldurushAylandurulghan] bilen 12 10 333 45 [333333] 0 0 0 ishlitilsun
+    xizmetchi @taxta[totTereplikToldurushAylandurulghan] bilen 350 20 70 35 [88888833] 0 0 0 ishlitilsun
     # clear
-    fonkisiye @zapchas[kunupkaKorsitish] bilen 425 10 75 45 [Tazilash] ishlitilsun we rr elinsun
+    xizmetchi @zapchas[kunupkaKorsitish] bilen 425 10 75 45 [Tazilash] ishlitilsun we rr elinsun
     eger rr bolsa
-        fonkisiye tazilashQayturmisi ishlitilsun
+        xizmetchi tazilashQayturmisi ishlitilsun
     tamamlansun
     # input
-    fonkisiye belgilerniElish bilen herketQimmet ishlitilsun we sinaqXet elinsun
-    fonkisiye @taxta[xetYezish] bilen [] sinaqXet 36 2 [111111] 377 21 ishlitilsun
+    xizmetchi belgilerniElish bilen herketQimmet ishlitilsun we sinaqXet elinsun
+    xizmetchi @taxta[xetYezish] bilen [] sinaqXet 36 2 [111111] 377 21 ishlitilsun
     # result
-    fonkisiye @xet[formatlash] bilen [%f] netijeQimmet ishlitilsun we sinaqXet elinsun
-    fonkisiye @taxta[xetYezish] bilen [] sinaqXet 24 2 [aaaaaa] 25 15 ishlitilsun
+    xizmetchi @xet[formatlash] bilen [%f] netijeQimmet ishlitilsun we sinaqXet elinsun
+    xizmetchi @taxta[xetYezish] bilen [] sinaqXet 24 2 [aaaaaa] 25 15 ishlitilsun
     # action
-    fonkisiye @xet[formatlash] bilen [%f] hazirqiQimmet ishlitilsun we sinaqXet elinsun
-    fonkisiye @taxta[xetYezish] bilen [] sinaqXet 16 2 [aaaaaa] 25 38 ishlitilsun
+    xizmetchi @xet[formatlash] bilen [%f] hazirqiQimmet ishlitilsun we sinaqXet elinsun
+    xizmetchi @taxta[xetYezish] bilen [] sinaqXet 16 2 [aaaaaa] 25 38 ishlitilsun
 tamamlansun
 
-fonkisiye @sehne[korsitish] bilen 515 225 [Xisabliguch] 4096 ishlitilsun
+xizmetchi @sehne[korsitish] bilen 515 225 [Xisabliguch] 4096 ishlitilsun

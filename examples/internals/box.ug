@@ -5,13 +5,13 @@ miqdar k qimmiti [key] bolsun
 @s[abc] = [str...]
 @s{123} = 456
 
-fonkisiye func miqdar k v mezmuni
+xizmetchi func miqdar k v mezmuni
     buyruq k yezilsun
     buyruq [-----------] yezilsun
     buyruq v yezilsun
     buyruq [\n] yezilsun
 tamamlansun
 
-fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun
+xizmetchi @sanduq[dewriylesh] bilen s func ishlitilsun
 
 buyruq [END!\n] yezilsun

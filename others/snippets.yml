@@ -68,12 +68,12 @@ exception:
 worker:
   prefix: TVALUE_WORKER
   message:
-    en: "make function sentence"
-    uy: "فونكىسىيە جۈملىسى ياساش"
-    ug: "fonkisiye jumlisi yasash"
-    uz: funksiya bayonoti tuzish
-    tr: "fonksiyon cümlesi yapmak"
-    kz: "функция сөйлемі жасау"
+    en: "make worker sentence"
+    uy: "خىزمەتچى جۈملىسى ياساش"
+    ug: "xizmetchi jumlisi yasash"
+    uz: xizmatchi bayonoti tuzish
+    tr: "hizmetçi cümlesi yapmak"
+    kz: "қызметші сөйлемі жасау"
 
 creator:
   prefix: TVALUE_CREATOR
@@ -98,32 +98,32 @@ assister:
 apply_worker:
   prefix: TVALUE_WORKER
   message:
-    en: "make function apply sentence"
-    uy: "فونكىسىيە ئىشلىتىش جۈملىسى ياساش"
-    ug: "fonkisiye ishlitish jumlisi yasash"
-    uz: funksiya ishlatish bayonoti tuzish
-    tr: "fonksiyon kullanmak cümlesi yapmak"
-    kz: "функция қолдану сөйлемі жасау"
+    en: "apply worker sentence"
+    uy: "خىزمەتچى جۈملىسى ئىشلىتىش"
+    ug: "xizmetchi jumlisi ishlitish"
+    uz: xizmatchi bayonoti ishlatish
+    tr: "hizmetçi cümlesi kullanmak"
+    kz: "қызметші сөйлемі қолдану"
 
 apply_creator:
   prefix: TVALUE_CREATOR
   message:
-    en: "make creator apply sentence"
-    uy: "ياسىغۇچى ئىشلىتىش جۈملىسى ياساش"
-    ug: "yasighuchi ishlitish jumlisi yasash"
-    uz: yasag'uchi ishlatish bayonoti tuzish
-    tr: "oluşturucu kullanmak cümlesi yapmak"
-    kz: "жасаушы қолдану сөйлемі жасау"
+    en: "apply creator sentence"
+    uy: "ياسىغۇچى جۈملىسى ئىشلىتىش"
+    ug: "yasighuchi jumlisi ishlitish"
+    uz: yasag'uchi bayonoti ishlatish
+    tr: "oluşturucu cümlesi kullanmak"
+    kz: "жасаушы сөйлемі қолдану"
 
 apply_assister:
   prefix: TVALUE_ASSISTER
   message:
-    en: "make assister apply sentence"
-    uy: "ياردەمچى ئىشلىتىش جۈملىسى ياساش"
-    ug: "yardemchi ishlitish jumlisi yasash"
-    uz: yordamchi ishlatish bayonoti tuzish
-    tr: "yardımcı kullanmak cümlesi yapmak"
-    kz: "жәрдемшы қолдану сөйлемі жасау"
+    en: "apply assister sentence"
+    uy: "ياردەمچى جۈملىسى ئىشلىتىش"
+    ug: "yardemchi jumlisi ishlitish"
+    uz: yordamchi bayonoti ishlatish
+    tr: "yardımcı cümlesi kullanmak"
+    kz: "жәрдемшы сөйлемі қолдану"
 
 if:
   prefix: TVALUE_IF

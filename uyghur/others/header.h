@@ -276,11 +276,11 @@ struct Machine {
     Holdable *globals;
     Holdable *rootModule;
     Holdable *currHoldable;
-    Holdable *proxyLogic;
-    Holdable *proxyNumber;
-    Holdable *proxyString;
-    Holdable *proxyList;
-    Holdable *proxyDict;
+    Holdable *kindLgc;
+    Holdable *kindNum;
+    Holdable *kindStr;
+    Holdable *kindList;
+    Holdable *kindDict;
     int numObjects;
     int maxObjects;
 };

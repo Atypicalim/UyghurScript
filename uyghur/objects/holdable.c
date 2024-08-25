@@ -23,6 +23,11 @@ Holdable *Holdable_newScope()
     return Holdable_new(UG_TYPE_SCP, NULL);
 }
 
+Holdable *Holdable_newKind(void *extra)
+{
+    return Holdable_new(UG_TYPE_KND, extra);
+}
+
 Holdable *Holdable_newProxy(void *extra)
 {
     return Holdable_new(UG_TYPE_PXY, extra);
@@ -40,6 +45,11 @@ bool Holdable_isScope(Holdable *this)
     return this != NULL && this->type == UG_TYPE_SCP;
 }
 
+bool Holdable_isKind(Holdable *this)
+{
+    return this != NULL && this->type == UG_TYPE_KND;
+}
+
 bool Holdable_isProxy(Holdable *this)
 {
     return this != NULL && this->type == UG_TYPE_PXY;
@@ -47,14 +57,14 @@ bool Holdable_isProxy(Holdable *this)
 
 // 
 
-bool Holdable_isProxyOf(Holdable *this, Value *other) {
-    if (!Holdable_isProxy(this)) return false;
+bool Holdable_isKindOf(Holdable *this, Value *other) {
+    if (!Holdable_isKind(this)) return false;
     Machine *machine = __uyghur->machine;
-    if (this == machine->proxyLogic && Value_isBoolean(other)) return true;
-    if (this == machine->proxyNumber && Value_isNumber(other)) return true;
-    if (this == machine->proxyString && Value_isString(other)) return true;
-    if (this == machine->proxyList && Value_isListable(other)) return true;
-    if (this == machine->proxyDict && Value_isDictable(other)) return true;
+    if (this == machine->kindLgc && Value_isBoolean(other)) return true;
+    if (this == machine->kindNum && Value_isNumber(other)) return true;
+    if (this == machine->kindStr && Value_isString(other)) return true;
+    if (this == machine->kindList && Value_isListable(other)) return true;
+    if (this == machine->kindDict && Value_isDictable(other)) return true;
     return false;
 }
 
@@ -63,7 +73,7 @@ bool Holdable_isProxyOf(Holdable *this, Value *other) {
 char *Holdable_toString(Holdable *this)
 {
     char *desc = "?";
-    if (Holdable_isProxy(this)) {
+    if (Holdable_isKind(this) || Holdable_isProxy(this)) {
         desc = helper_translate_something(this->extra);
     } else if (Holdable_isModule(this)) {
         desc = this->extra;

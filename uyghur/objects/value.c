@@ -140,6 +140,16 @@ bool Value_isRunnable(Value *this)
     return this != NULL && is_type_runnable(this->type);
 }
 
+bool Value_isSimple(Value *this)
+{
+    return this != NULL && is_type_simple(this->type);
+}
+
+bool Value_isComplex(Value *this)
+{
+    return this != NULL && is_type_complex(this->type);
+}
+
 void Value_print(Value *this)
 {
     if (this == NULL) {
@@ -147,7 +157,7 @@ void Value_print(Value *this)
     }
     else if (this->type == UG_TYPE_NIL)
     {
-        printf("<V:Empty p:%p>\n", TVALUE_EMPTY, this);
+        printf("<V:Empty p:%p>\n", TVALUE_NIL, this);
     }
     else if (this->type == UG_TYPE_BOL)
     {
@@ -194,7 +204,7 @@ void Value_print(Value *this)
 char *Value_toString(Value *this)
 {
     if (this == NULL || this->type == UG_TYPE_NIL) {
-        return tools_format("%s", TVALUE_EMPTY);
+        return tools_format("%s", TVALUE_NIL);
     } if (this->type == UG_TYPE_BOL) {
         return tools_boolean_to_string(this->boolean);
     } if (this->type == UG_TYPE_NUM) {

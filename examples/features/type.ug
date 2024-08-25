@@ -2,7 +2,7 @@
 miqdar m qimmiti [yezish] bolsun
 
 # get func by string
-m qimmiti fonkisiye bolsun
+m qimmiti xizmetchi bolsun
 buyruq m yezilsun
 
 # convert value to boolean

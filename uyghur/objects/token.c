@@ -32,14 +32,14 @@ void Token_bindInfo(Token *this, const char *file, int line, int column)
 Token *Token_empty()
 {
     if (Token_EMPTY == NULL) {
-        Token_EMPTY = Token_new(UG_TTYPE_EMP, TVALUE_EMPTY);
+        Token_EMPTY = Token_new(UG_TTYPE_NIL, TVALUE_NIL);
     }
     return Token_EMPTY;
 }
 
 Token *Token_getTemporary() {
     if (Token_TEMPORARY == NULL) {
-        Token_TEMPORARY = Token_new(UG_TTYPE_EMP, TVALUE_EMPTY);
+        Token_TEMPORARY = Token_new(UG_TTYPE_NIL, TVALUE_NIL);
     }
     return Token_TEMPORARY;
 }
@@ -74,7 +74,7 @@ Token *Token_key(char *keyType, char *keyValue, char *scope)
 
 bool Token_isEmpty(Token *this)
 {
-    return is_eq_string(this->type, UG_TTYPE_EMP);
+    return is_eq_string(this->type, UG_TTYPE_NIL);
 }
 
 bool Token_isBool(Token *this)

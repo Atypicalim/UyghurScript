@@ -3,13 +3,13 @@
 miqdar t qimmiti 0 bolsun
 
 # a function with two arguments
-fonkisiye f miqdar x y mezmuni
+xizmetchi f miqdar x y mezmuni
     t = x + y
     netije t qayturulsun
 tamamlansun
 
 # call functions and receive result
-fonkisiye f bilen 10 20 ishlitilsun we r elinsun
+xizmetchi f bilen 10 20 ishlitilsun we r elinsun
 
 # print the result value received
 buyruq r yezilsun

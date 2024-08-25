@@ -188,7 +188,7 @@ Value *convert_token_to_value(Token *token)
 
 char convert_ttype_to_rtype(char *tType)
 {
-    if (is_eq_string(tType, UG_TTYPE_EMP)) return UG_TYPE_NIL;
+    if (is_eq_string(tType, UG_TTYPE_NIL)) return UG_TYPE_NIL;
     if (is_eq_string(tType, UG_TTYPE_BOL)) return UG_TYPE_BOL;
     if (is_eq_string(tType, UG_TTYPE_NUM)) return UG_TYPE_NUM;
     if (is_eq_string(tType, UG_TTYPE_STR)) return UG_TYPE_STR;

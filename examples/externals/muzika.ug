@@ -2,15 +2,15 @@
 
 miqdar tag qimmiti quruq bolsun
 
-fonkisiye @*[doska_korsitish_qayturmisi] mezmuni
-    fonkisiye @muzika[yuklesh] bilen [../resources/bahar.mp3] ishlitilsun we tag elinsun
-    fonkisiye @muzika[quyush] bilen tag ishlitilsun
-    fonkisiye @muzika[yuqiriliqiniBikitish] bilen tag 1 ishlitilsun
-    fonkisiye @muzika[orniniBikitish] bilen tag 25 ishlitilsun
+xizmetchi @*[doska_korsitish_qayturmisi] mezmuni
+    xizmetchi @muzika[yuklesh] bilen [../resources/bahar.mp3] ishlitilsun we tag elinsun
+    xizmetchi @muzika[quyush] bilen tag ishlitilsun
+    xizmetchi @muzika[yuqiriliqiniBikitish] bilen tag 1 ishlitilsun
+    xizmetchi @muzika[orniniBikitish] bilen tag 25 ishlitilsun
 tamamlansun
 
-fonkisiye @*[doska_sizish_qayturmisi] mezmuni
-    fonkisiye @muzika[yingilash] bilen tag ishlitilsun
+xizmetchi @*[doska_sizish_qayturmisi] mezmuni
+    xizmetchi @muzika[yingilash] bilen tag ishlitilsun
 tamamlansun
 
-fonkisiye @sehne[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun
+xizmetchi @sehne[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun

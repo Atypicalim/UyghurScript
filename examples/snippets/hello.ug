@@ -11,7 +11,7 @@ nawada i < 9 bolsa
 tamamlansun
 
 # iterate box
-fonkisiye func miqdar k v mezmuni
+xizmetchi func miqdar k v mezmuni
     buyruq k yezilsun
     buyruq [ * ] yezilsun
     buyruq k yezilsun
@@ -19,10 +19,10 @@ fonkisiye func miqdar k v mezmuni
     buyruq v yezilsun
     buyruq [\n] yezilsun
 tamamlansun
-fonkisiye @sanduq[dewriylesh] bilen s func ishlitilsun
+xizmetchi @sanduq[dewriylesh] bilen s func ishlitilsun
 
 # get language
-fonkisiye @*[isimElish] ishlitilsun we n elinsun
+xizmetchi @*[isimElish] ishlitilsun we n elinsun
 
 # concat string
 m = n + [ salam!\n]

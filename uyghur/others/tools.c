@@ -256,7 +256,8 @@ bool is_type_dictable(char tp) {
 }
 
 bool is_type_holdable(char tp) {
-    return tp == UG_TYPE_PXY
+    return tp == UG_TYPE_KND
+    || tp == UG_TYPE_PXY
     || tp == UG_TYPE_SCP
     || tp == UG_TYPE_MDL;
 }
@@ -279,16 +280,17 @@ char* get_value_name(char tp, char* def) {
         case UG_TYPE_LST: name = TVALUE_LST; break;
         case UG_TYPE_DCT: name = TVALUE_DCT; break;
         //
-        case UG_TYPE_PXY: name = ALIAS_TYPE;  break;
-        case UG_TYPE_SCP: name = "scp";  break;
-        case UG_TYPE_MDL: name = "mdl";  break;
+        case UG_TYPE_KND: name = TVALUE_KIND;  break;
+        case UG_TYPE_PXY: name = TVALUE_PROXY;  break;
+        case UG_TYPE_SCP: name = TVALUE_SCOPE;  break;
+        case UG_TYPE_MDL: name = TVALUE_MODULE;  break;
         //
         case UG_TYPE_CTR: name = TVALUE_CREATOR;  break;
         case UG_TYPE_ATR: name = TVALUE_ASSISTER;  break;
-        case UG_TYPE_OBJ: name = "obj";  break;
+        case UG_TYPE_OBJ: name = TVALUE_OBJECT;  break;
         //
-        case UG_TYPE_NTV: name = "ntv";  break;
-        case UG_TYPE_WKR: name = "wkr";  break;
+        case UG_TYPE_NTV: name = TVALUE_NATIVE;  break;
+        case UG_TYPE_WKR: name = TVALUE_WORKER;  break;
         //
         default: name = def;
     }

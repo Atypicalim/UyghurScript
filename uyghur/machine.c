@@ -70,29 +70,29 @@ void _machine_free_object(Machine *this, Object* object) {
     }
 }
 
-Holdable *_Machine_writeProxy(Machine *this, char *name) {
-    Holdable *holdable = Holdable_newProxy(name);
+Holdable *_Machine_writeKind(Machine *this, char *name) {
+    Holdable *holdable = Holdable_newKind(name);
     Machine_retainObj(holdable);
     helper_set_aliased_key(this->globals, name, holdable);
     log_debug("proxy: %s %p", name, holdable);
     return holdable;
 }
 
-void Machine_initProxies(Machine *this) {
-    this->proxyLogic = _Machine_writeProxy(this, TVALUE_LOGIC);
-    this->proxyNumber = _Machine_writeProxy(this, TVALUE_NUM);
-    this->proxyString = _Machine_writeProxy(this, TVALUE_STR);
-    this->proxyList = _Machine_writeProxy(this, TVALUE_LST);
-    this->proxyDict = _Machine_writeProxy(this, TVALUE_DCT);
+void Machine_initKinds(Machine *this) {
+    this->kindLgc = _Machine_writeKind(this, TVALUE_BOL);
+    this->kindNum = _Machine_writeKind(this, TVALUE_NUM);
+    this->kindStr = _Machine_writeKind(this, TVALUE_STR);
+    this->kindList = _Machine_writeKind(this, TVALUE_LST);
+    this->kindDict = _Machine_writeKind(this, TVALUE_DCT);
 }
 
-Holdable *Machine_readProxy(Machine *this, char *name) {
+Holdable *Machine_readKind(Machine *this, char *name) {
     if (name == NULL) return NULL;
-    if (is_eq_string(name, TVALUE_LOGIC)) return this->proxyLogic;
-    if (is_eq_string(name, TVALUE_NUM)) return this->proxyNumber;
-    if (is_eq_string(name, TVALUE_STR)) return this->proxyString;
-    if (is_eq_string(name, TVALUE_LST)) return this->proxyList;
-    if (is_eq_string(name, TVALUE_DCT)) return this->proxyDict;
+    if (is_eq_string(name, TVALUE_BOL)) return this->kindLgc;
+    if (is_eq_string(name, TVALUE_NUM)) return this->kindNum;
+    if (is_eq_string(name, TVALUE_STR)) return this->kindStr;
+    if (is_eq_string(name, TVALUE_LST)) return this->kindList;
+    if (is_eq_string(name, TVALUE_DCT)) return this->kindDict;
     return NULL;
 }
 

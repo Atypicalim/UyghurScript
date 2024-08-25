@@ -1,13 +1,21 @@
 
 #
-TVALUE_EMPTY:
+TVALUE_KIND:
+  en: type
+  uy: تىپ
+  ug: tip
+  uz: tur
+  tr: tür
+  kz: түр
+#
+TVALUE_NIL:
   en: empty
   uy: قۇرۇق
   ug: quruq
   uz: bo'sh
   tr: boş
   kz: бос
-TVALUE_LOGIC:
+TVALUE_BOL:
   en: logic
   uy: لوگىكا
   ug: logika
@@ -195,13 +203,21 @@ TVALUE_TESTED:
   kz: сыналсын
 
 # 
+TVALUE_NATIVE:
+  en: native
+  uy: ئەمگەكچى
+  ug: emgekchi
+  uz: yumushchi
+  tr: emekçi
+  kz: жұмысшы
 TVALUE_WORKER:
-  en: function
-  uy: فونكىسىيە
-  ug: fonkisiye
-  uz: funksiya
-  tr: fonksiyon
-  kz: функция
+  en: worker
+  uy: خىزمەتچى
+  ug: xizmetchi
+  uz: xizmatchi
+  tr: hizmetçi
+  kz: қызметші
+#
 TVALUE_CREATOR:
   en: creator
   uy: ياسىغۇچى
@@ -216,6 +232,13 @@ TVALUE_ASSISTER:
   uz: yordamchi
   tr: yardımcı
   kz: жәрдемшы
+TVALUE_OBJECT:
+  en: object
+  uy: ئوبېكىت
+  ug: obekit
+  uz: obekit
+  tr: obekit
+  kz: объект
 #
 TVALUE_CONTENT:
   en: content
@@ -278,14 +301,28 @@ TVALUE_THIS:
   tr: bu
   kz: бұ
 
+#
+TVALUE_PROXY:
+  en: proxy
+  uy: ۋەكىل
+  ug: vekil
+  uz: vakil
+  tr: vekil
+  kz: түр
+TVALUE_SCOPE:
+  en: scope
+  uy: مۇھىت
+  ug: muhit
+  uz: muhit
+  tr: çevre
+  kz: орта
 TVALUE_MODULE:
-  en: global
+  en: module
   uy: بۆلەك
   ug: bolek
   uz: bo'lak
   tr: bölge
   kz: бөлек
-
 TVALUE_GLOBAL:
   en: global
   uy: دۇنيا
