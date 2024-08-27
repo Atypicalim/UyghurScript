@@ -314,6 +314,35 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             Token_addToken(this, token);
             continue;
         }
+        // string
+        if (is_string_open(currChar))
+        {
+            Tokenizer_skipN(this, 1);
+            //
+            String *str = Tokenizer_readString(this);
+            Token *tkn = Token_new(UG_TTYPE_STR, String_get(str));
+            Token_addToken(this, tkn);
+            // 
+            UCHAR c = Tokenizer_getchar(this, 0);
+            Tokenizer_assert(this, is_string_close(c), LANG_ERR_TOKENIZER_STRING_END_ERROR);
+            Tokenizer_skipN(this, 1);
+            continue;
+        }
+        // number
+        if (is_number_begin(currChar, Tokenizer_getchar(this, 1)))
+        {
+            String *num = Tokenizer_readNumber(this, true);
+            Token *tkn = Token_new(UG_TTYPE_NUM, String_get(num));
+            Token_addToken(this, tkn);
+            continue; 
+        }
+        // letter
+        if (is_letter_begin(currChar, Tokenizer_getchar(this, 1)))
+        {
+            String *ltr = Tokenizer_readLetter(this);
+            Tokenizer_addLetter(this, ltr);
+            continue; 
+        }
         // equaling
         if (is_equaling(currChar))
         {
@@ -384,35 +413,6 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             Tokenizer_addLetter(this, String_format("%s", currChar));
             Tokenizer_skipN(this, 1);
             continue;
-        }
-        // string
-        if (is_string_open(currChar))
-        {
-            Tokenizer_skipN(this, 1);
-            //
-            String *str = Tokenizer_readString(this);
-            Token *tkn = Token_new(UG_TTYPE_STR, String_get(str));
-            Token_addToken(this, tkn);
-            // 
-            UCHAR c = Tokenizer_getchar(this, 0);
-            Tokenizer_assert(this, is_string_close(c), LANG_ERR_TOKENIZER_STRING_END_ERROR);
-            Tokenizer_skipN(this, 1);
-            continue;
-        }
-        // number
-        if (is_number_begin(currChar, Tokenizer_getchar(this, 1)))
-        {
-            String *num = Tokenizer_readNumber(this, true);
-            Token *tkn = Token_new(UG_TTYPE_NUM, String_get(num));
-            Token_addToken(this, tkn);
-            continue; 
-        }
-        // letter
-        if (is_letter_begin(currChar, Tokenizer_getchar(this, 1)))
-        {
-            String *ltr = Tokenizer_readLetter(this);
-            Tokenizer_addLetter(this, ltr);
-            continue; 
         }
         // unsupported
         log_error("tokenizer.error: %s", currChar);

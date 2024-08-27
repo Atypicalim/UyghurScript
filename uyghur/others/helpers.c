@@ -198,17 +198,6 @@ char convert_ttype_to_rtype(char *tType)
     return UG_TYPE_NON;
 }
 
-char *convert_string_to_location(char *str, char rType)
-{
-    if (rType == UG_TYPE_NUM) {
-        return tools_number_to_string(atof(str));
-    } else if (rType == UG_TYPE_STR) {
-        return tools_format("%c%s", UG_TYPE_NON, str);
-    } else {
-        return tools_format("%s", str);
-    }
-}
-
 // 
 
 bool helper_token_is_types_list(Token *token, int num, char *s, va_list valist)
@@ -441,18 +430,14 @@ void helper_add_languages(Uyghur *uyghur, char *tp) {
 void helper_set_aliased_key(Value *container, char *_key, Value *value) {
     // log_warn("helper.set.aliased: %s", _key);
     // 
-    char *location = convert_string_to_location(_key, UG_TYPE_STR);
-    Dictable_setLocation(container, location, value);
-    pct_free(location);
+    Dictable_setLocation(container, _key, value);
     // 
     int size = aliases_get_size_by_name(_key);
     const PAIR_ALIASES* pairs = aliases_get_conf_by_name(_key);
     for (size_t i = 0; i < size; i++)
     {
         PAIR_ALIASES pair = pairs[i];
-        char *location = convert_string_to_location(pair.val, UG_TYPE_STR);
-        Dictable_setLocation(container, location, value);
-        pct_free(location);
+        Dictable_setLocation(container, pair.val, value);
     }
 }
 
@@ -463,9 +448,7 @@ Value *helper_get_aliased_key(Value *container, char *_key) {
     for (size_t i = 0; i < size; i++)
     {
         PAIR_ALIASES pair = pairs[i];
-        char *location = convert_string_to_location(pair.val, UG_TYPE_STR);
-        Value *result = Dictable_getLocation(container, location);
-        pct_free(location);
+        Value *result = Dictable_getLocation(container, pair.val);
         if (result!= NULL) return result;
     }
     return NULL;

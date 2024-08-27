@@ -462,7 +462,7 @@ void Parser_consumeAstCalculator(Parser *this)
             }
             lastType = tempT->type;
             continue;
-        } else if (Parser_isType(this, 1, UG_TTYPE_CLC)) {
+        } else if (lastType != NULL && Parser_isType(this, 1, UG_TTYPE_CLC)) {
             Parser_assert(this, is_eq_string(lastType, TVALUE_CLOSE) || is_eq_strings(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
             tempT = Parser_checkType(this, 1, 1, UG_TTYPE_CLC);
             if (current->data != NULL) {
