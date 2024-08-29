@@ -13,7 +13,7 @@ tools = builder.tools
 ###############################################################################
 
 PROJECT_NAME ="UyghurScript"
-PROJECT_REPO ="https://github.com/kompasim/UyghurScript"
+PROJECT_REPO ="https://github.com/Atypicalim/UyghurScript"
 VERSION_CODE = 0.8
 EXTENSION_VERSION = "1.0.8"
 EXAMPLE_LANG = 'ug'

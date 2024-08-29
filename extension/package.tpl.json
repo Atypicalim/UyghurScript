@@ -1,7 +1,7 @@
 {
 	"name": "uyghurscript",
 	"displayName": "uyghurscript",
-	"publisher": "kompasim",
+	"publisher": "Atypicalim",
 	"description": "uyghur script language extension ...",
 	"icon": "others/icon.png",
 	"version": "{}", // [M[ EXT_VERSION ]M]
@@ -19,12 +19,12 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/kompasim/UyghurScript/"
+		"url": "https://github.com/Atypicalim/UyghurScript/"
 	},
-	"homepage": "https://kompasim.github.io/",
+	"homepage": "https://Atypicalim.github.io/",
 	"bugs": {
-		"url": "https://github.com/kompasim/UyghurScript/issues",
-		"email": "kompasim@163.com"
+		"url": "https://github.com/Atypicalim/UyghurScript/issues",
+		"email": "Atypicalim@163.com"
 	},
 	"contributes": {
 		"languages": [
@@ -39,7 +39,7 @@
 	},
 	"__metadata": {
 		"id": "8ab59741-be9e-4fa6-8bd5-68019f3112ca",
-		"publisherDisplayName": "kompasim",
+		"publisherDisplayName": "Atypicalim",
 		"publisherId": "e3a63838-26bc-4a34-8015-ce54572c165b",
 		"isPreReleaseVersion": false
 	}

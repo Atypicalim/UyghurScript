@@ -18,9 +18,9 @@
 
 ## 2. highlight & translating
 
-* vscode [extension](https://marketplace.visualstudio.com/publishers/kompasim) for highlighting and autocompleting.
+* vscode [extension](https://marketplace.visualstudio.com/publishers/Atypicalim) for highlighting and autocompleting.
 
-* language [converter](https://kompasim.github.io/others/converter.html) for translating different languages.
+* language [converter](https://Atypicalim.github.io/others/converter.html) for translating different languages.
 
 ## 3. supported features
 
