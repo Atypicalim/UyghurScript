@@ -1,7 +1,7 @@
 {
 	"name": "uyghurscript",
 	"displayName": "uyghurscript",
-	"publisher": "Atypicalim",
+	"publisher": "kompasim",
 	"description": "uyghur script language extension ...",
 	"icon": "others/icon.png",
 	"version": "{}", // [M[ EXT_VERSION ]M]
