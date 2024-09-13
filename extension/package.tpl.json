@@ -1,7 +1,7 @@
 {
-	"name": "uyghurscript",
-	"displayName": "uyghurscript",
-	"publisher": "kompasim",
+	"name": "uighurscript",
+	"displayName": "UighurScript",
+	"publisher": "Atypicalim",
 	"description": "uyghur script language extension ...",
 	"icon": "others/icon.png",
 	"version": "{}", // [M[ EXT_VERSION ]M]
@@ -9,7 +9,7 @@
 		"vscode": "^1.69.0"
 	},
     "keywords": [
-		"uyghurscript",
+		"uighurscript",
 		"language",
 		"" // [M[ EXT_KEYWORDS ]M]
 	],
@@ -40,7 +40,7 @@
 	"__metadata": {
 		"id": "8ab59741-be9e-4fa6-8bd5-68019f3112ca",
 		"publisherDisplayName": "Atypicalim",
-		"publisherId": "e3a63838-26bc-4a34-8015-ce54572c165b",
+		"publisherId": "58c399a3-8bbb-644f-b31f-f49df9108a1b",
 		"isPreReleaseVersion": false
 	}
 }
