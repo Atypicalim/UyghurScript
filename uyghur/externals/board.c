@@ -61,7 +61,7 @@ void raylib_unload_image(char *path)
     free(img);
 }
 
-Font raylib_load_font(char *path)
+Font raylib_load_font(char *path, int size)
 {
     if (path == NULL) path = "";
     if (strlen(path) == 0) return defaultFont;
@@ -75,7 +75,7 @@ Font raylib_load_font(char *path)
     for (int i = 0; i < 1024; i++) codepoints[0 + i] = 0 + i; // latin
     for (int i = 0; i < 1024; i++) codepoints[1024 + i] = 0x0400 + i; // cyrillic
     for (int i = 0; i < 1024; i++) codepoints[2048 + i] = 0xfb00 + i; // arabic
-    Font font = LoadFontEx(path, 48, codepoints, 1024 * 3);
+    Font font = LoadFontEx(path, size, codepoints, 1024 * 3);
     // Font font = LoadFont(path);
     //
     fnt = (Font *)malloc(sizeof(font));
@@ -154,16 +154,13 @@ Texture raylib_texturize_image(ImgInfo info, char *tag)
         return tex[0];
     }
     //
-    int x = info.x;
-    int y = info.y;
-    int w = info.w;
-    int h = info.h;
-    //
     Image img = raylib_load_image(info.path);
     int imgW = img.width;
     int imgH = img.height;
-    x = MAX(0, MIN(x, imgW - 1));
-    y = MAX(0, MIN(y, imgH - 1));
+    int x = MAX(0, MIN(info.x, imgW - 1));
+    int y = MAX(0, MIN(info.y, imgH - 1));
+    int w = info.w;
+    int h = info.h;
     int leftX = imgW - x;
     int leftY = imgH - y;
     w = MAX(1, MIN((w <= 0 ? imgW : w), leftX));
@@ -173,6 +170,7 @@ Texture raylib_texturize_image(ImgInfo info, char *tag)
     if (info.flipX) ImageFlipHorizontal(&img);
     if (info.flipY) ImageFlipVertical(&img);
     Texture texture = _board_save_texture(img, tag);
+    raylib_unload_image(info.path);
     //
     return texture;
 }
@@ -183,17 +181,13 @@ Texture raylib_texturize_text(TxtInfo info, char *tag)
     if (tex != NULL) {
         return tex[0];
     }
-    Font font = raylib_load_font(info.path);
+    //
+    Font font = raylib_load_font(info.path, 128);
     Image img = ImageTextEx(font, info.text, info.size, info.spacing, WHITE);
     Texture texture = _board_save_texture(img, tag);
+    raylib_unload_font(info.path);
+    //
     return texture;
-}
-
-Texture ralib_get_texture_by_tag(char *tag)
-{
-    Texture *tex = Hashmap_get(resourcesMap, tag);
-    if (tex == NULL) return defaultTexture;
-    return tex[0];
 }
 
 // draw
@@ -394,7 +388,7 @@ void native_board_draw_text(Bridge *bridge)
     float spacing = Bridge_receiveNumber(bridge);
     Color color = color_from_bridge(bridge);
     Vector2 position = vector_from_bridge(bridge);
-    Font fnt = raylib_load_font(font);
+    Font fnt = raylib_load_font(font, 32);
     DrawTextEx(fnt, text, position, size, spacing, color);
     Bridge_returnEmpty(bridge);
 }
@@ -405,7 +399,7 @@ void native_board_measure_text(Bridge *bridge)
     char *text = Bridge_receiveString(bridge);
     float size = Bridge_receiveNumber(bridge);
     float spacing = Bridge_receiveNumber(bridge);
-    Font fnt = raylib_load_font(font);
+    Font fnt = raylib_load_font(font, 32);
     Vector2 space = MeasureTextEx(fnt, text, size, spacing);
     Bridge_returnNumber(bridge, space.x);
 }
@@ -460,7 +454,8 @@ void native_board_draw_texture(Bridge *bridge)
     float rotation = Bridge_receiveNumber(bridge);
     float scale = Bridge_receiveNumber(bridge);
     //
-    Texture texture = ralib_get_texture_by_tag(tag);
+    Texture *tex = Hashmap_get(resourcesMap, tag);
+    Texture texture = tex == NULL ? defaultTexture : tex[0];
     //
     fromX = MAX(0, MIN(fromX, texture.width - 1));
     fromY = MAX(0, MIN(fromY, texture.height - 1));
