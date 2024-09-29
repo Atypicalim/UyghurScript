@@ -70,7 +70,14 @@ Font raylib_load_font(char *path)
     if (fnt != NULL) {
         return fnt[0];
     }
-    Font font = LoadFont(path);
+    //
+    int codepoints[1024 * 3] = { 0 };
+    for (int i = 0; i < 1024; i++) codepoints[0 + i] = 0 + i; // latin
+    for (int i = 0; i < 1024; i++) codepoints[1024 + i] = 0x0400 + i; // cyrillic
+    for (int i = 0; i < 1024; i++) codepoints[2048 + i] = 0xfb00 + i; // arabic
+    Font font = LoadFontEx(path, 48, codepoints, 1024 * 3);
+    // Font font = LoadFont(path);
+    //
     fnt = (Font *)malloc(sizeof(font));
     fnt[0] = font;
     Hashmap_set(resourcesMap, path, fnt);
@@ -98,6 +105,24 @@ typedef struct ImgInfo {
     bool flipY;
 } ImgInfo;
 
+typedef struct TxtInfo {
+    char *path;
+    char *text;
+    float size;
+    float spacing;
+} TxtInfo;
+
+char *get_texture_tag_for_text(TxtInfo info)
+{
+    return tools_format(
+        "<R-TEXT:%s:%s:%d:%d>",
+        info.path,
+        info.text,
+        info.size,
+        info.spacing
+    );
+}
+
 char *get_texture_tag_for_image(ImgInfo info)
 {
     int x = info.x;
@@ -112,7 +137,17 @@ char *get_texture_tag_for_image(ImgInfo info)
     );
 }
 
-Texture raylib_create_texture_from_image(ImgInfo info, char *tag)
+
+Texture _board_save_texture(Image img, char *tag) {
+    Texture texture = LoadTextureFromImage(img);
+    Texture *tex = (Texture *)malloc(sizeof(texture));
+    tex[0] = texture;
+    Hashmap_set(resourcesMap, tag, tex);
+    UnloadImage(img);
+    return texture;
+}
+
+Texture raylib_texturize_image(ImgInfo info, char *tag)
 {
     Texture *tex = Hashmap_get(resourcesMap, tag);
     if (tex != NULL) {
@@ -137,34 +172,12 @@ Texture raylib_create_texture_from_image(ImgInfo info, char *tag)
     //
     if (info.flipX) ImageFlipHorizontal(&img);
     if (info.flipY) ImageFlipVertical(&img);
+    Texture texture = _board_save_texture(img, tag);
     //
-    Texture texture = LoadTextureFromImage(img);
-    tex = (Texture *)malloc(sizeof(texture));
-    tex[0] = texture;
-    Hashmap_set(resourcesMap, tag, tex);
-    UnloadImage(img);
     return texture;
 }
 
-typedef struct TxtInfo {
-    char *path;
-    char *text;
-    float size;
-    float spacing;
-} TxtInfo;
-
-char *get_texture_tag_for_text(TxtInfo info)
-{
-    return tools_format(
-        "<R-TEXT:%s:%s:%d:%d>",
-        info.path,
-        info.text,
-        info.size,
-        info.spacing
-    );
-}
-
-Texture raylib_create_texture_from_text(TxtInfo info, char *tag)
+Texture raylib_texturize_text(TxtInfo info, char *tag)
 {
     Texture *tex = Hashmap_get(resourcesMap, tag);
     if (tex != NULL) {
@@ -172,11 +185,7 @@ Texture raylib_create_texture_from_text(TxtInfo info, char *tag)
     }
     Font font = raylib_load_font(info.path);
     Image img = ImageTextEx(font, info.text, info.size, info.spacing, WHITE);
-    Texture texture = LoadTextureFromImage(img);
-    tex = (Texture *)malloc(sizeof(texture));
-    tex[0] = texture;
-    Hashmap_set(resourcesMap, tag, tex);
-    UnloadImage(img);
+    Texture texture = _board_save_texture(img, tag);
     return texture;
 }
 
@@ -185,34 +194,6 @@ Texture ralib_get_texture_by_tag(char *tag)
     Texture *tex = Hashmap_get(resourcesMap, tag);
     if (tex == NULL) return defaultTexture;
     return tex[0];
-}
-
-void raylib_draw_texture_by_texture(
-    Texture texture,
-    int x, int y,
-    float anchorX, float anchorY,
-    Color color,
-    int fromX, int fromY, int width, int height,
-    float rotation,
-    float scale
-)
-{
-    //
-    fromX = MAX(0, MIN(fromX, texture.width - 1));
-    fromY = MAX(0, MIN(fromY, texture.height - 1));
-    int leftX = texture.width - fromX;
-    int leftY = texture.height - fromY;
-    width = MAX(1, MIN((width <= 0 ? texture.width : width), leftX));
-    height = MAX(1, MIN((height <= 0 ? texture.height : height), leftY));
-    //
-    Rectangle source = (Rectangle){fromX, fromY, width, height};
-    float destW = width * scale;
-    float destH = height * scale;
-    float destX = x;
-    float destY = y;
-    Rectangle dest = (Rectangle){destX, destY, destW, destH};
-    Vector2 origin = (Vector2){destW * anchorX, destH * anchorY};
-    DrawTextureTiled(texture, source, dest, origin, rotation, scale, color);
 }
 
 // draw
@@ -431,7 +412,7 @@ void native_board_measure_text(Bridge *bridge)
 
 // image texture
 
-void native_board_create_texture_from_image(Bridge *bridge)
+void native_board_texturize_image(Bridge *bridge)
 {
     char *image = Bridge_receiveString(bridge);
     int x = Bridge_receiveNumber(bridge);
@@ -442,14 +423,14 @@ void native_board_create_texture_from_image(Bridge *bridge)
     bool flipY = Bridge_receiveBoolean(bridge);
     ImgInfo info = (ImgInfo) {image, x, y, w, h, flipX, flipY};
     char *tag = get_texture_tag_for_image(info);
-    Texture texture = raylib_create_texture_from_image(info, tag);
+    Texture texture = raylib_texturize_image(info, tag);
     Bridge_returnString(bridge, tag);
     free(tag);
 }
 
 // text texture
 
-void native_board_create_texture_from_text(Bridge *bridge)
+void native_board_texturize_text(Bridge *bridge)
 {
     char *font = Bridge_receiveString(bridge);
     char *text = Bridge_receiveString(bridge);
@@ -457,14 +438,14 @@ void native_board_create_texture_from_text(Bridge *bridge)
     float spacing = Bridge_receiveNumber(bridge);
     TxtInfo info = (TxtInfo) {font, text, size, spacing};
     char *tag = get_texture_tag_for_text(info);
-    Texture texture = raylib_create_texture_from_text(info, tag);
+    Texture texture = raylib_texturize_text(info, tag);
     Bridge_returnString(bridge, tag);
     free(tag);
 }
 
 // texture
 
-void native_board_draw_texture_by_tag(Bridge *bridge)
+void native_board_draw_texture(Bridge *bridge)
 {
     char *tag = Bridge_receiveString(bridge);
     int x = Bridge_receiveNumber(bridge);
@@ -480,7 +461,22 @@ void native_board_draw_texture_by_tag(Bridge *bridge)
     float scale = Bridge_receiveNumber(bridge);
     //
     Texture texture = ralib_get_texture_by_tag(tag);
-    raylib_draw_texture_by_texture(texture, x, y, anchorX, anchorY, color, fromX, fromY, width, height, rotation, scale);
+    //
+    fromX = MAX(0, MIN(fromX, texture.width - 1));
+    fromY = MAX(0, MIN(fromY, texture.height - 1));
+    int leftX = texture.width - fromX;
+    int leftY = texture.height - fromY;
+    width = MAX(1, MIN((width <= 0 ? texture.width : width), leftX));
+    height = MAX(1, MIN((height <= 0 ? texture.height : height), leftY));
+    //
+    Rectangle source = (Rectangle){fromX, fromY, width, height};
+    float destW = width * scale;
+    float destH = height * scale;
+    float destX = x;
+    float destY = y;
+    Rectangle dest = (Rectangle){destX, destY, destW, destH};
+    Vector2 origin = (Vector2){destW * anchorX, destH * anchorY};
+    DrawTextureTiled(texture, source, dest, origin, rotation, scale, color);
     //
     Bridge_returnEmpty(bridge);
 }
@@ -518,9 +514,9 @@ void lib_board_register(Bridge *bridge)
     BRIDGE_BIND_NATIVE(board_draw_text);
     BRIDGE_BIND_NATIVE(board_measure_text);
     // texture
-    BRIDGE_BIND_NATIVE(board_create_texture_from_image);
-    BRIDGE_BIND_NATIVE(board_create_texture_from_text);
-    BRIDGE_BIND_NATIVE(board_draw_texture_by_tag);
+    BRIDGE_BIND_NATIVE(board_texturize_image);
+    BRIDGE_BIND_NATIVE(board_texturize_text);
+    BRIDGE_BIND_NATIVE(board_draw_texture);
     //
     Bridge_register(bridge, ALIAS_BOARD);
 }
