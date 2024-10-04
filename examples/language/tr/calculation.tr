@@ -1,0 +1,30 @@
+
+# arthimetic
+x = 1 + 2 # 3
+x = 1 + 2 * 3 # 9
+x = 1 + (2 * 3) # 7
+x = 64 ^ (1 / 3) # 4
+
+# bitwise
+x = 3 & 2 # 2
+x = 3 | 2 # 3
+x = 3 ~ 2 # 1
+
+# boolean
+x = doğru & yanlış # yanlış
+x = doğru | yanlış # doğru
+x = doğru ~ yanlış # doğru
+
+# mantık
+x = "2" ? 2 # false
+x = 2 < 3 # true
+x = "ab" > "ac" # false 
+
+# string
+x = "ab" + "cd" # abcd
+x = "ab" * 2 # abab
+
+# checking
+x = 10 % 7 # 3
+x = 10 % sayı # true
+x = 10 % boş # false

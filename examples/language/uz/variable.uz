@@ -1,0 +1,15 @@
+
+# a dynamic var
+o'zgaruvch m qiymati bo'sh bo'lsin
+
+# a static var
+o'zgaruvch n qiymati son bo'lsin
+
+# set val
+m = "salam dunya!"
+
+# free val
+m qiymati bo'sh bo'lsin
+
+# tur error
+n = "sinaq..."

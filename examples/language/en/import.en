@@ -1,0 +1,13 @@
+
+# other.xx
+variable x value "other..." made
+
+# main.xx
+worker ekirish with "../other.xx" applied and m received
+command @m:x write
+
+# run the program
+`.uyghur.exe ./main.xx`
+
+# get the result
+other...

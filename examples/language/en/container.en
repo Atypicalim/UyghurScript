@@ -1,0 +1,22 @@
+
+#  declare a list
+t value list made
+#  declare a dict
+s value dict made
+
+# generate a list
+t = [11, 22, "abc"]
+# generate a dict
+s = {a: "aa", b: "bb", c: 123}
+
+# put a num key
+@t:1 = 456
+# put a str key
+@s:k = "abc"
+# put a var key
+@s{v} = val
+
+# alias: this: - bu, module: + bolek, global: * global
+
+# check type
+b = t % list

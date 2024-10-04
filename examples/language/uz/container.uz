@@ -1,0 +1,22 @@
+
+#  declare a tartib
+t qiymati tartib bo'lsin
+#  declare a sandiq
+s qiymati sandiq bo'lsin
+
+# generate a tartib
+t = [11, 22, "abc"]
+# generate a sandiq
+s = {a: "aa", b: "bb", c: 123}
+
+# put a son key
+@t:1 = 456
+# put a xat key
+@s:k = "abc"
+# put a var key
+@s{v} = val
+
+# alias: this: - bu, module: + bolek, global: * dunyo
+
+# check tur
+b = t % tartib

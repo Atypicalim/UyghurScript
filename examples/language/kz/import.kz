@@ -1,0 +1,13 @@
+
+# other.xx
+айнымалы x қимметі "other..." болсын
+
+# main.xx
+қызметші ekirish бірге "../other.xx" қолданылсын бен m алынсын
+бұйрық @m:x жазу
+
+# run the program
+`.uyghur.exe ./main.xx`
+
+# get the нәтиже
+other...

@@ -1,0 +1,13 @@
+
+# other.xx
+مىقدار x قىممىتى "other..." بولسۇن
+
+# main.xx
+خىزمەتچى ekirish بىلەن "../other.xx" ئىشلىتىلسۇن ۋە m ئېلىنسۇن
+بۇيرۇق @m:x يېزىلسۇن
+
+# run the program
+`.uyghur.exe ./main.xx`
+
+# get the نەتىجە
+other...

@@ -1,0 +1,16 @@
+
+miqdar x qimmiti quruq bolsun
+
+# try block
+xataliq e bulup
+    x = 3 / 0
+tamamlansun
+
+# catch block
+eger e bolsa
+    buyruq "exception:\n" yezilsun
+    buyruq e yezilsun
+    buyruq "\n" yezilsun
+bolmisa
+    buyruq "successful!\n" yezilsun
+tamamlansun

@@ -1,0 +1,13 @@
+
+# other.xx
+o'zgaruvch x qiymati "other..." bo'lsin
+
+# main.xx
+xizmatchi ekirish bilan "../other.xx" ishlatilsin va m olinsin
+buyruq @m:x yozilsin
+
+# run the program
+`.uyghur.exe ./main.xx`
+
+# get the natija
+other...

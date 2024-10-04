@@ -1,0 +1,6 @@
+
+variable i value 0 made
+while i < 9 then
+    command "while\n" write
+    i = i + 1
+finish

@@ -1,0 +1,8 @@
+
+agar 0 bo'lsa
+    buyruq "if" yozilsin
+egerda rost bo'lsa
+    buyruq "elif" yozilsin
+bo'lmasa
+    buyruq "else" yozilsin
+tamomlansin

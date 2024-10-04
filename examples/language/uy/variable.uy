@@ -1,0 +1,15 @@
+
+# a dynamic var
+مىقدار m قىممىتى قۇرۇق بولسۇن
+
+# a static var
+مىقدار n قىممىتى سان بولسۇن
+
+# set val
+m = "salam dunya!"
+
+# free val
+m قىممىتى قۇرۇق بولسۇن
+
+# تىپ error
+n = "sinaq..."

@@ -1,0 +1,8 @@
+
+eğer 0 olsa
+    buyruk "if" yaz
+eğerde doğru olsa
+    buyruk "elif" yaz
+olmasa
+    buyruk "else" yaz
+tamamlansin

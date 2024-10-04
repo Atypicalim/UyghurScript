@@ -1,0 +1,15 @@
+
+# a local o'zgaruvch
+o'zgaruvch t qiymati 0 bo'lsin
+
+# a function bilan two arguments
+xizmatchi f o'zgaruvch x y mazmuni
+    t = x + y
+    natija t qaytarilsin
+tamomlansin
+
+# call functions va receive natija
+xizmatchi f bilan 10 20 ishlatilsin va r olinsin
+
+# print the natija qiymati olinsin
+buyruq r yozilsin

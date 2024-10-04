@@ -1,0 +1,6 @@
+
+değişken i kıymeti 0 olsun
+böyleyse i < 9 olsa
+    buyruk "👀👋\n" yaz
+    i = i + 1
+tamamlansin

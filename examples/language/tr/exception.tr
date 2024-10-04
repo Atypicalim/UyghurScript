@@ -1,0 +1,16 @@
+
+değişken x kıymeti boş olsun
+
+# try block
+hatalık e olup
+    x = 3 / 0
+tamamlansin
+
+# catch block
+eğer e olsa
+    buyruk "exception:\n" yaz
+    buyruk e yaz
+    buyruk "\n" yaz
+olmasa
+    buyruk "successful!\n" yaz
+tamamlansin

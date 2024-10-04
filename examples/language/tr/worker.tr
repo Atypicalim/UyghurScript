@@ -1,0 +1,15 @@
+
+# a local değişken
+değişken t kıymeti 0 olsun
+
+# a function ile two arguments
+hizmetçi f değişken x y içeriği
+    t = x + y
+    netice t geriverılsın
+tamamlansin
+
+# call functions ve receive netice
+hizmetçi f ile 10 20 kullanılsın ve r alısın
+
+# print the netice kıymeti alısın
+buyruk r yaz
