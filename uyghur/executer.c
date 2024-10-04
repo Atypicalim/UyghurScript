@@ -295,7 +295,7 @@ int Executer_genIndexOfToken(Executer *this, Token *token) {
     }
     ug_index.value = -1;
     tools_assert(token != NULL, "invalid token for get index");
-    if (Token_isKeyOfNumber(token) || Token_isNumber(token)) {
+    if (Token_isKeyOfNumber(token) || Token_isNumber(token) || Token_isName(token)) {
         ug_index.value = atof(token->value);
         ug_index.freeable = false;
     } else if (Token_isKeyOfName(token)) {
@@ -318,7 +318,7 @@ char *Executer_genLocationOfToken(Executer *this, Token *token) {
     }
     ug_location.value = NULL;
     tools_assert(token != NULL, "invalid token for get location");
-    if (Token_isKeyOfString(token) || Token_isString(token)) {
+    if (Token_isKeyOfString(token) || Token_isString(token) || Token_isName(token)) {
         ug_location.value = token->value;
         ug_location.freeable = false;
     } else if (Token_isKeyOfName(token)) {
