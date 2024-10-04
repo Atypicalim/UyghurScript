@@ -513,47 +513,67 @@ void Parser_consumeAstGenerator(Parser *this)
 {
     Token *target = Parser_checkType(this, 0, TVAUES_GROUP_CHANGEABLE);
     Parser_checkWord(this, 1, 1, TVALUE_EQUALING);
-    Token *tempT = NULL;
     Block *waitingKey = NULL;
-    Stack *current = NULL;
+    Object *current = NULL;
     Stack *currents = Stack_new();
     Stack *root = NULL;
     char *lastType = NULL;
-    int depth = 0;
     while (true) {
         current = currents->tail != NULL ? currents->tail->data : NULL;
-        if (Parser_isWord(this, 1, SIGN_OPEN_MIDDLE)) {
-            Parser_assert(this, can_generate_open(lastType), LANG_ERR_PARSER_INVALID_GENERATOR);
-            depth++;
+        Token *token = Parser_getToken(this, 1);
+        UCHAR *value = token->value;
+        //
+        void *box = NULL;
+        if (Parser_isWord(this, 1, SIGN_OPEN_BIG)) {
+            box = Queue_new();
+            Parser_checkWord(this, 1, 1, SIGN_OPEN_BIG);
+        } else if (Parser_isWord(this, 1, SIGN_OPEN_MIDDLE)) {
+            box = Stack_new();
             Parser_checkWord(this, 1, 1, SIGN_OPEN_MIDDLE);
-            Stack *stack = Stack_new();
-            if (!root) {
-                root = stack;
-            } else {
-                Block *block = Block_new(stack);
-                if (waitingKey) {
+        }
+        if (box) {
+            Parser_assert(this, can_generate_open(lastType), LANG_ERR_PARSER_INVALID_GENERATOR);
+            Stack_push(currents, box);
+            if (current) {
+                Block *block = Block_new(box);
+                if (current->objType == PCT_OBJ_QUEUE) {
+                    Queue_push(current, block);
+                    Parser_assert(this, waitingKey == NULL, LANG_ERR_PARSER_INVALID_GENERATOR);
+                } else if (current->objType == PCT_OBJ_STACK) {
+                    Stack_push(current, block);
+                    Parser_assert(this, waitingKey != NULL, LANG_ERR_PARSER_INVALID_GENERATOR);
                     block->next = waitingKey;
                     waitingKey = NULL;
                 }
-                Stack_push(current, block);
             }
-            Stack_push(currents, stack);
-            lastType = SIGN_OPEN_MIDDLE;
             // 
+            lastType = value;
             continue;
+        }
+        //
+        bool close = false;
+        if (Parser_isWord(this, 1, SIGN_CLOSE_BIG)) {
+            Parser_checkWord(this, 1, 1, SIGN_CLOSE_BIG);
+            Parser_assert(this, current->objType == PCT_OBJ_QUEUE, LANG_ERR_PARSER_INVALID_GENERATOR);
+            close = true;
         } else if (Parser_isWord(this, 1, SIGN_CLOSE_MIDDLE)) {
-            Parser_assert(this, depth > 0 && can_generate_close(lastType), LANG_ERR_PARSER_INVALID_GENERATOR);
-            depth--;
             Parser_checkWord(this, 1, 1, SIGN_CLOSE_MIDDLE);
-            Stack *pos = Stack_pop(currents);
-            lastType = SIGN_CLOSE_MIDDLE;
-            isTest = true;
-            if (depth == 0) {
+            Parser_assert(this, current->objType == PCT_OBJ_STACK, LANG_ERR_PARSER_INVALID_GENERATOR);
+            close = true;
+        }
+        if (close) {
+            Parser_assert(this, currents->size > 0 && can_generate_close(lastType), LANG_ERR_PARSER_INVALID_GENERATOR);
+            lastType = token->value;
+            //
+            Stack *popped = Stack_pop(currents);
+            if (currents->size == 0) {
+                root = popped;
                 break;
-            } else {
-                continue;
             }
-        } else if (Parser_isWord(this, 2, TVALUE_COLON)) {
+            continue;
+        }
+        //
+        if (Parser_isWord(this, 2, TVALUE_COLON)) {
             Token *key = Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
             waitingKey = key;
             Parser_checkWord(this, 1, 1, TVALUE_COLON);
@@ -566,19 +586,25 @@ void Parser_consumeAstGenerator(Parser *this)
         } else if (Parser_isTypes(this, 1, TTYPES_GROUP_VALUES)) {
             Token *val = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
             Token *tmp = Parser_getToken(this, 1);
+            // 
             Block *block = Block_new(val);
-            if (waitingKey) {
+            if (current->objType == PCT_OBJ_QUEUE) {
+                Queue_push(current, block);
+                Parser_assert(this, waitingKey == NULL, LANG_ERR_PARSER_INVALID_GENERATOR);
+            } else if (current->objType == PCT_OBJ_STACK) {
+                Stack_push(current, block);
+                Parser_assert(this, waitingKey != NULL, LANG_ERR_PARSER_INVALID_GENERATOR);
                 block->next = waitingKey;
                 waitingKey = NULL;
             }
-            Stack_push(current, block);
+            //
             lastType = SIGN_EQ;
             continue; 
         }
         break;
     }
-    Parser_assert(this, is_eq_string(lastType, SIGN_CLOSE_MIDDLE), LANG_ERR_PARSER_INVALID_GENERATOR);
-    Parser_assert(this, depth == 0, LANG_ERR_PARSER_INVALID_GENERATOR);
+    Parser_assert(this, is_eq_strings(lastType, 2, SIGN_CLOSE_BIG, SIGN_CLOSE_MIDDLE), LANG_ERR_PARSER_INVALID_GENERATOR);
+    Parser_assert(this, currents->size == 0, LANG_ERR_PARSER_INVALID_GENERATOR);
     Parser_assert(this, root != NULL, LANG_ERR_PARSER_INVALID_GENERATOR);
     Token *body = Token_new(TVALUE_EQUALING, root);
     Parser_pushLeaf(this, UG_ATYPE_GNR, 2, target, body);  
@@ -681,7 +707,9 @@ void Parser_consumeToken(Parser *this, Token *token)
     // calculate
     if ((is_eq_string(t, UG_TTYPE_NAM) || is_eq_string(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_EQUALING))
     {
-        if (Parser_isWord(this, 2, SIGN_OPEN_MIDDLE)) {
+        if (Parser_isWord(this, 2, SIGN_OPEN_BIG)) {
+            Parser_consumeAstGenerator(this);
+        } else if (Parser_isWord(this, 2, SIGN_OPEN_MIDDLE)) {
             Parser_consumeAstGenerator(this);
         } else {
             Parser_consumeAstCalculator(this);

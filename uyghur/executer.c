@@ -4,6 +4,12 @@
 
 jmp_buf jump_buffer;
 
+typedef struct {
+    int value;
+    bool freeable;
+} UG_INDEX;
+
+UG_INDEX ug_index;
 
 typedef struct {
     char *value;
@@ -178,7 +184,8 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
         if (value != NULL) *rContainer = value;
     }
     // container
-    if (*rContainer == NULL) return;
+    Executer_assert(this, *rContainer != NULL, extra, LANG_ERR_EXECUTER_INVALID_BOX);
+    // if (*rContainer == NULL) return;
     // parse keys
     bool further = false;
     int index = -1;
@@ -261,6 +268,46 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
     }
 }
 
+Value *Executer_searchValueOfNameKey(Executer *this, Token *token, bool checkValue, bool checkHolder) {
+    tools_assert(token != NULL, "invalid token for search value");
+    Token *_extra = (Token *)token->extra;
+    Token *_token = Token_getTemporary();
+    _token->type = _extra->type;
+    _token->value = token->value;
+    //
+    Holdable *holdable = NULL;
+    Value *value = NULL;
+    Executer_findValueByLocation(this, token->value, &holdable, &value);
+    // Executer_findValueByToken(this, _token, &holdable, &value);
+    //
+    if (checkValue) Executer_assert(this, value!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
+    if (checkHolder) Executer_assert(this, holdable!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
+    return value;
+}
+
+void Executer_delIndexOfToken(Executer *this, int index) {
+}
+
+int Executer_genIndexOfToken(Executer *this, Token *token) {
+    if (ug_index.freeable) {
+        ug_index.value = -1;
+        ug_index.freeable = false;
+    }
+    ug_index.value = -1;
+    tools_assert(token != NULL, "invalid token for get index");
+    if (Token_isKeyOfNumber(token) || Token_isNumber(token)) {
+        ug_index.value = atof(token->value);
+        ug_index.freeable = false;
+    } else if (Token_isKeyOfName(token)) {
+        Value *value = Executer_searchValueOfNameKey(this, token, true, true);
+        if (Value_isNumber(value)) {
+            ug_index.value = value->number;
+            ug_index.freeable = true;
+        }
+    }
+    return ug_index.value;
+}
+
 void Executer_delLocationOfToken(Executer *this, char *key) {
 }
 
@@ -269,23 +316,17 @@ char *Executer_genLocationOfToken(Executer *this, Token *token) {
         pct_free(ug_location.value);
         ug_location.freeable = false;
     }
+    ug_location.value = NULL;
     tools_assert(token != NULL, "invalid token for get location");
-    if (Token_isKeyOfName(token)) {
-        Holdable *holdable = NULL;
-        Value *value = NULL;
-        Executer_findValueByLocation(this, token->value, &holdable, &value);
-        Executer_assert(this, holdable!= NULL && value!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
-        ug_location.value = Value_toString(value);
-        ug_location.freeable = true;
-    } else if (Token_isKeyOfNumber(token) || Token_isNumber(token)) {
+    if (Token_isKeyOfString(token) || Token_isString(token)) {
         ug_location.value = token->value;
         ug_location.freeable = false;
-    } else if (Token_isKeyOfString(token) || Token_isString(token)) {
-        ug_location.value = token->value;
-        ug_location.freeable = false;
-    } else {
-        ug_location.value = token->value;
-        ug_location.freeable = false;
+    } else if (Token_isKeyOfName(token)) {
+        Value *value = Executer_searchValueOfNameKey(this, token, true, true);
+        if (Value_isString(value)) {
+            ug_location.value = Value_toString(value);
+            ug_location.freeable = true;
+        }
     }
     return ug_location.value;
 }
@@ -297,6 +338,7 @@ Value *Executer_getValueFromContainer(Executer *this, Holdable *holdable, Token 
 {
     Executer_assert(this, holdable != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     char *location = Executer_genLocationOfToken(this, token);
+    Executer_assert(this, location != NULL, token, "getting invalid location from dict");
     Value *value = Dictable_getLocation(holdable, location);
     if (value != NULL) Machine_retainObj(value);
     return value;
@@ -305,29 +347,18 @@ Value *Executer_getValueFromContainer(Executer *this, Holdable *holdable, Token 
 void Executer_setValueToContainer(Executer *this, Value *container, Token *token, Value *value)
 {
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
-    // list set
     if (Value_isListable(container)) {
-        int index = -1;
-        if (Token_isKeyOfNumber(token)) {
-            index = atof(token->value);
-        } else if (Token_isKeyOfName(token)) {
-            Token *_extra = (Token *)token->extra;
-            Token *_token = Token_getTemporary();
-            _token->type = _extra->type;
-            _token->value = token->value;
-            Value *value;
-            Executer_findValueByToken(this, _token, &INVALID_CTN, &value);
-            if (Value_isNumber(value)) {
-                index = value->number;
-            }
-        }
-        Executer_assert(this, index >= 0, token, "setting invalid key to list");
+        // list set
+        int index = Executer_genIndexOfToken(this, token);
+        Executer_assert(this, index >= 0, token, "setting invalid index to list");
         Listable_setIndex(container, index, value);
         return;
+    } else {
+        // dict set
+        char *location = Executer_genLocationOfToken(this, token);
+        Executer_assert(this, location != NULL, token, "setting invalid location to dict");
+        Dictable_setLocation(container, location, value);
     }
-    // dict set
-    char *location = Executer_genLocationOfToken(this, token);
-    Dictable_setLocation(container, location, value);
 }
 
 // 
@@ -1126,38 +1157,51 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
     Executer_setValueByToken(this, target, r, false);
 }
 
-Value *Executer_generateNStack(Executer *this, Stack *);
-Value *Executer_generateNStack(Executer *this, Stack *stack)
+Value *Executer_generateContainer(Executer *this, Object *);
+Value *Executer_generateContainer(Executer *this, Object *object)
 {
-    Stack_reverse(stack);
-    Stack_RESTE(stack);
-    Block *block = Stack_NEXT(stack);
-    bool isArray = block == NULL || block->next == NULL;
-    Value *result = isArray ? (Value *)Listable_newLst(NULL) : (Value *)Dictable_newDct(NULL);
+    bool isArr = object->objType == PCT_OBJ_QUEUE;
+    bool isMap = object->objType == PCT_OBJ_STACK;
+    Block *block = NULL;
+    if (isArr) {
+        Queue_RESTE(object);
+        block = Queue_NEXT(object);
+    } else if (isMap) {
+        Stack_reverse(object);
+        Stack_RESTE(object);
+        block = Stack_NEXT(object);
+    }
+    //
+    Value *result = isArr ? (Value *)Listable_newLst(NULL) : (Value *)Dictable_newDct(NULL);
     while(block != NULL)
     {
         Token *key = block->next;
         Object *val = block->data;
         bool noKey = key == NULL;
-        Executer_assert(this, isArray == noKey, NULL, LANG_ERR_EXECUTER_GENERATION_INVALID_KEY);
+        Executer_assert(this, isArr == noKey, NULL, LANG_ERR_EXECUTER_GENERATION_INVALID_KEY);
         //
         Value *value = NULL;
-        if (val->objType == PCT_OBJ_STACK) {
-            value = Executer_generateNStack(this, val);
+        if (val->objType == PCT_OBJ_QUEUE) {
+            value = Executer_generateContainer(this, val);
+        } else if (val->objType == PCT_OBJ_STACK) {
+            value = Executer_generateContainer(this, val);
         } else {
             value = Executer_getValueByToken(this, val, false);
         }
         //
-        if (value != NULL) {
-            if (isArray) {
-                Listable_push(result, value);
-            } else {
-                char *location = Executer_genLocationOfToken(this, key);
-                Dictable_setLocation(result, location, value);
-            }
+        if (value == NULL) continue;
+        //
+        if (isArr) {
+            Listable_push(result, value);
+        } else if (isMap) {
+            char *location = Executer_genLocationOfToken(this, key);
+            Executer_assert(this, location != NULL, key, "generating invalid location to dict");
+            Dictable_setLocation(result, location, value);
+        } else {
+            Executer_error(this, NULL, LANG_ERR_EXECUTER_GENERATION_INVALID);
         }
         //
-        block = Stack_NEXT(stack);
+        block = Stack_NEXT(object);
     }
     return result;
 }
@@ -1167,10 +1211,10 @@ void Executer_consumeGenerator(Executer *this, Leaf *leaf)
     Stack_RESTE(leaf->tokens);
     Token *body = Stack_NEXT(leaf->tokens);
     Token *target = Stack_NEXT(leaf->tokens);
-    Stack *root = (Foliage *)body->value;
+    Object *root = (Foliage *)body->value;
     //
     // TODO:free r object
-    Value *r = Executer_generateNStack(this, root);
+    Value *r = Executer_generateContainer(this, root);
     //
     Executer_assert(this, r != NULL, target, LANG_ERR_EXECUTER_GENERATION_INVALID);
     Executer_setValueByToken(this, target, r, false);

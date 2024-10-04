@@ -6,7 +6,7 @@
 #define UG_TYPE_NIL '~'
 #define UG_TYPE_BOL '!'
 #define UG_TYPE_NUM '0'
-#define UG_TYPE_STR '['
+#define UG_TYPE_STR '"'
 #define UG_TYPE_WKR '&'
 #define UG_TYPE_NTV '#'
 #define UG_TYPE_CTR '$'
@@ -28,6 +28,7 @@
 #define SIGN_CARRIAGE "\r"
 #define SIGN_TERMINATE "\0"
 #define SIGN_ESCAPE "\\"
+#define SIGN_QUOTE "\""
 #define SIGN_SLASH "/"
 #define SIGN_LOCK "#"
 #define SIGN_DOT "."

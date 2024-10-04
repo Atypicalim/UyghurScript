@@ -166,15 +166,15 @@ bool is_letter_body(UCHAR c)
 }
 
 bool is_string_open(UCHAR c) {
-    return is_uchar_eq_char(c, '[');
+    return is_uchar_eq_char(c, '"');
 }
 
 bool is_string_body(UCHAR c) {
-    return !is_uchar_eq_char(c, '[') && !is_uchar_eq_char(c, ']');
+    return !is_uchar_eq_char(c, '"');
 }
 
 bool is_string_close(UCHAR c) {
-    return is_uchar_eq_char(c, ']');
+    return is_uchar_eq_char(c, '"');
 }
 
 UCHAR convert_border_pair(UCHAR c) {
@@ -199,10 +199,17 @@ UCHAR convert_border_pair(UCHAR c) {
     case ')':
         r = SIGN_OPEN_SMALL;
         break;
+    case '"':
+        r = SIGN_QUOTE;
+        break;
     default:
         break;
     }
     return r;
+}
+
+bool is_scope_open(UCHAR c) {
+    return is_uchar_eq_char(c, '{') || is_uchar_eq_char(c, ':');
 }
 
 bool is_border_open(UCHAR c) {
