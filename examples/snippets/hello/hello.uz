@@ -1,0 +1,31 @@
+
+# declare variables
+o'zgaruvch s qiymati sandiq bo'lsin
+o'zgaruvch m qiymati bo'sh bo'lsin
+
+# shundayda loop
+o'zgaruvch i qiymati 0 bo'lsin
+shundayda i < 9 bo'lsa
+    i = i + 1
+    @s{i} = i * i
+tamomlansin
+
+# iterate box
+xizmatchi func o'zgaruvch k v mazmuni
+    buyruq k yozilsin
+    buyruq " * " yozilsin
+    buyruq k yozilsin
+    buyruq " = " yozilsin
+    buyruq v yozilsin
+    buyruq "\n" yozilsin
+tamomlansin
+xizmatchi @sanduq:dewriylesh bilan s func ishlatilsin
+
+# get language
+xizmatchi @*:isimElish ishlatilsin va n olinsin
+
+# concat string
+m = n + " salam!\n"
+
+# print message
+buyruq m yozilsin

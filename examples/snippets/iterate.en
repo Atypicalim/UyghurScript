@@ -1,0 +1,4 @@
+worker func variable k v content
+    #
+finish
+worker @sanduq:dewriylesh with *$1 func applied

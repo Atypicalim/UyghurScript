@@ -3,7 +3,7 @@
 miqdar s qimmiti sanduq bolsun
 miqdar m qimmiti quruq bolsun
 
-# while loop
+# nawada loop
 miqdar i qimmiti 0 bolsun
 nawada i < 9 bolsa
     i = i + 1

@@ -1,0 +1,31 @@
+
+# declare variables
+variable s value dict made
+variable m value empty made
+
+# while loop
+variable i value 0 made
+while i < 9 then
+    i = i + 1
+    @s{i} = i * i
+finish
+
+# iterate box
+worker func variable k v content
+    command k write
+    command " * " write
+    command k write
+    command " = " write
+    command v write
+    command "\n" write
+finish
+worker @sanduq:dewriylesh with s func applied
+
+# get language
+worker @*:isimElish applied and n received
+
+# concat string
+m = n + " salam!\n"
+
+# print message
+command m write

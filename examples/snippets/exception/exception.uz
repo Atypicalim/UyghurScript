@@ -1,0 +1,8 @@
+xatolik e bo'lib
+    $1
+tamomlansin
+agar e bo'lsa
+    buyruq e yozilsin
+bo'lmasa
+    #
+tamomlansin
