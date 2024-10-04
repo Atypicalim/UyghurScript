@@ -1,15 +1,15 @@
 
-# a local айнымалы
+# a local var
 айнымалы t қимметі 0 болсын
 
-# a function бірге two arguments
+# a func бірге two args
 қызметші f айнымалы x y мазмұны
     t = x + y
     нәтиже t қайтарылсын
 аяқталсын
 
-# call functions бен receive нәтиже
+# call func бен receive rsp
 қызметші f бірге 10 20 қолданылсын бен r алынсын
 
-# print the нәтиже қимметі алынсын
+# print the val алынсын
 бұйрық r жазу

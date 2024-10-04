@@ -1,10 +1,10 @@
 
 değişken m kıymeti "yezish" olsun
 
-# get func by string
+# convert to func
 m kıymeti hizmetçi olsun
 buyruk m yaz
 
-# convert kıymeti to boolean
+# convert to bool
 m kıymeti mantık olsun
 buyruk m yaz

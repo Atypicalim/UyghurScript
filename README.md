@@ -77,11 +77,11 @@ n = "sinaq..."
 ```powershell
 variable m value "yezish" made
 
-# get func by string
+# convert to func
 m value worker made
 command m write
 
-# convert value to boolean
+# convert to bool
 m value logic made
 command m write
 ```
@@ -123,10 +123,10 @@ x = 10 % empty # false
 * [command](examples/features/command)
 
 ```powershell
-# read a value
+# read a val
 command a read
 
-# print a value
+# print a val
 command a write
 ```
 
@@ -166,19 +166,19 @@ finish
 * [worker](examples/features/worker)
 
 ```powershell
-# a local variable
+# a local var
 variable t value 0 made
 
-# a function with two arguments
+# a func with two args
 worker f variable x y content
     t = x + y
     result t returned
 finish
 
-# call functions and receive result
+# call func and receive rsp
 worker f with 10 20 applied and r received
 
-# print the result value received
+# print the val received
 command r write
 ```
 
@@ -256,7 +256,7 @@ finish
 # call creator using an assister and receive object
 creator Y with "arg yyy ...\n" applied and r received
 
-# print the object value received
+# print the object val received
 command @r:x write # arg xxx ...
 command @r:y write # arg yyy ...
 
@@ -285,7 +285,7 @@ command @m:x write
 # run the program
 `.uyghur.exe ./main.xx`
 
-# get the result
+# get the rsp
 other...
 ```
 

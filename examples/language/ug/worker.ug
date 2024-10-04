@@ -1,15 +1,15 @@
 
-# a local miqdar
+# a local var
 miqdar t qimmiti 0 bolsun
 
-# a function bilen two arguments
+# a func bilen two args
 xizmetchi f miqdar x y mezmuni
     t = x + y
     netije t qayturulsun
 tamamlansun
 
-# call functions we receive netije
+# call func we receive rsp
 xizmetchi f bilen 10 20 ishlitilsun we r elinsun
 
-# print the netije qimmiti elinsun
+# print the val elinsun
 buyruq r yezilsun

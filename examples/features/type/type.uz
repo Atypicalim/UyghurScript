@@ -1,10 +1,10 @@
 
 o'zgaruvch m qiymati "yezish" bo'lsin
 
-# get func by string
+# convert to func
 m qiymati xizmatchi bo'lsin
 buyruq m yozilsin
 
-# convert qiymati to boolean
+# convert to bool
 m qiymati mantiq bo'lsin
 buyruq m yozilsin

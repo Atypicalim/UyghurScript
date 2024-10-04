@@ -24,7 +24,7 @@ tamamlansun
 # call yasighuchi using an yardemchi we receive obekit
 yasighuchi Y bilen "arg yyy ...\n" ishlitilsun we r elinsun
 
-# print the obekit qimmiti elinsun
+# print the obekit val elinsun
 buyruq @r:x yezilsun # arg xxx ...
 buyruq @r:y yezilsun # arg yyy ...
 

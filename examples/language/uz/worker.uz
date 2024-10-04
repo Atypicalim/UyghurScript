@@ -1,15 +1,15 @@
 
-# a local o'zgaruvch
+# a local var
 o'zgaruvch t qiymati 0 bo'lsin
 
-# a function bilan two arguments
+# a func bilan two args
 xizmatchi f o'zgaruvch x y mazmuni
     t = x + y
     natija t qaytarilsin
 tamomlansin
 
-# call functions va receive natija
+# call func va receive rsp
 xizmatchi f bilan 10 20 ishlatilsin va r olinsin
 
-# print the natija qiymati olinsin
+# print the val olinsin
 buyruq r yozilsin

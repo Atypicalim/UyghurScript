@@ -9,5 +9,5 @@ command @m:x write
 # run the program
 `.uyghur.exe ./main.xx`
 
-# get the result
+# get the rsp
 other...

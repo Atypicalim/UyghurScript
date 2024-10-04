@@ -1,15 +1,15 @@
 
-# a local değişken
+# a local var
 değişken t kıymeti 0 olsun
 
-# a function ile two arguments
+# a func ile two args
 hizmetçi f değişken x y içeriği
     t = x + y
     netice t geriverılsın
 tamamlansin
 
-# call functions ve receive netice
+# call func ve receive rsp
 hizmetçi f ile 10 20 kullanılsın ve r alısın
 
-# print the netice kıymeti alısın
+# print the val alısın
 buyruk r yaz

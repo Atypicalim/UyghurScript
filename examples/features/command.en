@@ -1,6 +1,6 @@
 
-# read a value
+# read a val
 command a read
 
-# print a value
+# print a val
 command a write

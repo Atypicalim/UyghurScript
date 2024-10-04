@@ -24,7 +24,7 @@ tamamlansin
 # call oluşturucu using an yardımcı ve receive obekit
 oluşturucu Y ile "arg yyy ...\n" kullanılsın ve r alısın
 
-# print the obekit kıymeti alısın
+# print the obekit val alısın
 buyruk @r:x yaz # arg xxx ...
 buyruk @r:y yaz # arg yyy ...
 

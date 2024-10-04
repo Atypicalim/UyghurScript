@@ -1,10 +1,10 @@
 
 miqdar m qimmiti "yezish" bolsun
 
-# get func by string
+# convert to func
 m qimmiti xizmetchi bolsun
 buyruq m yezilsun
 
-# convert qimmiti to boolean
+# convert to bool
 m qimmiti logika bolsun
 buyruq m yezilsun

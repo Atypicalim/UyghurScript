@@ -24,7 +24,7 @@ finish
 # call creator using an assister and receive object
 creator Y with "arg yyy ...\n" applied and r received
 
-# print the object value received
+# print the object val received
 command @r:x write # arg xxx ...
 command @r:y write # arg yyy ...
 

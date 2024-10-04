@@ -1,10 +1,10 @@
 
 مىقدار m قىممىتى "yezish" بولسۇن
 
-# get func by string
+# convert to func
 m قىممىتى خىزمەتچى بولسۇن
 بۇيرۇق m يېزىلسۇن
 
-# convert قىممىتى to boolean
+# convert to bool
 m قىممىتى لوگىكا بولسۇن
 بۇيرۇق m يېزىلسۇن

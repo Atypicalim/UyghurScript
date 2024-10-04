@@ -1,15 +1,15 @@
 
-# a local مىقدار
+# a local var
 مىقدار t قىممىتى 0 بولسۇن
 
-# a function بىلەن two arguments
+# a func بىلەن two args
 خىزمەتچى f مىقدار x y مەزمۇنى
     t = x + y
     نەتىجە t قايتۇرۇلسۇن
 تاماملانسۇن
 
-# call functions ۋە receive نەتىجە
+# call func ۋە receive rsp
 خىزمەتچى f بىلەن 10 20 ئىشلىتىلسۇن ۋە r ئېلىنسۇن
 
-# print the نەتىجە قىممىتى ئېلىنسۇن
+# print the val ئېلىنسۇن
 بۇيرۇق r يېزىلسۇن

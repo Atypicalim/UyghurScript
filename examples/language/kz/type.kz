@@ -1,10 +1,10 @@
 
 айнымалы m қимметі "yezish" болсын
 
-# get func by string
+# convert to func
 m қимметі қызметші болсын
 бұйрық m жазу
 
-# convert қимметі to boolean
+# convert to bool
 m қимметі логика болсын
 бұйрық m жазу

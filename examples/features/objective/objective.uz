@@ -24,7 +24,7 @@ tamomlansin
 # call yasag'uchi using an yordamchi va receive obekit
 yasag'uchi Y bilan "arg yyy ...\n" ishlatilsin va r olinsin
 
-# print the obekit qiymati olinsin
+# print the obekit val olinsin
 buyruq @r:x yozilsin # arg xxx ...
 buyruq @r:y yozilsin # arg yyy ...
 
