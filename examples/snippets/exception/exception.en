@@ -1,8 +1,0 @@
-exception e become
-    $1
-finish
-if e then
-    command e write
-else
-    #
-finish
