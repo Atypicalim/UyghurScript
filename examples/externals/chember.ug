@@ -6,7 +6,7 @@ miqdar t1 qimmiti quruq bolsun
 miqdar t2 qimmiti quruq bolsun
 miqdar d qimmiti 0.1 bolsun
 
-xizmetchi @*[doska_sizish_qayturmisi] mezmuni
+xizmetchi @*:doska_sizish_qayturmisi mezmuni
 
     t1 = x > 400
     t2 = x < 100
@@ -17,8 +17,8 @@ xizmetchi @*[doska_sizish_qayturmisi] mezmuni
     tamamlansun
     x = x + d
     y = y + d
-    xizmetchi @taxta[chemberSizish] bilen x y 100 100 [55aaff] ishlitilsun
+    xizmetchi @taxta:chemberSizish bilen x y 100 100 "55aaff" ishlitilsun
 
 tamamlansun
 
-xizmetchi @sehne[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun
+xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" 4096 ishlitilsun

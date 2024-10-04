@@ -4,7 +4,7 @@ miqdar s qimmiti 1 bolsun
 miqdar t qimmiti quruq bolsun
 miqdar o qimmiti 0 bolsun
 
-xizmetchi @*[doska_sizish_qayturmisi] mezmuni
+xizmetchi @*:doska_sizish_qayturmisi mezmuni
 
     t = s > 2
     eger t bolsa
@@ -13,14 +13,14 @@ xizmetchi @*[doska_sizish_qayturmisi] mezmuni
         s = s + 0.0001
     tamamlansun
 
-    xizmetchi @taxta[xetMolcherlesh] bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we w elinsun
+    xizmetchi @taxta:xetMolcherlesh bilen "../resources/ukij.ttf" "SINAQ" 36 0 ishlitilsun we w elinsun
     o = w / 2
     o = 250 - o
-    xizmetchi @taxta[xetYezish] bilen [../resources/ukij.ttf] [SINAQ] 36 0 [ff0000ff] o 50 ishlitilsun
+    xizmetchi @taxta:xetYezish bilen "../resources/ukij.ttf" "SINAQ" 36 0 "ff0000ff" o 50 ishlitilsun
 
-    xizmetchi @taxta[yazmaNeqishlesh] bilen [../resources/ukij.ttf] [SINAQ] 36 0 ishlitilsun we r elinsun
-    xizmetchi @taxta[neqishSizish] bilen r 250 250 0.5 0.5 [ffaaaaff] 0 0 -1 -1 0 s ishlitilsun
+    xizmetchi @taxta:yazmaNeqishlesh bilen "../resources/ukij.ttf" "SINAQ" 36 0 ishlitilsun we r elinsun
+    xizmetchi @taxta:neqishSizish bilen r 250 250 0.5 0.5 "ffaaaaff" 0 0 -1 -1 0 s ishlitilsun
 
 tamamlansun
 
-xizmetchi @sehne[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun
+xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" 4096 ishlitilsun

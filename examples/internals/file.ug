@@ -1,4 +1,4 @@
 
-xizmetchi @xojjet{oqush} bilen [../resources/test.txt] ishlitilsun we r elinsun
+xizmetchi @xojjet{oqush} bilen "../resources/test.txt" ishlitilsun we r elinsun
 buyruq r yezilsun
-buyruq [\n] yezilsun
+buyruq "\n" yezilsun

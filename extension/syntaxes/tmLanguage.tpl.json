@@ -38,6 +38,12 @@
                     "match": "\\s+(=|\\+|\\-|\\*|/|\\^|%|<|>|\\?|؟|&|~)\\s+"
                 },
                 {
+                    "include": "#key_strings"
+                },
+                {
+                    "include": "#key_numbers"
+                },
+                {
                     "include": "#strings"
                 },
                 {
@@ -52,14 +58,30 @@
                 },
                 {
                     "name": "variable.language.self",
-                    "match": "@[^\\s\\d\\[\\{\\(][^\\s\\[\\{\\(]*"
+                    "match": "@[^\\s\\d\\[\\{\\(][^\\s\\[\\{\\(\\:]*"
+                }
+            ]
+        },
+        "key_strings": {
+            "patterns": [
+                {
+                    "name": "string.quoted.double.myscript",
+                    "match": "\\:([^\\d\\s][^\\s]*)\\b"
+                }
+            ]
+        },
+        "key_numbers": {
+            "patterns": [
+                {
+                    "name": "constant.numeric.integer.myscript",
+                    "match": "\\:(\\d\\d*)\\b"
                 }
             ]
         },
         "strings": {
             "name": "string.quoted.double.{lang}", // [M[ FORMAT_ARGS ]M]
-            "begin": "\\[",
-            "end": "\\]",
+            "begin": "\\\"",
+            "end": "\\\"",
             "patterns": [
                 {
                     "name": "constant.character.escape.{lang}", // [M[ FORMAT_ARGS ]M]

@@ -1,29 +1,29 @@
 
-miqdar QIZIL qimmiti [ff0000] bolsun
-miqdar KOK qimmiti [00ff00] bolsun
-miqdar YESHIL qimmiti [0000ff] bolsun
-miqdar QARA qimmiti [000000] bolsun
+miqdar QIZIL qimmiti "ff0000" bolsun
+miqdar KOK qimmiti "00ff00" bolsun
+miqdar YESHIL qimmiti "0000ff" bolsun
+miqdar QARA qimmiti "000000" bolsun
 
-xizmetchi @*[doska_sizish_qayturmisi] mezmuni
+xizmetchi @*:doska_sizish_qayturmisi mezmuni
 
-    xizmetchi @taxta[totTereplikToldurushAylandurulghan] bilen 250 250 500 500 [555555] 0.5 0.5 0 ishlitilsun
-    xizmetchi @taxta[totTereplikToldurushAylandurulghan] bilen 250 250 500 500 [333333] 0.5 0.5 45 ishlitilsun
-    xizmetchi @taxta[totTereplikToldurushAylandurulghan] bilen 250 250 485 485 [44444433] 0.5 0.5 45 ishlitilsun
+    xizmetchi @taxta:totTereplikToldurushAylandurulghan bilen 250 250 500 500 "555555" 0.5 0.5 0 ishlitilsun
+    xizmetchi @taxta:totTereplikToldurushAylandurulghan bilen 250 250 500 500 "333333" 0.5 0.5 45 ishlitilsun
+    xizmetchi @taxta:totTereplikToldurushAylandurulghan bilen 250 250 485 485 "44444433" 0.5 0.5 45 ishlitilsun
 
-    xizmetchi @taxta[nuqtaSizish] bilen 10 10 QIZIL ishlitilsun
-    xizmetchi @taxta[nuqtaSizish] bilen 490 10 QIZIL ishlitilsun
+    xizmetchi @taxta:nuqtaSizish bilen 10 10 QIZIL ishlitilsun
+    xizmetchi @taxta:nuqtaSizish bilen 490 10 QIZIL ishlitilsun
 
-    xizmetchi @taxta[siziqSizish] bilen 20 10 480 10 2 QIZIL ishlitilsun
-    xizmetchi @taxta[totTereplikToldurushRenglik] bilen 175 185 150 150 QIZIL YESHIL KOK QARA ishlitilsun
+    xizmetchi @taxta:siziqSizish bilen 20 10 480 10 2 QIZIL ishlitilsun
+    xizmetchi @taxta:totTereplikToldurushRenglik bilen 175 185 150 150 QIZIL YESHIL KOK QARA ishlitilsun
 
-    xizmetchi @taxta[chemberToldurush] bilen 75 250 70 50 YESHIL ishlitilsun
-    xizmetchi @taxta[uzukToldurush] bilen 400 250 30 50 KOK 15 345 ishlitilsun
+    xizmetchi @taxta:chemberToldurush bilen 75 250 70 50 YESHIL ishlitilsun
+    xizmetchi @taxta:uzukToldurush bilen 400 250 30 50 KOK 15 345 ishlitilsun
 
-    xizmetchi @taxta[uchTereplikToldurush] bilen 100 175 400 175 250 10 QIZIL ishlitilsun
-    xizmetchi @taxta[kopTereplikToldurush] bilen 250 420 8 75 0 KOK ishlitilsun
+    xizmetchi @taxta:uchTereplikToldurush bilen 100 175 400 175 250 10 QIZIL ishlitilsun
+    xizmetchi @taxta:kopTereplikToldurush bilen 250 420 8 75 0 KOK ishlitilsun
 
 tamamlansun
 
-xizmetchi @sehne[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun
+xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" 4096 ishlitilsun
 
 

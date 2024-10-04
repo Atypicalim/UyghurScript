@@ -6,10 +6,10 @@ miqdar m qimmiti quruq bolsun
 miqdar n qimmiti san bolsun
 
 # set value
-m = [salam dunya!]
+m = "salam dunya!"
 
 # free variable
 m qimmiti quruq bolsun
 
 # type error
-n = [sinaq...]
+n = "sinaq..."

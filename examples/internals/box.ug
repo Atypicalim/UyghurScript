@@ -1,17 +1,17 @@
 
 miqdar s qimmiti sanduq bolsun
-miqdar k qimmiti [key] bolsun
+miqdar k qimmiti "key" bolsun
 
-@s[abc] = [str...]
-@s{123} = 456
+@s:abc = "str..."
+@s:123 = 456
 
 xizmetchi func miqdar k v mezmuni
     buyruq k yezilsun
-    buyruq [-----------] yezilsun
+    buyruq "-----------" yezilsun
     buyruq v yezilsun
-    buyruq [\n] yezilsun
+    buyruq "\n" yezilsun
 tamamlansun
 
-xizmetchi @sanduq[dewriylesh] bilen s func ishlitilsun
+xizmetchi @sanduq:dewriylesh: bilen s func ishlitilsun
 
-buyruq [END!\n] yezilsun
+buyruq "END!\n" yezilsun

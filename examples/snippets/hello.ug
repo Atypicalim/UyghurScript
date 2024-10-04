@@ -13,19 +13,19 @@ tamamlansun
 # iterate box
 xizmetchi func miqdar k v mezmuni
     buyruq k yezilsun
-    buyruq [ * ] yezilsun
+    buyruq " * " yezilsun
     buyruq k yezilsun
-    buyruq [ = ] yezilsun
+    buyruq " = " yezilsun
     buyruq v yezilsun
-    buyruq [\n] yezilsun
+    buyruq "\n" yezilsun
 tamamlansun
-xizmetchi @sanduq[dewriylesh] bilen s func ishlitilsun
+xizmetchi @sanduq:dewriylesh bilen s func ishlitilsun
 
 # get language
-xizmetchi @*[isimElish] ishlitilsun we n elinsun
+xizmetchi @*:isimElish ishlitilsun we n elinsun
 
 # concat string
-m = n + [ salam!\n]
+m = n + " salam!\n"
 
 # print message
 buyruq m yezilsun

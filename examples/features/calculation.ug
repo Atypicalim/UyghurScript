@@ -16,13 +16,13 @@ x = rast | yalghan # rast
 x = rast ~ yalghan # rast
 
 # logic
-x = [2] ? 2 # false
+x = "2" ? 2 # false
 x = 2 < 3 # true
-x = [ab] > [ac] # false 
+x = "ab" > "ac" # false 
 
 # string
-x = [ab] + [cd] # abcd
-x = [ab] * 2 # abab
+x = "ab" + "cd" # abcd
+x = "ab" * 2 # abab
 
 # checking
 x = 10 % 7 # 3

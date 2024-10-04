@@ -8,9 +8,9 @@ tamamlansun
 
 # catch block
 eger e bolsa
-    buyruq [exception:\n] yezilsun
+    buyruq "exception:\n" yezilsun
     buyruq e yezilsun
-    buyruq [\n] yezilsun
+    buyruq "\n" yezilsun
 bolmisa
-    buyruq [successful!\n] yezilsun
+    buyruq "successful!\n" yezilsun
 tamamlansun

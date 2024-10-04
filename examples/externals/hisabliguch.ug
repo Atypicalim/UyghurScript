@@ -36,46 +36,46 @@ miqdar sinaqQimmet qimmiti quruq bolsun
 xizmetchi belgilerniElish miqdar x mezmuni
     miqdar r qimmiti quruq bolsun
     eger x ? quruq bolsa
-        r qimmiti [] bolsun
+        r qimmiti "" bolsun
     egerde x ? 1 bolsa
-        r qimmiti [1] bolsun
+        r qimmiti "1" bolsun
     egerde x ? 2 bolsa
-        r qimmiti [2] bolsun
+        r qimmiti "2" bolsun
     egerde x ? 3 bolsa
-        r qimmiti [3] bolsun
+        r qimmiti "3" bolsun
     egerde x ? 4 bolsa
-        r qimmiti [4] bolsun
+        r qimmiti "4" bolsun
     egerde x ? 5 bolsa
-        r qimmiti [5] bolsun
+        r qimmiti "5" bolsun
     egerde x ? 6 bolsa
-        r qimmiti [6] bolsun
+        r qimmiti "6" bolsun
     egerde x ? 7 bolsa
-        r qimmiti [7] bolsun
+        r qimmiti "7" bolsun
     egerde x ? 8 bolsa
-        r qimmiti [8] bolsun
+        r qimmiti "8" bolsun
     egerde x ? 9 bolsa
-        r qimmiti [9] bolsun
+        r qimmiti "9" bolsun
     egerde x ? 10 bolsa
-        r qimmiti [0] bolsun
+        r qimmiti "0" bolsun
     egerde x ? 11 bolsa
-        r qimmiti [+] bolsun
+        r qimmiti "+" bolsun
     egerde x ? 12 bolsa
-        r qimmiti [-] bolsun
+        r qimmiti "-" bolsun
     egerde x ? 13 bolsa
-        r qimmiti [*] bolsun
+        r qimmiti "*" bolsun
     egerde x ? 14 bolsa
-        r qimmiti [/] bolsun
+        r qimmiti "/" bolsun
     egerde x ? 15 bolsa
-        r qimmiti [=] bolsun
+        r qimmiti "=" bolsun
     bolmisa
-        xizmetchi @xet[formatlash] bilen [%f] x ishlitilsun we r elinsun # string_format bug
+        xizmetchi @xet:formatlash bilen "%f" x ishlitilsun we r elinsun # string_format bug
     tamamlansun
     netije r qayturulsun
 tamamlansun
 
 # reset button
 xizmetchi tazilashQayturmisi mezmuni
-    buyruq [tazilandi] yezilsun
+    buyruq "tazilandi" yezilsun
     netijeQimmet qimmiti 0 bolsun
     hazirqiQimmet qimmiti 0 bolsun
     aldinqiQimmet qimmiti 15 bolsun
@@ -173,8 +173,8 @@ tamamlansun
 # draw button
 xizmetchi kunupkaSizish miqdar id mezmuni
     # 2d point
-    xizmetchi @san[qalduqniHisablash] bilen id 5 ishlitilsun we kordinatX elinsun
-    xizmetchi @san[bulunminiHisablash] bilen id 5 ishlitilsun we kordinatY elinsun
+    xizmetchi @san:qalduqniHisablash bilen id 5 ishlitilsun we kordinatX elinsun
+    xizmetchi @san:bulunminiHisablash bilen id 5 ishlitilsun we kordinatY elinsun
     eger kordinatX ? 0 bolsa
         kordinatX qimmiti 5 bolsun
         kordinatY = kordinatY - 1
@@ -188,14 +188,14 @@ xizmetchi kunupkaSizish miqdar id mezmuni
     kunupkaOrniY = kunupkaOrniY + 15
     xizmetchi belgilerniElish bilen id ishlitilsun we kunupkaXeti elinsun
     # button
-    xizmetchi @zapchas[kunupkaKorsitish] bilen kunupkaOrniX kunupkaOrniY 100 50 kunupkaXeti ishlitilsun we rr elinsun
+    xizmetchi @zapchas:kunupkaKorsitish bilen kunupkaOrniX kunupkaOrniY 100 50 kunupkaXeti ishlitilsun we rr elinsun
     eger rr bolsa
         xizmetchi kunupkaQauturmisi bilen id ishlitilsun
     tamamlansun
 
 tamamlansun
 
-xizmetchi @*[doska_sizish_qayturmisi] mezmuni
+xizmetchi @*:doska_sizish_qayturmisi mezmuni
 
     # buttons
     kunupkaNumuri qimmiti 1 bolsun
@@ -206,23 +206,23 @@ xizmetchi @*[doska_sizish_qayturmisi] mezmuni
         tekshuruldighanQimmet = kunupkaNumuri < kunupkaSani
     tamamlansun
     # screen
-    xizmetchi @taxta[totTereplikToldurushAylandurulghan] bilen 7 5 500 55 [555555] 0 0 0 ishlitilsun
-    xizmetchi @taxta[totTereplikToldurushAylandurulghan] bilen 12 10 333 45 [333333] 0 0 0 ishlitilsun
-    xizmetchi @taxta[totTereplikToldurushAylandurulghan] bilen 350 20 70 35 [88888833] 0 0 0 ishlitilsun
+    xizmetchi @taxta:totTereplikToldurushAylandurulghan bilen 7 5 500 55 "555555" 0 0 0 ishlitilsun
+    xizmetchi @taxta:totTereplikToldurushAylandurulghan bilen 12 10 333 45 "333333" 0 0 0 ishlitilsun
+    xizmetchi @taxta:totTereplikToldurushAylandurulghan bilen 350 20 70 35 "88888833" 0 0 0 ishlitilsun
     # clear
-    xizmetchi @zapchas[kunupkaKorsitish] bilen 425 10 75 45 [Tazilash] ishlitilsun we rr elinsun
+    xizmetchi @zapchas:kunupkaKorsitish bilen 425 10 75 45 "Tazilash" ishlitilsun we rr elinsun
     eger rr bolsa
         xizmetchi tazilashQayturmisi ishlitilsun
     tamamlansun
     # input
     xizmetchi belgilerniElish bilen herketQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @taxta[xetYezish] bilen [] sinaqXet 36 2 [111111] 377 21 ishlitilsun
+    xizmetchi @taxta:xetYezish bilen "" sinaqXet 36 2 "111111" 377 21 ishlitilsun
     # result
-    xizmetchi @xet[formatlash] bilen [%f] netijeQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @taxta[xetYezish] bilen [] sinaqXet 24 2 [aaaaaa] 25 15 ishlitilsun
+    xizmetchi @xet:formatlash bilen "%f" netijeQimmet ishlitilsun we sinaqXet elinsun
+    xizmetchi @taxta:xetYezish bilen "" sinaqXet 24 2 "aaaaaa" 25 15 ishlitilsun
     # action
-    xizmetchi @xet[formatlash] bilen [%f] hazirqiQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @taxta[xetYezish] bilen [] sinaqXet 16 2 [aaaaaa] 25 38 ishlitilsun
+    xizmetchi @xet:formatlash bilen "%f" hazirqiQimmet ishlitilsun we sinaqXet elinsun
+    xizmetchi @taxta:xetYezish bilen "" sinaqXet 16 2 "aaaaaa" 25 38 ishlitilsun
 tamamlansun
 
-xizmetchi @sehne[korsitish] bilen 515 225 [Xisabliguch] 4096 ishlitilsun
+xizmetchi @sehne:korsitish bilen 515 225 "Xisabliguch" 4096 ishlitilsun

@@ -1,8 +1,8 @@
 
-fonksiyon @*[doska_korsitish_qayturmisi] içeriği
+fonksiyon @*:doska_korsitish_qayturmisi içeriği
 tamamlansin
 
-fonksiyon @*[doska_sizish_qayturmisi] içeriği
+fonksiyon @*:doska_sizish_qayturmisi içeriği
 tamamlansin
 
-fonksiyon @sehne[korsitish] ile -1 -1 [Yuguresh] 4096 kullanılsın
+fonksiyon @sehne:korsitish ile -1 -1 "Yuguresh" 4096 kullanılsın

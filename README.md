@@ -63,19 +63,19 @@ miqdar m qimmiti quruq bolsun
 miqdar n qimmiti san bolsun
 
 # set value
-m = [salam dunya!]
+m = "salam dunya!"
 
 # free variable
 m qimmiti quruq bolsun
 
 # type error
-n = [sinaq...]
+n = "sinaq..."
 ```
 
 * type
 
 ```powershell
-miqdar m qimmiti [yezish] bolsun
+miqdar m qimmiti "yezish" bolsun
 
 # get func by string
 m qimmiti xizmetchi bolsun
@@ -106,13 +106,13 @@ x = rast | yalghan # rast
 x = rast ~ yalghan # rast
 
 # logic
-x = [2] ? 2 # false
+x = "2" ? 2 # false
 x = 2 < 3 # true
-x = [ab] > [ac] # false 
+x = "ab" > "ac" # false 
 
 # string
-x = [ab] + [cd] # abcd
-x = [ab] * 2 # abab
+x = "ab" + "cd" # abcd
+x = "ab" * 2 # abab
 
 # checking
 x = 10 % 7 # 3
@@ -134,11 +134,11 @@ buyruq a yezilsun
 
 ```powershell
 eger 0 bolsa
-    buyruq [if] yezilsun
+    buyruq "if" yezilsun
 egerde rast bolsa
-    buyruq [elif] yezilsun
+    buyruq "elif" yezilsun
 bolmisa
-    buyruq [else] yezilsun
+    buyruq "else" yezilsun
 tamamlansun
 ```
 
@@ -147,7 +147,7 @@ tamamlansun
 ```powershell
 miqdar i qimmiti 0 bolsun
 nawada i < 9 bolsa
-    buyruq [while\n] yezilsun
+    buyruq "while\n" yezilsun
     i = i + 1
 tamamlansun
 ```
@@ -155,11 +155,11 @@ tamamlansun
 * spread
 
 ```powershell
-yeyilghan [abc...] miqdar i v bulup
+yeyilghan "abc..." miqdar i v bulup
     buyruq i yezilsun
-    buyruq [\t] yezilsun
+    buyruq "\t" yezilsun
     buyruq v yezilsun
-    buyruq [\n] yezilsun
+    buyruq "\n" yezilsun
 tamamlansun
 ```
 
@@ -194,11 +194,11 @@ tamamlansun
 
 # catch block
 eger e bolsa
-    buyruq [exception:\n] yezilsun
+    buyruq "exception:\n" yezilsun
     buyruq e yezilsun
-    buyruq [\n] yezilsun
+    buyruq "\n" yezilsun
 bolmisa
-    buyruq [successful!\n] yezilsun
+    buyruq "successful!\n" yezilsun
 tamamlansun
 ```
 
@@ -211,14 +211,14 @@ t qimmiti tertip bolsun
 s qimmiti sanduq bolsun
 
 # generate a list
-t = {11, 22, [abc]}
+t = [11, 22, "abc"]
 # generate a dict
-s = {a: [aa], b: [bb], c: 123}
+s = {a: "aa", b: "bb", c: 123}
 
 # put a number key
-@t{1} = 456
+@t:1 = 456
 # put a string key
-@s[k] = [abc]
+@s:k = "abc"
 # put a variable key
 @s{v} = val
 
@@ -233,41 +233,41 @@ b = t % tertip
 ```powershell
 # an assister with one argument
 yardemchi X miqdar x mezmuni
-    @-[x] = x
+    @-:x = x
 tamamlansun
 
 # assister func
-xizmetchi @X[test] mezmuni
-    buyruq [X.test...\n] yezilsun
+xizmetchi @X:test mezmuni
+    buyruq "X.test...\n" yezilsun
 tamamlansun
 
 # a creator with one arguments
 yasighuchi Y miqdar y mezmuni
-    yasighuchi X bilen [arg xxx ...\n] ishlitilsun 
-    @-[y] = y
+    yasighuchi X bilen "arg xxx ...\n" ishlitilsun 
+    @-:y = y
 tamamlansun
 
 # creator func
-xizmetchi @Y[test] mezmuni
-    xizmetchi @X[test] ishlitilsun
-    buyruq [Y.test...\n] yezilsun
+xizmetchi @Y:test mezmuni
+    xizmetchi @X:test ishlitilsun
+    buyruq "Y.test...\n" yezilsun
 tamamlansun
 
 # call creator using an assister and receive object
-yasighuchi Y bilen [arg yyy ...\n] ishlitilsun we r elinsun
+yasighuchi Y bilen "arg yyy ...\n" ishlitilsun we r elinsun
 
 # print the object value received
-buyruq @r[x] yezilsun # arg xxx ...
-buyruq @r[y] yezilsun # arg yyy ...
+buyruq @r:x yezilsun # arg xxx ...
+buyruq @r:y yezilsun # arg yyy ...
 
 # call creator func which calling assister func inside
-xizmetchi @r[test] ishlitilsun
+xizmetchi @r:test ishlitilsun
 # X.test...
 # Y.test...
 
 # check obj is created by or assisted by
 eger r % X bolsa
-    buyruq [yes\n] yezilsun
+    buyruq "yes\n" yezilsun
 tamamlansun
 # yes
 ```
@@ -276,11 +276,11 @@ tamamlansun
 
 ```powershell
 # other.xx
-miqdar x qimmiti [other...] bolsun
+miqdar x qimmiti "other..." bolsun
 
 # main.xx
-xizmetchi ekirish bilen [../other.xx] ishlitilsun we m elinsun
-buyruq @m[x] yezilsun
+xizmetchi ekirish bilen "../other.xx" ishlitilsun we m elinsun
+buyruq @m:x yezilsun
 
 # run the program
 `.uyghur.exe ./main.xx`

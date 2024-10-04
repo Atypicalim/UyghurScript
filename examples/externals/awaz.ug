@@ -2,14 +2,14 @@
 
 miqdar tag qimmiti quruq bolsun
 
-xizmetchi @*[doska_korsitish_qayturmisi] mezmuni
-    xizmetchi @awaz[yuklesh] bilen [../resources/road.wav] ishlitilsun we tag elinsun
-    xizmetchi @awaz[quyush] bilen tag ishlitilsun
-    xizmetchi @awaz[yuklesh] bilen [../resources/door.wav] ishlitilsun we tag elinsun
-    xizmetchi @awaz[quyush] bilen tag ishlitilsun
+xizmetchi @*:doska_korsitish_qayturmisi mezmuni
+    xizmetchi @awaz:yuklesh bilen "../resources/road.wav" ishlitilsun we tag elinsun
+    xizmetchi @awaz:quyush bilen tag ishlitilsun
+    xizmetchi @awaz:yuklesh bilen "../resources/door.wav" ishlitilsun we tag elinsun
+    xizmetchi @awaz:quyush bilen tag ishlitilsun
 tamamlansun
 
-xizmetchi @*[doska_sizish_qayturmisi] mezmuni
+xizmetchi @*:doska_sizish_qayturmisi mezmuni
 tamamlansun
 
-xizmetchi @sehne[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun
+xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" 4096 ishlitilsun

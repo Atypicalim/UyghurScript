@@ -1,10 +1,10 @@
 
 # other.xx
-miqdar x qimmiti [other...] bolsun
+miqdar x qimmiti "other..." bolsun
 
 # main.xx
-xizmetchi ekirish bilen [../other.xx] ishlitilsun we m elinsun
-buyruq @m[x] yezilsun
+xizmetchi ekirish bilen "../other.xx" ishlitilsun we m elinsun
+buyruq @m:x yezilsun
 
 # run the program
 `.uyghur.exe ./main.xx`

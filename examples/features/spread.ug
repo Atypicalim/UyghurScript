@@ -1,7 +1,7 @@
 
-yeyilghan [abc...] miqdar i v bulup
+yeyilghan "abc..." miqdar i v bulup
     buyruq i yezilsun
-    buyruq [\t] yezilsun
+    buyruq "\t" yezilsun
     buyruq v yezilsun
-    buyruq [\n] yezilsun
+    buyruq "\n" yezilsun
 tamamlansun

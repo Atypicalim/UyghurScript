@@ -11,7 +11,7 @@ merkezX = ikranKengliki / 2
 merkezY = ikranIgizliki / 2
 
 # miqdarlar
-miqdar tema qimmiti [chik chik chik, oyghan balijan ...] bolsun
+miqdar tema qimmiti "chik chik chik, oyghan balijan ..." bolsun
 miqdar chisla qimmiti quruq bolsun
 # 
 miqdar saet qimmiti quruq bolsun
@@ -28,9 +28,9 @@ miqdar saetArtuqche qimmiti quruq bolsun
 miqdar minutArtuqche qimmiti quruq bolsun
 
 # istirilka nami
-miqdar SAET qimmiti [SAET] bolsun
-miqdar MINUT qimmiti [MINUT] bolsun
-miqdar SIKUNIT qimmiti [SIKUNIT] bolsun
+miqdar SAET qimmiti "SAET" bolsun
+miqdar MINUT qimmiti "MINUT" bolsun
+miqdar SIKUNIT qimmiti "SIKUNIT" bolsun
 
 # radius
 miqdar teglikRadiusi qimmiti 185 bolsun
@@ -62,10 +62,10 @@ miqdar x qimmiti quruq bolsun
 miqdar y qimmiti quruq bolsun
 xizmetchi istirilkaSizish miqdar istirilka bulung mezmuni
     # Pythagoras qanuniyiti
-    xizmetchi @san[radianghaAylandurush] bilen bulung ishlitilsun we a elinsun
-    xizmetchi @san[radianghaAylandurush] bilen bulung ishlitilsun we b elinsun
-    xizmetchi @san[sinosHisablash] bilen a ishlitilsun we a elinsun
-    xizmetchi @san[kosinosHisablash] bilen b ishlitilsun we b elinsun
+    xizmetchi @san:radianghaAylandurush bilen bulung ishlitilsun we a elinsun
+    xizmetchi @san:radianghaAylandurush bilen bulung ishlitilsun we b elinsun
+    xizmetchi @san:sinosHisablash bilen a ishlitilsun we a elinsun
+    xizmetchi @san:kosinosHisablash bilen b ishlitilsun we b elinsun
     # 
     eger istirilka ? SAET bolsa
         hazirqiRadius qimmiti saetRadiusi bolsun
@@ -82,14 +82,14 @@ xizmetchi istirilkaSizish miqdar istirilka bulung mezmuni
     x = merkezX + x
     y = merkezY - y
     # 
-    xizmetchi @taxta[siziqSizish] bilen merkezX merkezY x y 5 [eeeeee] ishlitilsun
+    xizmetchi @taxta:siziqSizish bilen merkezX merkezY x y 5 "eeeeee" ishlitilsun
 tamamlansun
 
 xizmetchi istirilkaHisablash miqdar hazirqiWaqit mezmuni
     # waqitni aylandurush
-    xizmetchi @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%H] ishlitilsun we saet elinsun
-    xizmetchi @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%M] ishlitilsun we minut elinsun
-    xizmetchi @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%S] ishlitilsun we sikunit elinsun
+    xizmetchi @waqit:sikuntniAylandurush bilen hazirqiWaqit "%H" ishlitilsun we saet elinsun
+    xizmetchi @waqit:sikuntniAylandurush bilen hazirqiWaqit "%M" ishlitilsun we minut elinsun
+    xizmetchi @waqit:sikuntniAylandurush bilen hazirqiWaqit "%S" ishlitilsun we sikunit elinsun
     saet qimmiti san bolsun
     minut qimmiti san bolsun
     sikunit qimmiti san bolsun
@@ -112,17 +112,17 @@ tamamlansun
 
 
 
-xizmetchi @*[doska_sizish_qayturmisi] mezmuni
+xizmetchi @*:doska_sizish_qayturmisi mezmuni
     #
-    xizmetchi @waqit[sikuntElish] ishlitilsun we hazirqiWaqit elinsun
+    xizmetchi @waqit:sikuntElish ishlitilsun we hazirqiWaqit elinsun
     # teglik sizish
-    xizmetchi @taxta[totTereplikToldurushAylandurulghan] bilen 0 0 ikranKengliki ikranIgizliki [101010] 0 0 0 ishlitilsun
-    xizmetchi @taxta[totTereplikToldurushAylandurulghan] bilen 5 5 490 590 [303030] 0 0 0 ishlitilsun
-    xizmetchi @taxta[chemberToldurush] bilen merkezX merkezY teglikRadiusi teglikRadiusi [101010] ishlitilsun
+    xizmetchi @taxta:totTereplikToldurushAylandurulghan bilen 0 0 ikranKengliki ikranIgizliki "101010" 0 0 0 ishlitilsun
+    xizmetchi @taxta:totTereplikToldurushAylandurulghan bilen 5 5 490 590 "303030" 0 0 0 ishlitilsun
+    xizmetchi @taxta:chemberToldurush bilen merkezX merkezY teglikRadiusi teglikRadiusi "101010" ishlitilsun
     # xet yezish
-    xizmetchi @taxta[xetYezish] bilen [../resources/ukij.ttf] tema 36 0 [bbbbbb] 35 20 ishlitilsun
-    xizmetchi @waqit[sikuntniAylandurush] bilen hazirqiWaqit [%Y-%m-%d %H:%M:%S] ishlitilsun we chisla elinsun
-    xizmetchi @taxta[xetYezish] bilen [../resources/ukij.ttf] chisla 36 0 [eeeeee] 115 450 ishlitilsun
+    xizmetchi @taxta:xetYezish bilen "../resources/ukij.ttf" tema 36 0 "bbbbbb" 35 20 ishlitilsun
+    xizmetchi @waqit:sikuntniAylandurush bilen hazirqiWaqit "%Y-%m-%d %H:%M:%S" ishlitilsun we chisla elinsun
+    xizmetchi @taxta:xetYezish bilen "../resources/ukij.ttf" chisla 36 0 "eeeeee" 115 450 ishlitilsun
     # istirilka hisablash
     xizmetchi istirilkaHisablash bilen hazirqiWaqit ishlitilsun
     # istirilka sizish
@@ -130,10 +130,10 @@ xizmetchi @*[doska_sizish_qayturmisi] mezmuni
     xizmetchi istirilkaSizish bilen MINUT minutGradusi ishlitilsun
     xizmetchi istirilkaSizish bilen SIKUNIT sikunitGradusi ishlitilsun
     # mekez sizish
-    xizmetchi @taxta[chemberToldurush] bilen merkezX merkezY 10 10 [303030] ishlitilsun
+    xizmetchi @taxta:chemberToldurush bilen merkezX merkezY 10 10 "303030" ishlitilsun
 tamamlansun
 
-xizmetchi @sehne[korsitish] bilen -1 -1 [sinaq] 4096 ishlitilsun
+xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" 4096 ishlitilsun
 
 
 

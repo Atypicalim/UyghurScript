@@ -9,12 +9,12 @@ miqdar t qimmiti quruq bolsun
 
 miqdar n qimmiti 1 bolsun
 miqdar m qimmiti 1 bolsun
-miqdar s qimmiti [Bir Ikki Bir, Bir Ikki Bir ...] bolsun
+miqdar s qimmiti "Bir Ikki Bir, Bir Ikki Bir ..." bolsun
 
-xizmetchi @*[doska_korsitish_qayturmisi] mezmuni
+xizmetchi @*:doska_korsitish_qayturmisi mezmuni
 tamamlansun
 
-xizmetchi @*[doska_sizish_qayturmisi] mezmuni
+xizmetchi @*:doska_sizish_qayturmisi mezmuni
 
     m = m + 1
     t = m > 400
@@ -33,14 +33,14 @@ xizmetchi @*[doska_sizish_qayturmisi] mezmuni
         y = 262
     tamamlansun
 
-    xizmetchi @taxta[sizmaNeqishlesh] bilen [../resources/run.png] 0 0 -1 -1 yalghan yalghan ishlitilsun we r elinsun
-    xizmetchi @taxta[neqishSizish] bilen r 100 300 0.5 0.5 [aaffff] x y 200 260 0.5 1 ishlitilsun
-    xizmetchi @taxta[neqishSizish] bilen r 250 300 0.5 0.5 [ffffaa] x y 200 260 0.5 1 ishlitilsun
-    xizmetchi @taxta[neqishSizish] bilen r 400 300 0.5 0.5 [ffaaff] x y 200 260 0.5 1 ishlitilsun
+    xizmetchi @taxta:sizmaNeqishlesh bilen "../resources/run.png" 0 0 -1 -1 yalghan yalghan ishlitilsun we r elinsun
+    xizmetchi @taxta:neqishSizish bilen r 100 300 0.5 0.5 "aaffff" x y 200 260 0.5 1 ishlitilsun
+    xizmetchi @taxta:neqishSizish bilen r 250 300 0.5 0.5 "ffffaa" x y 200 260 0.5 1 ishlitilsun
+    xizmetchi @taxta:neqishSizish bilen r 400 300 0.5 0.5 "ffaaff" x y 200 260 0.5 1 ishlitilsun
 
-    xizmetchi @taxta[yazmaNeqishlesh] bilen [../resources/ukij.ttf] s 36 0 ishlitilsun we w elinsun
-    xizmetchi @taxta[neqishSizish] bilen w 250 50 0.5 0.5 [333333] 0 0 -1 -1 0.5 1 ishlitilsun
+    xizmetchi @taxta:yazmaNeqishlesh bilen "../resources/ukij.ttf" s 36 0 ishlitilsun we w elinsun
+    xizmetchi @taxta:neqishSizish bilen w 250 50 0.5 0.5 "333333" 0 0 -1 -1 0.5 1 ishlitilsun
 
 tamamlansun
 
-xizmetchi @sehne[korsitish] bilen -1 -1 [Yuguresh] 4096 ishlitilsun
+xizmetchi @sehne:korsitish bilen -1 -1 "Yuguresh" 4096 ishlitilsun

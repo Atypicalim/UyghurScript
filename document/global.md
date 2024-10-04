@@ -17,11 +17,11 @@ xizmetchi yezish bilen r ishlitilsun
 # output a value to terminal
 
 ```python
-xizmetchi ekirish bilen [../examples/hello.ug] ishlitilsun we hello elinsun
+xizmetchi ekirish bilen "../examples/hello.ug" ishlitilsun we hello elinsun
 # inport a module and return a box
 
 ```python
-xizmetchi tazilash bilen [../examples/hello.ug] ishlitilsun
+xizmetchi tazilash bilen "../examples/hello.ug" ishlitilsun
 # merhaba uyghur script!
 
 ```python

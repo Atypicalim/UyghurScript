@@ -1,4 +1,4 @@
 
-xizmetchi @xet[formatlash] bilen [%.5f] 12.5 ishlitilsun we r elinsun
+xizmetchi @xet:formatlash bilen "%.5f" 12.5 ishlitilsun we r elinsun
 buyruq r yezilsun
-buyruq [\n] yezilsun
+buyruq "\n" yezilsun
