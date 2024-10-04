@@ -1,0 +1,40 @@
+
+# an yordamchi bilan one argument
+yordamchi X o'zgaruvch x mazmuni
+    @-:x = x
+tamomlansin
+
+# yordamchi func
+xizmatchi @X:test mazmuni
+    buyruq "X.test...\n" yozilsin
+tamomlansin
+
+# a yasag'uchi bilan one arguments
+yasag'uchi Y o'zgaruvch y mazmuni
+    yasag'uchi X bilan "arg xxx ...\n" ishlatilsin 
+    @-:y = y
+tamomlansin
+
+# yasag'uchi func
+xizmatchi @Y:test mazmuni
+    xizmatchi @X:test ishlatilsin
+    buyruq "Y.test...\n" yozilsin
+tamomlansin
+
+# call yasag'uchi using an yordamchi va receive obekit
+yasag'uchi Y bilan "arg yyy ...\n" ishlatilsin va r olinsin
+
+# print the obekit qiymati olinsin
+buyruq @r:x yozilsin # arg xxx ...
+buyruq @r:y yozilsin # arg yyy ...
+
+# call yasag'uchi func which calling yordamchi func inside
+xizmatchi @r:test ishlatilsin
+# X.test...
+# Y.test...
+
+# check obj is created by or assisted by
+agar r % X bo'lsa
+    buyruq "yes\n" yozilsin
+tamomlansin
+# yes

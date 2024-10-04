@@ -1,0 +1,15 @@
+
+# a local miqdar
+miqdar t qimmiti 0 bolsun
+
+# a function bilen two arguments
+xizmetchi f miqdar x y mezmuni
+    t = x + y
+    netije t qayturulsun
+tamamlansun
+
+# call functions we receive netije
+xizmetchi f bilen 10 20 ishlitilsun we r elinsun
+
+# print the netije qimmiti elinsun
+buyruq r yezilsun

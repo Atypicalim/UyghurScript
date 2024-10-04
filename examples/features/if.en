@@ -1,0 +1,8 @@
+
+if 0 then
+    command "if" write
+elif right then
+    command "elif" write
+else
+    command "else" write
+finish

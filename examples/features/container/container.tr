@@ -1,0 +1,22 @@
+
+#  declare a tertip
+t kıymeti tertip olsun
+#  declare a sandık
+s kıymeti sandık olsun
+
+# generate a tertip
+t = [11, 22, "abc"]
+# generate a sandık
+s = {a: "aa", b: "bb", c: 123}
+
+# put a sayı key
+@t:1 = 456
+# put a dize key
+@s:k = "abc"
+# put a var key
+@s{v} = val
+
+# alias: this: - bu, module: + bolek, global: * dünya
+
+# check tür
+b = t % tertip

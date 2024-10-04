@@ -1,0 +1,22 @@
+
+#  declare a тертіп
+t қимметі тертіп болсын
+#  declare a сандық
+s қимметі сандық болсын
+
+# generate a тертіп
+t = [11, 22, "abc"]
+# generate a сандық
+s = {a: "aa", b: "bb", c: 123}
+
+# put a сан key
+@t:1 = 456
+# put a хат key
+@s:k = "abc"
+# put a var key
+@s{v} = val
+
+# alias: this: - bu, module: + bolek, global: * дүние
+
+# check түр
+b = t % тертіп

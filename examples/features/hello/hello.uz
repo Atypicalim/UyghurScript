@@ -1,0 +1,6 @@
+
+o'zgaruvch i qiymati 0 bo'lsin
+shundayda i < 9 bo'lsa
+    buyruq "👀👋\n" yozilsin
+    i = i + 1
+tamomlansin

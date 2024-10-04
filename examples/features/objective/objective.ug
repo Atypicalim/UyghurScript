@@ -1,0 +1,40 @@
+
+# an yardemchi bilen one argument
+yardemchi X miqdar x mezmuni
+    @-:x = x
+tamamlansun
+
+# yardemchi func
+xizmetchi @X:test mezmuni
+    buyruq "X.test...\n" yezilsun
+tamamlansun
+
+# a yasighuchi bilen one arguments
+yasighuchi Y miqdar y mezmuni
+    yasighuchi X bilen "arg xxx ...\n" ishlitilsun 
+    @-:y = y
+tamamlansun
+
+# yasighuchi func
+xizmetchi @Y:test mezmuni
+    xizmetchi @X:test ishlitilsun
+    buyruq "Y.test...\n" yezilsun
+tamamlansun
+
+# call yasighuchi using an yardemchi we receive obekit
+yasighuchi Y bilen "arg yyy ...\n" ishlitilsun we r elinsun
+
+# print the obekit qimmiti elinsun
+buyruq @r:x yezilsun # arg xxx ...
+buyruq @r:y yezilsun # arg yyy ...
+
+# call yasighuchi func which calling yardemchi func inside
+xizmetchi @r:test ishlitilsun
+# X.test...
+# Y.test...
+
+# check obj is created by or assisted by
+eger r % X bolsa
+    buyruq "yes\n" yezilsun
+tamamlansun
+# yes

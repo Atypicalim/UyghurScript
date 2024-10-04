@@ -1,0 +1,16 @@
+
+variable x value empty made
+
+# try block
+exception e become
+    x = 3 / 0
+finish
+
+# catch block
+if e then
+    command "exception:\n" write
+    command e write
+    command "\n" write
+else
+    command "successful!\n" write
+finish

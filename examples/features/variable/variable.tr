@@ -1,0 +1,15 @@
+
+# a dynamic var
+değişken m kıymeti boş olsun
+
+# a static var
+değişken n kıymeti sayı olsun
+
+# set val
+m = "salam dunya!"
+
+# free val
+m kıymeti boş olsun
+
+# tür error
+n = "sinaq..."

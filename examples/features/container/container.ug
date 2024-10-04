@@ -1,0 +1,22 @@
+
+#  declare a tertip
+t qimmiti tertip bolsun
+#  declare a sanduq
+s qimmiti sanduq bolsun
+
+# generate a tertip
+t = [11, 22, "abc"]
+# generate a sanduq
+s = {a: "aa", b: "bb", c: 123}
+
+# put a san key
+@t:1 = 456
+# put a xet key
+@s:k = "abc"
+# put a var key
+@s{v} = val
+
+# alias: this: - bu, module: + bolek, global: * dunya
+
+# check tip
+b = t % tertip

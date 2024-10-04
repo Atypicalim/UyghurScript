@@ -1,0 +1,15 @@
+
+# a dynamic var
+variable m value empty made
+
+# a static var
+variable n value num made
+
+# set val
+m = "salam dunya!"
+
+# free val
+m value empty made
+
+# type error
+n = "sinaq..."

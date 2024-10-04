@@ -1,0 +1,15 @@
+
+# a dynamic var
+miqdar m qimmiti quruq bolsun
+
+# a static var
+miqdar n qimmiti san bolsun
+
+# set val
+m = "salam dunya!"
+
+# free val
+m qimmiti quruq bolsun
+
+# tip error
+n = "sinaq..."

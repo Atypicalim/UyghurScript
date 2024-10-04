@@ -1,8 +1,0 @@
-
-eger 0 bolsa
-    buyruq "if" yezilsun
-egerde rast bolsa
-    buyruq "elif" yezilsun
-bolmisa
-    buyruq "else" yezilsun
-tamamlansun

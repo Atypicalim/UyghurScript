@@ -1,0 +1,10 @@
+
+variable m value "yezish" made
+
+# get func by string
+m value worker made
+command m write
+
+# convert value to boolean
+m value logic made
+command m write

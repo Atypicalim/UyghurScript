@@ -1,0 +1,13 @@
+
+# other.xx
+değişken x kıymeti "other..." olsun
+
+# main.xx
+hizmetçi ekirish ile "../other.xx" kullanılsın ve m alısın
+buyruk @m:x yaz
+
+# run the program
+`.uyghur.exe ./main.xx`
+
+# get the netice
+other...

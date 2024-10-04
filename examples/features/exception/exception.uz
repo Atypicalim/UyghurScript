@@ -1,0 +1,16 @@
+
+o'zgaruvch x qiymati bo'sh bo'lsin
+
+# try block
+xatolik e bo'lib
+    x = 3 / 0
+tamomlansin
+
+# catch block
+agar e bo'lsa
+    buyruq "exception:\n" yozilsin
+    buyruq e yozilsin
+    buyruq "\n" yozilsin
+bo'lmasa
+    buyruq "successful!\n" yozilsin
+tamomlansin

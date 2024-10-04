@@ -1,0 +1,15 @@
+
+# a dynamic var
+айнымалы m қимметі бос болсын
+
+# a static var
+айнымалы n қимметі сан болсын
+
+# set val
+m = "salam dunya!"
+
+# free val
+m қимметі бос болсын
+
+# түр error
+n = "sinaq..."

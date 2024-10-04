@@ -1,0 +1,6 @@
+
+# read a value
+command a read
+
+# print a value
+command a write

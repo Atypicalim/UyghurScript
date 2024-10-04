@@ -1,0 +1,6 @@
+
+miqdar i qimmiti 0 bolsun
+nawada i < 9 bolsa
+    buyruq "👀👋\n" yezilsun
+    i = i + 1
+tamamlansun

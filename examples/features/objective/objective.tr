@@ -1,0 +1,40 @@
+
+# an yardımcı ile one argument
+yardımcı X değişken x içeriği
+    @-:x = x
+tamamlansin
+
+# yardımcı func
+hizmetçi @X:test içeriği
+    buyruk "X.test...\n" yaz
+tamamlansin
+
+# a oluşturucu ile one arguments
+oluşturucu Y değişken y içeriği
+    oluşturucu X ile "arg xxx ...\n" kullanılsın 
+    @-:y = y
+tamamlansin
+
+# oluşturucu func
+hizmetçi @Y:test içeriği
+    hizmetçi @X:test kullanılsın
+    buyruk "Y.test...\n" yaz
+tamamlansin
+
+# call oluşturucu using an yardımcı ve receive obekit
+oluşturucu Y ile "arg yyy ...\n" kullanılsın ve r alısın
+
+# print the obekit kıymeti alısın
+buyruk @r:x yaz # arg xxx ...
+buyruk @r:y yaz # arg yyy ...
+
+# call oluşturucu func which calling yardımcı func inside
+hizmetçi @r:test kullanılsın
+# X.test...
+# Y.test...
+
+# check obj is created by or assisted by
+eğer r % X olsa
+    buyruk "yes\n" yaz
+tamamlansin
+# yes

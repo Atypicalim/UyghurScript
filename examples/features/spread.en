@@ -1,0 +1,7 @@
+
+speaded "abc..." variable i v become
+    command i write
+    command "\t" write
+    command v write
+    command "\n" write
+finish
