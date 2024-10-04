@@ -1,4 +1,14 @@
 
+hello:
+  prefix: TVALUE_HELLO
+  message:
+    en: "make hello sentence"
+    uy: "سالام جۈملىسى ياساش"
+    ug: "salam jumlisi yasash"
+    uz: salom bayonoti tuzish
+    tr: "selam cümlesi yapmak"
+    kz: "сәлем сөйлемі жасау"
+
 variable:
   prefix: TVALUE_VARIABLE
   message:

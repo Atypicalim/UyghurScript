@@ -15,32 +15,32 @@
 ## 1. multiple langauge
 
 
-* a. english
+* a. [english](examples\language\en)
 
 ![](./resources/languages/hello.en.png)
 
 
-* b. ئۇيغۇرچە
+* b. [ئۇيغۇرچە](examples\language\uy)
 
 ![](./resources/languages/hello.uy.png)
 
 
-* c. uyghurche
+* c. [uyghurche](examples\language\ug)
 
 ![](./resources/languages/hello.ug.png)
 
 
-* d. o'zbekcha
+* d. [o'zbekcha](examples\language\uz)
 
 ![](./resources/languages/hello.uz.png)
 
 
-* e. Türkçe
+* e. [Türkçe](examples\language\tr)
 
 ![](./resources/languages/hello.tr.png)
 
 
-* f. қазақша
+* f. [қазақша](examples\language\kz)
 
 ![](./resources/languages/hello.kz.png)
 
@@ -53,40 +53,40 @@
 
 ## 3. supported features
 
-* variable
+* [variable](examples\features\variable)
 
 ```powershell
-# declare a dynamic variable
-miqdar m qimmiti quruq bolsun
+# a dynamic var
+variable m value empty made
 
-# declare a static variable
-miqdar n qimmiti san bolsun
+# a static var
+variable n value num made
 
-# set value
+# set val
 m = "salam dunya!"
 
-# free variable
-m qimmiti quruq bolsun
+# free val
+m value empty made
 
 # type error
 n = "sinaq..."
 ```
 
-* type
+* [type](examples\features\type)
 
 ```powershell
-miqdar m qimmiti "yezish" bolsun
+variable m value "yezish" made
 
 # get func by string
-m qimmiti xizmetchi bolsun
-buyruq m yezilsun
+m value worker made
+command m write
 
 # convert value to boolean
-m qimmiti logika bolsun
-buyruq m yezilsun
+m value logic made
+command m write
 ```
 
-* calculation
+* [calculation](examples\features\calculation)
 
 ```powershell
 # arthimetic
@@ -101,9 +101,9 @@ x = 3 | 2 # 3
 x = 3 ~ 2 # 1
 
 # boolean
-x = rast & yalghan # yalghan
-x = rast | yalghan # rast
-x = rast ~ yalghan # rast
+x = right & wrong # wrong
+x = right | wrong # right
+x = right ~ wrong # right
 
 # logic
 x = "2" ? 2 # false
@@ -116,171 +116,171 @@ x = "ab" * 2 # abab
 
 # checking
 x = 10 % 7 # 3
-x = 10 % san # true
-x = 10 % quruq # false
+x = 10 % num # true
+x = 10 % empty # false
 ```
 
-* command
+* [command](examples\features\command)
 
 ```powershell
 # read a value
-buyruq a oqulsun
+command a read
 
 # print a value
-buyruq a yezilsun
+command a write
 ```
 
-* if
+* [if](examples\features\if)
 
 ```powershell
-eger 0 bolsa
-    buyruq "if" yezilsun
-egerde rast bolsa
-    buyruq "elif" yezilsun
-bolmisa
-    buyruq "else" yezilsun
-tamamlansun
+if 0 then
+    command "if" write
+elif right then
+    command "elif" write
+else
+    command "else" write
+finish
 ```
 
-* while
+* [while](examples\features\while)
 
 ```powershell
-miqdar i qimmiti 0 bolsun
-nawada i < 9 bolsa
-    buyruq "while\n" yezilsun
+variable i value 0 made
+while i < 9 then
+    command "while\n" write
     i = i + 1
-tamamlansun
+finish
 ```
 
-* spread
+* [spread](examples\features\spread)
 
 ```powershell
-yeyilghan "abc..." miqdar i v bulup
-    buyruq i yezilsun
-    buyruq "\t" yezilsun
-    buyruq v yezilsun
-    buyruq "\n" yezilsun
-tamamlansun
+speaded "abc..." variable i v become
+    command i write
+    command "\t" write
+    command v write
+    command "\n" write
+finish
 ```
 
-* worker
+* [worker](examples\features\worker)
 
 ```powershell
 # a local variable
-miqdar t qimmiti 0 bolsun
+variable t value 0 made
 
 # a function with two arguments
-xizmetchi f miqdar x y mezmuni
+worker f variable x y content
     t = x + y
-    netije t qayturulsun
-tamamlansun
+    result t returned
+finish
 
 # call functions and receive result
-xizmetchi f bilen 10 20 ishlitilsun we r elinsun
+worker f with 10 20 applied and r received
 
 # print the result value received
-buyruq r yezilsun
+command r write
 ```
 
-* exception
+* [exception](examples\features\exception)
 
 ```powershell
-miqdar x qimmiti quruq bolsun
+variable x value empty made
 
 # try block
-xataliq e bulup
+exception e become
     x = 3 / 0
-tamamlansun
+finish
 
 # catch block
-eger e bolsa
-    buyruq "exception:\n" yezilsun
-    buyruq e yezilsun
-    buyruq "\n" yezilsun
-bolmisa
-    buyruq "successful!\n" yezilsun
-tamamlansun
+if e then
+    command "exception:\n" write
+    command e write
+    command "\n" write
+else
+    command "successful!\n" write
+finish
 ```
 
-* container
+* [container](examples\features\container)
 
 ```powershell
 #  declare a list
-t qimmiti tertip bolsun
+t value list made
 #  declare a dict
-s qimmiti sanduq bolsun
+s value dict made
 
 # generate a list
 t = [11, 22, "abc"]
 # generate a dict
 s = {a: "aa", b: "bb", c: 123}
 
-# put a number key
+# put a num key
 @t:1 = 456
-# put a string key
+# put a str key
 @s:k = "abc"
-# put a variable key
+# put a var key
 @s{v} = val
 
-# alias: this: - bu, module: + bolek, global: * dunya
+# alias: this: - bu, module: + bolek, global: * global
 
 # check type
-b = t % tertip
+b = t % list
 ```
 
-* objective
+* [objective](examples\features\objective)
 
 ```powershell
 # an assister with one argument
-yardemchi X miqdar x mezmuni
+assister X variable x content
     @-:x = x
-tamamlansun
+finish
 
 # assister func
-xizmetchi @X:test mezmuni
-    buyruq "X.test...\n" yezilsun
-tamamlansun
+worker @X:test content
+    command "X.test...\n" write
+finish
 
 # a creator with one arguments
-yasighuchi Y miqdar y mezmuni
-    yasighuchi X bilen "arg xxx ...\n" ishlitilsun 
+creator Y variable y content
+    creator X with "arg xxx ...\n" applied 
     @-:y = y
-tamamlansun
+finish
 
 # creator func
-xizmetchi @Y:test mezmuni
-    xizmetchi @X:test ishlitilsun
-    buyruq "Y.test...\n" yezilsun
-tamamlansun
+worker @Y:test content
+    worker @X:test applied
+    command "Y.test...\n" write
+finish
 
 # call creator using an assister and receive object
-yasighuchi Y bilen "arg yyy ...\n" ishlitilsun we r elinsun
+creator Y with "arg yyy ...\n" applied and r received
 
 # print the object value received
-buyruq @r:x yezilsun # arg xxx ...
-buyruq @r:y yezilsun # arg yyy ...
+command @r:x write # arg xxx ...
+command @r:y write # arg yyy ...
 
 # call creator func which calling assister func inside
-xizmetchi @r:test ishlitilsun
+worker @r:test applied
 # X.test...
 # Y.test...
 
 # check obj is created by or assisted by
-eger r % X bolsa
-    buyruq "yes\n" yezilsun
-tamamlansun
+if r % X then
+    command "yes\n" write
+finish
 # yes
 ```
 
-* import
+* [import](examples\features\import)
 
 ```powershell
 # other.xx
-miqdar x qimmiti "other..." bolsun
+variable x value "other..." made
 
 # main.xx
-xizmetchi ekirish bilen "../other.xx" ishlitilsun we m elinsun
-buyruq @m:x yezilsun
+worker ekirish with "../other.xx" applied and m received
+command @m:x write
 
 # run the program
 `.uyghur.exe ./main.xx`

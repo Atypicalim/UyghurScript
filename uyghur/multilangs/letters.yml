@@ -1,5 +1,14 @@
 
 #
+TVALUE_HELLO:
+  en: hello
+  uy: سالام
+  ug: salam
+  uz: salom
+  tr: selam
+  kz: сәлем
+
+#
 TVALUE_KIND:
   en: type
   uy: تىپ

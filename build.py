@@ -14,35 +14,36 @@ tools = builder.tools
 
 PROJECT_NAME ="UyghurScript"
 PROJECT_REPO ="https://github.com/Atypicalim/UyghurScript"
-VERSION_CODE = 0.9
-EXTENSION_VERSION = "1.0.9"
-EXAMPLE_LANG = 'ug'
+VERSION_CODE = 0.10
+EXTENSION_VERSION = "1.0.10"
+EXAMPLE_LANG = 'en'
 SUPPORT_LANG = set()
 # SCRIPT_PATH = "./examples/help.ug"
 SCRIPT_PATH = "./examples/sinaq.ug"
 # SCRIPT_PATH = "./examples/externals/yuguresh.ug"
+# SCRIPT_PATH = "./examples/features/objective.ug"
 SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
 
 ###############################################################################
 
 DIR_BUILD = "./build/"
 tools.files.mk_folder(DIR_BUILD)
+DIR_EXAMPLE = "./examples/"
 
-DIR_SNIPPETS = tools.tools.append_path(DIR_BUILD, "snippets")
-DIR_FEATURES = tools.tools.append_path(DIR_BUILD, "features")
+DIR_TEMPORARY = tools.tools.append_path(DIR_BUILD, "temporary")
+tools.files.delete(DIR_TEMPORARY)
+tools.files.mk_folder(DIR_TEMPORARY)
 
-DIR_SNIPPET_TRANS = tools.tools.append_path(DIR_SNIPPETS, "trans")
-DIR_SNIPPET_COLOR = tools.tools.append_path(DIR_SNIPPETS, "color")
-DIR_FEATURE_TRANS = tools.tools.append_path(DIR_FEATURES, "trans")
-DIR_FEATURE_COLOR = tools.tools.append_path(DIR_FEATURES, "color")
+DIR_SNIPPETS = tools.tools.append_path(DIR_EXAMPLE, "snippets")
+DIR_FEATURES = tools.tools.append_path(DIR_EXAMPLE, "features")
+DIR_LANGUAGE = tools.tools.append_path(DIR_EXAMPLE, "language")
+
+DIR_SNIPPET_TRANS = tools.tools.append_path(DIR_BUILD, "snippets_trans")
+DIR_SNIPPET_COLOR = tools.tools.append_path(DIR_BUILD, "snippets_color")
 tools.files.delete(DIR_SNIPPET_TRANS)
 tools.files.delete(DIR_SNIPPET_COLOR)
-tools.files.delete(DIR_FEATURE_TRANS)
-tools.files.delete(DIR_FEATURE_COLOR)
 tools.files.mk_folder(DIR_SNIPPET_TRANS)
 tools.files.mk_folder(DIR_SNIPPET_COLOR)
-tools.files.mk_folder(DIR_FEATURE_TRANS)
-tools.files.mk_folder(DIR_FEATURE_COLOR)
 
 DST_ALIAS = DIR_BUILD + "uyghur"
 DST_SCRIPT = DST_ALIAS + "." + SCRIPT_EXT
@@ -436,7 +437,7 @@ bldr.start()
 
 print("CONVERT_SNIPPETS:")
 for name in snippets:
-    fromPath = tools.tools.append_path("./examples/snippets/", name) + "." + EXAMPLE_LANG
+    fromPath = tools.tools.append_path(DIR_SNIPPETS, name) + "." + EXAMPLE_LANG
     result = subprocess.run([
         "node", "./others/convert.js", fromPath, DIR_SNIPPET_TRANS, DIR_SNIPPET_COLOR
     ], capture_output=True, text=True)
@@ -445,12 +446,24 @@ print("CONVERTED!\n")
 
 print("CONVERT_FEATURES:")
 for name in features:
-    fromPath = tools.tools.append_path("./examples/features/", name) + "." + EXAMPLE_LANG
+    fromPath = tools.tools.append_path(DIR_FEATURES, name) + "." + EXAMPLE_LANG
+    toPath = tools.tools.append_path(DIR_FEATURES, name)
+    tools.files.delete(toPath)
+    tools.files.mk_folder(toPath)
     result = subprocess.run([
-        "node", "./others/convert.js", fromPath, DIR_FEATURE_TRANS, DIR_FEATURE_COLOR
+        "node", "./others/convert.js", fromPath, toPath, DIR_TEMPORARY
     ], capture_output=True, text=True)
     print("translate:", name, "OK" if result.returncode == 0 else result.stderr)
+    #
+    for lang in langsArrConfigs:
+        fPath = tools.tools.append_path(toPath, name) + "." + lang
+        tPath = tools.tools.append_path(DIR_LANGUAGE, lang)
+        tools.files.mk_folder(tPath)
+        shutil.copy(fPath, tPath)
+    print("movement:", name)
+    
 print("CONVERTED!\n")
+
 
 ############################################################################### snippets
 
@@ -475,8 +488,8 @@ for name in snippets:
         snippet['prefix'] = _prefixes
     # generate
     for lang in langsArrConfigs:
-        transPath = tools.tools.append_path(DIR_SNIPPET_TRANS, name) + "." + lang
-        _file = open(transPath, "r", encoding="utf-8")
+        filePath = tools.tools.append_path(DIR_SNIPPET_TRANS, name) + "." + lang
+        _file = open(filePath, "r", encoding="utf-8")
         _content = _file.read().replace("\r\n", "\r")
         body = _content.split("\n")
         # 
@@ -500,12 +513,12 @@ for lang in langsArrConfigs:
 ############################################################################### readme
 
 tplMdLangauge = '''
-* {alpha}. {tran}
+* {alpha}. [{tran}]({path})
 
 ![](./resources/languages/hello.{lang}.png)
 '''
 
-tplMdFeature = '''* {name}
+tplMdFeature = '''* [{name}]({path})
 
 ```powershell
 {code}
@@ -520,7 +533,8 @@ for lang in langTrans:
     tran = langTrans[lang]
     i = i + 1
     alpha = chr(ord('a') + i - 1)
-    text = tplMdLangauge.format(alpha=alpha, lang=lang, tran=tran)
+    path = tools.tools.append_path(DIR_LANGUAGE, lang)
+    text = tplMdLangauge.format(alpha=alpha, lang=lang, tran=tran, path=path)
     mdLangaugesArray.append(text)
 mdLanguagesText = "\n".join(mdLangaugesArray)
 
@@ -528,9 +542,10 @@ mdfeaturesArray = []
 for name in features:
     if name == "hello":
         continue
-    path = tools.tools.append_path("./examples/features/", name) + ".ug"
+    path = tools.tools.append_path("./examples/features/", name) + ".en"
     code = tools.files.read(path, 'utf-8').strip()
-    text = tplMdFeature.format(name=name, code=code)
+    path = tools.tools.append_path(DIR_FEATURES, name)
+    text = tplMdFeature.format(name=name, code=code, path=path)
     mdfeaturesArray.append(text)
 mdFeaturesText = "\n".join(mdfeaturesArray)
 
