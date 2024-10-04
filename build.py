@@ -533,7 +533,7 @@ for lang in langTrans:
     tran = langTrans[lang]
     i = i + 1
     alpha = chr(ord('a') + i - 1)
-    path = tools.tools.append_path(DIR_LANGUAGE, lang)
+    path = tools.tools.append_path(DIR_LANGUAGE, lang).replace("\\", "/")
     text = tplMdLangauge.format(alpha=alpha, lang=lang, tran=tran, path=path)
     mdLangaugesArray.append(text)
 mdLanguagesText = "\n".join(mdLangaugesArray)
@@ -544,7 +544,7 @@ for name in features:
         continue
     path = tools.tools.append_path("./examples/features/", name) + ".en"
     code = tools.files.read(path, 'utf-8').strip()
-    path = tools.tools.append_path(DIR_FEATURES, name)
+    path = tools.tools.append_path(DIR_FEATURES, name).replace("\\", "/")
     text = tplMdFeature.format(name=name, code=code, path=path)
     mdfeaturesArray.append(text)
 mdFeaturesText = "\n".join(mdfeaturesArray)

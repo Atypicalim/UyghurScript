@@ -15,32 +15,32 @@
 ## 1. multiple langauge
 
 
-* a. [english](examples\language\en)
+* a. [english](examples/language/en)
 
 ![](./resources/languages/hello.en.png)
 
 
-* b. [ئۇيغۇرچە](examples\language\uy)
+* b. [ئۇيغۇرچە](examples/language/uy)
 
 ![](./resources/languages/hello.uy.png)
 
 
-* c. [uyghurche](examples\language\ug)
+* c. [uyghurche](examples/language/ug)
 
 ![](./resources/languages/hello.ug.png)
 
 
-* d. [o'zbekcha](examples\language\uz)
+* d. [o'zbekcha](examples/language/uz)
 
 ![](./resources/languages/hello.uz.png)
 
 
-* e. [Türkçe](examples\language\tr)
+* e. [Türkçe](examples/language/tr)
 
 ![](./resources/languages/hello.tr.png)
 
 
-* f. [қазақша](examples\language\kz)
+* f. [қазақша](examples/language/kz)
 
 ![](./resources/languages/hello.kz.png)
 
@@ -53,7 +53,7 @@
 
 ## 3. supported features
 
-* [variable](examples\features\variable)
+* [variable](examples/features/variable)
 
 ```powershell
 # a dynamic var
@@ -72,7 +72,7 @@ m value empty made
 n = "sinaq..."
 ```
 
-* [type](examples\features\type)
+* [type](examples/features/type)
 
 ```powershell
 variable m value "yezish" made
@@ -86,7 +86,7 @@ m value logic made
 command m write
 ```
 
-* [calculation](examples\features\calculation)
+* [calculation](examples/features/calculation)
 
 ```powershell
 # arthimetic
@@ -120,7 +120,7 @@ x = 10 % num # true
 x = 10 % empty # false
 ```
 
-* [command](examples\features\command)
+* [command](examples/features/command)
 
 ```powershell
 # read a value
@@ -130,7 +130,7 @@ command a read
 command a write
 ```
 
-* [if](examples\features\if)
+* [if](examples/features/if)
 
 ```powershell
 if 0 then
@@ -142,7 +142,7 @@ else
 finish
 ```
 
-* [while](examples\features\while)
+* [while](examples/features/while)
 
 ```powershell
 variable i value 0 made
@@ -152,7 +152,7 @@ while i < 9 then
 finish
 ```
 
-* [spread](examples\features\spread)
+* [spread](examples/features/spread)
 
 ```powershell
 speaded "abc..." variable i v become
@@ -163,7 +163,7 @@ speaded "abc..." variable i v become
 finish
 ```
 
-* [worker](examples\features\worker)
+* [worker](examples/features/worker)
 
 ```powershell
 # a local variable
@@ -182,7 +182,7 @@ worker f with 10 20 applied and r received
 command r write
 ```
 
-* [exception](examples\features\exception)
+* [exception](examples/features/exception)
 
 ```powershell
 variable x value empty made
@@ -202,7 +202,7 @@ else
 finish
 ```
 
-* [container](examples\features\container)
+* [container](examples/features/container)
 
 ```powershell
 #  declare a list
@@ -228,7 +228,7 @@ s = {a: "aa", b: "bb", c: 123}
 b = t % list
 ```
 
-* [objective](examples\features\objective)
+* [objective](examples/features/objective)
 
 ```powershell
 # an assister with one argument
@@ -272,7 +272,7 @@ finish
 # yes
 ```
 
-* [import](examples\features\import)
+* [import](examples/features/import)
 
 ```powershell
 # other.xx
