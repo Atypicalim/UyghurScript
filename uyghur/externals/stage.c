@@ -54,7 +54,7 @@ void raylib_on_hide()
 
 // tool
 
-void raylib_run_program(int width, int height, char *title, int mode)
+void raylib_run_program(int width, int height, USTRING title, int mode)
 {
     if (IsWindowReady()) return;
     if (width < 0) width = 500;
@@ -113,7 +113,7 @@ void native_stage_show_window(Bridge *bridge)
 {
     int w = Bridge_receiveNumber(bridge);
     int h = Bridge_receiveNumber(bridge);
-    char *title = Bridge_receiveString(bridge);
+    USTRING title = Bridge_receiveString(bridge);
     int mode = Bridge_receiveNumber(bridge);
     raylib_run_program(w, h, title, mode);
     Bridge_returnEmpty(bridge);
@@ -177,7 +177,7 @@ void native_stage_set_title(Bridge *bridge)
 
 void native_stage_set_icon(Bridge *bridge)
 {
-    char *path = Bridge_receiveString(bridge);
+    USTRING path = Bridge_receiveString(bridge);
     Image image = LoadImage(path);
     SetWindowIcon(image);
     Bridge_returnEmpty(bridge);
@@ -241,14 +241,14 @@ void native_stage_have_cursor(Bridge *bridge)
 
 void native_stage_set_clipboard(Bridge *bridge)
 {
-    char *c = Bridge_receiveString(bridge);
+    USTRING c = Bridge_receiveString(bridge);
     SetClipboardText(c);
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_get_clipboard(Bridge *bridge)
 {
-    char *r = (char*)GetClipboardText();
+    USTRING r = (USTRING)GetClipboardText();
     Bridge_returnString(bridge, r);
 }
 
@@ -307,7 +307,7 @@ void native_stage_get_keyboard_key_state(Bridge *bridge)
 
 void native_stage_save_screenshot(Bridge *bridge)
 {
-    char *path = Bridge_receiveString(bridge);
+    USTRING path = Bridge_receiveString(bridge);
     TakeScreenshot(path);
     Bridge_returnEmpty(bridge);
 }

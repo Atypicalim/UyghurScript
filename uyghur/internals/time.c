@@ -14,15 +14,15 @@ void native_time_get_seconds(Bridge *bridge)
 
 void native_time_convert_to_seconds(Bridge *bridge)
 {
-    char *str = Bridge_receiveString(bridge);
+    USTRING str = Bridge_receiveString(bridge);
     Bridge_returnNumber(bridge, time_convert_to_seconds(str));
 }
 
 void native_time_convert_from_seconds(Bridge *bridge)
 {
     int seconds = Bridge_receiveNumber(bridge);
-    char *str = Bridge_receiveString(bridge);
-    char *time = time_convert_from_seconds(seconds, str);
+    USTRING str = Bridge_receiveString(bridge);
+    USTRING time = time_convert_from_seconds(seconds, str);
     Bridge_returnString(bridge, time);
     pct_free(time);
 }

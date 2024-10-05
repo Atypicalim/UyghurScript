@@ -2,6 +2,7 @@
 
 #include "../uyghur.c"
 
+// count given dict size
 void native_dict_count(Bridge *bridge)
 {
     Dictable *dct = Bridge_receiveValue(bridge, UG_TYPE_DCT);

@@ -17,24 +17,24 @@ void native_system_exit_program(Bridge *bridge)
 
 void native_system_execute_command(Bridge *bridge)
 {
-    char *command = Bridge_receiveString(bridge);
-    char *r = system_execute_command(command);
+    USTRING command = Bridge_receiveString(bridge);
+    USTRING r = system_execute_command(command);
     Bridge_returnString(bridge, r);
     pct_free(r);
 }
 
 void native_system_set_env(Bridge *bridge)
 {
-    char *name = Bridge_receiveString(bridge);
-    char *value = Bridge_receiveString(bridge);
+    USTRING name = Bridge_receiveString(bridge);
+    USTRING value = Bridge_receiveString(bridge);
     system_set_env(name, value);
     Bridge_returnEmpty(bridge);
 }
 
 void native_system_get_env(Bridge *bridge)
 {
-    char *name = Bridge_receiveString(bridge);
-    char *value = system_get_env(name);
+    USTRING name = Bridge_receiveString(bridge);
+    USTRING value = system_get_env(name);
     Bridge_returnString(bridge, value);
 }
 

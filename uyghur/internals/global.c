@@ -2,28 +2,32 @@
 
 #include "../uyghur.c"
 
+// get the value of current language
 void native_get_language(Bridge *bridge)
 {
-    char *r = bridge->uyghur->language;
+    USTRING r = bridge->uyghur->language;
     Bridge_returnString(bridge, r);
 }
 
+// get the name of current language
 void native_get_name(Bridge *bridge)
 {
-    char *lang = bridge->uyghur->language;
+    USTRING lang = bridge->uyghur->language;
     int size = configs_get_size_by_name(LANG_LANGUAGE_TRANSLATION);
     PAIR_CONFIGS *conf = configs_get_conf_by_name(LANG_LANGUAGE_TRANSLATION);
-    char *trans = helper_filter_multilang_by_key(lang, size, conf);
+    USTRING trans = helper_filter_multilang_by_key(lang, size, conf);
     Bridge_returnString(bridge, trans);
 }
 
+// input a value from termial
 void native_read(Bridge *bridge)
 {
-    char *r = system_read_terminal();
+    USTRING r = system_read_terminal();
     Bridge_returnString(bridge, r);
     pct_free(r);
 }
 
+// output a value to terminal
 void native_write(Bridge *bridge)
 {
     Value *v = Bridge_nextValue(bridge);
@@ -35,18 +39,20 @@ void native_write(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
+// print trace of the func call
 void native_trace(Bridge *bridge)
 {
-    char *msg = "TRACE";
+    USTRING msg = "TRACE";
     if (Bridge_topType(bridge) == UG_TYPE_STR) msg = Bridge_receiveString(bridge);
     printf("\n[%s] %s\n", UG_TAG_LOG, msg);
     Debug_writeTrace(bridge->uyghur->debug);
     Bridge_returnEmpty(bridge);
 }
 
+// inport a module and return a box
 void native_import(Bridge *bridge)
 {
-    char *path = Bridge_receiveString(bridge);
+    USTRING path = Bridge_receiveString(bridge);
     Uyghur *uyghur = bridge->uyghur;
     Holdable *global = uyghur->executer->globalScope;
     Value *box = Dictable_getLocation(global, path);
@@ -55,9 +61,10 @@ void native_import(Bridge *bridge)
     Bridge_returnValue(bridge, box);
 }
 
+// clean a module from module cache
 void native_clean(Bridge *bridge)
 {
-    char *path = Bridge_receiveString(bridge);
+    USTRING path = Bridge_receiveString(bridge);
     Dictable_delLocation(bridge->uyghur->executer->globalScope, path);
     Bridge_returnEmpty(bridge);
 }

@@ -4,46 +4,46 @@
 
 void native_string_replace(Bridge *bridge)
 {
-    char *origin = Bridge_receiveString(bridge);
-    char *from =Bridge_receiveString(bridge);
-    char *to =Bridge_receiveString(bridge);
+    USTRING origin = Bridge_receiveString(bridge);
+    USTRING from =Bridge_receiveString(bridge);
+    USTRING to =Bridge_receiveString(bridge);
     double direction = Bridge_receiveNumber(bridge);
     double num = Bridge_receiveNumber(bridge);
-    char *result = NULL; // TODO: replace(origin, from, to, direction, num);
+    USTRING result = NULL; // TODO: replace(origin, from, to, direction, num);
     Bridge_returnString(bridge, result);
 }
 
 void native_string_replace_first(Bridge *bridge)
 {
-    char *origin = Bridge_receiveString(bridge);
-    char *from =Bridge_receiveString(bridge);
-    char *to =Bridge_receiveString(bridge);
-    char *result = NULL; // TODO: replace(origin, from, to, 1, 1);
+    USTRING origin = Bridge_receiveString(bridge);
+    USTRING from =Bridge_receiveString(bridge);
+    USTRING to =Bridge_receiveString(bridge);
+    USTRING result = NULL; // TODO: replace(origin, from, to, 1, 1);
     Bridge_returnString(bridge, result);
 }
 
 void native_string_replace_last(Bridge *bridge)
 {
-    char *origin = Bridge_receiveString(bridge);
-    char *from =Bridge_receiveString(bridge);
-    char *to =Bridge_receiveString(bridge);
-    char *result = NULL; // TODO: replace(origin, from, to, -1, 1);
+    USTRING origin = Bridge_receiveString(bridge);
+    USTRING from =Bridge_receiveString(bridge);
+    USTRING to =Bridge_receiveString(bridge);
+    USTRING result = NULL; // TODO: replace(origin, from, to, -1, 1);
     Bridge_returnString(bridge, result);
 }
 
 void native_string_replace_all(Bridge *bridge)
 {
-    char *origin = Bridge_receiveString(bridge);
-    char *from =Bridge_receiveString(bridge);
-    char *to =Bridge_receiveString(bridge);
-    char *result = NULL; // TODO: replace(origin, from, to, 1, -1);
+    USTRING origin = Bridge_receiveString(bridge);
+    USTRING from =Bridge_receiveString(bridge);
+    USTRING to =Bridge_receiveString(bridge);
+    USTRING result = NULL; // TODO: replace(origin, from, to, 1, -1);
     Bridge_returnString(bridge, result);
 }
 
 void native_string_find(Bridge *bridge)
 {
-    char *origin = Bridge_receiveString(bridge);
-    char *find =Bridge_receiveString(bridge);
+    USTRING origin = Bridge_receiveString(bridge);
+    USTRING find =Bridge_receiveString(bridge);
     double from = Bridge_receiveNumber(bridge);
     double to = Bridge_receiveNumber(bridge);
     double index = Bridge_receiveNumber(bridge);
@@ -53,47 +53,47 @@ void native_string_find(Bridge *bridge)
 
 void native_string_find_first(Bridge *bridge)
 {
-    char *origin = Bridge_receiveString(bridge);
-    char *find =Bridge_receiveString(bridge);
+    USTRING origin = Bridge_receiveString(bridge);
+    USTRING find =Bridge_receiveString(bridge);
     int result = 0; // TODO: find(origin, find, 1, -1, 1);
     Bridge_returnNumber(bridge, result);
 }
 
 void native_string_find_last(Bridge *bridge)
 {
-    char *origin = Bridge_receiveString(bridge);
-    char *find =Bridge_receiveString(bridge);
+    USTRING origin = Bridge_receiveString(bridge);
+    USTRING find =Bridge_receiveString(bridge);
     int result = 0; // TODO: find(origin, find, 1, -1, -1);
     Bridge_returnNumber(bridge, result);
 }
 
 void native_string_cut(Bridge *bridge)
 {
-    char *origin = Bridge_receiveString(bridge);
+    USTRING origin = Bridge_receiveString(bridge);
     double from = Bridge_receiveNumber(bridge);
     double to = Bridge_receiveNumber(bridge);
-    char *result = NULL; // TODO: cut(origin, from, to);
+    USTRING result = NULL; // TODO: cut(origin, from, to);
     Bridge_returnString(bridge, result);
 }
 
 void native_string_count(Bridge *bridge)
 {
-    char *origin = Bridge_receiveString(bridge);
+    USTRING origin = Bridge_receiveString(bridge);
     int result = strlen(origin);
     Bridge_returnNumber(bridge, result);
 }
 
 void native_string_link(Bridge *bridge)
 {
-    char *origin = Bridge_receiveString(bridge);
-    char *other = Bridge_receiveString(bridge);
-    char *result = NULL; // TODO: link(origin, other);
+    USTRING origin = Bridge_receiveString(bridge);
+    USTRING other = Bridge_receiveString(bridge);
+    USTRING result = NULL; // TODO: link(origin, other);
     Bridge_returnString(bridge, result);
 }
 
 void native_string_format(Bridge *bridge)
 {
-    char *f = Bridge_receiveString(bridge);
+    USTRING f = Bridge_receiveString(bridge);
     Value *v = Bridge_receiveValue(bridge, UG_TYPE_NON);
     Value *t = Bridge_nextValue(bridge);
     tools_assert(t == NULL, "too many arguments for string format");
@@ -108,15 +108,15 @@ void native_string_format(Bridge *bridge)
 
 void native_string_fill(Bridge *bridge)
 {
-    char *f = Bridge_receiveString(bridge);
+    USTRING f = Bridge_receiveString(bridge);
     String *r = String_format("%s", f);
     // 
     Value *v = Bridge_nextValue(bridge);
     int index = 1;
-    char *target = tools_format("{%i}", index);
+    USTRING target = tools_format("{%i}", index);
     while (v != NULL)
     {
-        char *arg = Value_toString(v);
+        USTRING arg = Value_toString(v);
         int len = String_length(r);
         String_replace(r, target, arg, 0, len - 1, INT_MAX);
         pct_free(arg);

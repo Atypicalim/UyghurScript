@@ -1,6 +1,7 @@
 
 
 import os
+import re
 import sys
 import json
 import subprocess
@@ -29,13 +30,17 @@ SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT
 
 print("\nINITIALIZE_BASE:")
 
+DIR_SOURCE = "./uyghur/"
+DIR_EXAMPLE = "./examples/"
 DIR_BUILD = "./build/"
 tools.files.mk_folder(DIR_BUILD)
-DIR_EXAMPLE = "./examples/"
 
 DIR_TEMPORARY = tools.tools.append_path(DIR_BUILD, "temporary")
+DIR_DOCUMENT = tools.tools.append_path(DIR_BUILD, "document")
 tools.files.delete(DIR_TEMPORARY)
+tools.files.delete(DIR_DOCUMENT)
 tools.files.mk_folder(DIR_TEMPORARY)
+tools.files.mk_folder(DIR_DOCUMENT)
 
 DIR_SNIPPETS = tools.tools.append_path(DIR_EXAMPLE, "snippets")
 DIR_FEATURES = tools.tools.append_path(DIR_EXAMPLE, "features")

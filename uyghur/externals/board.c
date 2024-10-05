@@ -7,7 +7,7 @@
 
 Color color_from_bridge(Bridge *bridge)
 {
-    char *str = Bridge_receiveString(bridge);
+    USTRING str = Bridge_receiveString(bridge);
     int len = strlen(str);
     if (len != 6 && len != 8) return BLACK;
     int r = char_to_int(str[0]) * 16 + char_to_int(str[1]);
@@ -33,7 +33,7 @@ Rectangle rectangle_from_bridge(Bridge *bridge)
     return (Rectangle){x, y, w, h};
 }
 
-Image raylib_load_image(char *path)
+Image raylib_load_image(USTRING path)
 {
     if (path == NULL) path = "";
     if (strlen(path) == 0) return defaultImage;
@@ -50,7 +50,7 @@ Image raylib_load_image(char *path)
     return image;
 }
 
-void raylib_unload_image(char *path)
+void raylib_unload_image(USTRING path)
 {
     if (path == NULL) path = "";
     Image *img = Hashmap_get(resourcesMap, path);
@@ -61,7 +61,7 @@ void raylib_unload_image(char *path)
     free(img);
 }
 
-Font raylib_load_font(char *path, int size)
+Font raylib_load_font(USTRING path, int size)
 {
     if (path == NULL) path = "";
     if (strlen(path) == 0) return defaultFont;
@@ -84,7 +84,7 @@ Font raylib_load_font(char *path, int size)
     return font;
 }
 
-void raylib_unload_font(char *path)
+void raylib_unload_font(USTRING path)
 {
     if (path == NULL) path = "";
     Font *fnt = Hashmap_get(resourcesMap, path);
@@ -96,7 +96,7 @@ void raylib_unload_font(char *path)
 }
 
 typedef struct ImgInfo {
-    char *path;
+    USTRING path;
     int x;
     int y;
     int w;
@@ -106,13 +106,13 @@ typedef struct ImgInfo {
 } ImgInfo;
 
 typedef struct TxtInfo {
-    char *path;
-    char *text;
+    USTRING path;
+    USTRING text;
     float size;
     float spacing;
 } TxtInfo;
 
-char *get_texture_tag_for_text(TxtInfo info)
+USTRING get_texture_tag_for_text(TxtInfo info)
 {
     return tools_format(
         "<R-TEXT:%s:%s:%d:%d>",
@@ -123,7 +123,7 @@ char *get_texture_tag_for_text(TxtInfo info)
     );
 }
 
-char *get_texture_tag_for_image(ImgInfo info)
+USTRING get_texture_tag_for_image(ImgInfo info)
 {
     int x = info.x;
     int y = info.y;
@@ -138,7 +138,7 @@ char *get_texture_tag_for_image(ImgInfo info)
 }
 
 
-Texture _board_save_texture(Image img, char *tag) {
+Texture _board_save_texture(Image img, USTRING tag) {
     Texture texture = LoadTextureFromImage(img);
     Texture *tex = (Texture *)malloc(sizeof(texture));
     tex[0] = texture;
@@ -147,7 +147,7 @@ Texture _board_save_texture(Image img, char *tag) {
     return texture;
 }
 
-Texture raylib_texturize_image(ImgInfo info, char *tag)
+Texture raylib_texturize_image(ImgInfo info, USTRING tag)
 {
     Texture *tex = Hashmap_get(resourcesMap, tag);
     if (tex != NULL) {
@@ -175,7 +175,7 @@ Texture raylib_texturize_image(ImgInfo info, char *tag)
     return texture;
 }
 
-Texture raylib_texturize_text(TxtInfo info, char *tag)
+Texture raylib_texturize_text(TxtInfo info, USTRING tag)
 {
     Texture *tex = Hashmap_get(resourcesMap, tag);
     if (tex != NULL) {
@@ -382,8 +382,8 @@ void native_board_draw_polygon_stroke(Bridge *bridge)
 
 void native_board_draw_text(Bridge *bridge)
 {
-    char *font = Bridge_receiveString(bridge);
-    char *text = Bridge_receiveString(bridge);
+    USTRING font = Bridge_receiveString(bridge);
+    USTRING text = Bridge_receiveString(bridge);
     float size = Bridge_receiveNumber(bridge);
     float spacing = Bridge_receiveNumber(bridge);
     Color color = color_from_bridge(bridge);
@@ -395,8 +395,8 @@ void native_board_draw_text(Bridge *bridge)
 
 void native_board_measure_text(Bridge *bridge)
 {
-    char *font = Bridge_receiveString(bridge);
-    char *text = Bridge_receiveString(bridge);
+    USTRING font = Bridge_receiveString(bridge);
+    USTRING text = Bridge_receiveString(bridge);
     float size = Bridge_receiveNumber(bridge);
     float spacing = Bridge_receiveNumber(bridge);
     Font fnt = raylib_load_font(font, 32);
@@ -408,7 +408,7 @@ void native_board_measure_text(Bridge *bridge)
 
 void native_board_texturize_image(Bridge *bridge)
 {
-    char *image = Bridge_receiveString(bridge);
+    USTRING image = Bridge_receiveString(bridge);
     int x = Bridge_receiveNumber(bridge);
     int y = Bridge_receiveNumber(bridge);
     int w = Bridge_receiveNumber(bridge);
@@ -416,7 +416,7 @@ void native_board_texturize_image(Bridge *bridge)
     bool flipX = Bridge_receiveBoolean(bridge);
     bool flipY = Bridge_receiveBoolean(bridge);
     ImgInfo info = (ImgInfo) {image, x, y, w, h, flipX, flipY};
-    char *tag = get_texture_tag_for_image(info);
+    USTRING tag = get_texture_tag_for_image(info);
     Texture texture = raylib_texturize_image(info, tag);
     Bridge_returnString(bridge, tag);
     free(tag);
@@ -426,12 +426,12 @@ void native_board_texturize_image(Bridge *bridge)
 
 void native_board_texturize_text(Bridge *bridge)
 {
-    char *font = Bridge_receiveString(bridge);
-    char *text = Bridge_receiveString(bridge);
+    USTRING font = Bridge_receiveString(bridge);
+    USTRING text = Bridge_receiveString(bridge);
     float size = Bridge_receiveNumber(bridge);
     float spacing = Bridge_receiveNumber(bridge);
     TxtInfo info = (TxtInfo) {font, text, size, spacing};
-    char *tag = get_texture_tag_for_text(info);
+    USTRING tag = get_texture_tag_for_text(info);
     Texture texture = raylib_texturize_text(info, tag);
     Bridge_returnString(bridge, tag);
     free(tag);
@@ -441,7 +441,7 @@ void native_board_texturize_text(Bridge *bridge)
 
 void native_board_draw_texture(Bridge *bridge)
 {
-    char *tag = Bridge_receiveString(bridge);
+    USTRING tag = Bridge_receiveString(bridge);
     int x = Bridge_receiveNumber(bridge);
     int y = Bridge_receiveNumber(bridge);
     float anchorX = Bridge_receiveNumber(bridge);

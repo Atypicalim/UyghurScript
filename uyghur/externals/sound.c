@@ -5,12 +5,12 @@
 
 // tool
 
-char *get_audio_tag_for_sound(char *path)
+USTRING get_audio_tag_for_sound(USTRING path)
 {
     return tools_format("<R-SOUND:%s>", path);
 }
 
-Sound raylib_load_sound_by_tag(char *tag, char *path)
+Sound raylib_load_sound_by_tag(USTRING tag, USTRING path)
 {
     Sound *sound = Hashmap_get(resourcesMap, tag);
     if (sound != NULL) {
@@ -23,14 +23,14 @@ Sound raylib_load_sound_by_tag(char *tag, char *path)
     return s;
 }
 
-Sound raylib_get_sound_by_tag(char *tag)
+Sound raylib_get_sound_by_tag(USTRING tag)
 {
     Sound *sound = Hashmap_get(resourcesMap, tag);
     if (sound == NULL) return LoadSound("");
     return sound[0];
 }
 
-void raylib_unload_sound_by_tag(char *tag)
+void raylib_unload_sound_by_tag(USTRING tag)
 {
     Sound *sound = Hashmap_get(resourcesMap, tag);
     if (sound == NULL) return;
@@ -41,22 +41,22 @@ void raylib_unload_sound_by_tag(char *tag)
 
 void native_sound_load(Bridge *bridge)
 {
-    char *path = Bridge_receiveString(bridge);
-    char *tag = get_audio_tag_for_sound(path);
+    USTRING path = Bridge_receiveString(bridge);
+    USTRING tag = get_audio_tag_for_sound(path);
     raylib_load_sound_by_tag(tag, path);
     Bridge_returnString(bridge, tag);
 }
 
 void native_sound_unload(Bridge *bridge)
 {
-    char *tag = Bridge_receiveString(bridge);
+    USTRING tag = Bridge_receiveString(bridge);
     raylib_unload_sound_by_tag(tag);
     Bridge_returnEmpty(bridge);
 }
 
 void native_sound_play(Bridge *bridge)
 {
-    char *tag = Bridge_receiveString(bridge);
+    USTRING tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     PlaySound(sound);
     Bridge_returnEmpty(bridge);
@@ -64,7 +64,7 @@ void native_sound_play(Bridge *bridge)
 
 void native_sound_stop(Bridge *bridge)
 {
-    char *tag = Bridge_receiveString(bridge);
+    USTRING tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     StopSound(sound);
     Bridge_returnEmpty(bridge);
@@ -72,7 +72,7 @@ void native_sound_stop(Bridge *bridge)
 
 void native_sound_resume(Bridge *bridge)
 {
-    char *tag = Bridge_receiveString(bridge);
+    USTRING tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     ResumeSound(sound);
     Bridge_returnEmpty(bridge);
@@ -80,7 +80,7 @@ void native_sound_resume(Bridge *bridge)
 
 void native_sound_pause(Bridge *bridge)
 {
-    char *tag = Bridge_receiveString(bridge);
+    USTRING tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     PauseSound(sound);
     Bridge_returnEmpty(bridge);
@@ -88,7 +88,7 @@ void native_sound_pause(Bridge *bridge)
 
 void native_sound_is_playing(Bridge *bridge)
 {
-    char *tag = Bridge_receiveString(bridge);
+    USTRING tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     bool r = IsSoundPlaying(sound);
     Bridge_returnBoolean(bridge, r);
@@ -96,7 +96,7 @@ void native_sound_is_playing(Bridge *bridge)
 
 void native_sound_set_volume(Bridge *bridge)
 {
-    char *tag = Bridge_receiveString(bridge);
+    USTRING tag = Bridge_receiveString(bridge);
     Sound sound = raylib_get_sound_by_tag(tag);
     float volume = Bridge_receiveNumber(bridge);
     SetSoundVolume(sound, volume);
