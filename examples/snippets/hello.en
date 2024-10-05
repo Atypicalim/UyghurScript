@@ -10,8 +10,8 @@ while i < 9 then
     @s{i} = i * i
 finish
 
-# iterate box
-worker func variable k v content
+# expand box
+speaded  variable k v become
     command k write
     command " * " write
     command k write

@@ -4,14 +4,6 @@ miqdar k qimmiti "key" bolsun
 
 @s:abc = "str..."
 @s:123 = 456
+@s{k} = "val..."
 
-xizmetchi func miqdar k v mezmuni
-    buyruq k yezilsun
-    buyruq "-----------" yezilsun
-    buyruq v yezilsun
-    buyruq "\n" yezilsun
-tamamlansun
-
-xizmetchi @sanduq:dewriylesh: bilen s func ishlitilsun
-
-buyruq "END!\n" yezilsun
+buyruq s yezilsun
