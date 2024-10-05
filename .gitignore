@@ -6,3 +6,4 @@ my-build-tools/
 /*.exe
 /*.log
 /.vscode/settings.json
+__pycache__
