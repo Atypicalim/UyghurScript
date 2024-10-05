@@ -36,12 +36,19 @@ DIR_BUILD = "./build/"
 tools.files.mk_folder(DIR_BUILD)
 
 DIR_TEMPORARY = tools.tools.append_path(DIR_BUILD, "temporary")
-DIR_DOCUMENT = tools.tools.append_path(DIR_BUILD, "document")
+DIR_DOCUMENT = tools.tools.append_path("./", "documents")
 tools.files.delete(DIR_TEMPORARY)
 tools.files.delete(DIR_DOCUMENT)
 tools.files.mk_folder(DIR_TEMPORARY)
 tools.files.mk_folder(DIR_DOCUMENT)
 
+# source
+NAME_INTERNALS = "internals"
+NAME_EXTERNALS = "externals"
+DIR_INTERNALS = tools.tools.append_path(DIR_SOURCE, NAME_INTERNALS)
+DIR_EXTERNALS = tools.tools.append_path(DIR_SOURCE, NAME_EXTERNALS)
+
+# example
 DIR_SNIPPETS = tools.tools.append_path(DIR_EXAMPLE, "snippets")
 DIR_FEATURES = tools.tools.append_path(DIR_EXAMPLE, "features")
 DIR_LANGUAGE = tools.tools.append_path(DIR_EXAMPLE, "language")
@@ -77,6 +84,12 @@ static const PAIR_{3} {1}[{0}] = {{
 """
 
 ############################################################################### utils
+
+def readLines(filePath):
+    _file = open(filePath, "r", encoding="utf-8")
+    _content = _file.read().replace("\r\n", "\n")
+    _lines = _content.split("\n")
+    return _lines
 
 def readYaml(fromPath):
     _configs = tools.files.read(fromPath, 'utf-8')
@@ -123,10 +136,10 @@ features = readYaml(f"./others/features.yml")
 
 langArray = []
 for lang in langsArrConfigs:
+    print("language:", lang)
     SUPPORT_LANG.add(lang)
 
 langNames = mapName2LangConfigs['LANG_LANGUAGE_FULLNAME']
 langTrans = mapName2LangConfigs['LANG_LANGUAGE_TRANSLATION']
-print(langNames)
 
 print("INITIALIZED!\n")
