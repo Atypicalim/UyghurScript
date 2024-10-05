@@ -5,31 +5,32 @@
 * USTRING
 * float
 * int
-* Vector2
 * Color
+* Vector2
+* Rectangle
 * ...
 
 ### 2. Internals
 
 
-- [global](uyghur\internals\global.c)
-- [number](uyghur\internals\number.c)
-- [string](uyghur\internals\string.c)
-- [list](uyghur\internals\list.c)
-- [dict](uyghur\internals\dict.c)
-- [time](uyghur\internals\time.c)
-- [system](uyghur\internals\system.c)
-- [file](uyghur\internals\file.c)
+- [global](internals/global.md)
+- [number](internals/number.md)
+- [string](internals/string.md)
+- [list](internals/list.md)
+- [dict](internals/dict.md)
+- [time](internals/time.md)
+- [system](internals/system.md)
+- [file](internals/file.md)
 
 ### 3. Externals
 
 
-- [stage](uyghur\internals\global.c)
-- [board](uyghur\internals\number.c)
-- [music](uyghur\internals\string.c)
-- [sound](uyghur\internals\list.c)
-- [control](uyghur\internals\dict.c)
-- [test](uyghur\internals\time.c)
+- [stage](externals/stage.md)
+- [board](externals/board.md)
+- [music](externals/music.md)
+- [sound](externals/sound.md)
+- [control](externals/control.md)
+- [test](externals/test.md)
 
 ### 4. Others
 

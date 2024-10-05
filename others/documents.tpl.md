@@ -5,8 +5,9 @@
 * USTRING
 * float
 * int
-* Vector2
 * Color
+* Vector2
+* Rectangle
 * ...
 
 ### 2. Internals
