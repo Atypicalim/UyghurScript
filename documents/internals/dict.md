@@ -1,7 +1,7 @@
 
 ## UyghurScript dict
 
-> source code [dict.c](uyghur/internals/dict.c)
+> source code [dict.c](../../uyghur/internals/dict.c)
 ---
 
 ### 1. count

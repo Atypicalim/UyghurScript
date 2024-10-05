@@ -26,7 +26,7 @@ tplMdFunction = '''
 tplMdDocument = '''
 ## {project} {module}
 
-> source code [{name}]({path})
+> source code [{name}]({source})
 ---
 {functions}
 ---
@@ -106,7 +106,7 @@ def _tryDetectFunction(path, module, index, line, lines):
 
 ################################################################ generate
 
-def _tryGenerateDocument(module, name, path, functions):
+def _tryGenerateDocument(module, name, source, functions):
     #
     _index = 0
     _functions = ""
@@ -133,8 +133,7 @@ def _tryGenerateDocument(module, name, path, functions):
         _function = tplMdFunction.format(index=_index, func=func, desc=desc, rtrn=rtrn, args=_args)
         _functions = _functions + "" + _function
     # 
-    path = path.replace("\\", "/")
-    text = tplMdDocument.format(project=PROJECT_NAME, module=module, name=name, path=path, functions=_functions)
+    text = tplMdDocument.format(project=PROJECT_NAME, module=module, name=name, source=source, functions=_functions)
     return text
 
 ################################################################ walk
@@ -151,7 +150,8 @@ def _tryWalkBridgeFile(isInternal, fromPath, toPath):
         if info:
             functions.append(info)
     #
-    _document = _tryGenerateDocument(module, name, fromPath, functions)
+    source = "../../" + fromPath.replace("\\", "/")
+    _document = _tryGenerateDocument(module, name, source, functions)
     tools.files.write(toPath, _document, 'utf-8')
 
 def _tryWalkRegisteredModules(isInternal, _modules, _sources, _targets):

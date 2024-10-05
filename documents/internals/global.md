@@ -1,7 +1,7 @@
 
 ## UyghurScript global
 
-> source code [global.c](uyghur/internals/global.c)
+> source code [global.c](../../uyghur/internals/global.c)
 ---
 
 ### 1. get_language

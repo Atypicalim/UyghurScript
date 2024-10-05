@@ -1,7 +1,7 @@
 
 ## UyghurScript system
 
-> source code [system.c](uyghur/internals/system.c)
+> source code [system.c](../../uyghur/internals/system.c)
 ---
 
 ### 1. get_name

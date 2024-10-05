@@ -1,7 +1,7 @@
 
 ## UyghurScript string
 
-> source code [string.c](uyghur/internals/string.c)
+> source code [string.c](../../uyghur/internals/string.c)
 ---
 
 ### 1. replace

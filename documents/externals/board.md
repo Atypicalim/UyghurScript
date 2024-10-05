@@ -1,7 +1,7 @@
 
 ## UyghurScript board
 
-> source code [board.c](uyghur/externals/board.c)
+> source code [board.c](../../uyghur/externals/board.c)
 ---
 
 ### 1. draw_start

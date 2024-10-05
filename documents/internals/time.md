@@ -1,7 +1,7 @@
 
 ## UyghurScript time
 
-> source code [time.c](uyghur/internals/time.c)
+> source code [time.c](../../uyghur/internals/time.c)
 ---
 
 ### 1. get_zone

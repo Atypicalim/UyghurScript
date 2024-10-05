@@ -1,7 +1,7 @@
 
 ## UyghurScript number
 
-> source code [number.c](uyghur/internals/number.c)
+> source code [number.c](../../uyghur/internals/number.c)
 ---
 
 ### 1. ceil

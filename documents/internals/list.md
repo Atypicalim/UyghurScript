@@ -1,7 +1,7 @@
 
 ## UyghurScript list
 
-> source code [list.c](uyghur/internals/list.c)
+> source code [list.c](../../uyghur/internals/list.c)
 ---
 
 ### 1. count
