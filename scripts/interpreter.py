@@ -1,6 +1,19 @@
 
 from scripts.base import *
 
+################################################################
+
+# SCRIPT_PATH = "./examples/help.ug"
+SCRIPT_PATH = "./examples/sinaq.ug"
+# SCRIPT_PATH = "./examples/externals/yuguresh.ug"
+# SCRIPT_PATH = "./examples/features/objective.ug"
+
+SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
+DST_ALIAS = DIR_BUILD + "uyghur"
+DST_SCRIPT = DST_ALIAS + "." + SCRIPT_EXT
+
+################################################################
+
 def formatVariables(template, names):
     variables = []
     for name in names:

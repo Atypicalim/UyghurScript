@@ -38,9 +38,9 @@ function colorize_ug_code(code, isColorized) {
         if (!isNaN(block) && typeof Number(block) === 'number') {
             return `<purple>${block}</purple>`;
         }
-        if (block.startsWith('[') && block.endsWith(']')) {
-            var _block = block.substring(1, block.length - 1);
-            return `[<yellow>${_block}</yellow>]`;
+        if (block.startsWith(`\\"`) && block.endsWith(`\\"`)) {
+            var _block = block.substring(2, block.length - 2);
+            return `<yellow>"${_block}"</yellow>`;
         }
         if ("+-*/%^".includes(block)) {
             return `<red>${block}</red>`;
@@ -50,8 +50,8 @@ function colorize_ug_code(code, isColorized) {
         let yEnd = "</yellow>";
         let prefix = `<orange>@$1</orange>${yBgn}`;
 
-        block = block.replaceAll(/@(\S+)\[(\S+)\]/gi, `${prefix}[${yEnd}<yellow>$2</yellow${yBgn}]${yEnd}`);
-        block = block.replaceAll(/@(\S+)\{(\d+)\}/gi, `${prefix}{${yEnd}<purple>$2</purple>${yBgn}}${yEnd}`);
+        block = block.replaceAll(/@(\S+)\:([^\d\s][^\s]*)/gi, `${prefix}${yEnd}<yellow>:$2</yellow${yBgn}${yEnd}`);
+        block = block.replaceAll(/@(\S+)\:(\d\d*)/gi, `${prefix}${yEnd}<purple>:$2</purple>${yBgn}${yEnd}`);
         block = block.replaceAll(/@(\S+)\{(\S+)\}/gi, `${prefix}{${yEnd}<white>$2</white>${yBgn}}${yEnd}`);
         return block;
     }
@@ -62,8 +62,9 @@ function colorize_ug_code(code, isColorized) {
     let line = "";
     for (let i = 0; i < chars.length; i++) {
         const char = chars[i];
-        if (char == "[") isString = true;
-        if (char == "]") isString = false;
+        if (char == `"`) {
+            isString = isString == false ? true : false;
+        }
         if (char != '\n' || isString) {
             line = line + char;
         } else {

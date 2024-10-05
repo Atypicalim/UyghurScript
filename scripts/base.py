@@ -16,15 +16,11 @@ tools = builder.tools
 
 PROJECT_NAME ="UyghurScript"
 PROJECT_REPO ="https://github.com/Atypicalim/UyghurScript"
-VERSION_CODE = 0.10
-EXTENSION_VERSION = "1.0.10"
+VERSION_CODE = 0.11
+EXTENSION_VERSION = "1.0.11"
 EXAMPLE_LANG = 'en'
 SUPPORT_LANG = set()
-# SCRIPT_PATH = "./examples/help.ug"
-SCRIPT_PATH = "./examples/sinaq.ug"
-# SCRIPT_PATH = "./examples/externals/yuguresh.ug"
-# SCRIPT_PATH = "./examples/features/objective.ug"
-SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
+
 
 ###############################################################################
 
@@ -34,13 +30,6 @@ DIR_SOURCE = "./uyghur/"
 DIR_EXAMPLE = "./examples/"
 DIR_BUILD = "./build/"
 tools.files.mk_folder(DIR_BUILD)
-
-DIR_TEMPORARY = tools.tools.append_path(DIR_BUILD, "temporary")
-DIR_DOCUMENT = tools.tools.append_path("./", "documents")
-tools.files.delete(DIR_TEMPORARY)
-tools.files.delete(DIR_DOCUMENT)
-tools.files.mk_folder(DIR_TEMPORARY)
-tools.files.mk_folder(DIR_DOCUMENT)
 
 # source
 NAME_INTERNALS = "internals"
@@ -59,9 +48,6 @@ tools.files.delete(DIR_SNIPPET_TRANS)
 tools.files.delete(DIR_SNIPPET_COLOR)
 tools.files.mk_folder(DIR_SNIPPET_TRANS)
 tools.files.mk_folder(DIR_SNIPPET_COLOR)
-
-DST_ALIAS = DIR_BUILD + "uyghur"
-DST_SCRIPT = DST_ALIAS + "." + SCRIPT_EXT
 
 ###############################################################################
 

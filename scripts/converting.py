@@ -1,6 +1,12 @@
 
 from scripts.base import *
 
+###############################################################################
+
+DIR_TEMPORARY = tools.tools.append_path(DIR_BUILD, "temporary")
+tools.files.delete(DIR_TEMPORARY)
+tools.files.mk_folder(DIR_TEMPORARY)
+
 ############################################################################### convert
 
 print("CONVERT_SNIPPETS:")

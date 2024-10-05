@@ -1,11 +1,16 @@
 
 from scripts.base import *
 
-
-print("DOCUMENT:")
+################################################################
 
 NAME_INTERNALS = "internals"
 NAME_EXTERNALS = "externals"
+
+DIR_DOCUMENT = tools.tools.append_path("./", "documents")
+tools.files.delete(DIR_DOCUMENT)
+tools.files.mk_folder(DIR_DOCUMENT)
+
+################################################################
 
 tplMdArgument = '''* {name}  `{type}`'''
 tplMdArgumentless = ''' none'''
@@ -188,6 +193,7 @@ def _tryWalkBridgeRegister(isInternal, libPath):
 
 ################################################################ work
 
+print("DOCUMENT:")
 [internalModules, internalSources, internalTargets] = _tryWalkBridgeRegister(True, DIR_INTERNALS)
 [externalModules, externalSources, externalTargets] = _tryWalkBridgeRegister(False, DIR_EXTERNALS)
 print("DOCUMENTED!")
