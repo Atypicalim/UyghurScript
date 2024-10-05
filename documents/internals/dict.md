@@ -1,7 +1,7 @@
 
 ## UyghurScript dict
 
-> source code [dict.c](uyghur\internals\dict.c)
+> source code [dict.c](uyghur/internals/dict.c)
 ---
 
 ### 1. count
@@ -15,4 +15,4 @@
 
 
 ---
-> document info [document.md](../document.md)
+> document info [document.md](../README.md)

@@ -1,7 +1,7 @@
 
 ## UyghurScript control
 
-> source code [control.c](uyghur\externals\control.c)
+> source code [control.c](uyghur/externals/control.c)
 ---
 
 ### 1. show_button
@@ -27,4 +27,4 @@
 
 
 ---
-> document info [document.md](../document.md)
+> document info [document.md](../README.md)

@@ -1,7 +1,7 @@
 
 ## UyghurScript music
 
-> source code [music.c](uyghur\externals\music.c)
+> source code [music.c](uyghur/externals/music.c)
 ---
 
 ### 1. load
@@ -127,4 +127,4 @@
 
 
 ---
-> document info [document.md](../document.md)
+> document info [document.md](../README.md)

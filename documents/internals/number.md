@@ -1,7 +1,7 @@
 
 ## UyghurScript number
 
-> source code [number.c](uyghur\internals\number.c)
+> source code [number.c](uyghur/internals/number.c)
 ---
 
 ### 1. ceil
@@ -220,4 +220,4 @@
 
 
 ---
-> document info [document.md](../document.md)
+> document info [document.md](../README.md)

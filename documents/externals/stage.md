@@ -1,7 +1,7 @@
 
 ## UyghurScript stage
 
-> source code [stage.c](uyghur\externals\stage.c)
+> source code [stage.c](uyghur/externals/stage.c)
 ---
 
 ### 1. set_log
@@ -344,4 +344,4 @@
 
 
 ---
-> document info [document.md](../document.md)
+> document info [document.md](../README.md)

@@ -30,7 +30,7 @@ tplMdDocument = '''
 ---
 {functions}
 ---
-> document info [document.md](../document.md)
+> document info [document.md](../README.md)
 '''
 
 ################################################################ regex
@@ -133,6 +133,7 @@ def _tryGenerateDocument(module, name, path, functions):
         _function = tplMdFunction.format(index=_index, func=func, desc=desc, rtrn=rtrn, args=_args)
         _functions = _functions + "" + _function
     # 
+    path = path.replace("\\", "/")
     text = tplMdDocument.format(project=PROJECT_NAME, module=module, name=name, path=path, functions=_functions)
     return text
 

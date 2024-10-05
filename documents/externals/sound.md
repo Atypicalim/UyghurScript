@@ -1,7 +1,7 @@
 
 ## UyghurScript sound
 
-> source code [sound.c](uyghur\externals\sound.c)
+> source code [sound.c](uyghur/externals/sound.c)
 ---
 
 ### 1. load
@@ -86,4 +86,4 @@
 
 
 ---
-> document info [document.md](../document.md)
+> document info [document.md](../README.md)

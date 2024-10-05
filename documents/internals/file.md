@@ -1,7 +1,7 @@
 
 ## UyghurScript file
 
-> source code [file.c](uyghur\internals\file.c)
+> source code [file.c](uyghur/internals/file.c)
 ---
 
 ### 1. write
@@ -98,4 +98,4 @@
 
 
 ---
-> document info [document.md](../document.md)
+> document info [document.md](../README.md)
