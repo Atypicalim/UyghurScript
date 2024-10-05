@@ -292,7 +292,11 @@ other...
 
 --------------------------------
 
-## 4. bridge interfaces
+## 4. supported libraries
+
+> read [documents](./documents/) for libraries including internal & external
+
+## 5. bridge interfaces
 
 > u can get the bridge objet and communicate between c and script, just check `bridge.c` for more information
 
@@ -327,12 +331,11 @@ Bridge_bindNative(bridge, "sinaqFonkisiye", testFunc);
 Bridge_register(bridge, NULL);
 ```
 
-## 5. todo
+## 6. todo
 
-* objective
 * libraries
 * ...
 
-## 6. others
+## 7. others
 
 > i am still working on it ...

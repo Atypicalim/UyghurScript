@@ -47,9 +47,9 @@ def _onMacro(code, command, argument = None):
         return mdFeaturesText
 bldr = builder.code()
 bldr.setName("README")
-bldr.setInput("./readme.tpl.md")
+bldr.setInput("./others/readme.tpl.md")
 bldr.setComment("//", False)
-bldr.setOutput("./readme.md")
+bldr.setOutput("./README.md")
 bldr.onMacro(_onMacro)
 bldr.onLine(lambda line: line)
 bldr.start()
