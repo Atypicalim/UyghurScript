@@ -9,13 +9,8 @@
 
 Dictable *_Dictable_new(char tp, void *extra)
 {
-    Dictable *dictable = _value_newValueBySize(false, tp, sizeof(Dictable));
-    dictable->map = Hashmap_new(IS_GC_COUNTING);
-    #if IS_GC_LINK_DICTABLE_MAP
-    Machine_tryLinkForGC(dictable->map);
-    #endif
+    Dictable *dictable = Machine_newCacheableValue(tp, false);
     // log_debug("new-%s: %p %p", get_value_name(tp, "dictable"), dictable, dictable->obj);
-    dictable->type = tp;
     dictable->extra = extra;
     return dictable;
 }

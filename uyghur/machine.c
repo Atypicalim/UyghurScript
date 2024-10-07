@@ -20,8 +20,153 @@ Machine *Machine_new(Uyghur *uyghur) {
     vm->currHoldable = NULL;
     vm->numObjects = 0;
     vm->maxObjects = 50;
+    //
+    vm->cacheMap = NULL;
+    vm->cacheArr = NULL;
+    vm->cacheVal = NULL;
+    //
+    int valueSize = sizeof(Value);
+    valueSize = MAX(valueSize, sizeof(Runnable));
+    valueSize = MAX(valueSize, sizeof(Listable));
+    valueSize = MAX(valueSize, sizeof(Dictable));
+    vm->valueSize = valueSize * 8;
+    //
     return vm;
 }
+
+///////////////////////////////////////////////////////////////////////////
+
+Object *_machine_readFromCache(Object **cache, size_t size) {
+    Object *object = *cache;
+    if (object) {
+        *cache = object->gcNext;
+        object->gcCount = 0;
+        object->gcNext = NULL;
+    }
+    return object;
+}
+
+bool _machine_writeToCache(Object **cache, size_t size, Object *object) {
+    if (!IS_GC_CACHEABLE) {
+        return false;
+    }
+    if (*cache) {
+        int count = (*cache)->gcCount;
+        if (count >= size) {
+            return false;
+        }
+        object->gcCount = count + 1;
+        object->gcNext = *cache;
+    }
+    *cache = object;
+    return true;
+}
+
+Array *Machine_newCacheableArray(char c) {
+    Machine* this = __uyghur->machine;
+    Array *arr = _machine_readFromCache(&this->cacheArr, MACHINE_CACHE_SIZE_ARR);
+    if (!arr) {
+        arr = Array_new(IS_GC_COUNTING);
+    }
+    #if IS_GC_LINK_LISTABLE_ARR
+    Machine_tryLinkForGC(arr);
+    #endif
+    return arr;
+}
+
+Hashmap *Machine_newCacheableHashmap(char c) {
+    Machine* this = __uyghur->machine;
+    Hashmap *map = _machine_readFromCache(&this->cacheMap, MACHINE_CACHE_SIZE_MAP);
+    if (!map) {
+        map = Hashmap_new(IS_GC_COUNTING);
+    }
+    #if IS_GC_LINK_DICTABLE_MAP
+    Machine_tryLinkForGC(map);
+    #endif
+    return map;
+}
+
+Value *Machine_newNormalValue(bool freeze, char typ) {
+    Machine* this = __uyghur->machine;
+    size_t size = this->valueSize;
+    Value *value = NULL;
+    if (freeze) {
+        value = Machine_createObjAndFreeze(PCT_OBJ_VALUE, size);
+    } else {
+        value = Machine_createObjByCurrentFreezeFlag(PCT_OBJ_VALUE, size);
+    }
+    value->type = typ;
+    value->fixed = false;
+    value->obj = NULL;
+    value->extra = NULL;
+    // log_debug("new=%s: %p", get_value_name(typ, "value"), value);
+    return value;
+}
+
+int valueCount = 0;
+
+Value *Machine_newCacheableValue(char tp, bool isDebug) {
+    // 
+    Machine* this = __uyghur->machine;
+    Value *value = _machine_readFromCache(&this->cacheVal, MACHINE_CACHE_SIZE_VAL);
+    bool cached = value != NULL;
+    if (value) {
+        Machine_tryLinkForGC(value);
+    } else {
+        value = Machine_newNormalValue(false, tp);
+        value->obj = NULL;
+    }
+    //
+    if (is_type_listable(tp)) {
+        Listable *listable = value;
+        listable->arr = Machine_newCacheableArray(tp);
+    }
+    //
+    if (is_type_dictable(tp) || is_type_holdable(tp) || is_type_objective(tp)) {
+        Dictable *dictable = value;
+        dictable->map = Machine_newCacheableHashmap(tp);
+    }
+    //
+    value->type = tp;
+    value->extra = NULL;
+    return value;
+}
+
+void Machine_freeCacheableValue(Value *value) {
+    Machine* this = __uyghur->machine;
+    value->arr = NULL;
+    value->map = NULL;
+    value->extra = NULL;
+    //
+    bool cached = _machine_writeToCache(&this->cacheVal, MACHINE_CACHE_SIZE_VAL, value);
+    if (cached) {
+        value->type = UG_TYPE_NIL;
+    } else {
+        free(value);
+    }
+}
+
+void Machine_freeCacheableArray(Array *arr) {
+    Machine* this = __uyghur->machine;
+    bool cached = _machine_writeToCache(&this->cacheArr, MACHINE_CACHE_SIZE_ARR, arr);
+    if (cached) {
+        Array_clear(arr);
+    } else {
+        Array_free(arr);
+    }
+}
+
+void Machine_freeCacheableHashmap(Hashmap *map) {
+    Machine* this = __uyghur->machine;
+    bool cached = _machine_writeToCache(&this->cacheMap, MACHINE_CACHE_SIZE_MAP, map);
+    if (cached) {
+        Hashmap_clear(map);
+    } else {
+        Hashmap_free(map);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////
 
 void _machine_mark_object(Object *object) {
     if (object->gcFreeze) return;
@@ -31,6 +176,8 @@ void _machine_mark_object(Object *object) {
 
 void _machine_free_object(Machine *this, Object* object) {
     if (object->gcFreeze) return;
+    object->gcNext = NULL;
+    object->gcCount = 0;
     // add hashmap and hashkey to vm
     if (object->objType == PCT_OBJ_VALUE) {
         Value *value = object;
@@ -58,13 +205,13 @@ void _machine_free_object(Machine *this, Object* object) {
                 Queue_free(value->extra);
             }
         }
-        free(object);
+        Machine_freeCacheableValue(value);
     } else if (object->objType == PCT_OBJ_ARRAY) {
         // log_info("free arr %p", object);
-        Array_free(object);
+        Machine_freeCacheableArray(object);
     } else if (object->objType == PCT_OBJ_HASHMAP) {
         // log_info("free map %p", object);
-        Hashmap_free(object);
+        Machine_freeCacheableHashmap(object);
     } else {
         free(object);
     }
@@ -268,20 +415,20 @@ void Machine_sweep(Machine *this)
 
 void Machine_runGC(Machine *this) {
     if(!this->sweeping) return;
-    log_debug("========gc_bgn:");
+    // log_debug("========gc_bgn:");
     double bgnTime = time_get_clock();
     int bgnCount = this->numObjects;
     Machine_mark(this);
     double midTime = time_get_clock();
     double mrkTime = midTime - bgnTime;
-    log_debug("========gc_mid: %f %d", mrkTime, bgnCount);
+    // log_debug("========gc_mid: %f %d", mrkTime, bgnCount);
     Machine_sweep(this);
     double endTime = time_get_clock();
     double swpTime = endTime - bgnTime;
     int endCount = this->numObjects;
     int delCount = bgnCount - endCount;
-    this->maxObjects = endCount * 2 + 10000; // TODO:gc issue
-    log_debug("========gc_end! %f %d - %d = %d", swpTime, bgnCount, delCount, endCount);
+    this->maxObjects = endCount * 2 + MACHINE_OBJECTS_EXTRA_COUNT;
+    // log_debug("========gc_end! %f %d - %d = %d", swpTime, bgnCount, delCount, endCount);
 }
 
 void Machine_tryGC(Machine *this) {

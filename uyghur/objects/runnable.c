@@ -10,7 +10,7 @@
 Runnable *Runnable_new(char tp, void *extra)
 {
     tools_assert(is_type_runnable(tp), "invalid runnable type for new");
-    Runnable *runnable = _value_newValueBySize(false, tp, sizeof(Runnable));
+    Runnable *runnable = Machine_newNormalValue(false, tp);
     runnable->type = tp;
     runnable->extra = extra;
     return runnable;

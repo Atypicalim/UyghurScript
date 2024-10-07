@@ -22,23 +22,14 @@ char *_get_cache_tag(char type, bool boolean, double number, char *string)
     return NULL;
 }
 
-Value *_value_newValueBySize(bool freeze, char typ, size_t size) {
-    Value *value = NULL;
-    if (freeze) {
-        value = Machine_createObjAndFreeze(PCT_OBJ_VALUE, size);
-    } else {
-        value = Machine_createObjByCurrentFreezeFlag(PCT_OBJ_VALUE, size);
-    }
-    value->type = typ;
-    value->fixed = false;
-    value->obj = NULL;
-    value->extra = NULL;
-    // log_debug("new=%s: %p", get_value_name(typ, "value"), value);
-    return value;
-}
-
 Value *_value_newValue(bool freeze, char typ) {
-    return _value_newValueBySize(freeze, typ, sizeof(Value));
+    Machine *machine = __uyghur->machine;
+    if (freeze || machine->freezing) {
+        return Machine_newNormalValue(freeze, typ);
+    } else {
+        Value *value = Machine_newCacheableValue(typ, true);
+        return value;
+    }
 }
 
 Value *Value_newEmpty(void *extra)

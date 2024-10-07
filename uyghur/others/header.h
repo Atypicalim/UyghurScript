@@ -35,6 +35,13 @@ bool isTest = false;
 #define IS_GC_COUNTING !IS_GC_SWEEPING
 #define IS_GC_LINK_LISTABLE_ARR true
 #define IS_GC_LINK_DICTABLE_MAP true
+#define IS_GC_CACHEABLE true
+
+#define MACHINE_CACHE_SIZE_BASE 1000
+#define MACHINE_CACHE_SIZE_ARR MACHINE_CACHE_SIZE_BASE * 1
+#define MACHINE_CACHE_SIZE_MAP MACHINE_CACHE_SIZE_BASE * 5
+#define MACHINE_CACHE_SIZE_VAL MACHINE_CACHE_SIZE_BASE * 10
+#define MACHINE_OBJECTS_EXTRA_COUNT 10000
 
 typedef char* UG_NAMES;
 typedef const char* UCHAR;
@@ -212,6 +219,9 @@ void Runtime_assert(bool, char *);
 typedef void (*WORKER)(Leaf *);
 typedef void (*NATIVE)(Bridge *);
 
+Value *Machine_newNormalValue(bool, char);
+Value *Machine_newCacheableValue(char, bool);
+
 ////////////////////////////////////////////////////////////////////////////
 
 typedef struct _Tokenizer {
@@ -283,6 +293,10 @@ struct Machine {
     Holdable *kindDict;
     int numObjects;
     int maxObjects;
+    Object *cacheMap;
+    Object *cacheArr;
+    Object *cacheVal;
+    int valueSize;
 };
 
 ////////////////////////////////////////////////////////////////////////////
