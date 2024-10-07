@@ -201,20 +201,35 @@ print("DOCUMENTED!")
 
 ################################################################ readme
 
-tplMdDocuments = '''- [{name}]({path})'''
+tplMdDocumentLine = '''- [{name}]({path})'''
 
-mdInternalsText = ""
-mdExternalsText = ""
+def _buildDocument(document, modules):
+    # 
+    mdLibrariesText = ""
+    for index, name in enumerate(modules):
+        path = document + "/" + name + ".md"
+        internalText = tplMdDocumentLine.format(index=index, name=name, path=path)
+        mdLibrariesText = mdLibrariesText + "\n" + internalText
+    #
+    def _onMacro(code, command, argument = None):
+        if command == "MD_LIBRARIES":
+            return mdLibrariesText
+        elif command == "DOCUMENT_NAME":
+            return code.format(document=document)
+    #
+    bldr = builder.code()
+    bldr.setName("DOCUMENT_" + document)
+    bldr.setInput("./others/document.tpl.md")
+    bldr.setComment("//", False)
+    bldr.setOutput("./documents/" + document + "/README.md")
+    bldr.onMacro(_onMacro)
+    bldr.onLine(lambda line: line)
+    bldr.start()
+    #
+    return mdLibrariesText
 
-for index, name in enumerate(internalModules):
-    path = NAME_INTERNALS + "/" + name + ".md"
-    internalText = tplMdDocuments.format(index=index, name=name, path=path)
-    mdInternalsText = mdInternalsText + "\n" + internalText
-
-for index, name in enumerate(externalModules):
-    path = NAME_EXTERNALS + "/" + name + ".md"
-    internalText = tplMdDocuments.format(index=index, name=name, path=path)
-    mdExternalsText = mdExternalsText + "\n" + internalText
+mdInternalsText = _buildDocument(NAME_INTERNALS, internalModules)
+mdExternalsText = _buildDocument(NAME_EXTERNALS, externalModules)
 
 def _onMacro(code, command, argument = None):
     if command == "MD_INTERNALS":

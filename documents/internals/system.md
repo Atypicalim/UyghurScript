@@ -20,7 +20,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* (Bridge_topType(bridge)  `if`
+* code  `int`
 
 
 ### 3. execute_command

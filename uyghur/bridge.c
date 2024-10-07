@@ -80,7 +80,7 @@ void Bridge_pushValue(Bridge *this, Value *value)
 
 // push variables
 
-void Bridge_pushEmpty(Bridge *this, bool value)
+void Bridge_pushEmpty(Bridge *this)
 {
     Bridge_pushValue(this, Value_newEmpty(NULL));
 }

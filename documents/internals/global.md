@@ -47,7 +47,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* (Bridge_topType(bridge)  `if`
+* msg  `USTRING`
 
 
 ### 6. import

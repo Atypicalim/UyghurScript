@@ -42,9 +42,12 @@ void native_write(Bridge *bridge)
 // print trace of the func call
 void native_trace(Bridge *bridge)
 {
-    USTRING msg = "TRACE";
-    if (Bridge_topType(bridge) == UG_TYPE_STR) msg = Bridge_receiveString(bridge);
-    printf("\n[%s] %s\n", UG_TAG_LOG, msg);
+    USTRING _msg = "TRACE";
+    if (Bridge_topType(bridge) == UG_TYPE_STR) {
+        USTRING msg = Bridge_receiveString(bridge);
+        _msg = msg;
+    }
+    printf("\n[%s] %s\n", UG_TAG_LOG, _msg);
     Debug_writeTrace(bridge->uyghur->debug);
     Bridge_returnEmpty(bridge);
 }

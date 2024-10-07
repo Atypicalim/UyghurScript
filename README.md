@@ -6,9 +6,12 @@
 
 > 
 
-* run command `./release/uyghur.exe` to get help content
+* read [documents](./documents/) for move informations
 
-* double cick `./release/yuguresh.exe` to run raylib example
+
+* run `./release/uyghur.exe` to get help content
+
+* cick `./release/yuguresh.exe` to run raylib example
 
 ![example](./resources/examples/running.png)
 
@@ -294,40 +297,43 @@ other...
 
 ## 4. supported libraries
 
-> read [documents](./documents/) for libraries including internal & external
+* [internals](./documents/internals)
+
+* [externals](./documents/externals)
 
 ## 5. bridge interfaces
 
 > u can get the bridge objet and communicate between c and script, just check `bridge.c` for more information
 
-*  register a box to script
+*  register a box to script (with some keys of different types)
 ```c++
 Bridge_startBox(bridge);
-Bridge_bindValue(bridge, "num", "text...");
-Bridge_bindValue(bridge, "str", "text...");
-Bridge_register(bridge, "boxName"); // NULL for global scope
+Bridge_bindBoolean(bridge, "bol", false);
+Bridge_bindNumber(bridge, "num", 123);
+Bridge_bindString(bridge, "str", "abc...");
+Bridge_register(bridge, "boxName"); // NULL
 ```
 
-* call script function from c, and get the result
+* call script function from c (giving one argument and receiving result)
 ```c++
 Bridge_startFunc(bridge);
-Bridge_pushValue(bridge, "argument");
-Bridge_call(bridge, "functionName");
+Bridge_pushValue(bridge, Value_newNumber(123));
+Bridge_pushValue(bridge, Value_newString(""));
+Bridge_call(bridge, "funcName");
 char resultType = Bridge_topType(bridge);
 void *resultValue = Bridge_receiveValue(bridge);
 ```
 
-* call c function from script, and return result
+* register c function for script (receiving two argument and giving result)
 ```c++
 void testFunc(Bridge *bridge)
 {
     int a = Bridge_receiveNumber(bridge);
-    int b = Bridge_receiveNumber(bridge);
-    int c = a + b;
-    Bridge_returnNumber(bridge, c);
+    char *b = Bridge_receiveString(bridge);
+    Bridge_returnBoolean(bridge, false);
 }
 Bridge_startBox(bridge);
-Bridge_bindNative(bridge, "sinaqFonkisiye", testFunc);
+Bridge_bindNative(bridge, "testFunc", testFunc);
 Bridge_register(bridge, NULL);
 ```
 

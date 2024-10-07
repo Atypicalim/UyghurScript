@@ -9,9 +9,12 @@ void native_system_get_name(Bridge *bridge)
 
 void native_system_exit_program(Bridge *bridge)
 {
-    int code = 0;
-    if (Bridge_topType(bridge) != UG_TYPE_NON) code = Bridge_receiveNumber(bridge);
-    system_exit_program(code);
+    int _code = 0;
+    if (Bridge_topType(bridge) != UG_TYPE_NON) {
+        int code = Bridge_receiveNumber(bridge);
+        _code = code;
+    }
+    system_exit_program(_code);
     Bridge_returnEmpty(bridge);
 }
 
