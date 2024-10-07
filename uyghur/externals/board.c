@@ -182,7 +182,7 @@ Texture raylib_texturize_text(TxtInfo info, USTRING tag)
         return tex[0];
     }
     //
-    Font font = raylib_load_font(info.path, 128);
+    Font font = raylib_load_font(info.path, info.size);
     Image img = ImageTextEx(font, info.text, info.size, info.spacing, WHITE);
     Texture texture = _board_save_texture(img, tag);
     raylib_unload_font(info.path);
