@@ -70,5 +70,16 @@
 > 🛒:  none
 
 
+### 8. delay_call
+
+> 📝:  delay_call func of time module
+
+> 🔙: Empty
+
+> 🛒: 
+* v  `float`
+* f  `void`
+
+
 ---
 > document info [document.md](../README.md)

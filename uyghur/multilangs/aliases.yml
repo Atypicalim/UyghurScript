@@ -366,6 +366,13 @@ ALIAS_time_sleep_seconds:
   uz: dasturni_uxlatish
   tr: programani_uyutmak
   kz: бағдарламаны_ұйықтау
+ALIAS_time_delay_call:
+  en: delay_call
+  uy: كىچىكتۈرۈپ_ئىجرالاش
+  ug: kechikturupIjralash
+  uz: kechiktirip_ijrolosh
+  tr: gecikmeli_çalıştırmak
+  kz: кешіктіру_орындау
 
 ############################# system
 ALIAS_SYSTEM:

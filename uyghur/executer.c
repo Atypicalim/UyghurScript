@@ -210,13 +210,13 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
         }
     }
     // num
-    if (Value_isNumber(*rContainer) || *rContainer == this->machine->kindNum) {
+    if (Value_isNumber(*rContainer) || *rContainer == (Value *)this->machine->kindNum) {
         Executer_assert(this, key != NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
         *rValue = Dictable_getLocation(this->machine->kindNum, key);
         return;
     }
     // str
-    if (Value_isString(*rContainer) || *rContainer == this->machine->kindStr) {
+    if (Value_isString(*rContainer) || *rContainer == (Value *)this->machine->kindStr) {
         Executer_assert(this, key != NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
         *rValue = Dictable_getLocation(this->machine->kindStr, key);
         return;
@@ -230,7 +230,7 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
             further = true;
         }
     }
-    if (further ||  *rContainer == this->machine->kindList) {
+    if (further ||  *rContainer == (Value *)this->machine->kindList) {
         Executer_assert(this, key != NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
         *rValue = Dictable_getLocation(this->machine->kindList, key);
         return;
@@ -241,7 +241,7 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
         *rValue = Dictable_getLocation(*rContainer, key);
         further = *rValue == NULL;
     }
-    if (further || *rContainer == this->machine->kindDict) {
+    if (further || *rContainer == (Value *)this->machine->kindDict) {
         Executer_assert(this, key != NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
         *rValue = Dictable_getLocation(this->machine->kindDict, key);
         return;

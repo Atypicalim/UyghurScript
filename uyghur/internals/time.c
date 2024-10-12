@@ -43,6 +43,19 @@ void native_time_sleep_seconds(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
+double _time_delay_call_func(Value *data) {
+    log_warn("TODO:delay...");
+    return 1.0 / 1;
+}
+
+void native_time_delay_call(Bridge *bridge)
+{
+    float v = Bridge_receiveNumber(bridge);
+    void *f = Bridge_receiveValue(bridge, UG_TYPE_NON);
+    timer_delay(v, &f, &_time_delay_call_func);
+    Bridge_returnEmpty(bridge);
+}
+
 void lib_time_register(Bridge *bridge)
 {
     Bridge_startBox(bridge);
@@ -54,6 +67,7 @@ void lib_time_register(Bridge *bridge)
     BRIDGE_BIND_NATIVE(time_get_time);
     BRIDGE_BIND_NATIVE(time_get_clock);
     BRIDGE_BIND_NATIVE(time_sleep_seconds);
+    BRIDGE_BIND_NATIVE(time_delay_call);
     //
     Bridge_register(bridge, ALIAS_TIME);
 }
