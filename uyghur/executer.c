@@ -1347,7 +1347,10 @@ Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
     Machine_pushHolder(this->machine, module);
     //
     Executer_consumeTree(this, tree);
-    if (this->machine->stack->head == this->machine->stack->tail) return NULL;
+    if (this->machine->stack->head == this->machine->stack->tail) {
+        timer_loop();
+        return NULL;
+    }
     //
     Holdable *holdable = Machine_popHolder(this->machine);
     tools_assert(holdable != NULL && holdable->type == UG_TYPE_MDL, LANG_ERR_EXECUTER_INVALID_STATE);

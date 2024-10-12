@@ -94,8 +94,6 @@ Value *Uyghur_runArgs(Uyghur *this, int argc, char const *argv[])
 void Uyghur_free(Uyghur *this)
 {
     //
-    timer_loop();
-    //
     Machine_free(this->machine);
     Executer_free(this->executer);
     Parser_free(this->parser);
