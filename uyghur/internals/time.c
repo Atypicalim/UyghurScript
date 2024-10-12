@@ -43,16 +43,22 @@ void native_time_sleep_seconds(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-double _time_delay_call_func(Value *data) {
-    log_warn("TODO:delay...");
-    return 1.0 / 1;
+double _time_delay_call_func(Value *function) {
+    Executer *executer = __uyghur->executer;
+    if (!Runnable_isWorker(function)) return -1;
+    Value *result = Executer_applyWorker(executer, Token_empty(), function, NULL);
+    if (!Value_isNumber(result)) return -1;
+    double delay = result->number;
+    return delay;
 }
 
 void native_time_delay_call(Bridge *bridge)
 {
-    float v = Bridge_receiveNumber(bridge);
-    void *f = Bridge_receiveValue(bridge, UG_TYPE_NON);
-    timer_delay(v, &f, &_time_delay_call_func);
+    VNumber second = Bridge_receiveValue(bridge, UG_TYPE_NON);
+    tools_assert(Value_isNumber(second), "timer time not valid");
+    VFunction function = Bridge_receiveValue(bridge, UG_TYPE_NON);
+    tools_assert(Runnable_isWorker(function), "timer function not valid");
+    Timer *timer = timer_delay(second->number, function, &_time_delay_call_func);
     Bridge_returnEmpty(bridge);
 }
 

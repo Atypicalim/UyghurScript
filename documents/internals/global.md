@@ -70,5 +70,14 @@
 * path  `USTRING`
 
 
+### 8. sweep
+
+> 📝:  sweep func of global module
+
+> 🔙: Empty
+
+> 🛒:  none
+
+
 ---
 > document info [document.md](../README.md)

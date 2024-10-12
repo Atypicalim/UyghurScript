@@ -43,7 +43,7 @@ tplMdDocument = '''
 BRIDGE_RGSTR_PATTERN = re.compile('lib_(.*)_register')
 
 BRIDGE_FUNC_PATTERN = re.compile('(.*) native_(.*)\(Bridge \*bridge\)')
-BRIDGE_RTRN_PATTERN = re.compile('Bridge_return(.*)\(')
+BRIDGE_RTRN_PATTERN = re.compile('Bridge_return([^(]*)\(')
 BRIDGE_ARGS_PATTERN = re.compile('(.*) = Bridge_receive.*\(')
 
 BRIDGE_ARGS_CUSTOM_PATTENR = re.compile('(.*) = .*_from_bridge')

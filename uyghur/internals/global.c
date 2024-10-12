@@ -72,6 +72,12 @@ void native_clean(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
+void native_sweep(Bridge *bridge)
+{
+    Machine_runGC(__uyghur->machine);
+    Bridge_returnEmpty(bridge);
+}
+
 void lib_global_register(Bridge *bridge)
 {
     Bridge_startBox(bridge);
@@ -88,6 +94,8 @@ void lib_global_register(Bridge *bridge)
     // module
     BRIDGE_BIND_NATIVE(import);
     BRIDGE_BIND_NATIVE(clean);
+    // gc
+    BRIDGE_BIND_NATIVE(sweep);
     //
     Bridge_register(bridge, NULL);
 }

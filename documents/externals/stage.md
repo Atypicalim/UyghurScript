@@ -27,7 +27,7 @@
 
 > 📝:  get_fps func of stage module
 
-> 🔙: Number(bridge, GetFPS
+> 🔙: Number
 
 > 🛒:  none
 
@@ -69,7 +69,7 @@
 
 > 📝:  is_fullscreen func of stage module
 
-> 🔙: Boolean(bridge, IsWindowFullscreen
+> 🔙: Boolean
 
 > 🛒:  none
 
@@ -78,7 +78,7 @@
 
 > 📝:  is_hidden func of stage module
 
-> 🔙: Boolean(bridge, IsWindowHidden
+> 🔙: Boolean
 
 > 🛒:  none
 
@@ -87,7 +87,7 @@
 
 > 📝:  is_minimized func of stage module
 
-> 🔙: Boolean(bridge, IsWindowMinimized
+> 🔙: Boolean
 
 > 🛒:  none
 
@@ -96,7 +96,7 @@
 
 > 📝:  is_maximized func of stage module
 
-> 🔙: Boolean(bridge, IsWindowMaximized
+> 🔙: Boolean
 
 > 🛒:  none
 
@@ -191,7 +191,7 @@
 
 > 📝:  get_size func of stage module
 
-> 🔙: Numbers(bridge, 2, GetScreenWidth(), GetScreenHeight
+> 🔙: Numbers
 
 > 🛒:  none
 
@@ -231,7 +231,7 @@
 
 > 📝:  have_cursor func of stage module
 
-> 🔙: Boolean(bridge, IsCursorOnScreen
+> 🔙: Boolean
 
 > 🛒:  none
 
@@ -269,7 +269,7 @@
 
 > 📝:  get_mouse_position func of stage module
 
-> 🔙: Numbers(bridge, 2, GetMouseX(), GetMouseY
+> 🔙: Numbers
 
 > 🛒:  none
 
@@ -278,7 +278,7 @@
 
 > 📝:  get_mouse_wheel func of stage module
 
-> 🔙: Number(bridge, GetMouseWheelMove
+> 🔙: Number
 
 > 🛒:  none
 

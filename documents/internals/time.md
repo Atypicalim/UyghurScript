@@ -8,7 +8,7 @@
 
 > 📝:  get_zone func of time module
 
-> 🔙: Number(bridge, time_get_zone
+> 🔙: Number
 
 > 🛒:  none
 
@@ -17,7 +17,7 @@
 
 > 📝:  get_seconds func of time module
 
-> 🔙: Number(bridge, time_get_seconds
+> 🔙: Number
 
 > 🛒:  none
 
@@ -26,7 +26,7 @@
 
 > 📝:  convert_to_seconds func of time module
 
-> 🔙: Number(bridge, time_convert_to_seconds
+> 🔙: Number
 
 > 🛒: 
 * str  `USTRING`
@@ -47,7 +47,7 @@
 
 > 📝:  get_time func of time module
 
-> 🔙: String(bridge, time_get_time
+> 🔙: String
 
 > 🛒:  none
 
@@ -56,7 +56,7 @@
 
 > 📝:  get_clock func of time module
 
-> 🔙: Number(bridge, time_get_clock
+> 🔙: Number
 
 > 🛒:  none
 
@@ -77,8 +77,8 @@
 > 🔙: Empty
 
 > 🛒: 
-* v  `float`
-* f  `void`
+* second  `VNumber`
+* function  `VFunction`
 
 
 ---

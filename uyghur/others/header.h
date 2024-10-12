@@ -154,6 +154,14 @@ void *INVALID_PTR = NULL;
 Value *INVALID_CTN = NULL;
 Value *INVALID_VAL = NULL;
 
+#define VEmpty Value*
+#define VBolean Value*
+#define VNumber Value*
+#define VString Value*
+#define VFunction Value*
+#define VList Value*
+#define VDict Value*
+
 // listable
 
 typedef struct _Listable {

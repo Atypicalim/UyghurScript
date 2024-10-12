@@ -56,6 +56,13 @@ ALIAS_clean:
   uz: tozalash
   tr: temizlemek
   kz: тазалау
+ALIAS_sweep:
+  en: seep
+  uy: سۈپۈرۈش
+  ug: supurush
+  uz: supurish
+  tr: süpürmek
+  kz: сыпыру
 
 ############################# number
 ALIAS_number_ceil:

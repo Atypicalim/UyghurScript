@@ -116,7 +116,7 @@
 
 > 📝:  format func of string module
 
-> 🔙: String(bridge, String_get
+> 🔙: String
 
 > 🛒: 
 * f  `USTRING`
@@ -127,7 +127,7 @@
 
 > 📝:  fill func of string module
 
-> 🔙: String(bridge, String_get
+> 🔙: String
 
 > 🛒: 
 * f  `USTRING`

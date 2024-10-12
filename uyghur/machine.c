@@ -377,11 +377,16 @@ void _machine_mark_vstack(void *ptr, void *other) {
     _machine_mark_value(ptr);
 }
 
+void _machine_mark_timer(Value *value) {
+    _machine_mark_value(value);
+}
+
 void Machine_mark(Machine *this)
 {
     _machine_mark_dictable(this->globals);
     Stack_foreachItem(this->stack, _machine_mark_cstack, NULL);
     Stack_foreachItem(this->calls, _machine_mark_vstack, NULL);
+    timer_each(&_machine_mark_timer);
 }
 
 

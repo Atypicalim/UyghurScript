@@ -8,7 +8,7 @@
 
 > 📝:  get_name func of system module
 
-> 🔙: String(bridge, system_get_name
+> 🔙: String
 
 > 🛒:  none
 
