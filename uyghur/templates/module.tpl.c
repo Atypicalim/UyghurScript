@@ -11,5 +11,5 @@ void lib_{module}_register(Bridge *bridge) // [M[ MODULE_FORMAT ]M]
 
     {register} //  // [M[ MODULE_REGISTERS ]M]
 
-    Bridge_register(bridge, ALIAS_{module}); // [M[ MODULE_FORMAT ]M]
+    Bridge_register(bridge, {target}); // [M[ MODULE_TARGET ]M]
 }

@@ -138,9 +138,8 @@ def _tryGenerateDocument(module, source, functions):
 
 ################################################################ walk
 
-def _tryWalkDocumentModule(module, fromPath, toPath):
+def _tryWalkDocumentModule(module, fromPath):
     _lines = readLines(fromPath)
-    #
     functions = []
     lineIndex = -1
     for _line in _lines:
@@ -148,30 +147,30 @@ def _tryWalkDocumentModule(module, fromPath, toPath):
         info = _tryDetectFunction(fromPath, module, lineIndex, _lines)
         if info:
             functions.append(info)
-    #
-    source = "../../" + fromPath.replace("\\", "/")
-    _document = _tryGenerateDocument(module, source, functions)
-    tools.files.write(toPath, _document, 'utf-8')
+    return functions
 
 def _tryWalkDocumentLibrary(libName, modNames, libPath):
     # 
     outPath = tools.tools.append_path(DIR_DOCUMENT, libName)
     tools.files.mk_folder(outPath)
     # 
-    _sources = []
-    _targets = []
-    for name in modNames:
-        source = tools.tools.append_path(libPath, name) + ".c"
-        target = tools.tools.append_path(outPath, name) + ".md"
-        _sources.append(source)
-        _targets.append(target)
-        pass
-    #
-    for index, _module in enumerate(modNames):
-        _source = _sources[index]
-        _target = _targets[index]
-        print("documenting:", _module)
-        _tryWalkDocumentModule(_module, _source, _target)
+    bindDir = tools.tools.append_path(DIR_BUILD, "bind")
+    bindDir = tools.tools.append_path(bindDir, libName)
+    codeDir = tools.tools.append_path(DIR_SOURCE, libName)
+    # 
+    for index, module in enumerate(modNames):
+        source1 = tools.tools.append_path(bindDir, module) + ".c"
+        source2 = tools.tools.append_path(codeDir, module) + ".c"
+        target = tools.tools.append_path(outPath, module) + ".md"
+        print("documenting:", module, source1, source2)
+        functions1 = _tryWalkDocumentModule(module, source1)
+        functions2 = _tryWalkDocumentModule(module, source2)
+        functions = functions1 + functions2
+        # 
+        source = "../../" + source2.replace("\\", "/")
+        _document = _tryGenerateDocument(module, source, functions)
+        # 
+        tools.files.write(target, _document, 'utf-8')
     pass
 
 ################################################################ work

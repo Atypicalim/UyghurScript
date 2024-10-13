@@ -77,25 +77,3 @@ void native_sweep(Bridge *bridge)
     Machine_runGC(__uyghur->machine);
     Bridge_returnEmpty(bridge);
 }
-
-void lib_global_merge(Bridge *bridge)
-{
-    Bridge_startBox(bridge);
-    // variables
-    Bridge_bindString(bridge, "NESHIR_ISMI", UG_VERSION_NAME);
-    Bridge_bindNumber(bridge, "NESHIR_NUMIRI", UG_VERSION_CODE);
-    // info
-    BRIDGE_BIND_NATIVE(get_language);
-    BRIDGE_BIND_NATIVE(get_name);
-    // console
-    BRIDGE_BIND_NATIVE(read);
-    BRIDGE_BIND_NATIVE(write);
-    BRIDGE_BIND_NATIVE(trace);
-    // module
-    BRIDGE_BIND_NATIVE(import);
-    BRIDGE_BIND_NATIVE(clean);
-    // gc
-    BRIDGE_BIND_NATIVE(sweep);
-    //
-    Bridge_register(bridge, NULL);
-}

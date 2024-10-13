@@ -18,18 +18,19 @@ tplBindResult = '''Bridge_return{rtrn}(bridge, rrr);'''
 tplBindFunction = '''// {desc}
 void native_{module}_{func}(Bridge *bridge) {{
     {rcyv}
-    {rtrn} rrr = auto_{module}_{func}({send});
+    {rtrn} rrr = bind_{module}_{func}({send});
     {rslt}
 }}'''
 
-tplBindRegister = '''    Bridge_bindNative(bridge, "ALIAS_{module}_{func}", native_{module}_{func});'''
+tplBindRegisterModule = '''    Bridge_bindNative(bridge, "ALIAS_{module}_{func}", native_{module}_{func});'''
+tplBindRegisterGlobal = '''    Bridge_bindNative(bridge, "ALIAS_{func}", native_{func});'''
 
 tplBindDescriptionless = ''''''
 
 ################################################################ regex
 
-BINDABLE_FUNC_PATTERN = re.compile('(.*)auto_([^(]*)\(([^)]*)\)')
-BINDED_FUNC_PATTERN = re.compile('(.*)native_([^(]*)\(([^)]*)\)')
+BIND_AUTO_FUNC_PATTERN = re.compile('(.*)bind_([^(]*)\(([^)]*)\)')
+BIND_MANU_FUNC_PATTERN = re.compile('(.*)native_([^(]*)\(([^)]*)\)')
 
 # ctype -> bridge type, return append
 BINDING_MAP = {
@@ -75,7 +76,7 @@ def _tryFindDescription(line):
 def _tryDetectBindableFunction(path, module, index, lines):
     #
     line = lines[index]
-    match = BINDABLE_FUNC_PATTERN.search(line)
+    match = BIND_AUTO_FUNC_PATTERN.search(line)
     if not match:
         return
     #
@@ -93,7 +94,7 @@ def _tryDetectBindableFunction(path, module, index, lines):
 def _tryDetectBindedFunction(path, module, index, lines):
     #
     line = lines[index]
-    match = BINDED_FUNC_PATTERN.search(line)
+    match = BIND_MANU_FUNC_PATTERN.search(line)
     if not match:
         return
     #
@@ -103,6 +104,9 @@ def _tryDetectBindedFunction(path, module, index, lines):
     return [func]
 
 ################################################################ generate
+
+def _isToGlobal(module):
+    return module == 'global'
 
 def _tryGenerateAutoBind(module, functions):
     #
@@ -144,7 +148,8 @@ def _tryGenerateAutoBind(module, functions):
         )
         _functions = _function if _functions == "" else _functions + "\n\n" + _function
         #
-        _register = tplBindRegister.format(module=module, func=func)
+        TEMPLATE = tplBindRegisterGlobal if _isToGlobal(module) else tplBindRegisterModule
+        _register = TEMPLATE.format(module=module, func=func)
         _registers = _register if _registers == "" else _registers + "\n" + _register 
     # 
     return _functions, _registers
@@ -153,7 +158,8 @@ def _tryGenerateManualBind(module, functions):
     _registers = ""
     for function in functions:
         func = function[0]
-        _register = tplBindRegister.format(module=module, func=func)
+        TEMPLATE = tplBindRegisterGlobal if _isToGlobal(module) else tplBindRegisterModule
+        _register = TEMPLATE.format(module=module, func=func)
         _registers = _register if _registers == "" else _registers + "\n" + _register 
     #
     return _registers
@@ -221,6 +227,9 @@ def _buildBinding(library, module, libPath):
             return functions
         elif command == "MODULE_REGISTERS":
             return registers
+        elif command == "MODULE_TARGET":
+            target = 'NULL' if _isToGlobal(module) else 'ALIAS_' + module
+            return code.format(target=target)
     #
     bldr.setInput("./uyghur/templates/module.tpl.c")
     bldr.setComment("//", False)

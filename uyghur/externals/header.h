@@ -27,7 +27,7 @@ void cFuncTest(Bridge *bridge)
     Bridge_returnString(bridge, "abc...");
 }
 
-void lib_test_register(Bridge *bridge)
+void lib_test_func(Bridge *bridge)
 {
     // // register variables from c (NUll to register globals, name to register a box)
     Bridge_startBox(bridge);
