@@ -78,7 +78,7 @@ void native_sweep(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-void lib_global_register(Bridge *bridge)
+void lib_global_merge(Bridge *bridge)
 {
     Bridge_startBox(bridge);
     // variables

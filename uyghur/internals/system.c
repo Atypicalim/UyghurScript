@@ -40,16 +40,3 @@ void native_system_get_env(Bridge *bridge)
     USTRING value = system_get_env(name);
     Bridge_returnString(bridge, value);
 }
-
-void lib_system_register(Bridge *bridge)
-{
-    Bridge_startBox(bridge);
-    //
-    BRIDGE_BIND_NATIVE(system_get_name);
-    BRIDGE_BIND_NATIVE(system_exit_program);
-    BRIDGE_BIND_NATIVE(system_execute_command);
-    BRIDGE_BIND_NATIVE(system_set_env);
-    BRIDGE_BIND_NATIVE(system_get_env);
-    //
-    Bridge_register(bridge, ALIAS_SYSTEM);
-}

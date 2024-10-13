@@ -130,25 +130,3 @@ void native_string_fill(Bridge *bridge)
     Bridge_returnString(bridge, String_get(r));
     String_free(r);
 }
-
-void lib_string_register(Bridge *bridge)
-{
-    Bridge_startBox(bridge);
-    //
-    BRIDGE_BIND_NATIVE(string_replace);
-    BRIDGE_BIND_NATIVE(string_replace_first);
-    BRIDGE_BIND_NATIVE(string_replace_last);
-    BRIDGE_BIND_NATIVE(string_replace_all);
-    //
-    BRIDGE_BIND_NATIVE(string_find);
-    BRIDGE_BIND_NATIVE(string_find_first);
-    BRIDGE_BIND_NATIVE(string_find_last);
-    // 
-    BRIDGE_BIND_NATIVE(string_count);
-    BRIDGE_BIND_NATIVE(string_link);
-    BRIDGE_BIND_NATIVE(string_cut);
-    BRIDGE_BIND_NATIVE(string_format);
-    BRIDGE_BIND_NATIVE(string_fill);
-    //
-    Bridge_register(bridge, TVALUE_STR);
-}

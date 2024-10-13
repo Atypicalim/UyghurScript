@@ -4,18 +4,22 @@
 #define H_LIB_INNERNAL_HEADER
 
 #include "global.c"
-#include "number.c"
-#include "string.c"
-#include "list.c"
-#include "dict.c"
-#include "time.c"
-#include "system.c"
-#include "file.c"
+#include "../../build/bind/internals/number.c"
+#include "../../build/bind/internals/string.c"
+#include "../../build/bind/internals/list.c"
+#include "../../build/bind/internals/dict.c"
+#include "../../build/bind/internals/time.c"
+#include "../../build/bind/internals/system.c"
+#include "../../build/bind/internals/file.c"
 
 void register_internal_libraries(Bridge *bridge)
 {
 
-    lib_global_register(bridge);
+    //
+    // Bridge_bindNumber(bridge, "pi", acos(-1));
+    // Bridge_bindNumber(bridge, "e", exp(1));
+    // 
+    lib_global_merge(bridge);
     // 
     // TODO:set proxies as fixed features
     Bridge_startBox(bridge);

@@ -382,7 +382,7 @@ ALIAS_time_delay_call:
   kz: кешіктіру_орындау
 
 ############################# system
-ALIAS_SYSTEM:
+ALIAS_system:
   en: system
   uy: سېستىما
   ug: sestima
@@ -426,7 +426,7 @@ ALIAS_system_get_env:
   kz: мойындау_айнымалы_оқу
 
 ############################# file
-ALIAS_FILE:
+ALIAS_file:
   en: file
   uy: ھۆججەت
   ug: xojjet

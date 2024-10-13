@@ -61,19 +61,3 @@ void native_time_delay_call(Bridge *bridge)
     Timer *timer = timer_delay(second->number, function, &_time_delay_call_func);
     Bridge_returnEmpty(bridge);
 }
-
-void lib_time_register(Bridge *bridge)
-{
-    Bridge_startBox(bridge);
-    //
-    BRIDGE_BIND_NATIVE(time_get_zone);
-    BRIDGE_BIND_NATIVE(time_get_seconds);
-    BRIDGE_BIND_NATIVE(time_convert_to_seconds);
-    BRIDGE_BIND_NATIVE(time_convert_from_seconds);
-    BRIDGE_BIND_NATIVE(time_get_time);
-    BRIDGE_BIND_NATIVE(time_get_clock);
-    BRIDGE_BIND_NATIVE(time_sleep_seconds);
-    BRIDGE_BIND_NATIVE(time_delay_call);
-    //
-    Bridge_register(bridge, ALIAS_TIME);
-}

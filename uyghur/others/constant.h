@@ -261,3 +261,11 @@ const UG_PAIRS UG_WORDS_MAP[] = {
 #define LANG_ERR_SOME_PLACE "hojjet:[%s], qur:[%d], qatar:[%d]"
 #define LANG_ERR_SIGN_PLACE LANG_ERR_SOME_PLACE ", belge:[%s]"
 #define LANG_ERR_TOKEN_PLACE LANG_ERR_SOME_PLACE ", sozluk:[%s]"
+
+// alias
+
+#define ALIAS_boolean TVALUE_BOL
+#define ALIAS_number TVALUE_NUM
+#define ALIAS_string TVALUE_STR
+#define ALIAS_list TVALUE_LST
+#define ALIAS_dict TVALUE_DCT

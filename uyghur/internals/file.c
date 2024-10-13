@@ -72,20 +72,3 @@ void native_file_create_directory(Bridge *bridge)
     int r = file_create_directory(path);
     Bridge_returnNumber(bridge, r);
 }
-
-void lib_file_register(Bridge *bridge)
-{
-    Bridge_startBox(bridge);
-    //
-    BRIDGE_BIND_NATIVE(file_write);
-    BRIDGE_BIND_NATIVE(file_read);
-    BRIDGE_BIND_NATIVE(file_copy);
-    BRIDGE_BIND_NATIVE(file_rename);
-    BRIDGE_BIND_NATIVE(file_remove);
-    BRIDGE_BIND_NATIVE(file_exist);
-    BRIDGE_BIND_NATIVE(file_is_file);
-    BRIDGE_BIND_NATIVE(file_is_directory);
-    BRIDGE_BIND_NATIVE(file_create_directory);
-    //
-    Bridge_register(bridge, ALIAS_FILE);
-}
