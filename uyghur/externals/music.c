@@ -135,26 +135,3 @@ void native_music_set_position(Bridge *bridge)
     SeekMusicStream(music, position);
     Bridge_returnEmpty(bridge);
 }
-
-// other
-
-void lib_music_register(Bridge *bridge)
-{
-    //
-    Bridge_startBox(bridge);
-    //
-    BRIDGE_BIND_NATIVE(music_load);
-    BRIDGE_BIND_NATIVE(music_unload);
-    BRIDGE_BIND_NATIVE(music_play);
-    BRIDGE_BIND_NATIVE(music_stop);
-    BRIDGE_BIND_NATIVE(music_pause);
-    BRIDGE_BIND_NATIVE(music_resume);
-    BRIDGE_BIND_NATIVE(music_is_playing);
-    BRIDGE_BIND_NATIVE(music_set_volume);
-    BRIDGE_BIND_NATIVE(music_update);
-    BRIDGE_BIND_NATIVE(music_get_length);
-    BRIDGE_BIND_NATIVE(music_get_position);
-    BRIDGE_BIND_NATIVE(music_set_position);
-    //
-    Bridge_register(bridge, ALIAS_MUSIC);
-}

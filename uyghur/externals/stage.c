@@ -7,8 +7,6 @@
 #include "../uyghur.c"
 
 // data
-Bridge *uyghurBridge;
-Hashmap *resourcesMap;
 Font defaultFont;
 Image defaultImage;
 Texture2D defaultTexture;
@@ -18,14 +16,14 @@ Texture2D defaultTexture;
 void raylib_on_show()
 {
     // SetTargetFPS(60);
-    Bridge_startFunc(uyghurBridge);
-    Bridge_call(uyghurBridge, ALIAS_STAGE_ON_SHOW);
+    Bridge_startFunc(__uyghur->bridge);
+    Bridge_call(__uyghur->bridge, ALIAS_STAGE_ON_SHOW);
 }
 
 void raylib_on_draw()
 {
-    Bridge_startFunc(uyghurBridge);
-    Bridge_call(uyghurBridge, ALIAS_STAGE_ON_DRAW);
+    Bridge_startFunc(__uyghur->bridge);
+    Bridge_call(__uyghur->bridge, ALIAS_STAGE_ON_DRAW);
     DrawFPS(10, 10);
 }
 
@@ -317,55 +315,4 @@ void native_stage_audio_set_volume(Bridge *bridge)
     float v = Bridge_receiveNumber(bridge);
     SetMasterVolume(v);
     Bridge_returnEmpty(bridge);
-}
-
-// other
-
-void lib_stage_register(Bridge *bridge)
-{
-    uyghurBridge = bridge;
-    resourcesMap = Hashmap_new(false);
-    //
-    Bridge_startBox(bridge);
-    // settings
-    BRIDGE_BIND_NATIVE(stage_set_log);
-    BRIDGE_BIND_NATIVE(stage_set_fps);
-    BRIDGE_BIND_NATIVE(stage_get_fps);
-    BRIDGE_BIND_NATIVE(stage_draw_fps);
-    // window
-    BRIDGE_BIND_NATIVE(stage_show_window);
-    BRIDGE_BIND_NATIVE(stage_hide_window);
-    BRIDGE_BIND_NATIVE(stage_is_fullscreen);
-    BRIDGE_BIND_NATIVE(stage_is_hidden);
-    BRIDGE_BIND_NATIVE(stage_is_minimized);
-    BRIDGE_BIND_NATIVE(stage_is_maximized);
-    BRIDGE_BIND_NATIVE(stage_toggle_fullscreen);
-    BRIDGE_BIND_NATIVE(stage_set_minimize);
-    BRIDGE_BIND_NATIVE(stage_set_maximize);
-    BRIDGE_BIND_NATIVE(stage_set_normalize);
-    BRIDGE_BIND_NATIVE(stage_set_title);
-    BRIDGE_BIND_NATIVE(stage_set_icon);
-    BRIDGE_BIND_NATIVE(stage_set_position);
-    BRIDGE_BIND_NATIVE(stage_get_position);
-    BRIDGE_BIND_NATIVE(stage_set_size);
-    BRIDGE_BIND_NATIVE(stage_get_size);
-    BRIDGE_BIND_NATIVE(stage_set_min_size);
-    BRIDGE_BIND_NATIVE(stage_show_cursor);
-    BRIDGE_BIND_NATIVE(stage_enable_cursor);
-    BRIDGE_BIND_NATIVE(stage_have_cursor);
-    // system
-    BRIDGE_BIND_NATIVE(stage_set_clipboard);
-    BRIDGE_BIND_NATIVE(stage_get_clipboard);
-    BRIDGE_BIND_NATIVE(stage_set_mouse_cursor);
-    BRIDGE_BIND_NATIVE(stage_get_mouse_position);
-    BRIDGE_BIND_NATIVE(stage_get_mouse_wheel);
-    BRIDGE_BIND_NATIVE(stage_get_mouse_key_action);
-    BRIDGE_BIND_NATIVE(stage_get_mouse_key_state);
-    BRIDGE_BIND_NATIVE(stage_get_keyboard_key_action);
-    BRIDGE_BIND_NATIVE(stage_get_keyboard_key_state);
-    // other
-    BRIDGE_BIND_NATIVE(stage_save_screenshot);
-    BRIDGE_BIND_NATIVE(stage_audio_set_volume);
-    //
-    Bridge_register(bridge, ALIAS_STAGE);
 }

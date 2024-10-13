@@ -500,7 +500,7 @@ ALIAS_file_create_directory:
 ############################# external #############################
 
 ############################# stage
-ALIAS_STAGE:
+ALIAS_stage:
   en: stage
   uy: سەھنە
   ug: sehne
@@ -768,7 +768,7 @@ ALIAS_stage_audio_set_volume:
   kz: бағдарламаны_дыбысты_орнату
 
 ############################# baord
-ALIAS_BOARD:
+ALIAS_board:
   en: board
   uy: تاختا
   ug: taxta
@@ -944,7 +944,7 @@ ALIAS_board_draw_texture:
   kz: неқиш_сызу
 
 ############################# music
-ALIAS_MUSIC:
+ALIAS_music:
   en: music
   uy: مۇزىكا
   ug: muzika
@@ -1037,7 +1037,7 @@ ALIAS_music_set_position:
   kz: позициясы_орнату
 
 ############################# sound
-ALIAS_SOUND:
+ALIAS_sound:
   en: sound
   uy: ئاۋاز
   ug: awaz
@@ -1062,7 +1062,7 @@ ALIAS_sound_set_volume:
   <<: *__volume
 
 ############################# control
-ALIAS_CONTROL:
+ALIAS_control:
   en: control
   uy: زاپچاس
   ug: zapchas

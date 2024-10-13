@@ -102,22 +102,3 @@ void native_sound_set_volume(Bridge *bridge)
     SetSoundVolume(sound, volume);
     Bridge_returnEmpty(bridge);
 }
-
-// other
-
-void lib_sound_register(Bridge *bridge)
-{
-    //
-    Bridge_startBox(bridge);
-    //
-    BRIDGE_BIND_NATIVE(sound_load);
-    BRIDGE_BIND_NATIVE(sound_unload);
-    BRIDGE_BIND_NATIVE(sound_play);
-    BRIDGE_BIND_NATIVE(sound_stop);
-    BRIDGE_BIND_NATIVE(sound_pause);
-    BRIDGE_BIND_NATIVE(sound_resume);
-    BRIDGE_BIND_NATIVE(sound_is_playing);
-    BRIDGE_BIND_NATIVE(sound_set_volume);
-    //
-    Bridge_register(bridge, ALIAS_SOUND);
-}
