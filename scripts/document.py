@@ -3,21 +3,18 @@ from scripts.base import *
 
 ################################################################
 
-NAME_INTERNALS = "internals"
-NAME_EXTERNALS = "externals"
-
 DIR_DOCUMENT = tools.tools.append_path("./", "documents")
 tools.files.delete(DIR_DOCUMENT)
 tools.files.mk_folder(DIR_DOCUMENT)
 
 ################################################################
 
-tplMdArgument = '''* {name}  `{type}`'''
-tplMdArgumentless = ''' none'''
+tplDocumentArgument = '''* {name}  `{type}`'''
+tplDocumentArgumentless = ''' none'''
 
-tplMdDescriptionless = ''' {func} func of {module} module'''
+tplDocDescriptionless = ''' {func} func of {module} module'''
 
-tplMdFunction = '''
+tplDocFunction = '''
 ### {index}. {func}
 
 > 📝: {desc}
@@ -28,10 +25,10 @@ tplMdFunction = '''
 
 '''
 
-tplMdDocument = '''
+tplDocBody = '''
 ## {project} {module}
 
-> source code [{name}]({source})
+> source code [{module}.c]({source})
 ---
 {functions}
 ---
@@ -39,8 +36,6 @@ tplMdDocument = '''
 '''
 
 ################################################################ regex
-
-BRIDGE_RGSTR_PATTERN = re.compile('lib_(.*)_register')
 
 BRIDGE_FUNC_PATTERN = re.compile('(.*) native_(.*)\(Bridge \*bridge\)')
 BRIDGE_RTRN_PATTERN = re.compile('Bridge_return([^(]*)\(')
@@ -85,13 +80,13 @@ def _tryFindDescription(line):
 
 ################################################################ detect
 
-def _tryDetectFunction(path, module, index, line, lines):
+def _tryDetectFunction(path, module, index, lines):
+    line = lines[index]
     func = _tryFindFunction(module, line)
     if not func:
         return
     # 
     desc = _tryFindDescription(lines[index - 1])
-    #
     args = []
     rtrn = None
     for num in range(1,50):
@@ -111,7 +106,7 @@ def _tryDetectFunction(path, module, index, line, lines):
 
 ################################################################ generate
 
-def _tryGenerateDocument(module, name, source, functions):
+def _tryGenerateDocument(module, source, functions):
     #
     _index = 0
     _functions = ""
@@ -126,89 +121,77 @@ def _tryGenerateDocument(module, name, source, functions):
             arg = arg.replace(" *", " ").split(" ")
             typ = arg[0]
             nam = arg[1]
-            _arg = tplMdArgument.format(type=typ, name=nam)
+            _arg = tplDocumentArgument.format(type=typ, name=nam)
             _args = _args + "\n" + _arg
         if _args == "":
-            _args = tplMdArgumentless
+            _args = tplDocumentArgumentless
         # 
         if not desc:
-            desc = tplMdDescriptionless.format(module=module, func=func)
+            desc = tplDocDescriptionless.format(module=module, func=func)
         # 
         _index = _index + 1
-        _function = tplMdFunction.format(index=_index, func=func, desc=desc, rtrn=rtrn, args=_args)
+        _function = tplDocFunction.format(index=_index, func=func, desc=desc, rtrn=rtrn, args=_args)
         _functions = _functions + "" + _function
     # 
-    text = tplMdDocument.format(project=PROJECT_NAME, module=module, name=name, source=source, functions=_functions)
+    text = tplDocBody.format(project=PROJECT_NAME, module=module, source=source, functions=_functions)
     return text
 
 ################################################################ walk
 
-def _tryWalkBridgeFile(isInternal, fromPath, toPath):
+def _tryWalkDocumentModule(module, fromPath, toPath):
     _lines = readLines(fromPath)
     #
     functions = []
-    dir, module, ext, name = tools.tools.parse_path(fromPath)
     lineIndex = -1
     for _line in _lines:
         lineIndex = lineIndex + 1
-        info = _tryDetectFunction(fromPath, module, lineIndex, _line, _lines)
+        info = _tryDetectFunction(fromPath, module, lineIndex, _lines)
         if info:
             functions.append(info)
     #
     source = "../../" + fromPath.replace("\\", "/")
-    _document = _tryGenerateDocument(module, name, source, functions)
+    _document = _tryGenerateDocument(module, source, functions)
     tools.files.write(toPath, _document, 'utf-8')
 
-def _tryWalkRegisteredModules(isInternal, _modules, _sources, _targets):
-    for index, _module in enumerate(_modules):
+def _tryWalkDocumentLibrary(libName, modNames, libPath):
+    # 
+    outPath = tools.tools.append_path(DIR_DOCUMENT, libName)
+    tools.files.mk_folder(outPath)
+    # 
+    _sources = []
+    _targets = []
+    for name in modNames:
+        source = tools.tools.append_path(libPath, name) + ".c"
+        target = tools.tools.append_path(outPath, name) + ".md"
+        _sources.append(source)
+        _targets.append(target)
+        pass
+    #
+    for index, _module in enumerate(modNames):
         _source = _sources[index]
         _target = _targets[index]
         print("documenting:", _module)
-        _tryWalkBridgeFile(isInternal, _source, _target)
+        _tryWalkDocumentModule(_module, _source, _target)
     pass
-
-def _tryWalkBridgeRegister(isInternal, libPath):
-    # 
-    outName = NAME_INTERNALS if isInternal else NAME_EXTERNALS
-    outPath = tools.tools.append_path(DIR_DOCUMENT, outName)
-    tools.files.mk_folder(outPath)
-    # 
-    headerPath = tools.tools.append_path(libPath, "header.h")
-    _names = []
-    _sources = []
-    _targets = []
-    _lines = readLines(headerPath)
-    for _line in _lines:
-        match = BRIDGE_RGSTR_PATTERN.search(_line)
-        if match:
-            name = match.group(1).strip()
-            source = tools.tools.append_path(libPath, name) + ".c"
-            target = tools.tools.append_path(outPath, name) + ".md"
-            _names.append(name)
-            _sources.append(source)
-            _targets.append(target)
-        pass
-    _tryWalkRegisteredModules(isInternal, _names, _sources, _targets)
-    return [_names, _sources, _targets]
 
 ################################################################ work
 
 print("DOCUMENT:")
-[internalModules, internalSources, internalTargets] = _tryWalkBridgeRegister(True, DIR_INTERNALS)
-[externalModules, externalSources, externalTargets] = _tryWalkBridgeRegister(False, DIR_EXTERNALS)
+_tryWalkDocumentLibrary(NAME_INTERNALS, INTERNAL_MODULES, DIR_INTERNALS)
+_tryWalkDocumentLibrary(NAME_EXTERNALS, EXTERNAL_MODULES, DIR_EXTERNALS)
 print("DOCUMENTED!")
 
 
 ################################################################ readme
 
-tplMdDocumentLine = '''- [{name}]({path})'''
+tplDocBodyLine = '''- [{name}]({path})'''
 
 def _buildDocument(document, modules):
     # 
     mdLibrariesText = ""
     for index, name in enumerate(modules):
         path = document + "/" + name + ".md"
-        internalText = tplMdDocumentLine.format(index=index, name=name, path=path)
+        internalText = tplDocBodyLine.format(index=index, name=name, path=path)
         mdLibrariesText = mdLibrariesText + "\n" + internalText
     #
     def _onMacro(code, command, argument = None):
@@ -228,8 +211,8 @@ def _buildDocument(document, modules):
     #
     return mdLibrariesText
 
-mdInternalsText = _buildDocument(NAME_INTERNALS, internalModules)
-mdExternalsText = _buildDocument(NAME_EXTERNALS, externalModules)
+mdInternalsText = _buildDocument(NAME_INTERNALS, INTERNAL_MODULES)
+mdExternalsText = _buildDocument(NAME_EXTERNALS, EXTERNAL_MODULES)
 
 def _onMacro(code, command, argument = None):
     if command == "MD_INTERNALS":

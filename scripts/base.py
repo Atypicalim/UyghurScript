@@ -24,7 +24,7 @@ SUPPORT_LANG = set()
 
 ###############################################################################
 
-print("\nINITIALIZE_BASE:")
+print("\nBASE_INITIALIZE:")
 
 DIR_SOURCE = "./uyghur/"
 DIR_EXAMPLE = "./examples/"
@@ -128,4 +128,24 @@ for lang in langsArrConfigs:
 langNames = mapName2LangConfigs['LANG_LANGUAGE_FULLNAME']
 langTrans = mapName2LangConfigs['LANG_LANGUAGE_TRANSLATION']
 
-print("INITIALIZED!\n")
+############################################################################### source
+
+BRIDGE_RGSTR_PATTERN = re.compile('lib_(.*)_register')
+def _tryWalkLibraryHeader(libPath):
+    headerPath = tools.tools.append_path(libPath, "header.h")
+    _names = []
+    _lines = readLines(headerPath)
+    for _line in _lines:
+        match = BRIDGE_RGSTR_PATTERN.search(_line)
+        if match:
+            name = match.group(1).strip()
+            _names.append(name)
+        pass
+    return _names
+
+INTERNAL_MODULES = _tryWalkLibraryHeader(DIR_INTERNALS)
+EXTERNAL_MODULES = _tryWalkLibraryHeader(DIR_EXTERNALS)
+
+###############################################################################
+
+print("BASE_INITIALIZED!\n")
