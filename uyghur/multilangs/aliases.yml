@@ -317,7 +317,7 @@ ALIAS_dict_count:
   en: count
 
 ############################# time
-ALIAS_TIME:
+ALIAS_time:
   en: time
   uy: ۋاقىت
   ug: waqit

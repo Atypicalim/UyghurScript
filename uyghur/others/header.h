@@ -43,6 +43,9 @@ bool isTest = false;
 #define MACHINE_CACHE_SIZE_VAL MACHINE_CACHE_SIZE_BASE * 10
 #define MACHINE_OBJECTS_EXTRA_COUNT 10000
 
+// 
+typedef char* CString;
+
 typedef char* UG_NAMES;
 typedef const char* UCHAR;
 typedef const char* USTRING;
