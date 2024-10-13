@@ -148,4 +148,141 @@ EXTERNAL_MODULES = _tryWalkLibraryHeader(DIR_EXTERNALS)
 
 ###############################################################################
 
+def tryForEachLine(module, fromPath, func):
+    if not tools.files.is_file(fromPath):
+        return
+    _lines = readLines(fromPath)
+    lineIndex = -1
+    for _line in _lines:
+        lineIndex = lineIndex + 1
+        func(lineIndex, _lines)
+    pass
+
+###############################################################################
+
+# bind
+
+BIND_AUTO_FUNC_PATTERN = re.compile('(.*)bind_([^(]*)\(([^)]*)\)')
+BIND_MANU_FUNC_PATTERN = re.compile('(.*)native_([^(]*)\(([^)]*)\)')
+
+
+BRIDGE_RTRN_PATTERN = re.compile('Bridge_return([^(]*)\(')
+BRIDGE_ARGS_PATTERN = re.compile('(.*) = Bridge_receive.*\(')
+BRIDGE_ARGS_CUSTOM_PATTENR = re.compile('(.*) = .*_from_bridge')
+
+# ctype -> bridge type, return append
+BINDING_MAP = {
+    'void': ["Empty", ""],
+    'int': ["Number", ""],
+    'long': ["Number", ""],
+    'float': ["Number", ""],
+    'double': ["Number", ""],
+    'bool': ["Boolean", ""],
+    'CString': ["String", "pct_free(rrr);"],
+}
+
+def tryFindBindDescription(line):
+    line = line.strip()
+    if not line.startswith("//"):
+        return
+    return line[2:]
+
+def _tryConvertBindFunction(module, text):
+    text = text.strip()
+    func = text.replace(module + "_", "").strip()
+    return func
+
+###############################################################################
+
+# auto
+
+def _tryConvertBindAutoArguments(text):
+    text = text.strip()
+    args = []
+    if text == "":
+        return args
+    for _arg in text.split(","):
+        assert "*" not in _arg, "invalid auto bind arg"
+        _arg = _arg.strip()
+        [typ, nam] = _arg.split(" ")
+        info = BINDING_MAP.get(typ)
+        assert info != None, "invalid auto bind type:" + text
+        _typ = info[0]
+        args.append([typ, nam, _typ])
+    return args
+
+def _tryConvertBindAutoReturn(text):
+    rtrn = text.strip()
+    assert "*" not in rtrn, "invalid auto bind arg"
+    info = BINDING_MAP.get(rtrn)
+    assert info != None, "invalid auto bind type:" + text
+    _rtrn = info[0]
+    return [_rtrn, rtrn, info[1]]
+
+def tryDetectBindAutoFunction(path, module, index, lines):
+    #
+    line = lines[index]
+    match = BIND_AUTO_FUNC_PATTERN.search(line)
+    if not match:
+        return
+    desc = tryFindBindDescription(lines[index - 1])
+    func = _tryConvertBindFunction(module, match.group(2))
+    rtrn = _tryConvertBindAutoReturn(match.group(1))
+    args = _tryConvertBindAutoArguments(match.group(3))
+    return [func, desc, rtrn, args]
+
+###############################################################################
+
+# manu
+
+def _tryConvertBindManuArgument(text):
+    text = text.strip()
+    if text == "":
+        return None
+    match = BRIDGE_ARGS_PATTERN.search(text)
+    if not match:
+        match = BRIDGE_ARGS_CUSTOM_PATTENR.search(text)
+    
+    if not match:
+        return None
+    arg = match.group(1).replace(" *", " ").strip()
+    [typ, nam] = arg.split(" ")
+    return [None, nam, typ]
+    
+
+def _tryConvertBindManuReturn(line):
+    match = BRIDGE_RTRN_PATTERN.search(line)
+    if not match:
+        return
+    pass
+    rtrn = match.group(1).strip()
+    return [rtrn, None, '']
+
+
+def tryDetectBindManuFunction(path, module, index, lines):
+    line = lines[index]
+    match = BIND_MANU_FUNC_PATTERN.search(line)
+    if not match:
+        return
+    # 
+    desc = tryFindBindDescription(lines[index - 1])
+    func = _tryConvertBindFunction(module, match.group(2))
+    args = []
+    rtrn = None
+    for num in range(1,50):
+        _index = index + num
+        _line = lines[_index]
+        _return = _tryConvertBindManuReturn(_line)
+        if _return:
+            rtrn = _return
+            break
+        _argument = _tryConvertBindManuArgument(_line)
+        if _argument:
+            args.append(_argument)
+        pass
+    #
+    return [func, desc, rtrn, args]
+
+###############################################################################
+
 print("BASE_INITIALIZED!\n")

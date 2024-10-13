@@ -2,155 +2,95 @@
 
 #include "../uyghur.c"
 
-void native_number_ceil(Bridge *bridge)
+double bind_number_ceil(double num)
 {
-    double num = Bridge_receiveNumber(bridge);
-    int r = ceil(num);
-    Bridge_returnNumber(bridge, r);
+    return ceil(num);
 }
 
-void native_number_floor(Bridge *bridge)
+double bind_number_floor(double num)
 {
-    double num = Bridge_receiveNumber(bridge);
-    int r = floor(num);
-    Bridge_returnNumber(bridge, r);
+    return floor(num);
 }
 
-void native_number_round(Bridge *bridge)
+double bind_number_round(double num)
 {
-    double num = Bridge_receiveNumber(bridge);
-    int r = round(num);
-    Bridge_returnNumber(bridge, r);
+    return round(num);
 }
 
-void native_number_seed(Bridge *bridge)
-{
-    double num = Bridge_receiveNumber(bridge);
+void bind_number_seed(double num) {
     srand(num >= 0 ? num : time(NULL));
-    Bridge_returnEmpty(bridge);
 }
 
-void native_number_random(Bridge *bridge)
+double bind_number_random(double from, double to)
 {
-    double from = Bridge_receiveNumber(bridge);
-    double to = Bridge_receiveNumber(bridge);
-    double r = num_random(from, to);
-    Bridge_returnNumber(bridge, r);
+    return num_random(from, to);
 }
 
-void native_number_radian(Bridge *bridge)
-{
-    double num = Bridge_receiveNumber(bridge);
-    double r = num * M_PI / 180.0;
-    Bridge_returnNumber(bridge, r);
+double bind_number_radian(double num) {
+    return num * M_PI / 180.0;
 }
 
-void native_number_degree(Bridge *bridge)
-{
-    double num = Bridge_receiveNumber(bridge);
-    double r = num * 180.0 / M_PI;
-    Bridge_returnNumber(bridge, r);
+double bind_number_degree(double num) {
+    return num * 180.0 / M_PI;
 }
 
-void native_number_sin(Bridge *bridge)
-{
-    double num = Bridge_receiveNumber(bridge);
-    double r = sin(num);
-    Bridge_returnNumber(bridge, r);
+double bind_number_sin(double num) {
+    return sin(num);
 }
 
-void native_number_cos(Bridge *bridge)
-{
-    double num = Bridge_receiveNumber(bridge);
-    double r = cos(num);
-    Bridge_returnNumber(bridge, r);
+double bind_number_cos(double num) {
+    return cos(num);
 }
 
-void native_number_tan(Bridge *bridge)
-{
-    double num = Bridge_receiveNumber(bridge);
-    double r = tan(num);
-    Bridge_returnNumber(bridge, r);
+double bind_number_tan(double num) {
+    return tan(num);
 }
 
-void native_number_asin(Bridge *bridge)
-{
-    double num = Bridge_receiveNumber(bridge);
-    double r = asin(num);
-    Bridge_returnNumber(bridge, r);
+double bind_number_asin(double num) {
+    return asin(num);
 }
 
-void native_number_acos(Bridge *bridge)
-{
-    double num = Bridge_receiveNumber(bridge);
-    double r = acos(num);
-    Bridge_returnNumber(bridge, r);
+double bind_number_acos(double num) {
+    return acos(num);
 }
 
-void native_number_atan(Bridge *bridge)
-{
-    double num = Bridge_receiveNumber(bridge);
-    double r = atan(num);
-    Bridge_returnNumber(bridge, r);
+double bind_number_atan(double num) {
+    return atan(num);
 }
 
-void native_number_power(Bridge *bridge)
+double bind_number_power(double x, double y)
 {
-    double x = Bridge_receiveNumber(bridge);
-    double y = Bridge_receiveNumber(bridge);
-    double r = pow(x, y);
-    Bridge_returnNumber(bridge, r);
+    return pow(x, y);
 }
 
-void native_number_square(Bridge *bridge)
+double bind_number_square(double x, double y)
 {
-    double x = Bridge_receiveNumber(bridge);
-    double y = Bridge_receiveNumber(bridge);
-    double r = pow(x, 1 / y);
-    Bridge_returnNumber(bridge, r);
+    return pow(x, 1 / y);
 }
 
-void native_number_log_e(Bridge *bridge)
-{
-    double num = Bridge_receiveNumber(bridge);
-    double r = log(num);
-    Bridge_returnNumber(bridge, r);
+double bind_number_log_e(double num) {
+    return log(num);
 }
 
-void native_number_log_10(Bridge *bridge)
-{
-    double num = Bridge_receiveNumber(bridge);
-    double r = log10(num);
-    Bridge_returnNumber(bridge, r);
+double bind_number_log_10(double num) {
+    return log10(num);
 }
 
-void native_number_quotient(Bridge *bridge)
+double bind_number_quotient(double x, double y)
 {
-    double x = Bridge_receiveNumber(bridge);
-    double y = Bridge_receiveNumber(bridge);
-    double r = (x - fmod(x, y)) / y;
-    Bridge_returnNumber(bridge, r);
+    return (x - fmod(x, y)) / y;
 }
 
-void native_number_reminder(Bridge *bridge)
+double bind_number_reminder(double x, double y)
 {
-    double x = Bridge_receiveNumber(bridge);
-    double y = Bridge_receiveNumber(bridge);
-    double r = fmod(x, y);
-    Bridge_returnNumber(bridge, r);
+    return fmod(x, y);
 }
 
-void native_number_int_part(Bridge *bridge)
-{
-    double num = Bridge_receiveNumber(bridge);
-    double r = num - modf(num, 0);
-    Bridge_returnNumber(bridge, r);
+double bind_number_int_part(double num) {
+    return num - modf(num, 0);
 }
 
 
-void native_number_dec_part(Bridge *bridge)
-{
-    double num = Bridge_receiveNumber(bridge);
-    double r = modf(num, 0);
-    Bridge_returnNumber(bridge, r);
+double bind_number_dec_part(double num) {
+    return modf(num, 0);
 }

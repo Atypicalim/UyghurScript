@@ -11,7 +11,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 2. floor
@@ -21,7 +21,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 3. round
@@ -31,7 +31,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 4. seed
@@ -41,7 +41,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 5. random
@@ -51,8 +51,8 @@
 > 🔙: Number
 
 > 🛒: 
-* from  `double`
-* to  `double`
+* from  `Number`
+* to  `Number`
 
 
 ### 6. radian
@@ -62,7 +62,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 7. degree
@@ -72,7 +72,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 8. sin
@@ -82,7 +82,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 9. cos
@@ -92,7 +92,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 10. tan
@@ -102,7 +102,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 11. asin
@@ -112,7 +112,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 12. acos
@@ -122,7 +122,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 13. atan
@@ -132,7 +132,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 14. power
@@ -142,8 +142,8 @@
 > 🔙: Number
 
 > 🛒: 
-* x  `double`
-* y  `double`
+* x  `Number`
+* y  `Number`
 
 
 ### 15. square
@@ -153,8 +153,8 @@
 > 🔙: Number
 
 > 🛒: 
-* x  `double`
-* y  `double`
+* x  `Number`
+* y  `Number`
 
 
 ### 16. log_e
@@ -164,7 +164,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 17. log_10
@@ -174,7 +174,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 18. quotient
@@ -184,8 +184,8 @@
 > 🔙: Number
 
 > 🛒: 
-* x  `double`
-* y  `double`
+* x  `Number`
+* y  `Number`
 
 
 ### 19. reminder
@@ -195,8 +195,8 @@
 > 🔙: Number
 
 > 🛒: 
-* x  `double`
-* y  `double`
+* x  `Number`
+* y  `Number`
 
 
 ### 20. int_part
@@ -206,7 +206,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ### 21. dec_part
@@ -216,7 +216,7 @@
 > 🔙: Number
 
 > 🛒: 
-* num  `double`
+* num  `Number`
 
 
 ---

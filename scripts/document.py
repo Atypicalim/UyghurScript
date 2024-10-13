@@ -35,119 +35,56 @@ tplDocBody = '''
 > document info [document.md](../README.md)
 '''
 
-################################################################ regex
-
-BRIDGE_FUNC_PATTERN = re.compile('(.*) native_(.*)\(Bridge \*bridge\)')
-BRIDGE_RTRN_PATTERN = re.compile('Bridge_return([^(]*)\(')
-BRIDGE_ARGS_PATTERN = re.compile('(.*) = Bridge_receive.*\(')
-
-BRIDGE_ARGS_CUSTOM_PATTENR = re.compile('(.*) = .*_from_bridge')
-
-################################################################ find
-
-
-def _tryFindArgument(line):
-    match = BRIDGE_ARGS_PATTERN.search(line)
-    if match:
-        arg = match.group(1).strip()
-        return arg
-    match = BRIDGE_ARGS_CUSTOM_PATTENR.search(line)
-    if match:
-        arg = match.group(1).strip()
-        return arg
-    
-
-def _tryFindReturn(line):
-    match = BRIDGE_RTRN_PATTERN.search(line)
-    if not match:
-        return
-    pass
-    rtn = match.group(1).strip()
-    return rtn
-
-def _tryFindFunction(module, line):
-    match = BRIDGE_FUNC_PATTERN.search(line)
-    if not match:
-        return
-    fun = match.group(2).strip().replace(module + "_", "")
-    return fun
-
-def _tryFindDescription(line):
-    line = line.strip()
-    if not line.startswith("//"):
-        return
-    return line[2:]
-
-################################################################ detect
-
-def _tryDetectFunction(path, module, index, lines):
-    line = lines[index]
-    func = _tryFindFunction(module, line)
-    if not func:
-        return
-    # 
-    desc = _tryFindDescription(lines[index - 1])
-    args = []
-    rtrn = None
-    for num in range(1,50):
-        _index = index + num
-        _line = lines[_index]
-        _return = _tryFindReturn(_line)
-        if _return:
-            rtrn = _return
-            break
-        _argument = _tryFindArgument(_line)
-        if _argument:
-            args.append(_argument)
-        pass
-    #
-    return [func, desc, rtrn, args]
-
-
 ################################################################ generate
 
-def _tryGenerateDocument(module, source, functions):
+def _tryGenerateFunctionDoc(module, function, index):
+    func = function[0]
+    desc = function[1]
+    rtrn = function[2]
+    args = function[3]
     #
-    _index = 0
-    _functions = ""
-    for function in functions:
-        func = function[0]
-        desc = function[1]
-        rtrn = function[2]
-        args = function[3]
-        #
-        _args = ""
-        for arg in args:
-            arg = arg.replace(" *", " ").split(" ")
-            typ = arg[0]
-            nam = arg[1]
-            _arg = tplDocumentArgument.format(type=typ, name=nam)
-            _args = _args + "\n" + _arg
-        if _args == "":
-            _args = tplDocumentArgumentless
-        # 
-        if not desc:
-            desc = tplDocDescriptionless.format(module=module, func=func)
-        # 
-        _index = _index + 1
-        _function = tplDocFunction.format(index=_index, func=func, desc=desc, rtrn=rtrn, args=_args)
-        _functions = _functions + "" + _function
+    _args = ""
+    for arg in args:
+        ctyp = arg[0]
+        name = arg[1]
+        vtyp = arg[2]
+        _arg = tplDocumentArgument.format(type=vtyp, name=name)
+        _args = _args + "\n" + _arg
+    if _args == "":
+        _args = tplDocumentArgumentless
     # 
-    text = tplDocBody.format(project=PROJECT_NAME, module=module, source=source, functions=_functions)
+    if not desc:
+        desc = tplDocDescriptionless.format(module=module, func=func)
+    # 
+    print(rtrn)
+    _return = rtrn[0] if rtrn[0] != None else rtrn[1]
+    _function = tplDocFunction.format(index=index, func=func, desc=desc, rtrn=_return, args=_args)
+    return _function
+
+def _tryGenerateDocument(module, source, functions):
+    functions = "".join(functions)
+    text = tplDocBody.format(project=PROJECT_NAME, module=module, source=source, functions=functions)
     return text
 
 ################################################################ walk
 
 def _tryWalkDocumentModule(module, fromPath):
-    _lines = readLines(fromPath)
-    functions = []
-    lineIndex = -1
-    for _line in _lines:
-        lineIndex = lineIndex + 1
-        info = _tryDetectFunction(fromPath, module, lineIndex, _lines)
-        if info:
-            functions.append(info)
-    return functions
+    functionDocs = []
+    def _onLine(index, lines):
+        autoFunc = tryDetectBindAutoFunction(fromPath, module, index, lines)
+        if autoFunc:
+            # print("-->", autoFunc)
+            _funcDoc = _tryGenerateFunctionDoc(module, autoFunc, len(functionDocs) + 1)
+            functionDocs.append(_funcDoc)
+            return
+        manuFunc = tryDetectBindManuFunction(fromPath, module, index, lines)
+        if manuFunc:
+            # print("-->", manuFunc)
+            _funcDoc = _tryGenerateFunctionDoc(module, manuFunc, len(functionDocs) + 1)
+            functionDocs.append(_funcDoc)
+            return
+    tryForEachLine(module, fromPath, _onLine)
+    return functionDocs
 
 def _tryWalkDocumentLibrary(libName, modNames, libPath):
     # 
@@ -159,16 +96,13 @@ def _tryWalkDocumentLibrary(libName, modNames, libPath):
     codeDir = tools.tools.append_path(DIR_SOURCE, libName)
     # 
     for index, module in enumerate(modNames):
-        source1 = tools.tools.append_path(bindDir, module) + ".c"
-        source2 = tools.tools.append_path(codeDir, module) + ".c"
+        source = tools.tools.append_path(codeDir, module) + ".c"
         target = tools.tools.append_path(outPath, module) + ".md"
-        print("documenting:", module, source1, source2)
-        functions1 = _tryWalkDocumentModule(module, source1)
-        functions2 = _tryWalkDocumentModule(module, source2)
-        functions = functions1 + functions2
+        print("documenting:", module, source)
+        functions = _tryWalkDocumentModule(module, source)
         # 
-        source = "../../" + source2.replace("\\", "/")
-        _document = _tryGenerateDocument(module, source, functions)
+        _source = "../../" + source.replace("\\", "/")
+        _document = _tryGenerateDocument(module, _source, functions)
         # 
         tools.files.write(target, _document, 'utf-8')
     pass

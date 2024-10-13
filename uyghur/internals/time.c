@@ -2,14 +2,14 @@
 
 #include "../uyghur.c"
 
-void native_time_get_zone(Bridge *bridge)
+double bind_time_get_zone()
 {
-    Bridge_returnNumber(bridge, time_get_zone());
+    return time_get_zone();
 }
 
-void native_time_get_seconds(Bridge *bridge)
+double bind_time_get_seconds()
 {
-    Bridge_returnNumber(bridge, time_get_seconds());
+    return time_get_seconds();
 }
 
 void native_time_convert_to_seconds(Bridge *bridge)
@@ -27,14 +27,14 @@ void native_time_convert_from_seconds(Bridge *bridge)
     pct_free(time);
 }
 
-void native_time_get_time(Bridge *bridge)
+CString bind_time_get_time()
 {
-    Bridge_returnString(bridge, time_get_time());
+    return time_get_time();
 }
 
-void native_time_get_clock(Bridge *bridge)
+double bind_time_get_clock()
 {
-    Bridge_returnNumber(bridge, time_get_clock());
+    return time_get_clock();
 }
 
 void native_time_sleep_seconds(Bridge *bridge)
