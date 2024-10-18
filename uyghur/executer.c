@@ -49,7 +49,7 @@ Executer *Executer_new(Uyghur *uyghur)
     Machine *machine = executer->machine;
     machine->stack = Stack_new();
     machine->calls = Stack_new();
-    machine->globals = Holdable_newScope();
+    machine->globals = Holdable_newScope(NULL);
     Holdable *globals = machine->globals;
     //
     Machine_initKinds(machine);
@@ -92,7 +92,8 @@ void Runtime_assert(bool value, char *msg) {
 
 void Executer_pushScope(Executer *this)
 {
-    Holdable *holdable = Holdable_new(UG_TYPE_SCP, NULL);
+    Holdable *current = this->machine->currHoldable;
+    Holdable *holdable = Holdable_newScope(current);
     Machine_pushHolder(this->machine, holdable);
 }
 
@@ -898,7 +899,8 @@ void Executer_consumeWorker(Executer *this, Leaf *leaf)
     Token *func; Leaf *code;
     _Executer_parseAppliable(this, leaf, UG_TYPE_WKR, &func, &code);
     //
-    Runnable *wkr = Runnable_newWorker(code, func);
+    Holdable *env = this->machine->currHoldable;
+    Runnable *wkr = Runnable_newWorker(code, func, env);
     Executer_setValueByToken(this, func, wkr, true);
 }
 
@@ -908,7 +910,8 @@ void Executer_consumeCreator(Executer *this, Leaf *leaf)
     _Executer_parseAppliable(this, leaf, UG_TYPE_CTR, &func, &code);
     //
     Objective *self = Objective_newCtr(func);
-    Value *funV = Runnable_newWorker(code, func);
+    Holdable *env = this->machine->currHoldable;
+    Value *funV = Runnable_newWorker(code, func, env);
     Executer_setValueToContainer(this, self, Token_function(), funV);
     Machine_releaseObj(funV);
     //
@@ -921,7 +924,8 @@ void Executer_consumeAssister(Executer *this, Leaf *leaf)
     _Executer_parseAppliable(this, leaf, UG_TYPE_ATR, &func, &code);
     //
     Objective *self = Objective_newAtr(func);
-    Value *funV = Runnable_newWorker(code, func);
+    Holdable *env = this->machine->currHoldable;
+    Value *funV = Runnable_newWorker(code, func, env);
     Executer_setValueToContainer(this, self, Token_function(), funV);
     Machine_releaseObj(funV);
     //
@@ -946,6 +950,11 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     Executer_consumeTree(this, leaf);
 }
 
+void Executer_executeFunctions(Executer *this, Value *func)
+{
+    Executer_consumeLeaf(this, func->obj);
+}
+
 Value *Executer_applyWorker(Executer *this, Token *token, Value *workerValue, Value *container)
 {
     Holdable *self = NULL;
@@ -962,7 +971,7 @@ Value *Executer_applyWorker(Executer *this, Token *token, Value *workerValue, Va
     //
     Executer_pushScope(this);
     Dictable_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
-    Executer_consumeLeaf(this, func->obj);
+    Executer_executeFunctions(this, func);
     Executer_popScope(this);
     //
     Machine_releaseObj(self);
@@ -975,15 +984,16 @@ Value *Executer_applyWorker(Executer *this, Token *token, Value *workerValue, Va
 
 Value *Executer_applyCreator(Executer *this, Token *token, Value *creatorValue, Value *container)
 {
-    Value *constructor = Executer_getValueFromContainer(this, creatorValue, Token_function());
-    Executer_assert(this, Runnable_isWorker(constructor), token, LANG_ERR_EXECUTER_APPLY_NOT_VALID);
+    Value *func = Executer_getValueFromContainer(this, creatorValue, Token_function());
+    Executer_assert(this, Runnable_isWorker(func), token, LANG_ERR_EXECUTER_APPLY_NOT_VALID);
+    //
     Queue *parents = Queue_new();
     Queue_push(parents, creatorValue);
-    Objective *self = Objective_newObj(parents);
+    Objective *self = Objective_newObj(NULL, parents);
     //
     Executer_pushScope(this);
     Dictable_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
-    Executer_consumeLeaf(this, constructor->obj);
+    Executer_executeFunctions(this, func);
     Executer_popScope(this);
     //
     Machine_releaseObj(self);
@@ -1000,7 +1010,9 @@ Value *Executer_applyCreator(Executer *this, Token *token, Value *creatorValue, 
 
 Value *Executer_applyAssister(Executer *this, Token *token, Value *assisterValue, Value *container)
 {
-    Value *constructor = Executer_getValueFromContainer(this, assisterValue, Token_function());
+    Value *func = Executer_getValueFromContainer(this, assisterValue, Token_function());
+    Executer_assert(this, Runnable_isWorker(func), token, LANG_ERR_EXECUTER_APPLY_NOT_VALID);
+    //
     Objective *self = Machine_getCurrentSelf(this->machine);
     Executer_assert(this, Objective_isObj(self), token, LANG_ERR_EXECUTER_APPLY_NOT_VALID);
     Queue *parent = self->extra;
@@ -1008,7 +1020,7 @@ Value *Executer_applyAssister(Executer *this, Token *token, Value *assisterValue
     //
     Executer_pushScope(this);
     Dictable_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
-    Executer_consumeLeaf(this, constructor->obj);
+    Executer_executeFunctions(this, func);
     Executer_popScope(this);
     //
     this->isReturn = false;
@@ -1157,8 +1169,8 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
     Executer_setValueByToken(this, target, r, false);
 }
 
-Value *Executer_generateContainer(Executer *this, Object *);
-Value *Executer_generateContainer(Executer *this, Object *object)
+Value *Executer_generateContainer(Executer *this, Object *, Token *);
+Value *Executer_generateContainer(Executer *this, Object *object, Token *token)
 {
     bool isArr = object->objType == PCT_OBJ_QUEUE;
     bool isMap = object->objType == PCT_OBJ_STACK;
@@ -1172,7 +1184,7 @@ Value *Executer_generateContainer(Executer *this, Object *object)
         block = Stack_NEXT(object);
     }
     //
-    Value *result = isArr ? (Value *)Listable_newLst(NULL) : (Value *)Dictable_newDct(NULL);
+    Value *result = isArr ? (Value *)Listable_newLst(token) : (Value *)Dictable_newDct(token);
     while(block != NULL)
     {
         Token *key = block->next;
@@ -1182,9 +1194,9 @@ Value *Executer_generateContainer(Executer *this, Object *object)
         //
         Value *value = NULL;
         if (val->objType == PCT_OBJ_QUEUE) {
-            value = Executer_generateContainer(this, val);
+            value = Executer_generateContainer(this, val, NULL);
         } else if (val->objType == PCT_OBJ_STACK) {
-            value = Executer_generateContainer(this, val);
+            value = Executer_generateContainer(this, val, NULL);
         } else {
             value = Executer_getValueByToken(this, val, false);
         }
@@ -1214,7 +1226,7 @@ void Executer_consumeGenerator(Executer *this, Leaf *leaf)
     Object *root = (Foliage *)body->value;
     //
     // TODO:free r object
-    Value *r = Executer_generateContainer(this, root);
+    Value *r = Executer_generateContainer(this, root, target);
     //
     Executer_assert(this, r != NULL, target, LANG_ERR_EXECUTER_GENERATION_INVALID);
     Executer_setValueByToken(this, target, r, false);

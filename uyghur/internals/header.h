@@ -27,10 +27,10 @@ void register_internal_libraries(Bridge *bridge)
     // TODO:set proxies as fixed features
     Bridge_startBox(bridge);
     Bridge_bindString(bridge, "NESHIR_ISMI", UG_VERSION_NAME);
-    Bridge_register(bridge, TVALUE_NIL);
+    Bridge_register(bridge, NULL);
     Bridge_startBox(bridge);
     Bridge_bindString(bridge, "NESHIR_ISMI", UG_VERSION_NAME);
-    Bridge_register(bridge, TVALUE_BOL);
+    Bridge_register(bridge, NULL);
     // 
     lib_number_register(bridge);
     lib_string_register(bridge);

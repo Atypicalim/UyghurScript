@@ -23,8 +23,8 @@ void native_{module}_{func}(Bridge *bridge) {{
     {rslt}
 }}'''
 
-tplBindRegisterModule = '''    Bridge_bindNative(bridge, "ALIAS_{module}_{func}", native_{module}_{func});'''
-tplBindRegisterGlobal = '''    Bridge_bindNative(bridge, "ALIAS_{func}", native_{func});'''
+tplBindRegisterModule = '''    Bridge_bindNativeExt(bridge, "ALIAS_{module}_{func}", native_{module}_{func}, "{file}", {line});'''
+tplBindRegisterGlobal = '''    Bridge_bindNativeExt(bridge, "ALIAS_{func}", native_{func}, "{file}", {line});'''
 
 tplBindDescriptionless = ''''''
 
@@ -33,37 +33,34 @@ tplBindDescriptionless = ''''''
 def _isToGlobal(module):
     return module == 'global'
 
-def _tryGenerateAutoBind(module, functions):
+def _tryGenerateAutoBind(module, functions: list[BindInfo]):
     #
     _functions = ""
     _registers = ""
     for function in functions:
-        func = function[0]
-        desc = function[1]
-        rtrn = function[2]
-        args = function[3]
+        func = function.func
+        desc = function.desc
+        rtrn = function.rtrn
+        args = function.args
         #
         rcyv = ""
         send = ""
         for arg in args:
-            ctyp = arg[0]
-            name = arg[1]
-            vtyp = arg[2]
-            _rcyv = tplBindReceive.format(typ=ctyp, nam=name, val=vtyp)
-            _send = tplBindSending.format(typ=ctyp, nam=name)
+            _rcyv = tplBindReceive.format(typ=arg.cType, nam=arg.name, val=arg.vType)
+            _send = tplBindSending.format(typ=arg.cType, nam=arg.name)
             rcyv = _rcyv if rcyv == "" else rcyv + "\n    " + _rcyv
             send = _send if send == "" else send + ", " + _send
         # 
         rslt = ""
         exct = ""
-        if rtrn[1] == 'void':
+        if rtrn.cType == 'void':
             exct = f"bind_{module}_{func}({send});"
             rslt = tplBindResultEmpty
         else:
-            exct = f"{rtrn[1]} rrr = bind_{module}_{func}({send});"
-            rslt = tplBindResultValue.format(rtrn=rtrn[0])
-            if rtrn[2] != '':
-                rslt = rslt + "\n    " + rtrn[2]
+            exct = f"{rtrn.cType} rrr = bind_{module}_{func}({send});"
+            rslt = tplBindResultValue.format(rtrn=rtrn.vType)
+            if rtrn.fCode != '':
+                rslt = rslt + "\n    " + rtrn.fCode
 
         # 
         if not desc:
@@ -80,17 +77,17 @@ def _tryGenerateAutoBind(module, functions):
         _functions = _function if _functions == "" else _functions + "\n\n" + _function
         #
         TEMPLATE = tplBindRegisterGlobal if _isToGlobal(module) else tplBindRegisterModule
-        _register = TEMPLATE.format(module=module, func=func)
+        _register = TEMPLATE.format(module=module, func=func, file=function.file, line=function.line)
         _registers = _register if _registers == "" else _registers + "\n" + _register 
     # 
     return _functions, _registers
 
-def _tryGenerateManualBind(module, functions):
+def _tryGenerateManualBind(module, functions: list[BindInfo]):
     _registers = ""
     for function in functions:
-        func = function[0]
+        func = function.func
         TEMPLATE = tplBindRegisterGlobal if _isToGlobal(module) else tplBindRegisterModule
-        _register = TEMPLATE.format(module=module, func=func)
+        _register = TEMPLATE.format(module=module, func=func, file=function.file, line=function.line)
         _registers = _register if _registers == "" else _registers + "\n" + _register 
     #
     return _registers
@@ -98,8 +95,8 @@ def _tryGenerateManualBind(module, functions):
 ################################################################
 
 def _tryWalkBindModule(module, fromPath):
-    functionsBindable = []
-    functionsBinded = []
+    functionsBindable: List[BindInfo] = []
+    functionsBinded: List[BindInfo] = []
     def _onLine(index, lines):
         bindableInfo = tryDetectBindAutoFunction(fromPath, module, index, lines)
         if bindableInfo:

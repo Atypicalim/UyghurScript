@@ -96,8 +96,10 @@ Value *Machine_newNormalValue(bool freeze, char typ) {
         value = Machine_createObjByCurrentFreezeFlag(PCT_OBJ_VALUE, size);
     }
     value->type = typ;
-    value->fixed = false;
     value->obj = NULL;
+    value->fixed = false;
+    value->token = NULL;
+    value->linka = NULL;
     value->extra = NULL;
     // log_debug("new=%s: %p", get_value_name(typ, "value"), value);
     return value;
@@ -128,14 +130,19 @@ Value *Machine_newCacheableValue(char tp, bool isDebug) {
     }
     //
     value->type = tp;
+    value->fixed = false;
+    value->token = NULL;
+    value->linka = NULL;
     value->extra = NULL;
     return value;
 }
 
 void Machine_freeCacheableValue(Value *value) {
     Machine* this = __uyghur->machine;
-    value->arr = NULL;
-    value->map = NULL;
+    value->obj = NULL;
+    value->fixed = NULL;
+    value->token = NULL;
+    value->linka = NULL;
     value->extra = NULL;
     //
     bool cached = _machine_writeToCache(&this->cacheVal, MACHINE_CACHE_SIZE_VAL, value);

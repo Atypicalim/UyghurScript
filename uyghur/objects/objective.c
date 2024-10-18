@@ -7,25 +7,25 @@
 #ifndef H_UG_OBJECTIVE
 #define H_UG_OBJECTIVE
 
-Objective *Objective_new(char tp, void *extra)
+Objective *Objective_new(char tp, Token *token, void *extra)
 {
     tools_assert(is_type_objective(tp), "invalid objective type for new");
-    return _Dictable_new(tp, extra);
+    return _Dictable_new(tp, token, extra);
 }
 
 Objective *Objective_newCtr(Token *name)
 {
-    return Objective_new(UG_TYPE_CTR, name);
+    return Objective_new(UG_TYPE_CTR, name, NULL);
 }
 
 Objective *Objective_newAtr(Token *name)
 {
-    return Objective_new(UG_TYPE_ATR, name);
+    return Objective_new(UG_TYPE_ATR, name, NULL);
 }
 
-Objective *Objective_newObj(Queue *parents)
+Objective *Objective_newObj(Token *token, Queue *parents)
 {
-    return Objective_new(UG_TYPE_OBJ, parents);
+    return Objective_new(UG_TYPE_OBJ, token, parents);
 }
 
 // 
@@ -67,18 +67,7 @@ bool Objective_isInstanceOf(Objective *this, Value *other) {
 
 char *Objective_toString(Objective *this)
 {
-    Token *token = NULL;
-    if (Objective_isCtr(this) || Objective_isAtr(this)) {
-        token = this->extra;
-    } else if (Objective_isObj(this)) {
-        Queue *parents = this->extra;
-        Queue_RESTE(parents);
-        Objective *parent = Queue_NEXT(parents);
-        if (parent != NULL) token = parent->extra;
-    }
-    char *name = get_value_name(this->type, "objective");
-    char *desc = token != NULL ? token->value : "?";
-    return tools_format("<%s %p %s>", name, this, desc);
+    return helper_value_to_string(this, "objective");
 }
 
 void Objective_print(Objective *this)

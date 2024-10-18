@@ -1,9 +1,20 @@
 
-miqdar t qimmiti quruq bolsun
+xizmetchi crtr mezmuni
+    miqdar x qimmiti 0 bolsun
+    #
+    xizmetchi func miqdar a mezmuni
+        x = x + a
+        netije x qayturulsun
+    tamamlansun
+    #
+    netije func qayturulsun
+tamamlansun
 
-t = 10 % quruq
-# t = 10 % san
 
-buyruq t yezilsun
+miqdar x qimmiti 100 bolsun
+xizmetchi crtr ishlitilsun we f elinsun
+xizmetchi f bilen 11 ishlitilsun we r elinsun
 
+buyruq r yezilsun
+buyruq "\n" yezilsun
 

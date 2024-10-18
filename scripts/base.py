@@ -7,6 +7,7 @@ import json
 import subprocess
 import shutil
 import yaml
+from typing import List
 sys.path.append('../my-build-tools/')
 
 from builder import builder
@@ -181,6 +182,28 @@ BINDING_MAP = {
     'CString': ["String", "pct_free(rrr);"],
 }
 
+class BindArgument:
+    def __init__(self, vType, cType, name):
+        self.vType: str = vType
+        self.cType: str = cType
+        self.name: str = name
+
+class BindReturn:
+    def __init__(self, vType, cType, fCode):
+        self.vType: str = vType
+        self.cType: str = cType
+        self.fCode: str = fCode
+
+class BindInfo:
+    def __init__(self, func, desc, rtrn, args):
+        self.func: str = func
+        self.desc: str = desc
+        self.rtrn: BindReturn = rtrn
+        self.args: list[BindArgument] = args
+        self.file: str = None
+        self.line: int = None
+        pass
+
 def tryFindBindDescription(line):
     line = line.strip()
     if not line.startswith("//"):
@@ -208,7 +231,7 @@ def _tryConvertBindAutoArguments(text):
         info = BINDING_MAP.get(typ)
         assert info != None, "invalid auto bind type:" + text
         _typ = info[0]
-        args.append([typ, nam, _typ])
+        args.append(BindArgument(_typ, typ, nam))
     return args
 
 def _tryConvertBindAutoReturn(text):
@@ -217,7 +240,7 @@ def _tryConvertBindAutoReturn(text):
     info = BINDING_MAP.get(rtrn)
     assert info != None, "invalid auto bind type:" + text
     _rtrn = info[0]
-    return [_rtrn, rtrn, info[1]]
+    return BindReturn(_rtrn, rtrn, info[1])
 
 def tryDetectBindAutoFunction(path, module, index, lines):
     #
@@ -229,7 +252,10 @@ def tryDetectBindAutoFunction(path, module, index, lines):
     func = _tryConvertBindFunction(module, match.group(2))
     rtrn = _tryConvertBindAutoReturn(match.group(1))
     args = _tryConvertBindAutoArguments(match.group(3))
-    return [func, desc, rtrn, args]
+    info = BindInfo(func, desc, rtrn, args)
+    info.file = module + ".c"
+    info.line = index + 1
+    return info
 
 ###############################################################################
 
@@ -247,7 +273,7 @@ def _tryConvertBindManuArgument(text):
         return None
     arg = match.group(1).replace(" *", " ").strip()
     [typ, nam] = arg.split(" ")
-    return [None, nam, typ]
+    return BindArgument(typ, None, nam)
     
 
 def _tryConvertBindManuReturn(line):
@@ -256,7 +282,7 @@ def _tryConvertBindManuReturn(line):
         return
     pass
     rtrn = match.group(1).strip()
-    return [rtrn, None, '']
+    return BindReturn(rtrn, None, '')
 
 
 def tryDetectBindManuFunction(path, module, index, lines):
@@ -281,7 +307,10 @@ def tryDetectBindManuFunction(path, module, index, lines):
             args.append(_argument)
         pass
     #
-    return [func, desc, rtrn, args]
+    info = BindInfo(func, desc, rtrn, args)
+    info.file = module + ".c"
+    info.line = index + 1
+    return info
 
 ###############################################################################
 

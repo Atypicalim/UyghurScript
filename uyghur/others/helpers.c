@@ -454,4 +454,12 @@ Value *helper_get_aliased_key(Value *container, char *_key) {
     return NULL;
 }
 
+char*helper_value_to_string(void *target, CString failure) {
+    Value *value = target;
+    Token *token = value->token;
+    char *desc = token != NULL ? token->value : "?";
+    char *name = get_value_name(value->type, failure);
+    return tools_format("<%s %p %s %s:%d>", name, value, desc, token->file, token->line);
+}
+
 #endif

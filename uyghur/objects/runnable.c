@@ -7,26 +7,28 @@
 #ifndef H_UG_RUNNABLE
 #define H_UG_RUNNABLE
 
-Runnable *Runnable_new(char tp, void *extra)
+Runnable *Runnable_new(char tp, Token *token)
 {
     tools_assert(is_type_runnable(tp), "invalid runnable type for new");
-    Runnable *runnable = Machine_newNormalValue(false, tp);
-    runnable->type = tp;
-    runnable->extra = extra;
+    Runnable *runnable = Machine_newCacheableValue(tp, false);
+    runnable->token = token;
+    runnable->extra = NULL;
     return runnable;
 }
 
-Runnable *Runnable_newWorker(WORKER worker, void *extra)
+Runnable *Runnable_newWorker(WORKER worker, Token *token, void *environment)
 {
-    Runnable *runnable = Runnable_new(UG_TYPE_WKR, extra);
+    Runnable *runnable = Runnable_new(UG_TYPE_WKR, token);
     runnable->obj = worker;
+    runnable->linka = environment;
     return runnable;
 }
 
-Runnable *Runnable_newNative(NATIVE native, void *extra)
+Runnable *Runnable_newNative(NATIVE native, Token *token)
 {
-    Runnable *runnable = Runnable_new(UG_TYPE_NTV, extra);
+    Runnable *runnable = Runnable_new(UG_TYPE_NTV, token);
     runnable->obj = native;
+    runnable->linka = NULL;
     return runnable;
 }
 
@@ -43,15 +45,7 @@ bool Runnable_isNative(Runnable *this)
 
 char *Runnable_toString(Runnable *this)
 {
-    char *desc = "?";
-    if (Runnable_isWorker(this)) {
-        Token *token = this->extra;
-        desc = token != NULL ? token->value : "?";
-    } else if (Runnable_isNative(this)) {
-        desc = this->extra;
-    }
-    char *name = get_value_name(this->type, "runnable");
-    return tools_format("<%s %p %s>", name, this, desc);
+    return helper_value_to_string(this, "runnable");
 }
 
 void Runnable_print(Runnable *this)

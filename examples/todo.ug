@@ -50,10 +50,33 @@ sinalsun we e elinsun
 
 # board
 
-suretSizish path x y
-yeziqSizish path x y
+# suretSizish path x y
+# yeziqSizish path x y
 
-suretNeqishlesh path x y s
-yeziqNeqishlesh path x y s
+# suretNeqishlesh path x y s
+# yeziqNeqishlesh path x y s
 
-neqishSizish
+# neqishSizish
+
+# ######################################################### lambda
+
+xizmetchi f miqdar a mezmuni
+    netije r qayturulsun
+tamamlansun
+
+f = () => {
+
+}
+
+xizmetchi f bilen a b (a b c) => {
+
+} c () => {
+
+} d e () => {
+
+} ishlitilsun we r elinsun
+
+
+xizmetchi f bilen a {
+
+} ishlitilsun we r elinsun

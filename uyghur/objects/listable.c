@@ -7,18 +7,19 @@
 #ifndef H_UG_LIST
 #define H_UG_LIST
 
-Listable *Listable_new(char tp, void *extra)
+Listable *Listable_new(char tp, Token *token)
 {
     Listable *listable = Machine_newCacheableValue(tp, false);
     tools_assert(is_type_listable(tp), "invalid listable type for new");
     // log_debug("new-%s: %p %p", get_value_name(tp, "listable"), listable, listable->arr);
-    listable->extra = extra;
+    listable->token = token;
+    listable->extra = NULL;
     return listable;
 }
 
-Listable *Listable_newLst(void *extra)
+Listable *Listable_newLst(Token *token)
 {
-    return Listable_new(UG_TYPE_LST, extra);
+    return Listable_new(UG_TYPE_LST, token);
 }
 
 bool Listable_isLst(Listable *this)
@@ -48,13 +49,7 @@ int Listable_getCount(Listable *this) {
 
 char *Listable_toString(Listable *this)
 {
-    char *desc = "?";
-    if (Listable_isLst(this)) {
-        Token *token = this->extra;
-        desc = token != NULL ? token->value : "?";
-    }
-    char *name = get_value_name(this->type, "listable");
-    return tools_format("<%s %p %s>", name, this, desc);
+    return helper_value_to_string(this, "listable");
 }
 
 void Listable_print(Listable *this)

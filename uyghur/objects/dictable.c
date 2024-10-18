@@ -7,23 +7,24 @@
 #ifndef H_UG_DICT
 #define H_UG_DICT
 
-Dictable *_Dictable_new(char tp, void *extra)
+Dictable *_Dictable_new(char tp, Token *token, void *extra)
 {
     Dictable *dictable = Machine_newCacheableValue(tp, false);
     // log_debug("new-%s: %p %p", get_value_name(tp, "dictable"), dictable, dictable->obj);
+    dictable->token = token;
     dictable->extra = extra;
     return dictable;
 }
 
-Dictable *Dictable_new(char tp, void *extra)
+Dictable *Dictable_new(char tp, Token *token)
 {
     tools_assert(is_type_dictable(tp), "invalid dictable type for new");
-    return _Dictable_new(tp, extra);
+    return _Dictable_new(tp, token, NULL);
 }
 
-Dictable *Dictable_newDct(void *extra)
+Dictable *Dictable_newDct(Token *token)
 {
-    return Dictable_new(UG_TYPE_DCT, extra);
+    return Dictable_new(UG_TYPE_DCT, token);
 }
 
 bool Dictable_isDct(Dictable *this)
@@ -79,13 +80,7 @@ int Dictable_getCount(Dictable *this) {
 
 char *Dictable_toString(Dictable *this)
 {
-    char *desc = "?";
-    if (Dictable_isDct(this)) {
-        Token *token = this->extra;
-        desc = token != NULL ? token->value : "?";
-    }
-    char *name = get_value_name(this->type, "dictable");
-    return tools_format("<%s %p %s>", name, this, desc);
+    return helper_value_to_string(this, "dictable");
 }
 
 void Dictable_print(Dictable *this)

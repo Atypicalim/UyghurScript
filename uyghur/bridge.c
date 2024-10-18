@@ -129,7 +129,21 @@ void Bridge_bindString(Bridge *this, UG_NAMES name, char *str)
 void Bridge_bindNative(Bridge *this, UG_NAMES name, NATIVE fun)
 {
     Bridge_pushKey(this, name);
+    Token *token = Token_new(UG_TTYPE_NAM, name);
+    token->file = "";
+    token->line = 0;
+    token->column = 0;
     Bridge_pushValue(this, Runnable_newNative(fun, name));
+}
+
+void Bridge_bindNativeExt(Bridge *this, UG_NAMES name, NATIVE fun, CString file, int line)
+{
+    Bridge_pushKey(this, name);
+    Token *token = Token_new(UG_TTYPE_NAM, name);
+    token->file = file;
+    token->line = line;
+    token->column = 0;
+    Bridge_pushValue(this, Runnable_newNative(fun, token));
 }
 
 void Bridge_register(Bridge *this, char *boxName)

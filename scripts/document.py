@@ -37,18 +37,15 @@ tplDocBody = '''
 
 ################################################################ generate
 
-def _tryGenerateFunctionDoc(module, function, index):
-    func = function[0]
-    desc = function[1]
-    rtrn = function[2]
-    args = function[3]
+def _tryGenerateFunctionDoc(module, function: BindInfo, index):
+    func = function.func
+    desc = function.desc
+    rtrn = function.rtrn
+    args = function.args
     #
     _args = ""
     for arg in args:
-        ctyp = arg[0]
-        name = arg[1]
-        vtyp = arg[2]
-        _arg = tplDocumentArgument.format(type=vtyp, name=name)
+        _arg = tplDocumentArgument.format(type=arg.vType, name=arg.name)
         _args = _args + "\n" + _arg
     if _args == "":
         _args = tplDocumentArgumentless
@@ -56,8 +53,7 @@ def _tryGenerateFunctionDoc(module, function, index):
     if not desc:
         desc = tplDocDescriptionless.format(module=module, func=func)
     # 
-    print(rtrn)
-    _return = rtrn[0] if rtrn[0] != None else rtrn[1]
+    _return = rtrn.vType if rtrn.vType != None else rtrn.cType
     _function = tplDocFunction.format(index=index, func=func, desc=desc, rtrn=_return, args=_args)
     return _function
 

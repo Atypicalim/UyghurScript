@@ -10,27 +10,31 @@
 Holdable *Holdable_new(char tp, void *extra)
 {
     tools_assert(is_type_holdable(tp), "invalid holdable type for new");
-    return _Dictable_new(tp, extra);
+    return _Dictable_new(tp, NULL, extra);
 }
 
 Holdable *Holdable_newModule(char *path)
 {
-    return Holdable_new(UG_TYPE_MDL, path);
+    Holdable *module = Holdable_new(UG_TYPE_MDL, path);
+    module->linka = __uyghur->executer->globalScope;
+    return module;
 }
 
-Holdable *Holdable_newScope()
+Holdable *Holdable_newScope(Holdable *parent)
 {
-    return Holdable_new(UG_TYPE_SCP, NULL);
+    Holdable *scope = Holdable_new(UG_TYPE_SCP, NULL);
+    scope->linka = parent;
+    return scope;
 }
 
-Holdable *Holdable_newKind(void *extra)
+Holdable *Holdable_newKind(CString name)
 {
-    return Holdable_new(UG_TYPE_KND, extra);
+    return Holdable_new(UG_TYPE_KND, name);
 }
 
-Holdable *Holdable_newProxy(void *extra)
+Holdable *Holdable_newProxy(CString name)
 {
-    return Holdable_new(UG_TYPE_PXY, extra);
+    return Holdable_new(UG_TYPE_PXY, name);
 }
 
 //

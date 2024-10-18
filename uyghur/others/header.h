@@ -45,6 +45,7 @@ bool isTest = false;
 
 // 
 typedef char* CString;
+typedef void* CPointer;
 
 typedef char* UG_NAMES;
 typedef const char* UCHAR;
@@ -67,7 +68,7 @@ void Object_printByType(char, void *);
 USTRING helper_translate_letter(char *);
 USTRING helper_translate_alias(char *);
 USTRING helper_translate_something(char *);
-
+CString helper_value_to_string(CPointer, CString);
 // 
 
 #include "../../build/languages.h"
@@ -129,6 +130,8 @@ typedef struct _Leaf {
 typedef struct _Value {
     struct _Object;
     char type;
+    Token *token;
+    void *linka;
     void *extra;
     bool fixed;
     union { 
@@ -171,7 +174,7 @@ typedef struct _Listable {
     struct _Value;
 } Listable;
 
-Listable *Listable_new(char, void*);
+Listable *Listable_new(char, Token*);
 char *Listable_toString(Listable *);
 void Listable_print(Listable *);
 
@@ -181,7 +184,7 @@ typedef struct _Dictable {
     struct _Value;
 } Dictable;
 
-Dictable *Dictable_new(char, void*);
+Dictable *Dictable_new(char, Token*);
 char *Dictable_toString(Dictable *);
 void Dictable_print(Dictable *);
 
@@ -191,7 +194,7 @@ typedef struct _Runnable {
     struct _Value;
 } Runnable;
 
-Runnable *Runnable_new(char, void*);
+Runnable *Runnable_new(char, Token*);
 char *Runnable_toString(Runnable *);
 void Runnable_print(Runnable *);
 
@@ -201,7 +204,7 @@ typedef struct _Objective {
     struct _Value;
 } Objective;
 
-Objective *Objective_new(char, void*);
+Objective *Objective_new(char, Token*, void*);
 char *Objective_toString(Objective *);
 void Objective_print(Objective *);
 
