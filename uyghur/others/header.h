@@ -292,14 +292,16 @@ Value *Uyghur_runPath(Uyghur *, char *);
 
 struct Machine {
     Uyghur *uyghur;
-    Stack* stack;
     Object* first;
     bool sweeping;
     bool freezing;
+    Stack* hldStack;
+    Stack* envStack;
     Stack *calls;
     Holdable *globals;
     Holdable *rootModule;
     Holdable *currHoldable;
+    Holdable *currEnvironment;
     Holdable *kindLgc;
     Holdable *kindNum;
     Holdable *kindStr;

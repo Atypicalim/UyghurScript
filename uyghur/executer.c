@@ -47,9 +47,10 @@ Executer *Executer_new(Uyghur *uyghur)
     executer->bridge = uyghur->bridge;
     //
     Machine *machine = executer->machine;
-    machine->stack = Stack_new();
+    machine->hldStack = Stack_new();
+    machine->envStack = Stack_new();
     machine->calls = Stack_new();
-    machine->globals = Holdable_newScope(NULL);
+    machine->globals = Holdable_newScope("global", NULL);
     Holdable *globals = machine->globals;
     //
     Machine_initKinds(machine);
@@ -90,10 +91,10 @@ void Runtime_assert(bool value, char *msg) {
     Executer_assert(__uyghur->executer, value, NULL, msg);
 }
 
-void Executer_pushScope(Executer *this)
+void Executer_pushScope(Executer *this, CString name)
 {
     Holdable *current = this->machine->currHoldable;
-    Holdable *holdable = Holdable_newScope(current);
+    Holdable *holdable = Holdable_newScope(name, current);
     Machine_pushHolder(this->machine, holdable);
 }
 
@@ -115,24 +116,39 @@ void Executer_findValueByLocation(Executer *this, char *key, Value **rContainer,
 {
     *rContainer = NULL;
     *rValue = NULL;
-    Block *block = this->machine->stack->tail;
-    while (block != NULL) {
-        Value *value = Dictable_getLocation(block->data, key);
+    // scope
+    Holdable *holdable = this->machine->currHoldable;
+    if (holdable) {
+        Value *value = Dictable_getLocation(holdable, key);
         if (value != NULL) {
-            *rContainer = block->data;
+            *rContainer = holdable;
             *rValue = value;
-            break;
-        } else if (Holdable_isModule(block->data)) {
-            break;
+            return;
         }
-        block = block->last;
     }
-    if (*rContainer == NULL || *rValue == NULL) {
-        Value *value = Dictable_getLocation(this->globalScope, key);
-        if (value != NULL) {
-            *rContainer = this->globalScope;
-            *rValue = value;
+    // environment
+    holdable = this->machine->currEnvironment;
+    if (holdable) {
+        while (holdable != NULL) {
+            Value *value = Dictable_getLocation(holdable, key);
+            if (value != NULL) {
+                *rContainer = holdable;
+                *rValue = value;
+                return;
+            }
+            holdable = holdable->linka;
         }
+    }
+    // global
+    holdable = this->globalScope;
+    if (holdable) {
+        Value *value = Dictable_getLocation(holdable, key);
+        if (value != NULL) {
+            *rContainer = holdable;
+            *rValue = value;
+            return;
+        }
+        return;
     }
 }
 
@@ -698,7 +714,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     tools_assert(ifNode->type == UG_ATYPE_IF_F, LANG_ERR_EXECUTER_INVALID_IF);
     if (!isFinish && Executer_checkJudge(this, ifNode))
     {
-        Executer_pushScope(this);
+        Executer_pushScope(this, TVALUE_IF);
         Executer_consumeTree(this, ifNode);
         Executer_popScope(this);
         isFinish = true;
@@ -709,7 +725,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     {
         if (!isFinish && Executer_checkJudge(this, ifNode))
         {
-            Executer_pushScope(this);
+            Executer_pushScope(this, TVALUE_IF_ELSE);
             Executer_consumeTree(this, ifNode);
             Executer_popScope(this);
             isFinish = true;
@@ -725,7 +741,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         tools_assert(is_eq_string(token->value, TVALUE_ELSE), LANG_ERR_EXECUTER_INVALID_IF);
         if (!isFinish)
         {
-            Executer_pushScope(this);
+            Executer_pushScope(this, TVALUE_ELSE);
             Executer_consumeTree(this, ifNode);
             Executer_popScope(this);
             isFinish = true;
@@ -743,7 +759,7 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
 {
     while (Executer_checkJudge(this, leaf))
     {
-        Executer_pushScope(this);
+        Executer_pushScope(this, TVALUE_WHILE);
         Executer_consumeTree(this, leaf);
         Executer_popScope(this);
         if (this->errorMsg != NULL) break;
@@ -783,7 +799,7 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
         int num = (int)value->number;
         for (size_t i = 0; i < num; i++)
         {
-            Executer_pushScope(this);
+            Executer_pushScope(this, TVALUE_SPREAD);
             current1 = Value_newNumber(i, iter1);
             Executer_setValueByToken(this, iter1, current1, true);
             current2 = Value_newNumber(i + 1, iter2);
@@ -796,7 +812,7 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
         utf8_iter iterator;
         utf8_init(&iterator, String_get(value->string));
         while (utf8_next(&iterator)) {
-            Executer_pushScope(this);
+            Executer_pushScope(this, TVALUE_SPREAD);
             current1 = Value_newNumber(iterator.position, iter1);
             Executer_setValueByToken(this, iter1, current1, true);
             current2 = Value_newString(String_format(utf8_getchar(&iterator)), iter2);
@@ -809,7 +825,7 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
         for (int i = 0; i < value->arr->length; i++) {
             Value *val = Array_get(value->arr, i);
             //
-            Executer_pushScope(this);
+            Executer_pushScope(this, TVALUE_SPREAD);
             current1 = Value_newNumber(i, iter1);
             Executer_setValueByToken(this, iter1, current1, true);
             current2 = val;
@@ -828,7 +844,7 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
                 String *_key = ptr->key;
                 Value *val = ptr->value;
                 //
-                Executer_pushScope(this);
+                Executer_pushScope(this, TVALUE_SPREAD);
                 current1 = Value_newString(_key, iter1);
                 Executer_setValueByToken(this, iter1, current1, true);
                 current2 = val;
@@ -855,7 +871,7 @@ void Executer_consumeException(Executer *this, Leaf *leaf)
     Token *name = Stack_NEXT(leaf->tokens);
     this->isCatch = true;
     // 
-    Executer_pushScope(this);
+    Executer_pushScope(this, TVALUE_EXCEPTION);
     Executer_consumeTree(this, leaf);
     Executer_popScope(this);
     // 
@@ -950,9 +966,20 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
     Executer_consumeTree(this, leaf);
 }
 
-void Executer_executeFunctions(Executer *this, Value *func)
+Value *Executer_executeFunctions(Executer *this, Runnable *func, Value *self, CString name)
 {
+    Holdable *environment = func->linka;
+    tools_assert(environment != NULL, LANG_ERR_EXECUTER_INVALID_STATE);
+    Machine_pushEnvironment(this->machine, environment);
+    Executer_pushScope(this, name);
+    Dictable_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
     Executer_consumeLeaf(this, func->obj);
+    Executer_popScope(this);
+    Holdable *_environment = Machine_popEnvironment(this->machine);
+    tools_assert(environment == _environment, LANG_ERR_EXECUTER_INVALID_STATE);
+    Value *r = Stack_pop(this->callStack);
+    this->isReturn = false;
+    return r;
 }
 
 Value *Executer_applyWorker(Executer *this, Token *token, Value *workerValue, Value *container)
@@ -960,24 +987,11 @@ Value *Executer_applyWorker(Executer *this, Token *token, Value *workerValue, Va
     Holdable *self = NULL;
     if (Objective_isAtr(container)) {
         self = Machine_getCurrentSelf(this->machine);
-    } else if (Objective_isObj(container) || Value_isSimple(container) || Value_isComplex(container)) {
+    } else if (Objective_isObj(container) || Dictable_isDct(container) || Listable_isLst(container)) {
         self = container;
     }
-    if (!self) {
-        Machine_retainObj(self);
-    }
     //
-    Value *func = workerValue;
-    //
-    Executer_pushScope(this);
-    Dictable_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
-    Executer_executeFunctions(this, func);
-    Executer_popScope(this);
-    //
-    Machine_releaseObj(self);
-    this->isReturn = false;
-    //
-    Value *r = Stack_pop(this->callStack);
+    Value *r = Executer_executeFunctions(this, workerValue, self, TVALUE_WORKER);
     if (r == NULL) r = Value_newEmpty(NULL);
     return r;
 }
@@ -991,20 +1005,8 @@ Value *Executer_applyCreator(Executer *this, Token *token, Value *creatorValue, 
     Queue_push(parents, creatorValue);
     Objective *self = Objective_newObj(NULL, parents);
     //
-    Executer_pushScope(this);
-    Dictable_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
-    Executer_executeFunctions(this, func);
-    Executer_popScope(this);
-    //
-    Machine_releaseObj(self);
-    this->isReturn = false;
-    // 
-    Value *r = Stack_pop(this->callStack);
-    if (r == NULL) {
-        r = self;
-    } else {
-        Machine_releaseObj(self);
-    }
+    Value *r = Executer_executeFunctions(this, func, self, TVALUE_CREATOR);
+    if (r == NULL) r = self;
     return r;
 }
 
@@ -1018,19 +1020,8 @@ Value *Executer_applyAssister(Executer *this, Token *token, Value *assisterValue
     Queue *parent = self->extra;
     Queue_push(parent, assisterValue);
     //
-    Executer_pushScope(this);
-    Dictable_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
-    Executer_executeFunctions(this, func);
-    Executer_popScope(this);
-    //
-    this->isReturn = false;
-    // 
-    Value *r = Stack_pop(this->callStack);
-    if (r == NULL) {
-        r = self;
-    } else {
-        Machine_releaseObj(self);
-    }
+    Value *r = Executer_executeFunctions(this, func, self, TVALUE_ASSISTER);
+    if (r == NULL) r = self;
     return r;
 }
 
@@ -1359,7 +1350,7 @@ Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
     Machine_pushHolder(this->machine, module);
     //
     Executer_consumeTree(this, tree);
-    if (this->machine->stack->head == this->machine->stack->tail) {
+    if (this->machine->rootModule == this->machine->currHoldable) {
         timer_loop();
         return NULL;
     }

@@ -13,16 +13,15 @@ Holdable *Holdable_new(char tp, void *extra)
     return _Dictable_new(tp, NULL, extra);
 }
 
-Holdable *Holdable_newModule(char *path)
+Holdable *Holdable_newModule(CString path)
 {
     Holdable *module = Holdable_new(UG_TYPE_MDL, path);
-    module->linka = __uyghur->executer->globalScope;
     return module;
 }
 
-Holdable *Holdable_newScope(Holdable *parent)
+Holdable *Holdable_newScope(CString name, Holdable *parent)
 {
-    Holdable *scope = Holdable_new(UG_TYPE_SCP, NULL);
+    Holdable *scope = Holdable_new(UG_TYPE_SCP, name);
     scope->linka = parent;
     return scope;
 }
@@ -77,7 +76,7 @@ bool Holdable_isKindOf(Holdable *this, Value *other) {
 char *Holdable_toString(Holdable *this)
 {
     char *desc = "?";
-    if (Holdable_isKind(this) || Holdable_isProxy(this)) {
+    if (Holdable_isKind(this) || Holdable_isProxy(this) || Holdable_isScope(this)) {
         desc = helper_translate_something(this->extra);
     } else if (Holdable_isModule(this)) {
         desc = this->extra;
