@@ -1,0 +1,34 @@
+
+# a closure maker func
+hizmetçi make içeriği
+
+    # a var in env
+    değişken x kıymeti 0 olsun
+    değişken r kıymeti 0 olsun
+
+    # a func & env
+    hizmetçi func değişken a içeriği
+        buyruk x yaz # 0
+        buyruk y yaz # 200
+        r = r + a
+        netice r geriverılsın
+    tamamlansin
+
+    # ret the closure func
+    netice func geriverılsın
+tamamlansin
+
+# some vars in mod
+değişken x kıymeti 100 olsun
+değişken y kıymeti 200 olsun
+
+# make closure
+hizmetçi make kullanılsın ve f alısın
+
+# print 11
+hizmetçi f ile 11 kullanılsın ve r alısın
+buyruk r yaz
+
+# print 22
+hizmetçi f ile 11 kullanılsın ve r alısın
+buyruk r yaz

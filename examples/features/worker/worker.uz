@@ -1,9 +1,7 @@
 
-# a local var
-o'zgaruvch t qiymati 0 bo'lsin
-
 # a func bilan two args
 xizmatchi f o'zgaruvch x y mazmuni
+    o'zgaruvch t qiymati 0 bo'lsin
     t = x + y
     natija t qaytarilsin
 tamomlansin

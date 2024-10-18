@@ -1,9 +1,7 @@
 
-# a local var
-variable t value 0 made
-
 # a func with two args
 worker f variable x y content
+    variable t value 0 made
     t = x + y
     result t returned
 finish

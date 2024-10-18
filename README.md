@@ -169,11 +169,9 @@ finish
 * [worker](examples/features/worker)
 
 ```powershell
-# a local var
-variable t value 0 made
-
 # a func with two args
 worker f variable x y content
+    variable t value 0 made
     t = x + y
     result t returned
 finish
@@ -182,6 +180,44 @@ finish
 worker f with 10 20 applied and r received
 
 # print the val received
+command r write
+```
+
+* [closure](examples/features/closure)
+
+```powershell
+# a closure maker func
+worker make content
+
+    # a var in env
+    variable x value 0 made
+    variable r value 0 made
+
+    # a func & env
+    worker func variable a content
+        command x write # 0
+        command y write # 200
+        r = r + a
+        result r returned
+    finish
+
+    # ret the closure func
+    result func returned
+finish
+
+# some vars in mod
+variable x value 100 made
+variable y value 200 made
+
+# make closure
+worker make applied and f received
+
+# print 11
+worker f with 11 applied and r received
+command r write
+
+# print 22
+worker f with 11 applied and r received
 command r write
 ```
 

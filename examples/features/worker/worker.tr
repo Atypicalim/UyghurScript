@@ -1,9 +1,7 @@
 
-# a local var
-değişken t kıymeti 0 olsun
-
 # a func ile two args
 hizmetçi f değişken x y içeriği
+    değişken t kıymeti 0 olsun
     t = x + y
     netice t geriverılsın
 tamamlansin

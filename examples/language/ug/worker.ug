@@ -1,9 +1,7 @@
 
-# a local var
-miqdar t qimmiti 0 bolsun
-
 # a func bilen two args
 xizmetchi f miqdar x y mezmuni
+    miqdar t qimmiti 0 bolsun
     t = x + y
     netije t qayturulsun
 tamamlansun

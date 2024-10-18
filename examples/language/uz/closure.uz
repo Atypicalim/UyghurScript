@@ -1,0 +1,34 @@
+
+# a closure maker func
+xizmatchi make mazmuni
+
+    # a var in env
+    o'zgaruvch x qiymati 0 bo'lsin
+    o'zgaruvch r qiymati 0 bo'lsin
+
+    # a func & env
+    xizmatchi func o'zgaruvch a mazmuni
+        buyruq x yozilsin # 0
+        buyruq y yozilsin # 200
+        r = r + a
+        natija r qaytarilsin
+    tamomlansin
+
+    # ret the closure func
+    natija func qaytarilsin
+tamomlansin
+
+# some vars in mod
+o'zgaruvch x qiymati 100 bo'lsin
+o'zgaruvch y qiymati 200 bo'lsin
+
+# make closure
+xizmatchi make ishlatilsin va f olinsin
+
+# print 11
+xizmatchi f bilan 11 ishlatilsin va r olinsin
+buyruq r yozilsin
+
+# print 22
+xizmatchi f bilan 11 ishlatilsin va r olinsin
+buyruq r yozilsin

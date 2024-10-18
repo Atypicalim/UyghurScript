@@ -8,6 +8,7 @@ if:
 while:
 spread:
 worker:
+closure:
 exception:
 container:
 objective:

@@ -1,0 +1,34 @@
+
+# a closure maker func
+xizmetchi make mezmuni
+
+    # a var in env
+    miqdar x qimmiti 0 bolsun
+    miqdar r qimmiti 0 bolsun
+
+    # a func & env
+    xizmetchi func miqdar a mezmuni
+        buyruq x yezilsun # 0
+        buyruq y yezilsun # 200
+        r = r + a
+        netije r qayturulsun
+    tamamlansun
+
+    # ret the closure func
+    netije func qayturulsun
+tamamlansun
+
+# some vars in mod
+miqdar x qimmiti 100 bolsun
+miqdar y qimmiti 200 bolsun
+
+# make closure
+xizmetchi make ishlitilsun we f elinsun
+
+# print 11
+xizmetchi f bilen 11 ishlitilsun we r elinsun
+buyruq r yezilsun
+
+# print 22
+xizmetchi f bilen 11 ishlitilsun we r elinsun
+buyruq r yezilsun

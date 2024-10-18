@@ -1,0 +1,34 @@
+
+# a closure maker func
+worker make content
+
+    # a var in env
+    variable x value 0 made
+    variable r value 0 made
+
+    # a func & env
+    worker func variable a content
+        command x write # 0
+        command y write # 200
+        r = r + a
+        result r returned
+    finish
+
+    # ret the closure func
+    result func returned
+finish
+
+# some vars in mod
+variable x value 100 made
+variable y value 200 made
+
+# make closure
+worker make applied and f received
+
+# print 11
+worker f with 11 applied and r received
+command r write
+
+# print 22
+worker f with 11 applied and r received
+command r write
