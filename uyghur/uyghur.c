@@ -81,14 +81,11 @@ Value *Uyghur_runPath(Uyghur *this, char *path)
     return value;
 }
 
-Value *Uyghur_runArgs(Uyghur *this, int argc, char const *argv[])
+Value *Uyghur_exePath(Uyghur *this, char *path)
 {
-    if (argc <= 1) return NULL;
-    char *path = (char *)argv[1];
     bool exist = file_exist(path);
     tools_assert(exist, "%s:[%s]", LANG_ERR_NO_INPUT_FILE, path);
     Uyghur_runPath(this, path);
-
 }
 
 void Uyghur_free(Uyghur *this)

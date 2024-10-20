@@ -19,7 +19,8 @@
 #include <setjmp.h>
 
 #include "utf8.h"
-#include "utf-8.c"
+#include "libs/utf8iter/utf-8.h"
+#include "libs/utf8iter/utf-8.c"
 
 // #define STDSTRING_IMPLEMENTATION
 // #include "stdstring.h"
