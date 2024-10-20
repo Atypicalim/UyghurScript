@@ -12,24 +12,27 @@
 
 
 void try_merge_win_program(char *executable, char *script) {
-    //
-    log_debug("packing executable...");
-    char *target = "test.exe";
-    char *cmd = tools_format("copy %s %s", executable, target);
-    system(cmd);
-    //
+    // name
+    char **parts = strsplit(script, "\\");
+    int _index = -1;
+    while (true) {
+        if (!parts[_index + 1]) break;
+        _index = _index + 1;
+    }
+    char *name = _index >= 0 ? parts[_index] : "unknown";
+    char *target = tools_format("%s.exe", name);
+    // executer
+    log_debug("packing executer...");
+    system_execute("copy %s %s", executable, target);
+    // delimiter
     log_debug("packing delimiter...");
-    cmd = tools_format("echo: >> %s", target);
-    system(cmd);
-    system(cmd);
-    cmd = tools_format("echo %s >> %s", EXE_DELIMITER, target);
-    system(cmd);
-    cmd = tools_format("echo: >> %s", target);
-    system(cmd);
-    //
+    system_execute("echo: >> %s", target);
+    system_execute("echo: >> %s", target);
+    system_execute("echo %s >> %s", EXE_DELIMITER, target);
+    system_execute("echo: >> %s", target);
+    // script
     log_debug("packing script...");
-    cmd = tools_format("type %s >> %s", script, target);
-    system(cmd);
+    system_execute("type %s >> %s", script, target);
 }
 
 char *try_read_win_script(CString name) {
@@ -41,17 +44,9 @@ char *try_read_win_script(CString name) {
     {
         if (content[i] == '\0' && i < length - 1) content[i] = ' ';
     }
-    int ignore = 1;
-    int indent = strlen(EXE_DELIMITER);
-    int number = 0;
-    char* needle = strstr(content, EXE_DELIMITER);
-    char* _needle = NULL;
-    while (needle) {
-        number = number + 1;
-        _needle = needle;
-        needle = strstr(needle + indent, EXE_DELIMITER);
-    }
-    return number > ignore ? _needle : NULL;
+    char *lText = strfindl(content, EXE_DELIMITER);
+    char *rText = strfindr(content, EXE_DELIMITER);
+    return strlen(lText) != strlen(rText) ? rText : NULL;
 }
 
 char *try_read_merged_script(CString name) {
@@ -69,6 +64,17 @@ void run_help_cmd(CString name) {
 
 void run_version_cmd(CString name) {
 	printf("%s %s\n", name, UG_VERSION_NAME);
+}
+
+void run_interact_cmd(CString name) {
+    Uyghur *uyghur = Uyghur_instance();
+	printf("%s %s\n", name, UG_VERSION_NAME);
+    while (true) {
+        printf("> ");
+        char *code = system_scanf();
+        // Uyghur_runCode(uyghur, code, NULL);
+    }
+    Uyghur_free(uyghur);
 }
 
 void run_package_cmd(CString name, args_t args, CString script) {
@@ -105,12 +111,14 @@ int main(int argc, char const *argv[])
 	char *name = args_shift(&args);
 	bool help    = false;
     bool version = false;
+    bool interact = NULL;
     char *package = NULL;
     char *execute = NULL;
-	flag_bool("h", "help",    "show this help",        &help);
-	flag_bool("v", "version", "print program version", &version);
-	flag_cstr("p", "package", "package given script",  &package);
-	flag_cstr("e", "execute", "execute given script",  &execute);
+	flag_bool("h", "help",     "show this help",        &help);
+	flag_bool("v", "version",  "print program version", &version);
+	flag_bool("i", "interact", "interact given script", &interact);
+	flag_cstr("p", "package",  "package given script",  &package);
+	flag_cstr("e", "execute",  "execute given script",  &execute);
     // 
 	int err = args_parse_flags(&args, NULL, NULL);
 	if (err != ARG_OK) {
@@ -122,6 +130,9 @@ int main(int argc, char const *argv[])
 		return EXIT_SUCCESS;
 	} else if (version) {
         run_version_cmd(name);
+		return EXIT_SUCCESS;
+	} else if (interact) {
+        run_interact_cmd(name);
 		return EXIT_SUCCESS;
 	} else if (package) {
         run_package_cmd(name, args, package);

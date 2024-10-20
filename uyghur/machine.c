@@ -456,14 +456,14 @@ void Machine_sweep(Machine *this)
 void Machine_runGC(Machine *this) {
     if(!this->sweeping) return;
     // log_debug("========gc_bgn:");
-    double bgnTime = time_get_clock();
+    double bgnTime = time_clock();
     int bgnCount = this->numObjects;
     Machine_mark(this);
-    double midTime = time_get_clock();
+    double midTime = time_clock();
     double mrkTime = midTime - bgnTime;
     // log_debug("========gc_mid: %f %d", mrkTime, bgnCount);
     Machine_sweep(this);
-    double endTime = time_get_clock();
+    double endTime = time_clock();
     double swpTime = endTime - bgnTime;
     int endCount = this->numObjects;
     int delCount = bgnCount - endCount;
@@ -551,9 +551,9 @@ void Machine_testGC() {
             Holdable_newScope("test", NULL);
         }
         Machine_runGC(this);
-        time_sleep_seconds(1);
+        sleep(1);
     }
     log_warn("\n\n\n---------------------END!!!");
-    time_sleep_seconds(10);
+    sleep(10);
     
 }

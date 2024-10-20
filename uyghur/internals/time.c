@@ -4,12 +4,12 @@
 
 double bind_time_get_zone()
 {
-    return time_get_zone();
+    return time_zone();
 }
 
 double bind_time_get_seconds()
 {
-    return time_get_seconds();
+    return time_second();
 }
 
 void native_time_convert_to_seconds(Bridge *bridge)
@@ -29,17 +29,17 @@ void native_time_convert_from_seconds(Bridge *bridge)
 
 CString bind_time_get_time()
 {
-    return time_get_time();
+    return time_time();
 }
 
 double bind_time_get_clock()
 {
-    return time_get_clock();
+    return time_clock();
 }
 
 void native_time_sleep_seconds(Bridge *bridge)
 {
-    time_sleep_seconds(Bridge_receiveNumber(bridge));
+    sleep(Bridge_receiveNumber(bridge));
     Bridge_returnEmpty(bridge);
 }
 

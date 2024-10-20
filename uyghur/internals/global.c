@@ -22,7 +22,7 @@ void native_get_name(Bridge *bridge)
 // input a value from termial
 void native_read(Bridge *bridge)
 {
-    USTRING r = system_read_terminal();
+    USTRING r = system_scanf();
     Bridge_returnString(bridge, r);
     pct_free(r);
 }
