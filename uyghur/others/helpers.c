@@ -459,7 +459,23 @@ char*helper_value_to_string(void *target, CString failure) {
     Token *token = value->token;
     char *desc = token != NULL ? token->value : "?";
     char *name = get_value_name(value->type, failure);
-    return tools_format("<%s %p %s %s:%d>", name, value, desc, token->file, token->line);
+    if (token != NULL && token->line > 0) {
+        return tools_format("<%s %p %s %s:%d>", name, value, desc, token->file, token->line);
+    } else {
+        return tools_format("<%s %p %s>", name, value, desc);
+    }
+}
+
+char*helper_value_to_string_ext(void *target, CString failure, CString extra) {
+    Value *value = target;
+    Token *token = value->token;
+    char *desc = token != NULL ? token->value : "?";
+    char *name = get_value_name(value->type, failure);
+    if (token != NULL && token->line > 0) {
+        return tools_format("<%s %p %s %s:%d %s>", name, value, desc, token->file, token->line, extra);
+    } else {
+        return tools_format("<%s %p %s:%s>", name, value, desc, extra);
+    }
 }
 
 #endif

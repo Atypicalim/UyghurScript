@@ -131,6 +131,11 @@ bool Value_isRunnable(Value *this)
     return this != NULL && is_type_runnable(this->type);
 }
 
+bool Value_isLoadable(Value *this)
+{
+    return this != NULL && is_type_loadable(this->type);
+}
+
 bool Value_isSimple(Value *this)
 {
     return this != NULL && is_type_simple(this->type);
@@ -185,6 +190,10 @@ void Value_print(Value *this)
     {
         Runnable_print(this);
     }
+    else if (is_type_loadable(this->type))
+    {
+        Loadable_print(this);
+    }
     else
     {
         printf("<Value => t:%c p:%p>\n", this->type, this);
@@ -212,6 +221,8 @@ char *Value_toString(Value *this)
         return Objective_toString(this);
     } if (is_type_runnable(this->type)) {
         return Runnable_toString(this);
+    } if (is_type_loadable(this->type)) {
+        return Loadable_toString(this);
     } else {
         return tools_format("<Object %p p:%p t:%c>", this, this->obj, this->type);
     } 

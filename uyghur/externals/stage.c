@@ -10,6 +10,8 @@
 Font defaultFont;
 Image defaultImage;
 Texture2D defaultTexture;
+Music defaulMusic;
+Sound defaulSound;
 
 // callback
 

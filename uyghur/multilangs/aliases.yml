@@ -1061,7 +1061,14 @@ ALIAS_sound_is_playing:
 ALIAS_sound_set_volume:
   <<: *__volume
 
-############################# control
+############################# others
+ALIAS_texture:
+  en: texture
+  uy: نەقىش
+  ug: neqish
+  uz: neqish
+  tr: nakış
+  kz: неқиш
 ALIAS_control:
   en: control
   uy: زاپچاس

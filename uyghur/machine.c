@@ -212,6 +212,13 @@ void _machine_free_object(Machine *this, Object* object) {
                 // log_info("free obj %p", object);
                 Queue_free(value->extra);
             }
+        } else if (is_type_runnable(value->type)) {
+            //
+        } else if (is_type_loadable(value->type)) {
+            LOADABLE_RELEASE_FUNC func = value->linka;
+            if (func != NULL) {
+                func(value);
+            }
         }
         Machine_freeCacheableValue(value);
     } else if (object->objType == PCT_OBJ_ARRAY) {
@@ -334,6 +341,8 @@ void _machine_mark_value(Value *value) {
     } else if (is_type_objective(value->type)) {
         _machine_mark_objective(value);
     } else if (is_type_runnable(value->type)) {
+        _machine_mark_object(value);
+    } else if (is_type_loadable(value->type)) {
         _machine_mark_object(value);
     } else {
         log_warn("value type not registered for marking");

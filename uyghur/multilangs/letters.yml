@@ -249,6 +249,14 @@ TVALUE_OBJECT:
   tr: obekit
   kz: объект
 #
+TVALUE_RESOURCE:
+  en: resource
+  uy: ئەشيا
+  ug: eshya
+  uz: ashyo
+  tr: eşya
+  kz: ресурс
+#
 TVALUE_CONTENT:
   en: content
   uy: مەزمۇنى

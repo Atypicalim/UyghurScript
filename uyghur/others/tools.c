@@ -251,7 +251,7 @@ bool is_type_complex(char tp) {
 
 bool is_bridge_type(char tp)
 {
-    return is_type_simple(tp) || is_type_complex(tp) || tp == UG_TYPE_WKR;
+    return is_type_simple(tp) || is_type_complex(tp) || tp == UG_TYPE_WKR || tp == UG_TYPE_RSR;
 }
 
 bool is_type_listable(char tp) {
@@ -279,6 +279,10 @@ bool is_type_runnable(char tp) {
     return tp == UG_TYPE_NTV || tp == UG_TYPE_WKR;
 }
 
+bool is_type_loadable(char tp) {
+    return tp == UG_TYPE_RSR;
+}
+
 char* get_value_name(char tp, char* def) {
     char *name = NULL;
     switch (tp) {
@@ -298,6 +302,8 @@ char* get_value_name(char tp, char* def) {
         //
         case UG_TYPE_NTV: name = TVALUE_NATIVE;  break;
         case UG_TYPE_WKR: name = TVALUE_WORKER;  break;
+        //
+        case UG_TYPE_RSR: name = TVALUE_RESOURCE;  break;
         //
         default: name = def;
     }

@@ -70,6 +70,7 @@ USTRING helper_translate_letter(char *);
 USTRING helper_translate_alias(char *);
 USTRING helper_translate_something(char *);
 CString helper_value_to_string(CPointer, CString);
+CString helper_value_to_string_ext(CPointer, CString, CString);
 // 
 
 #include "../../build/languages.h"
@@ -219,6 +220,18 @@ Holdable *Holdable_new(char, void*);
 char *Holdable_toString(Holdable *);
 void Holdable_print(Holdable *);
 
+// loadable
+
+typedef struct _Loadable {
+    struct _Value;
+} Loadable;
+
+Loadable *Loadable_new(char, Token*);
+char *Loadable_toString(Loadable *);
+void Loadable_print(Loadable *);
+
+typedef void (*LOADABLE_RELEASE_FUNC)(void *);
+
 // 
 
 void Runtime_error(char *);
@@ -365,6 +378,7 @@ void Debug_assert(Uyghur *);
 #include "../objects/dictable.c"
 #include "../objects/holdable.c"
 #include "../objects/objective.c"
+#include "../objects/loadable.c"
 
 #include "helpers.c"
 
