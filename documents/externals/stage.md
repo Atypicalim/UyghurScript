@@ -56,20 +56,20 @@
 * mode  `int`
 
 
-### 6. hide_window
+### 6. draw_start
 
-> 📝:  hide_window func of stage module
+> 📝:  draw_start func of stage module
 
 > 🔙: Empty
 
 > 🛒:  none
 
 
-### 7. is_continue
+### 7. draw_end
 
-> 📝:  is_continue func of stage module
+> 📝:  draw_end func of stage module
 
-> 🔙: Boolean
+> 🔙: Empty
 
 > 🛒:  none
 

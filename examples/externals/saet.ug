@@ -110,9 +110,8 @@ xizmetchi istirilkaHisablash miqdar hazirqiWaqit mezmuni
 tamamlansun
 
 xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
-miqdar dawam qimmiti rast bolsun
-nawada dawam bolsa
-    xizmetchi @taxta:sizishniBashlash ishlitilsun
+nawada @sehne:yepilmaqchi bolmisa
+    xizmetchi @sehne:sizishniBashlash ishlitilsun
     #
     xizmetchi @waqit:sikuntElish ishlitilsun we hazirqiWaqit elinsun
     # teglik sizish
@@ -132,8 +131,6 @@ nawada dawam bolsa
     # mekez sizish
     xizmetchi @taxta:chemberToldurush bilen merkezX merkezY 10 10 "303030" ishlitilsun
     #
-    xizmetchi @taxta:sizishniTamamlash ishlitilsun
-    xizmetchi @sehne:dawammu ishlitilsun we dawam elinsun
+    xizmetchi @sehne:sizishniTamamlash ishlitilsun
 tamamlansun
-xizmetchi @sehne:yushurush ishlitilsun
 

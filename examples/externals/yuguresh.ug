@@ -16,9 +16,8 @@ xizmetchi @sehne:korsitish bilen -1 -1 "Yuguresh" -1 ishlitilsun
 xizmetchi @taxta:sizmaNeqishlesh bilen "../resources/run.png" yalghan yalghan yalghan ishlitilsun we r elinsun
 xizmetchi @taxta:yazmaNeqishlesh bilen "../resources/ukij.ttf" s 36 0 ishlitilsun we w elinsun
 
-miqdar dawam qimmiti rast bolsun
-nawada dawam bolsa
-    xizmetchi @taxta:sizishniBashlash ishlitilsun
+nawada @sehne:yepilmaqchi bolmisa
+    xizmetchi @sehne:sizishniBashlash ishlitilsun
     #
     m = m + 1
     t = m > 400
@@ -42,7 +41,5 @@ nawada dawam bolsa
     xizmetchi @taxta:neqishSizish bilen r 400 300 0.5 0.5 "ffaaff" x y 200 260 0.5 1 ishlitilsun
     xizmetchi @taxta:neqishSizish bilen w 250 50 0.5 0.5 "333333" 0 0 -1 -1 0.5 1 ishlitilsun
     #
-    xizmetchi @taxta:sizishniTamamlash ishlitilsun
-    xizmetchi @sehne:dawammu ishlitilsun we dawam elinsun
+    xizmetchi @sehne:sizishniTamamlash ishlitilsun
 tamamlansun
-xizmetchi @sehne:yushurush ishlitilsun

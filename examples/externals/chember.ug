@@ -7,9 +7,8 @@ miqdar t2 qimmiti quruq bolsun
 miqdar d qimmiti 0.1 bolsun
 
 xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
-miqdar dawam qimmiti rast bolsun
-nawada dawam bolsa
-    xizmetchi @taxta:sizishniBashlash ishlitilsun
+nawada @sehne:yepilmaqchi bolmisa
+    xizmetchi @sehne:sizishniBashlash ishlitilsun
     #    t1 = x > 400
     t2 = x < 100
     eger t1 bolsa
@@ -21,7 +20,5 @@ nawada dawam bolsa
     y = y + d
     xizmetchi @taxta:chemberSizish bilen x y 100 100 "55aaff" ishlitilsun
     #
-    xizmetchi @taxta:sizishniTamamlash ishlitilsun
-    xizmetchi @sehne:dawammu ishlitilsun we dawam elinsun
+    xizmetchi @sehne:sizishniTamamlash ishlitilsun
 tamamlansun
-xizmetchi @sehne:yushurush ishlitilsun

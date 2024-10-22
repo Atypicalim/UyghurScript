@@ -9,12 +9,9 @@ xizmetchi @awaz:quyush bilen tag ishlitilsun
 xizmetchi @awaz:yuklesh bilen "../resources/door.wav" ishlitilsun we tag elinsun
 xizmetchi @awaz:quyush bilen tag ishlitilsun
 
-miqdar dawam qimmiti rast bolsun
-nawada dawam bolsa
-    xizmetchi @taxta:sizishniBashlash ishlitilsun
+nawada @sehne:yepilmaqchi bolmisa
+    xizmetchi @sehne:sizishniBashlash ishlitilsun
     #
     #
-    xizmetchi @taxta:sizishniTamamlash ishlitilsun
-    xizmetchi @sehne:dawammu ishlitilsun we dawam elinsun
+    xizmetchi @sehne:sizishniTamamlash ishlitilsun
 tamamlansun
-xizmetchi @sehne:yushurush ishlitilsun

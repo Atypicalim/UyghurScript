@@ -116,20 +116,6 @@ Texture *raylib_texturize_text(TxtInfo info)
 
 // draw
 
-void native_board_draw_start(Bridge *bridge)
-{
-    BeginDrawing();
-    ClearBackground(BLACK);
-    Bridge_returnEmpty(bridge);
-}
-
-void native_board_draw_end(Bridge *bridge)
-{
-    DrawFPS(10, 10);
-    EndDrawing();
-    Bridge_returnEmpty(bridge);
-}
-
 void native_board_draw_pixel(Bridge *bridge)
 {
     Vector2 poit = vector_from_bridge(bridge);

@@ -7,14 +7,11 @@ xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
 
 xizmetchi @taxta:sizmaNeqishlesh bilen "../resources/rose.png" yalghan yalghan yalghan ishlitilsun we r elinsun
 
-miqdar dawam qimmiti rast bolsun
-nawada dawam bolsa
-    xizmetchi @taxta:sizishniBashlash ishlitilsun
+nawada @sehne:yepilmaqchi bolmisa
+    xizmetchi @sehne:sizishniBashlash ishlitilsun
     #
     rotation = rotation + 0.05
     xizmetchi @taxta:neqishSizish bilen r 250 250 0.5 0.5 "aaffffff" 0 0 -1 -1 rotation 0.5 ishlitilsun
     #
-    xizmetchi @taxta:sizishniTamamlash ishlitilsun
-    xizmetchi @sehne:dawammu ishlitilsun we dawam elinsun
+    xizmetchi @sehne:sizishniTamamlash ishlitilsun
 tamamlansun
-xizmetchi @sehne:yushurush ishlitilsun

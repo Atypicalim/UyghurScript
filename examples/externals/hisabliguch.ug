@@ -196,9 +196,8 @@ xizmetchi kunupkaSizish miqdar id mezmuni
 tamamlansun
 
 xizmetchi @sehne:korsitish bilen 515 225 "Xisabliguch" -1 ishlitilsun
-miqdar dawam qimmiti rast bolsun
-nawada dawam bolsa
-    xizmetchi @taxta:sizishniBashlash ishlitilsun
+nawada @sehne:yepilmaqchi bolmisa
+    xizmetchi @sehne:sizishniBashlash ishlitilsun
     #
     # buttons
     kunupkaNumuri qimmiti 1 bolsun
@@ -227,7 +226,5 @@ nawada dawam bolsa
     xizmetchi @xet:formatlash bilen "%f" hazirqiQimmet ishlitilsun we sinaqXet elinsun
     xizmetchi @taxta:xetYezish bilen "" sinaqXet 16 2 "aaaaaa" 25 38 ishlitilsun
     #
-    xizmetchi @taxta:sizishniTamamlash ishlitilsun
-    xizmetchi @sehne:dawammu ishlitilsun we dawam elinsun
+    xizmetchi @sehne:sizishniTamamlash ishlitilsun
 tamamlansun
-xizmetchi @sehne:yushurush ishlitilsun

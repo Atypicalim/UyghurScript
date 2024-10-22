@@ -95,18 +95,28 @@ void native_stage_show_window(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-void native_stage_hide_window(Bridge *bridge)
+void native_stage_draw_start(Bridge *bridge)
 {
-    if (IsWindowReady()) {
+    BeginDrawing();
+    ClearBackground(BLACK);
+    Bridge_returnEmpty(bridge);
+}
+
+void native_stage_draw_end(Bridge *bridge)
+{
+    DrawFPS(10, 10);
+    EndDrawing();
+    //
+    bool closeable = WindowShouldClose();
+    Value *value = closeable ? Value_TRUE : Value_FALSE;
+    helper_set_proxy_value(ALIAS_stage, ALIAS_stage_is_closeable, value);
+    //
+    if (closeable && IsWindowReady()) {
         CloseAudioDevice();
         CloseWindow();
     }
+    //
     Bridge_returnEmpty(bridge);
-}
-void native_stage_is_continue(Bridge *bridge)
-{
-    bool running = !WindowShouldClose();
-    Bridge_returnBoolean(bridge, running);
 }
 
 void native_stage_is_fullscreen(Bridge *bridge)

@@ -542,20 +542,27 @@ ALIAS_stage_show_window:
   uz: ko'rsatish
   tr: göstermek
   kz: көрсету
-ALIAS_stage_hide_window:
-  en: hide_window
-  uy: يۇشۇرۇش
-  ug: yushurush
-  uz: yashirish
-  tr: saklamak
-  kz: жасыру
-ALIAS_stage_is_continue:
-  en: is_continue
-  uy: داۋاممۇ
-  ug: dawammu
-  uz: davommi
-  tr: devammi
-  kz: давамба
+ALIAS_stage_is_closeable:
+  en: is_closeable
+  uy: يېپىلماقچى
+  ug: yepilmaqchi
+  uz: yopilmoqchi
+  tr: kapanmakqi
+  kz: жабылмакші
+ALIAS_stage_draw_start:
+  en: draw_start
+  uy: سىزىشنى_باشلاش
+  ug: sizishniBashlash
+  uz: chizishni_boshlash
+  tr: çizmeyi_başlamak
+  kz: сызуды_бастау
+ALIAS_stage_draw_end:
+  en: draw_end
+  uy: سىزىشنى_تاماملاش
+  ug: sizishniTamamlash
+  uz: chizish_tamomlash
+  tr: çizmeyi_bitirmek
+  kz: сызуды_аяқтау
 ALIAS_stage_is_fullscreen:
   en: is_fullscreen
   uy: پۈتۈن_ئېكرانمۇ
@@ -768,20 +775,6 @@ ALIAS_board:
   uz: taxta
   tr: tahta
   kz: тақта
-ALIAS_board_draw_start:
-  en: draw_start
-  uy: سىزىشنى_باشلاش
-  ug: sizishniBashlash
-  uz: chizishni_boshlash
-  tr: çizmeyi_başlamak
-  kz: сызуды_бастау
-ALIAS_board_draw_end:
-  en: draw_end
-  uy: سىزىشنى_تاماملاش
-  ug: sizishniTamamlash
-  uz: chizish_tamomlash
-  tr: çizmeyi_bitirmek
-  kz: сызуды_аяқтау
 # draw point & line
 ALIAS_board_draw_pixel:
   en: draw_pixel
