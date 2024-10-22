@@ -47,11 +47,9 @@ Executer *Executer_new(Uyghur *uyghur)
     executer->bridge = uyghur->bridge;
     //
     Machine *machine = executer->machine;
-    machine->hldStack = Stack_new();
-    machine->envStack = Stack_new();
+    machine->holders = Stack_new();
     machine->calls = Stack_new();
     machine->globals = Holdable_newScope("global", NULL);
-    Holdable *globals = machine->globals;
     //
     Machine_initKinds(machine);
     executer->callStack = machine->calls;
@@ -116,37 +114,20 @@ void Executer_findValueByLocation(Executer *this, char *key, Value **rContainer,
 {
     *rContainer = NULL;
     *rValue = NULL;
-    // scope
-    Holdable *scope = this->machine->currHoldable;
-    if (scope) {
-        Value *value = Dictable_getLocation(scope, key);
-        if (value != NULL) {
-            *rContainer = scope;
-            *rValue = value;
-            return;
-        }
-    }
-    // environment
-    // TODO:push func env and scope to one stack
-    // turn into env parents when found func env
-    Holdable *environment = NULL;
-    if (this->machine->currEnvironment) {
-        environment = this->machine->currEnvironment;
-    } else if (scope) {
-        environment = scope->linka;
-    }
-    if (environment) {
-        while (environment != NULL) {
-            Value *value = Dictable_getLocation(environment, key);
+    //
+    Holdable *holder = this->machine->currHoldable;
+    if (holder) {
+        while (holder != NULL) {
+            Value *value = Dictable_getLocation(holder, key);
             if (value != NULL) {
-                *rContainer = environment;
+                *rContainer = holder;
                 *rValue = value;
                 return;
             }
-            environment = environment->linka;
+            holder = holder->linka;
         }
     }
-    // global
+    //
     Holdable *global = this->globalScope;
     if (global) {
         Value *value = Dictable_getLocation(global, key);
@@ -977,12 +958,12 @@ Value *Executer_executeFunctions(Executer *this, Runnable *func, Value *self, CS
 {
     Holdable *environment = func->linka;
     tools_assert(environment != NULL, LANG_ERR_EXECUTER_INVALID_STATE);
-    Machine_pushEnvironment(this->machine, environment);
+    Machine_pushHolder(this->machine, environment);
     Executer_pushScope(this, name);
     Dictable_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
     Executer_consumeLeaf(this, func->obj);
     Executer_popScope(this);
-    Holdable *_environment = Machine_popEnvironment(this->machine);
+    Holdable *_environment = Machine_popHolder(this->machine);
     tools_assert(environment == _environment, LANG_ERR_EXECUTER_INVALID_STATE);
     Value *r = Stack_pop(this->callStack);
     this->isReturn = false;

@@ -309,13 +309,11 @@ struct Machine {
     Object* first;
     bool sweeping;
     bool freezing;
-    Stack* hldStack;
-    Stack* envStack;
+    Stack* holders;
     Stack *calls;
     Holdable *globals;
     Holdable *rootModule;
     Holdable *currHoldable;
-    Holdable *currEnvironment;
     Holdable *kindLgc;
     Holdable *kindNum;
     Holdable *kindStr;

@@ -13,12 +13,11 @@ Machine *Machine_new(Uyghur *uyghur) {
     vm->first = NULL;
     vm->sweeping = false;
     vm->freezing = true;
-    vm->hldStack = NULL;
-    vm->envStack = NULL;
     vm->globals = NULL;
+    vm->calls = NULL;
+    vm->holders = NULL;
     vm->rootModule = NULL;
     vm->currHoldable = NULL;
-    vm->currEnvironment = NULL;
     vm->numObjects = 0;
     vm->maxObjects = 50;
     //
@@ -259,9 +258,9 @@ Holdable *Machine_readKind(Machine *this, char *name) {
 }
 
 void Machine_pushHolder(Machine *this, Holdable* holdable) {
-    tools_assert(this->hldStack->size < MAX_STACK_SIZE, NULL, LANG_ERR_EXECUTER_STACK_OVERFLOW);
-    Stack_push(this->hldStack, holdable);
-    this->currHoldable = (Holdable *)this->hldStack->tail->data;
+    tools_assert(this->holders->size < MAX_STACK_SIZE, NULL, LANG_ERR_EXECUTER_STACK_OVERFLOW);
+    Stack_push(this->holders, holdable);
+    this->currHoldable = (Holdable *)this->holders->tail->data;
     if (this->rootModule == NULL) {
         tools_assert(Holdable_isModule(holdable), NULL, LANG_ERR_EXECUTER_INVALID_STATE);
         this->rootModule = holdable;
@@ -269,32 +268,18 @@ void Machine_pushHolder(Machine *this, Holdable* holdable) {
 }
 
 Holdable* Machine_popHolder(Machine *this) {
-    tools_assert(this->hldStack->size > 0, "Stack underflow!");
-    Holdable *holdable = Stack_pop(this->hldStack);
-    Block *block = this->hldStack->tail;
+    tools_assert(this->holders->size > 0, "Stack underflow!");
+    Holdable *holdable = Stack_pop(this->holders);
+    Block *block = this->holders->tail;
     this->currHoldable = block != NULL ? (Holdable *)block->data : NULL;
-    return holdable;
-}
-
-void Machine_pushEnvironment(Machine *this, Holdable* holdable) {
-    tools_assert(this->envStack->size < MAX_STACK_SIZE, NULL, LANG_ERR_EXECUTER_STACK_OVERFLOW);
-    Stack_push(this->envStack, holdable);
-    this->currEnvironment = (Holdable *)this->envStack->tail->data;
-}
-
-Holdable* Machine_popEnvironment(Machine *this) {
-    tools_assert(this->envStack->size > 0, "Stack underflow!");
-    Holdable *holdable = Stack_pop(this->envStack);
-    Block *block = this->envStack->tail;
-    this->currEnvironment = block != NULL ? (Holdable *)block->data : NULL;
     return holdable;
 }
 
 Holdable *Machine_getCurrentModule(Machine *this)
 {
-    Stack_RESTE(this->hldStack);
+    Stack_RESTE(this->holders);
     Holdable *holdable = NULL;
-    while ((holdable = Stack_NEXT(this->hldStack)) != NULL)
+    while ((holdable = Stack_NEXT(this->holders)) != NULL)
     {
         if (Holdable_isModule(holdable)) break;
     }
@@ -303,9 +288,9 @@ Holdable *Machine_getCurrentModule(Machine *this)
 
 Value *Machine_getCurrentSelf(Machine *this)
 {
-    Stack_RESTE(this->hldStack);
+    Stack_RESTE(this->holders);
     Value *value = NULL;
-    while ((value = Stack_NEXT(this->hldStack)) != NULL)
+    while ((value = Stack_NEXT(this->holders)) != NULL)
     {
         if (!Holdable_isScope(value)) break;
         Value *self = Dictable_getLocation(value, SCOPE_ALIAS_SLF);
@@ -427,8 +412,7 @@ void _machine_mark_timer(Value *value) {
 void Machine_mark(Machine *this)
 {
     _machine_mark_dictable(this->globals);
-    Stack_foreachItem(this->hldStack, _machine_mark_hstack, NULL);
-    Stack_foreachItem(this->envStack, _machine_mark_hstack, NULL);
+    Stack_foreachItem(this->holders, _machine_mark_hstack, NULL);
     Stack_foreachItem(this->calls, _machine_mark_vstack, NULL);
     timer_each(&_machine_mark_timer);
 }
