@@ -272,14 +272,11 @@
 
 > 📝:  texturize_image func of board module
 
-> 🔙: String
+> 🔙: Value
 
 > 🛒: 
 * image  `USTRING`
-* x  `int`
-* y  `int`
-* w  `int`
-* h  `int`
+* isGray  `bool`
 * flipX  `bool`
 * flipY  `bool`
 
@@ -288,7 +285,7 @@
 
 > 📝:  texturize_text func of board module
 
-> 🔙: String
+> 🔙: Value
 
 > 🛒: 
 * font  `USTRING`
@@ -304,7 +301,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* texture  `Texture`
 * x  `int`
 * y  `int`
 * anchorX  `float`

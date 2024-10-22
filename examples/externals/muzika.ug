@@ -2,15 +2,21 @@
 
 miqdar tag qimmiti quruq bolsun
 
-xizmetchi @*:doska_korsitish_qayturmisi mezmuni
-    xizmetchi @muzika:yuklesh bilen "../resources/bahar.mp3" ishlitilsun we tag elinsun
-    xizmetchi @muzika:quyush bilen tag ishlitilsun
-    xizmetchi @muzika:yuqiriliqiniBikitish bilen tag 1 ishlitilsun
-    xizmetchi @muzika:orniniBikitish bilen tag 25 ishlitilsun
-tamamlansun
+xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
 
-xizmetchi @*:doska_sizish_qayturmisi mezmuni
+xizmetchi @muzika:yuklesh bilen "../resources/bahar.mp3" ishlitilsun we tag elinsun
+xizmetchi @muzika:quyush bilen tag ishlitilsun
+xizmetchi @muzika:yuqiriliqiniBikitish bilen tag 1 ishlitilsun
+xizmetchi @muzika:orniniBikitish bilen tag 25 ishlitilsun
+
+miqdar dawam qimmiti rast bolsun
+nawada dawam bolsa
+    xizmetchi @taxta:sizishniBashlash ishlitilsun
+    #
     xizmetchi @muzika:yingilash bilen tag ishlitilsun
+    #
+    xizmetchi @taxta:sizishniTamamlash ishlitilsun
+    xizmetchi @sehne:dawammu ishlitilsun we dawam elinsun
 tamamlansun
+xizmetchi @sehne:yushurush ishlitilsun
 
-xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" 4096 ishlitilsun

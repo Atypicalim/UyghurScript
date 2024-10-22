@@ -15,20 +15,6 @@ Sound defaulSound;
 
 // callback
 
-void raylib_on_show()
-{
-    // SetTargetFPS(60);
-    Bridge_startFunc(__uyghur->bridge);
-    Bridge_call(__uyghur->bridge, ALIAS_STAGE_ON_SHOW);
-}
-
-void raylib_on_draw()
-{
-    Bridge_startFunc(__uyghur->bridge);
-    Bridge_call(__uyghur->bridge, ALIAS_STAGE_ON_DRAW);
-    DrawFPS(10, 10);
-}
-
 void raylib_on_focus()
 {
     // RLAPI bool IsWindowFocused(void);
@@ -60,7 +46,7 @@ void raylib_run_program(int width, int height, USTRING title, int mode)
     if (width < 0) width = 500;
     if (height < 0) height = 500;
     if (strlen(title) == 0) title = "Uyghur Script!";
-    if (mode < 0) mode = FLAG_WINDOW_RESIZABLE;
+    if (mode < 0) mode = FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_TOPMOST | FLAG_WINDOW_TRANSPARENT;
     SetConfigFlags(mode);
     InitWindow(width, height, title);
     InitAudioDevice();
@@ -68,17 +54,7 @@ void raylib_run_program(int width, int height, USTRING title, int mode)
     defaultFont = GetFontDefault();
     defaultImage = GenImageGradientRadial(300, 300, 0, (Color){255, 255, 255, 50}, (Color){0, 0, 0, 50});
     defaultTexture = LoadTextureFromImage(defaultImage);
-    raylib_on_show();
-    while (!WindowShouldClose())
-    {
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-        raylib_on_draw();
-        EndDrawing();
-    }
-    CloseAudioDevice();
-    CloseWindow();
-    raylib_on_hide();
+    // SetTargetFPS(60);
 }
 
 // api
@@ -121,8 +97,16 @@ void native_stage_show_window(Bridge *bridge)
 
 void native_stage_hide_window(Bridge *bridge)
 {
-    if (IsWindowReady()) CloseWindow();
+    if (IsWindowReady()) {
+        CloseAudioDevice();
+        CloseWindow();
+    }
     Bridge_returnEmpty(bridge);
+}
+void native_stage_is_continue(Bridge *bridge)
+{
+    bool running = !WindowShouldClose();
+    Bridge_returnBoolean(bridge, running);
 }
 
 void native_stage_is_fullscreen(Bridge *bridge)

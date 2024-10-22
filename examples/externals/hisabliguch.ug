@@ -195,8 +195,11 @@ xizmetchi kunupkaSizish miqdar id mezmuni
 
 tamamlansun
 
-xizmetchi @*:doska_sizish_qayturmisi mezmuni
-
+xizmetchi @sehne:korsitish bilen 515 225 "Xisabliguch" -1 ishlitilsun
+miqdar dawam qimmiti rast bolsun
+nawada dawam bolsa
+    xizmetchi @taxta:sizishniBashlash ishlitilsun
+    #
     # buttons
     kunupkaNumuri qimmiti 1 bolsun
     tekshuruldighanQimmet = kunupkaNumuri < kunupkaSani
@@ -209,7 +212,7 @@ xizmetchi @*:doska_sizish_qayturmisi mezmuni
     xizmetchi @taxta:totTereplikToldurushAylandurulghan bilen 7 5 500 55 "555555" 0 0 0 ishlitilsun
     xizmetchi @taxta:totTereplikToldurushAylandurulghan bilen 12 10 333 45 "333333" 0 0 0 ishlitilsun
     xizmetchi @taxta:totTereplikToldurushAylandurulghan bilen 350 20 70 35 "88888833" 0 0 0 ishlitilsun
-    # clear
+    # # clear
     xizmetchi @zapchas:kunupkaKorsitish bilen 425 10 75 45 "Tazilash" ishlitilsun we rr elinsun
     eger rr bolsa
         xizmetchi tazilashQayturmisi ishlitilsun
@@ -223,6 +226,8 @@ xizmetchi @*:doska_sizish_qayturmisi mezmuni
     # action
     xizmetchi @xet:formatlash bilen "%f" hazirqiQimmet ishlitilsun we sinaqXet elinsun
     xizmetchi @taxta:xetYezish bilen "" sinaqXet 16 2 "aaaaaa" 25 38 ishlitilsun
+    #
+    xizmetchi @taxta:sizishniTamamlash ishlitilsun
+    xizmetchi @sehne:dawammu ishlitilsun we dawam elinsun
 tamamlansun
-
-xizmetchi @sehne:korsitish bilen 515 225 "Xisabliguch" 4096 ishlitilsun
+xizmetchi @sehne:yushurush ishlitilsun

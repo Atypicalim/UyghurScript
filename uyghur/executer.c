@@ -117,34 +117,41 @@ void Executer_findValueByLocation(Executer *this, char *key, Value **rContainer,
     *rContainer = NULL;
     *rValue = NULL;
     // scope
-    Holdable *holdable = this->machine->currHoldable;
-    if (holdable) {
-        Value *value = Dictable_getLocation(holdable, key);
+    Holdable *scope = this->machine->currHoldable;
+    if (scope) {
+        Value *value = Dictable_getLocation(scope, key);
         if (value != NULL) {
-            *rContainer = holdable;
+            *rContainer = scope;
             *rValue = value;
             return;
         }
     }
     // environment
-    holdable = this->machine->currEnvironment;
-    if (holdable) {
-        while (holdable != NULL) {
-            Value *value = Dictable_getLocation(holdable, key);
+    // TODO:push func env and scope to one stack
+    // turn into env parents when found func env
+    Holdable *environment = NULL;
+    if (this->machine->currEnvironment) {
+        environment = this->machine->currEnvironment;
+    } else if (scope) {
+        environment = scope->linka;
+    }
+    if (environment) {
+        while (environment != NULL) {
+            Value *value = Dictable_getLocation(environment, key);
             if (value != NULL) {
-                *rContainer = holdable;
+                *rContainer = environment;
                 *rValue = value;
                 return;
             }
-            holdable = holdable->linka;
+            environment = environment->linka;
         }
     }
     // global
-    holdable = this->globalScope;
-    if (holdable) {
-        Value *value = Dictable_getLocation(holdable, key);
+    Holdable *global = this->globalScope;
+    if (global) {
+        Value *value = Dictable_getLocation(global, key);
         if (value != NULL) {
-            *rContainer = holdable;
+            *rContainer = global;
             *rValue = value;
             return;
         }
@@ -841,7 +848,7 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
         for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
             ptr = map->bucket[i];
             while (ptr != NULL) {
-                String *_key = ptr->key;
+                String *_key = String_clone(ptr->key);
                 Value *val = ptr->value;
                 //
                 Executer_pushScope(this, TVALUE_SPREAD);

@@ -8,7 +8,7 @@
 
 > 📝:  load func of music module
 
-> 🔙: String
+> 🔙: Value
 
 > 🛒: 
 * path  `USTRING`
@@ -21,7 +21,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* music  `Music`
 
 
 ### 3. play
@@ -31,7 +31,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* music  `Music`
 
 
 ### 4. stop
@@ -41,7 +41,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* music  `Music`
 
 
 ### 5. resume
@@ -51,7 +51,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* music  `Music`
 
 
 ### 6. pause
@@ -61,7 +61,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* music  `Music`
 
 
 ### 7. is_playing
@@ -71,7 +71,7 @@
 > 🔙: Boolean
 
 > 🛒: 
-* tag  `USTRING`
+* music  `Music`
 
 
 ### 8. set_volume
@@ -81,7 +81,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* music  `Music`
 * volume  `float`
 
 
@@ -92,7 +92,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* music  `Music`
 
 
 ### 10. get_length
@@ -102,7 +102,7 @@
 > 🔙: Number
 
 > 🛒: 
-* tag  `USTRING`
+* music  `Music`
 
 
 ### 11. get_position
@@ -112,7 +112,7 @@
 > 🔙: Number
 
 > 🛒: 
-* tag  `USTRING`
+* music  `Music`
 
 
 ### 12. set_position
@@ -122,7 +122,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* music  `Music`
 * position  `float`
 
 

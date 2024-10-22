@@ -8,7 +8,7 @@
 
 > 📝:  load func of sound module
 
-> 🔙: String
+> 🔙: Value
 
 > 🛒: 
 * path  `USTRING`
@@ -21,7 +21,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* sound  `Sound`
 
 
 ### 3. play
@@ -31,7 +31,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* sound  `Sound`
 
 
 ### 4. stop
@@ -41,7 +41,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* sound  `Sound`
 
 
 ### 5. resume
@@ -51,7 +51,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* sound  `Sound`
 
 
 ### 6. pause
@@ -61,7 +61,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* sound  `Sound`
 
 
 ### 7. is_playing
@@ -71,7 +71,7 @@
 > 🔙: Boolean
 
 > 🛒: 
-* tag  `USTRING`
+* sound  `Sound`
 
 
 ### 8. set_volume
@@ -81,7 +81,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* tag  `USTRING`
+* sound  `Sound`
 * volume  `float`
 
 

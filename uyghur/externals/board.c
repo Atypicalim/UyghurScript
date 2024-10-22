@@ -40,6 +40,14 @@ void _raylib_release_texture(Loadable *loadable) {
     }
 }
 
+Texture texture_from_bridge(Bridge *bridge)
+{
+    Loadable *loadable = Bridge_receiveValue(bridge, UG_TYPE_RSR);
+    Texture *texture = loadable->obj;
+    Texture t = texture != NULL ? texture[0] : defaultTexture;
+    return t;
+}
+
 Image raylib_load_image(USTRING path)
 {
     if (path == NULL || strlen(path) == 0) return defaultImage;
@@ -111,11 +119,13 @@ Texture *raylib_texturize_text(TxtInfo info)
 void native_board_draw_start(Bridge *bridge)
 {
     BeginDrawing();
+    ClearBackground(BLACK);
     Bridge_returnEmpty(bridge);
 }
 
 void native_board_draw_end(Bridge *bridge)
 {
+    DrawFPS(10, 10);
     EndDrawing();
     Bridge_returnEmpty(bridge);
 }
@@ -354,7 +364,7 @@ void native_board_texturize_text(Bridge *bridge)
 
 void native_board_draw_texture(Bridge *bridge)
 {
-    Loadable *loadable = Bridge_receiveValue(bridge, UG_TYPE_RSR);
+    Texture texture = texture_from_bridge(bridge);
     int x = Bridge_receiveNumber(bridge);
     int y = Bridge_receiveNumber(bridge);
     float anchorX = Bridge_receiveNumber(bridge);
@@ -366,9 +376,6 @@ void native_board_draw_texture(Bridge *bridge)
     int height = Bridge_receiveNumber(bridge);
     float rotation = Bridge_receiveNumber(bridge);
     float scale = Bridge_receiveNumber(bridge);
-    //
-    Texture *tex = loadable->obj;
-    Texture texture = tex == NULL ? defaultTexture : tex[0];
     //
     fromX = MAX(0, MIN(fromX, texture.width - 1));
     fromY = MAX(0, MIN(fromY, texture.height - 1));

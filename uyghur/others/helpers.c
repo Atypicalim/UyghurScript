@@ -454,6 +454,20 @@ Value *helper_get_aliased_key(Value *container, char *_key) {
     return NULL;
 }
 
+void *helper_set_proxy_value(char *proxyName, char *key, Value *value) {
+    Executer *executer = __uyghur->executer;
+    Holdable *global = executer->globalScope;
+    Holdable *box = helper_get_aliased_key(global, proxyName);
+    helper_set_aliased_key(box, key, value);
+}
+
+Value *helper_get_proxy_value(char *proxyName, char *key) {
+    Executer *executer = __uyghur->executer;
+    Holdable *global = executer->globalScope;
+    Holdable *box = helper_get_aliased_key(global, proxyName);
+    return helper_get_aliased_key(box, key);
+}
+
 char*helper_value_to_string(void *target, CString failure) {
     Value *value = target;
     Token *token = value->token;

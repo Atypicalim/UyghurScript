@@ -507,20 +507,6 @@ ALIAS_stage:
   uz: sahna
   tr: sahne
   kz: сахна
-ALIAS_STAGE_ON_SHOW:
-  en: stage_on_show
-  uy: سەھنە_كۆرسىتىش_قايتۇرمىسى
-  ug: doska_korsitish_qayturmisi
-  uz: sahna_ko'rsatish_qaytarish
-  tr: sahne_göstermek_aramasi
-  kz: сахна_көрсету_қайтару
-ALIAS_STAGE_ON_DRAW:
-  en: stage_on_draw
-  uy: سەھنە_سىزىش_قايتۇرمىسى
-  ug: doska_sizish_qayturmisi
-  uz: sahna_chizish_qaytarish
-  tr: sahne_çizmek_aramasi
-  kz: сахна_сызу_қайтару
 ALIAS_stage_set_log:
   en: set_log
   uy: لوگ_بېكىتىش
@@ -563,6 +549,13 @@ ALIAS_stage_hide_window:
   uz: yashirish
   tr: saklamak
   kz: жасыру
+ALIAS_stage_is_continue:
+  en: is_continue
+  uy: داۋاممۇ
+  ug: dawammu
+  uz: davommi
+  tr: devammi
+  kz: давамба
 ALIAS_stage_is_fullscreen:
   en: is_fullscreen
   uy: پۈتۈن_ئېكرانمۇ
