@@ -20,7 +20,7 @@ UG_LOCATION ug_location;
 
 Value *Executer_getValueByToken(Executer *, Token *, bool);
 void Executer_consumeLeaf(Executer *, Leaf *);
-bool Executer_consumeTree(Executer *, Leaf *);
+void Executer_consumeTree(Executer *, Leaf *);
 
 void Executer_reset(Executer *this)
 {
@@ -1317,7 +1317,7 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     tools_error("%s:[%c]", LANG_ERR_EXECUTER_NOT_IMPLEMENTED, tp);
 }
 
-bool Executer_consumeTree(Executer *this, Leaf *tree)
+void Executer_consumeTree(Executer *this, Leaf *tree)
 {
     Queue_RESTE(tree->leafs);
     Leaf *leaf = Queue_NEXT(tree->leafs);
@@ -1328,7 +1328,6 @@ bool Executer_consumeTree(Executer *this, Leaf *tree)
         if (this->isReturn) break;
         leaf = Queue_NEXT(tree->leafs);
     }
-    return true;
 }
 
 Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)

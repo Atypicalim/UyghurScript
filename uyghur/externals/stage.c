@@ -45,7 +45,7 @@ void raylib_run_program(int width, int height, USTRING title, int mode)
     if (IsWindowReady()) return;
     if (width < 0) width = 500;
     if (height < 0) height = 500;
-    if (strlen(title) == 0) title = "Uyghur Script!";
+    if (strlen(title) == 0) title = UG_PROJECT_NAME;
     if (mode < 0) mode = FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_TOPMOST; // FLAG_WINDOW_TRANSPARENT
     SetConfigFlags(mode);
     InitWindow(width, height, title);

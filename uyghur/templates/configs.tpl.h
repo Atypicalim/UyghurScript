@@ -2,6 +2,7 @@
 #ifndef YAML_CONFIGS_FLAG
 #define YAML_CONFIGS_FLAG
 
+#define UG_PROJECT_NAME "{}" // [M[ PROJECT_NAME ]M]
 #define UG_VERSION_CODE {} // [M[ VERSION_CODE ]M]
 #define UG_VERSION_NAME "{}" // [M[ VERSION_NAME ]M]
 

@@ -76,7 +76,9 @@ def formatFilters(name, mapping):
 ############################################################################### configs
 
 def _configsMacro(code, command, argument = None):
-    if command == "VERSION_CODE":
+    if command == "PROJECT_NAME":
+        return code.format(PROJECT_NAME)
+    elif command == "VERSION_CODE":
         return code.format(VERSION_CODE)
     elif command == "VERSION_NAME":
         return code.format(VERSION_CODE)

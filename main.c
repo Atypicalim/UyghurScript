@@ -68,12 +68,7 @@ void run_version_cmd(CString name) {
 
 void run_interact_cmd(CString name) {
     Uyghur *uyghur = Uyghur_instance();
-	printf("%s %s\n", name, UG_VERSION_NAME);
-    while (true) {
-        printf("> ");
-        char *code = system_scanf();
-        // Uyghur_runCode(uyghur, code, NULL);
-    }
+    Uyghur_runRepl(uyghur);
     Uyghur_free(uyghur);
 }
 
@@ -89,7 +84,7 @@ void run_package_cmd(CString name, args_t args, CString script) {
 
 void run_execute_cmd(CString name, args_t args, CString script) {
     Uyghur *uyghur = Uyghur_instance();
-    Uyghur_exePath(uyghur, script);
+    Uyghur_runPath(uyghur, script);
     Uyghur_free(uyghur);
 }
 
@@ -149,7 +144,7 @@ int main(int argc, char const *argv[])
     // program
     Uyghur *uyghur = Uyghur_instance();
     if (argc == 1) Uyghur_runCode(uyghur, script, NULL);
-    if (argc >= 2) Uyghur_exePath(uyghur, (char *)argv[1]);
+    if (argc >= 2) Uyghur_runPath(uyghur, (char *)argv[1]);
     Uyghur_free(uyghur);
     //
     //

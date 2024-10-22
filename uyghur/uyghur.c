@@ -69,6 +69,8 @@ Value *Uyghur_runCode(Uyghur *this, char *code, char *path)
 
 Value *Uyghur_runPath(Uyghur *this, char *path)
 {
+    bool exist = file_exist(path);
+    tools_assert(exist, "%s:[%s]", LANG_ERR_NO_INPUT_FILE, path);
     char *code = file_read(path);
     Value *value = NULL;
     if (code != NULL) {
@@ -81,11 +83,36 @@ Value *Uyghur_runPath(Uyghur *this, char *path)
     return value;
 }
 
-Value *Uyghur_exePath(Uyghur *this, char *path)
+void Uyghur_runRepl(Uyghur *this)
 {
-    bool exist = file_exist(path);
-    tools_assert(exist, "%s:[%s]", LANG_ERR_NO_INPUT_FILE, path);
-    Uyghur_runPath(this, path);
+	printf("%s %s\n", UG_PROJECT_NAME, UG_VERSION_NAME);
+    //
+    log_info("> available languages:");
+    int size = UG_LANGUAGE_COUNT;
+    for (size_t i = 0; i < size; i++) {
+        char *tp = UG_LANGUAGE_ARRAY[i];
+        log_info("> * %s", UG_LANGUAGE_ARRAY[i]);
+    }
+    //
+    log_info("> please select:");
+    CString lang = NULL;
+    while (!lang) {
+        printf("> ");
+        char *text = system_scanf();
+        for (size_t i = 0; i < size; i++) {
+            char *tp = UG_LANGUAGE_ARRAY[i];
+            if (is_eq_string(text, tp)) lang = tp;
+        }
+    }
+    //
+    log_info("> please enter (%s):", lang);
+    while (true) {
+        printf("> ");
+        char *text = system_scanf();
+        Token *headToken = Tokenizer_parseCode(this->tokenizer, ".?", text);
+        Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
+        Executer_consumeLeaf(this->executer, headLeaf);
+    }
 }
 
 void Uyghur_free(Uyghur *this)
