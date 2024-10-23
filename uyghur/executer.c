@@ -1330,23 +1330,29 @@ void Executer_consumeTree(Executer *this, Leaf *tree)
     }
 }
 
-Value *Executer_executeTree(Executer *this, char *path, Leaf *tree)
-{
-    //
-    Holdable *module = Holdable_newModule(path);
-    Machine_pushHolder(this->machine, module);
-    //
+void *Executer_executeCode(Executer *this, Leaf *tree) {
     Executer_consumeTree(this, tree);
-    if (this->machine->rootModule == this->machine->currHoldable) {
-        timer_loop();
-        return NULL;
-    }
-    //
+}
+
+Value *Executer_executeScript(Executer *this, char *path, Leaf *tree)
+{
+    Holdable *holdable = Holdable_newModule(path);
+    Machine_pushHolder(this->machine, holdable);
+    Executer_consumeTree(this, tree);
+    Dictable_setLocation(this->globalScope, path, holdable);
+}
+
+Value *Executer_returnModule(Executer *this) {
     Holdable *holdable = Machine_popHolder(this->machine);
     tools_assert(holdable != NULL && holdable->type == UG_TYPE_MDL, LANG_ERR_EXECUTER_INVALID_STATE);
-    //
-    Dictable_setLocation(this->globalScope, path, holdable);
+    tools_assert(this->machine->currHoldable != NULL, LANG_ERR_EXECUTER_INVALID_STATE);
     return holdable;
+}
+
+void Executer_endExecute(Executer *this) {
+    Holdable *holdable = Machine_popHolder(this->machine);
+    tools_assert(holdable != NULL && holdable->type == UG_TYPE_MDL, LANG_ERR_EXECUTER_INVALID_STATE);
+    tools_assert(this->machine->currHoldable == NULL, LANG_ERR_EXECUTER_INVALID_STATE);
 }
 
 void Executer_free(Executer *this)

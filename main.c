@@ -72,19 +72,19 @@ void run_interact_cmd(CString name) {
     Uyghur_free(uyghur);
 }
 
-void run_package_cmd(CString name, args_t args, CString script) {
+void run_package_cmd(CString name, args_t args, CString path) {
     #ifdef IS_WINDOWS
         log_debug("packaging...");
-        try_merge_win_program(name, script);
+        try_merge_win_program(name, path);
         log_debug("packaged!");
     #elif
         log_error("packaring not supported for: %s", PLATFORM_NAME);
     #endif
 }
 
-void run_execute_cmd(CString name, args_t args, CString script) {
+void run_execute_cmd(CString name, args_t args, CString path) {
     Uyghur *uyghur = Uyghur_instance();
-    Uyghur_runPath(uyghur, script);
+    Uyghur_runProgram(uyghur, path);
     Uyghur_free(uyghur);
 }
 
@@ -143,8 +143,8 @@ int main(int argc, char const *argv[])
     }
     // program
     Uyghur *uyghur = Uyghur_instance();
-    if (argc == 1) Uyghur_runCode(uyghur, script, NULL);
-    if (argc >= 2) Uyghur_runPath(uyghur, (char *)argv[1]);
+    if (argc == 1) Uyghur_runScript(uyghur, script);
+    if (argc >= 2) Uyghur_runProgram(uyghur, (char *)argv[1]);
     Uyghur_free(uyghur);
     //
     //

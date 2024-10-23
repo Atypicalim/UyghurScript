@@ -59,7 +59,7 @@ void native_import(Bridge *bridge)
     Uyghur *uyghur = bridge->uyghur;
     Holdable *global = uyghur->executer->globalScope;
     Value *box = Dictable_getLocation(global, path);
-    if (box == NULL) box = Uyghur_runPath(uyghur, path);
+    if (box == NULL) box = Uyghur_runModule(uyghur, path);
     if (box == NULL) box = Value_newEmpty(NULL);
     Bridge_returnValue(bridge, box);
 }

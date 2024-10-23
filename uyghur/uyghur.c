@@ -45,42 +45,69 @@ Uyghur *Uyghur_instance()
     return __uyghur;
 }
 
-Value *Uyghur_runCode(Uyghur *this, char *code, char *path)
+Leaf *Uyghur_processCode(Uyghur *this, char *path, char *code)
 {
+    log_warn("uyghur.tokenize");
+    Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
+    log_warn("uyghur.parse");
+    Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
+    return headLeaf;
+}
+
+Value *_Uyghur_runCode(Uyghur *this, char *path, char *code)
+{
+    log_warn("uyghur.execute");
+    Leaf *tree = Uyghur_processCode(this, path, code);
+    Value *result = Executer_executeCode(this->executer, tree);
+    log_warn("uyghur.runned!");
+    return result;
+}
+
+Value *_Uyghur_runScript(Uyghur *this, char *path, char *code) {
+    tools_assert(code != NULL, "%s:[%s]", LANG_ERR_NO_INPUT_FILE, path);
     if (path == NULL) path = UG_SCRIPT_NAME;
+    //
     log_warn("uyghur.run: %s", path);
     USTRING lang = helper_parse_language(path);
-    //
+    tools_assert(lang != NULL, "invalid lang for path:[%s]", path);
     log_warn("uyghur.lang: %s", lang);
     helper_add_languages(this, lang);
     if (!IS_DEVELOP) {
         helper_set_languages(this, lang);
     }
     //
-    log_warn("uyghur.tokenize");
-    Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
-    log_warn("uyghur.parse");
-    Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
-    log_warn("uyghur.execute");
-    Value *moduleBox = Executer_executeTree(this->executer, path, headLeaf);
-    log_warn("uyghur.runned!");
-    return moduleBox;
+    Leaf *tree = Uyghur_processCode(this, path, code);
+    Value *script = Executer_executeScript(this->executer, path, tree);
+    return script;
 }
 
-Value *Uyghur_runPath(Uyghur *this, char *path)
-{
+Value *Uyghur_runScript(Uyghur *this, char *code) {
+    Value *script = _Uyghur_runScript(this, NULL, code);
+    Executer_endExecute(this->executer);
+    return script;
+}
+
+Value *_Uyghur_runPath(Uyghur *this, char *path) {
     bool exist = file_exist(path);
     tools_assert(exist, "%s:[%s]", LANG_ERR_NO_INPUT_FILE, path);
     char *code = file_read(path);
-    Value *value = NULL;
-    if (code != NULL) {
-        value = Uyghur_runCode(this, code, path);
-        free(code);
-    }
-    if (value == NULL) {
-        value = Value_newEmpty(NULL);
-    }
-    return value;
+    Value *holder = _Uyghur_runScript(this, path, code);
+    pct_free(code);
+    return holder;
+}
+
+Value *Uyghur_runModule(Uyghur *this, char *path)
+{
+    Value *module = _Uyghur_runPath(this, path);
+    Executer_returnModule(this->executer);
+    return module;
+}
+
+Value *Uyghur_runProgram(Uyghur *this, char *path)
+{
+    Value *program = _Uyghur_runPath(this, path);
+    Executer_endExecute(this->executer);
+    return program;
 }
 
 void Uyghur_runRepl(Uyghur *this)
@@ -104,15 +131,20 @@ void Uyghur_runRepl(Uyghur *this)
             if (is_eq_string(text, tp)) lang = tp;
         }
     }
+    CString *path = tools_format("*.%s", lang);
+    CString *code = "";
+    Value *script = _Uyghur_runScript(this, path, code);
     //
     log_info("> please enter (%s):", lang);
     while (true) {
         printf("> ");
         char *text = system_scanf();
-        Token *headToken = Tokenizer_parseCode(this->tokenizer, ".?", text);
-        Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
-        Executer_consumeLeaf(this->executer, headLeaf);
+        if (is_eq_string(text, "quit")) break;
+        _Uyghur_runCode(this, path, text);
     }
+    //
+    log_info("> quitted!");
+    Executer_endExecute(this->executer);
 }
 
 void Uyghur_free(Uyghur *this)
