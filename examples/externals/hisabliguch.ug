@@ -197,7 +197,6 @@ tamamlansun
 
 xizmetchi @sehne:korsitish bilen 515 225 "Xisabliguch" -1 ishlitilsun
 nawada @sehne:yepilmaqchi bolmisa
-    xizmetchi @sehne:sizishniBashlash ishlitilsun
     #
     # buttons
     kunupkaNumuri qimmiti 1 bolsun
@@ -226,5 +225,5 @@ nawada @sehne:yepilmaqchi bolmisa
     xizmetchi @xet:formatlash bilen "%f" hazirqiQimmet ishlitilsun we sinaqXet elinsun
     xizmetchi @taxta:xetYezish bilen "" sinaqXet 16 2 "aaaaaa" 25 38 ishlitilsun
     #
-    xizmetchi @sehne:sizishniTamamlash ishlitilsun
+    xizmetchi @sehne:yengilash ishlitilsun
 tamamlansun

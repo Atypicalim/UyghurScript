@@ -111,7 +111,6 @@ tamamlansun
 
 xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
 nawada @sehne:yepilmaqchi bolmisa
-    xizmetchi @sehne:sizishniBashlash ishlitilsun
     #
     xizmetchi @waqit:sikuntElish ishlitilsun we hazirqiWaqit elinsun
     # teglik sizish
@@ -131,6 +130,6 @@ nawada @sehne:yepilmaqchi bolmisa
     # mekez sizish
     xizmetchi @taxta:chemberToldurush bilen merkezX merkezY 10 10 "303030" ishlitilsun
     #
-    xizmetchi @sehne:sizishniTamamlash ishlitilsun
+    xizmetchi @sehne:yengilash ishlitilsun
 tamamlansun
 

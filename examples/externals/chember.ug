@@ -8,7 +8,6 @@ miqdar d qimmiti 0.1 bolsun
 
 xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
 nawada @sehne:yepilmaqchi bolmisa
-    xizmetchi @sehne:sizishniBashlash ishlitilsun
     #    t1 = x > 400
     t2 = x < 100
     eger t1 bolsa
@@ -20,5 +19,5 @@ nawada @sehne:yepilmaqchi bolmisa
     y = y + d
     xizmetchi @taxta:chemberSizish bilen x y 100 100 "55aaff" ishlitilsun
     #
-    xizmetchi @sehne:sizishniTamamlash ishlitilsun
+    xizmetchi @sehne:yengilash ishlitilsun
 tamamlansun

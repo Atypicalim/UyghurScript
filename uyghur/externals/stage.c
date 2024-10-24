@@ -95,20 +95,18 @@ void native_stage_show_window(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-void native_stage_draw_start(Bridge *bridge)
+void native_stage_update_window(Bridge *bridge)
 {
-    BeginDrawing();
-    ClearBackground(BLACK);
-    Bridge_returnEmpty(bridge);
-}
-
-void native_stage_draw_end(Bridge *bridge)
-{
-    DrawFPS(10, 10);
-    EndDrawing();
+    //
+    if (IsWindowReady()) {
+        DrawFPS(10, 10);
+        EndDrawing();
+        BeginDrawing();
+        ClearBackground(BLACK);
+    }
     //
     bool closeable = WindowShouldClose();
-    Value *value = closeable ? Value_TRUE : Value_FALSE;
+    Value *value = Value_newBoolean(closeable, NULL);
     helper_set_proxy_value(ALIAS_stage, ALIAS_stage_is_closeable, value);
     //
     if (closeable && IsWindowReady()) {

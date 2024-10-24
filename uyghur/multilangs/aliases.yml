@@ -2,6 +2,30 @@
 ############################# internals #############################
 
 
+############################# common
+
+ALIAS_update: &__update
+  en: update
+  uy: يېڭىلاش
+  ug: yengilash
+  uz: yangilash
+  tr: yenilemek
+  kz: жаңарту
+ALIAS_load: &__load
+  en: load
+  uy: يۈكلەش
+  ug: yuklesh
+  uz: yuklash
+  tr: yüklemek
+  kz: жүктеу
+ALIAS_unload: &__unload
+  en: unload
+  uy: بوشىتىش
+  ug: boshitish
+  uz: tushirish
+  tr: boşaltmak
+  kz: босату
+
 ############################# global
 # information
 ALIAS_get_language:
@@ -536,7 +560,7 @@ ALIAS_stage_draw_fps:
   tr: fps_çizmek
   kz: фпс_draw
 ALIAS_stage_show_window:
-  en: show_window
+  en: show
   uy: كۆرسىتىش
   ug: korsitish
   uz: ko'rsatish
@@ -549,20 +573,8 @@ ALIAS_stage_is_closeable:
   uz: yopilmoqchi
   tr: kapanmakqi
   kz: жабылмакші
-ALIAS_stage_draw_start:
-  en: draw_start
-  uy: سىزىشنى_باشلاش
-  ug: sizishniBashlash
-  uz: chizishni_boshlash
-  tr: çizmeyi_başlamak
-  kz: сызуды_бастау
-ALIAS_stage_draw_end:
-  en: draw_end
-  uy: سىزىشنى_تاماملاش
-  ug: sizishniTamamlash
-  uz: chizish_tamomlash
-  tr: çizmeyi_bitirmek
-  kz: сызуды_аяқтау
+ALIAS_stage_update_window:
+  <<: *__update
 ALIAS_stage_is_fullscreen:
   en: is_fullscreen
   uy: پۈتۈن_ئېكرانمۇ
@@ -929,6 +941,51 @@ ALIAS_board_draw_texture:
   tr: nakış_çizmek
   kz: неқиш_сызу
 
+############################# common
+
+ALIAS_play: &__play
+  en: play
+  uy: قۇيۇش
+  ug: quyush
+  uz: o'ynatish
+  tr: çalmak
+  kz: ойнау
+ALIAS_stop: &__stop
+  en: stop
+  uy: توختىتىش
+  ug: toxtitish
+  uz: to'xtatish
+  tr: durdur
+  kz: тоқтату
+ALIAS_pause: &__pause
+  en: pause
+  uy: تۇرغۇزۇش
+  ug: turghuzush
+  uz: turg'izish
+  tr: duraklatmak
+  kz: тұргүзү
+ALIAS_resume: &__resume
+  en: resume
+  uy: ماڭغۇزۇش
+  ug: mangghuzush
+  uz: davomlashtirish
+  tr: sürdürmek
+  kz: мәңгүзү
+ALIAS_is_playing: &__playing
+  en: is_playing
+  uy: قۇيۇلۋاتامدۇ
+  ug: quyuliwatamdu
+  uz: o'ynayaptimi
+  tr: çalıyormu
+  kz: ойнап_жатырбу
+ALIAS_set_volume: &__volume
+  en: set_volume
+  uy: ئاۋازىنى_بېكىتىش
+  ug: yuqiriliqiniBikitish
+  uz: yuqoriligini_o'rnatish
+  tr: sesini_ayarlamak
+  kz: дыбысты_орнату
+
 ############################# music
 ALIAS_music:
   en: music
@@ -937,69 +994,24 @@ ALIAS_music:
   uz: musiqa
   tr: müzik
   kz: музыка
-ALIAS_music_load: &__load
-  en: load
-  uy: يۈكلەش
-  ug: yuklesh
-  uz: yuklash
-  tr: yüklemek
-  kz: жүктеу
-ALIAS_music_unload: &__unload
-  en: unload
-  uy: بوشىتىش
-  ug: boshitish
-  uz: tushirish
-  tr: boşaltmak
-  kz: босату
-ALIAS_music_play: &__play
-  en: play
-  uy: قۇيۇش
-  ug: quyush
-  uz: o'ynatish
-  tr: çalmak
-  kz: ойнау
-ALIAS_music_stop: &__stop
-  en: stop
-  uy: توختىتىش
-  ug: toxtitish
-  uz: to'xtatish
-  tr: durdur
-  kz: тоқтату
-ALIAS_music_pause: &__pause
-  en: pause
-  uy: تۇرغۇزۇش
-  ug: turghuzush
-  uz: turg'izish
-  tr: duraklatmak
-  kz: тұргүзү
-ALIAS_music_resume: &__resume
-  en: resume
-  uy: ماڭغۇزۇش
-  ug: mangghuzush
-  uz: davomlashtirish
-  tr: sürdürmek
-  kz: мәңгүзү
-ALIAS_music_is_playing: &__playing
-  en: is_playing
-  uy: قۇيۇلۋاتامدۇ
-  ug: quyuliwatamdu
-  uz: o'ynayaptimi
-  tr: çalıyormu
-  kz: ойнап_жатырбу
-ALIAS_music_set_volume: &__volume
-  en: set_volume
-  uy: ئاۋازىنى_بېكىتىش
-  ug: yuqiriliqiniBikitish
-  uz: yuqoriligini_o'rnatish
-  tr: sesini_ayarlamak
-  kz: дыбысты_орнату
+ALIAS_music_load:
+  <<: *__load
+ALIAS_music_unload:
+  <<: *__unload
+ALIAS_music_play:
+  <<: *__play
+ALIAS_music_stop:
+  <<: *__stop
+ALIAS_music_pause:
+  <<: *__pause
+ALIAS_music_resume:
+  <<: *__resume
+ALIAS_music_is_playing:
+  <<: *__playing
+ALIAS_music_set_volume:
+  <<: *__volume
 ALIAS_music_update:
-  en: update
-  uy: يېڭىلاش
-  ug: yingilash
-  uz: yangilash
-  tr: güncellemek
-  kz: жаңарту
+  <<: *__update
 ALIAS_music_get_length:
   en: get_length
   uy: ئۇزۇنلىقىنى_ئېلىش

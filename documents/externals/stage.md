@@ -56,25 +56,16 @@
 * mode  `int`
 
 
-### 6. draw_start
+### 6. update_window
 
-> 📝:  draw_start func of stage module
-
-> 🔙: Empty
-
-> 🛒:  none
-
-
-### 7. draw_end
-
-> 📝:  draw_end func of stage module
+> 📝:  update_window func of stage module
 
 > 🔙: Empty
 
 > 🛒:  none
 
 
-### 8. is_fullscreen
+### 7. is_fullscreen
 
 > 📝:  is_fullscreen func of stage module
 
@@ -83,7 +74,7 @@
 > 🛒:  none
 
 
-### 9. is_hidden
+### 8. is_hidden
 
 > 📝:  is_hidden func of stage module
 
@@ -92,7 +83,7 @@
 > 🛒:  none
 
 
-### 10. is_minimized
+### 9. is_minimized
 
 > 📝:  is_minimized func of stage module
 
@@ -101,7 +92,7 @@
 > 🛒:  none
 
 
-### 11. is_maximized
+### 10. is_maximized
 
 > 📝:  is_maximized func of stage module
 
@@ -110,7 +101,7 @@
 > 🛒:  none
 
 
-### 12. toggle_fullscreen
+### 11. toggle_fullscreen
 
 > 📝:  toggle_fullscreen func of stage module
 
@@ -119,7 +110,7 @@
 > 🛒:  none
 
 
-### 13. set_minimize
+### 12. set_minimize
 
 > 📝:  set_minimize func of stage module
 
@@ -128,7 +119,7 @@
 > 🛒:  none
 
 
-### 14. set_maximize
+### 13. set_maximize
 
 > 📝:  set_maximize func of stage module
 
@@ -137,7 +128,7 @@
 > 🛒:  none
 
 
-### 15. set_normalize
+### 14. set_normalize
 
 > 📝:  set_normalize func of stage module
 
@@ -146,7 +137,7 @@
 > 🛒:  none
 
 
-### 16. set_title
+### 15. set_title
 
 > 📝:  set_title func of stage module
 
@@ -155,7 +146,7 @@
 > 🛒:  none
 
 
-### 17. set_icon
+### 16. set_icon
 
 > 📝:  set_icon func of stage module
 
@@ -165,7 +156,7 @@
 * path  `USTRING`
 
 
-### 18. set_position
+### 17. set_position
 
 > 📝:  set_position func of stage module
 
@@ -176,7 +167,7 @@
 * y  `int`
 
 
-### 19. get_position
+### 18. get_position
 
 > 📝:  get_position func of stage module
 
@@ -185,7 +176,7 @@
 > 🛒:  none
 
 
-### 20. set_size
+### 19. set_size
 
 > 📝:  set_size func of stage module
 
@@ -196,7 +187,7 @@
 * h  `int`
 
 
-### 21. get_size
+### 20. get_size
 
 > 📝:  get_size func of stage module
 
@@ -205,7 +196,7 @@
 > 🛒:  none
 
 
-### 22. set_min_size
+### 21. set_min_size
 
 > 📝:  set_min_size func of stage module
 
@@ -216,7 +207,7 @@
 * h  `int`
 
 
-### 23. show_cursor
+### 22. show_cursor
 
 > 📝:  show_cursor func of stage module
 
@@ -226,7 +217,7 @@
 * b  `bool`
 
 
-### 24. enable_cursor
+### 23. enable_cursor
 
 > 📝:  enable_cursor func of stage module
 
@@ -236,7 +227,7 @@
 * b  `bool`
 
 
-### 25. have_cursor
+### 24. have_cursor
 
 > 📝:  have_cursor func of stage module
 
@@ -245,7 +236,7 @@
 > 🛒:  none
 
 
-### 26. set_clipboard
+### 25. set_clipboard
 
 > 📝:  set_clipboard func of stage module
 
@@ -255,7 +246,7 @@
 * c  `USTRING`
 
 
-### 27. get_clipboard
+### 26. get_clipboard
 
 > 📝:  get_clipboard func of stage module
 
@@ -264,7 +255,7 @@
 > 🛒:  none
 
 
-### 28. set_mouse_cursor
+### 27. set_mouse_cursor
 
 > 📝:  set_mouse_cursor func of stage module
 
@@ -274,7 +265,7 @@
 * c  `int`
 
 
-### 29. get_mouse_position
+### 28. get_mouse_position
 
 > 📝:  get_mouse_position func of stage module
 
@@ -283,7 +274,7 @@
 > 🛒:  none
 
 
-### 30. get_mouse_wheel
+### 29. get_mouse_wheel
 
 > 📝:  get_mouse_wheel func of stage module
 
@@ -292,7 +283,7 @@
 > 🛒:  none
 
 
-### 31. get_mouse_key_action
+### 30. get_mouse_key_action
 
 > 📝:  get_mouse_key_action func of stage module
 
@@ -302,7 +293,7 @@
 * keyCode  `int`
 
 
-### 32. get_mouse_key_state
+### 31. get_mouse_key_state
 
 > 📝:  get_mouse_key_state func of stage module
 
@@ -312,7 +303,7 @@
 * keyCode  `int`
 
 
-### 33. get_keyboard_key_action
+### 32. get_keyboard_key_action
 
 > 📝:  get_keyboard_key_action func of stage module
 
@@ -322,7 +313,7 @@
 * keyCode  `int`
 
 
-### 34. get_keyboard_key_state
+### 33. get_keyboard_key_state
 
 > 📝:  get_keyboard_key_state func of stage module
 
@@ -332,7 +323,7 @@
 * keyCode  `int`
 
 
-### 35. save_screenshot
+### 34. save_screenshot
 
 > 📝:  save_screenshot func of stage module
 
@@ -342,7 +333,7 @@
 * path  `USTRING`
 
 
-### 36. audio_set_volume
+### 35. audio_set_volume
 
 > 📝:  audio_set_volume func of stage module
 

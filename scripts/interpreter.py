@@ -4,7 +4,7 @@ from scripts.base import *
 ################################################################
 
 # SCRIPT_PATH = "./examples/help.ug"
-SCRIPT_PATH = "./examples/sinaq.ug"
+SCRIPT_PATH = "./examples/test.ug"
 # SCRIPT_PATH = "./examples/externals/yuguresh.ug"
 # SCRIPT_PATH = "./examples/features/objective.ug"
 
