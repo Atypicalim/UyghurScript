@@ -121,7 +121,7 @@ void Uyghur_runRepl(Uyghur *this)
         log_info("> * %s", UG_LANGUAGE_ARRAY[i]);
     }
     //
-    log_info("> please select:");
+    log_info("> please select a language to run program:");
     CString lang = NULL;
     while (!lang) {
         printf("> ");
@@ -135,12 +135,26 @@ void Uyghur_runRepl(Uyghur *this)
     CString *code = "";
     Value *script = _Uyghur_runScript(this, path, code);
     //
-    log_info("> please enter (%s):", lang);
+    log_info("> please end with [;] in single line:", lang);
+    String *text = String_new();
+    int line = 0;
     while (true) {
-        printf("> ");
-        char *text = system_scanf();
-        if (is_eq_string(text, "quit")) break;
-        _Uyghur_runCode(this, path, text);
+        line = line + 1;
+        if (line == 1) {
+            log_info("> please input code lines in [%s] language:", lang);
+        }
+        printf("%d > ", line);
+        char *input = system_scanf();
+        if (!is_eq_string(input, ";")) {
+            String_appendStr(text, "\n");
+            String_appendStr(text, input);
+        } else if (String_length(text) <= 0) {
+            break;
+        } else {
+            _Uyghur_runCode(this, path, String_get(text));
+            String_clear(text);
+            line = 0;
+        }
     }
     //
     log_info("> quitted!");

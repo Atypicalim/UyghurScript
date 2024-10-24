@@ -709,7 +709,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     }
     // elseif
     ifNode = Queue_NEXT(leaf->leafs);
-    while (ifNode->type == UG_ATYPE_IF_M)
+    while (ifNode && ifNode->type == UG_ATYPE_IF_M)
     {
         if (!isFinish && Executer_checkJudge(this, ifNode))
         {
@@ -722,7 +722,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         tools_assert(ifNode != NULL, LANG_ERR_EXECUTER_INVALID_IF);
     }
     // else
-    if (ifNode->type == UG_ATYPE_IF_L)
+    if (ifNode && ifNode->type == UG_ATYPE_IF_L)
     {
         Stack_RESTE(ifNode->tokens);
         Token *token = Stack_NEXT(ifNode->tokens);
@@ -738,7 +738,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
         tools_assert(ifNode != NULL, LANG_ERR_EXECUTER_INVALID_IF);
     }
     // end
-    tools_assert(ifNode->type == UG_ATYPE_END, LANG_ERR_EXECUTER_INVALID_IF);
+    tools_assert(ifNode && ifNode->type == UG_ATYPE_END, LANG_ERR_EXECUTER_INVALID_IF);
     Leaf *nullValue = Queue_NEXT(leaf->leafs);
     tools_assert(nullValue == NULL, LANG_ERR_EXECUTER_INVALID_IF);
 }
