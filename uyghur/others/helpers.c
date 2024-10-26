@@ -6,7 +6,7 @@
 #include "header.h"
 
 Queue *S2Q(int num, char *s, ...) {
-    Queue *queue = Queue_new();
+    Queue *queue = Queue_new(false);
     va_list args;
     va_start(args, s);
     int i;
@@ -182,7 +182,7 @@ Value *convert_token_to_value(Token *token)
     if (Token_isEmpty(token)) return Value_newEmpty(token);
     if (Token_isBool(token)) return Value_newBoolean(is_eq_string(token->value, TVALUE_TRUE), token);
     if (Token_isNumber(token)) return Value_newNumber(atof(token->value), token);
-    if (Token_isString(token)) return Value_newString(String_format("%s", token->value), token);
+    if (Token_isString(token)) return Value_newString(token->value, token);
     return NULL;
 }
 

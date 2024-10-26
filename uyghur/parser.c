@@ -439,7 +439,7 @@ void Parser_consumeAstCalculator(Parser *this)
     Token *tempT = NULL;
     Foliage *tempF = NULL;
     Foliage *current = NULL;
-    Stack *currents = Stack_new();
+    Stack *currents = Stack_new(true);
     Stack_push(currents, Foliage_new(NULL));
     char *lastType = NULL;
     while (true) {
@@ -515,7 +515,7 @@ void Parser_consumeAstGenerator(Parser *this)
     Parser_checkWord(this, 1, 1, TVALUE_EQUALING);
     Block *waitingKey = NULL;
     Object *current = NULL;
-    Stack *currents = Stack_new();
+    Stack *currents = Stack_new(true);
     Stack *root = NULL;
     char *lastType = NULL;
     while (true) {
@@ -525,10 +525,10 @@ void Parser_consumeAstGenerator(Parser *this)
         //
         void *box = NULL;
         if (Parser_isWord(this, 1, SIGN_OPEN_BIG)) {
-            box = Queue_new();
+            box = Queue_new(true);
             Parser_checkWord(this, 1, 1, SIGN_OPEN_BIG);
         } else if (Parser_isWord(this, 1, SIGN_OPEN_MIDDLE)) {
-            box = Stack_new();
+            box = Stack_new(true);
             Parser_checkWord(this, 1, 1, SIGN_OPEN_MIDDLE);
         }
         if (box) {

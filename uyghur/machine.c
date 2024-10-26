@@ -66,7 +66,7 @@ Array *Machine_newCacheableArray(char c) {
     Machine* this = __uyghur->machine;
     Array *arr = _machine_readFromCache(&this->cacheArr, MACHINE_CACHE_SIZE_ARR);
     if (!arr) {
-        arr = Array_new(IS_GC_COUNTING);
+        arr = Array_new(IS_RETAIN_VALUES);
     }
     #if IS_GC_LINK_LISTABLE_ARR
     Machine_tryLinkForGC(arr);
@@ -78,7 +78,7 @@ Hashmap *Machine_newCacheableHashmap(char c) {
     Machine* this = __uyghur->machine;
     Hashmap *map = _machine_readFromCache(&this->cacheMap, MACHINE_CACHE_SIZE_MAP);
     if (!map) {
-        map = Hashmap_new(IS_GC_COUNTING);
+        map = Hashmap_new(IS_RETAIN_VALUES);
     }
     #if IS_GC_LINK_DICTABLE_MAP
     Machine_tryLinkForGC(map);
@@ -190,7 +190,7 @@ void _machine_free_object(Machine *this, Object* object) {
         Value *value = object;
         if (value->type == UG_TYPE_STR) {
             // log_info("free str %p", object);
-            String_free(value->string);
+            pct_free(value->string);
         } else if (is_type_listable(value->type)) {
             #if !IS_GC_LINK_LISTABLE_ARR
             Array_free(value->arr);
@@ -316,7 +316,6 @@ void _machine_mark_value(Value *value) {
         _machine_mark_object(value);
     } else if (value->type == UG_TYPE_STR) {
         _machine_mark_object(value);
-        // _machine_mark_object(value->string);
     } else if (is_type_listable(value->type)) {
         _machine_mark_listable(value);
     } else if (is_type_dictable(value->type)) {

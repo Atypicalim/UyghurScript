@@ -47,8 +47,8 @@ Executer *Executer_new(Uyghur *uyghur)
     executer->bridge = uyghur->bridge;
     //
     Machine *machine = executer->machine;
-    machine->holders = Stack_new();
-    machine->calls = Stack_new();
+    machine->holders = Stack_new(IS_RETAIN_VALUES);
+    machine->calls = Stack_new(IS_RETAIN_VALUES);
     machine->globals = Holdable_newScope("global", NULL);
     //
     Machine_initKinds(machine);
@@ -429,10 +429,10 @@ bool Executer_calculateBooleans(Executer *this, bool left, char *sign, bool righ
     return NULL;
 }
 
-String* Executer_calculateStrings(Executer *this, String *left, char *sign, String *right, Token *token)
+CString Executer_calculateStrings(Executer *this, CString left, char *sign, CString right, Token *token)
 {
     if (is_eq_string(sign, TVALUE_SIGN_LNK)) {
-        return String_format("%s%s", left->data, right->data);
+        return tools_format("%s%s", left, right);
     }
     Executer_error(this, token, LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN);
     return NULL;
@@ -484,7 +484,7 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
             bool r = Executer_calculateBooleans(this, left->boolean, sign, right->boolean, token);
             result = Value_newBoolean(r, token);
         } else if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_STR) && lType == UG_TYPE_STR) {
-            String *r = Executer_calculateStrings(this, left->string, sign, right->string, token);
+            CString r = Executer_calculateStrings(this, left->string, sign, right->string, token);
             result = Value_newString(r, token);
         }
     } else {
@@ -496,14 +496,16 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
         bool hasNum = bLeftNum || bRightNum;
         if (hasStr && hasNum && is_eq_string(sign, TVALUE_SIGN_RPT)) {
             if (bLeftStr) {
-                String *r = String_clone(left->string);
+                String *r = String_format(left->string);
                 String_repeat(r, right->number);
-                result = Value_newString(r, token);
+                result = Value_newString(String_get(r), token);
+                String_free(r);
             }
             if (bRightStr) {
-                String *r = String_clone(right->string);
+                String *r = String_format(right->string);
                 String_repeat(r, left->number);
-                result = Value_newString(r, token);
+                result = Value_newString(String_get(r), token);
+                String_free(r);
             }
         }
     }
@@ -530,7 +532,7 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
         new = Value_newNumber(0, token);
         new->fixed = true;
     } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_STR)) {
-        new = Value_newString(String_new(), token);
+        new = Value_newString("", token);
         new->fixed = true;
     } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_LST)) {
         new = Listable_newLst(name);
@@ -584,7 +586,7 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
     {
         char line[1024];
         scanf(" %[^\n]", line);
-        Executer_setValueByToken(this, name, Value_newString(String_format("%s", line), NULL), false);
+        Executer_setValueByToken(this, name, Value_newString(line, NULL), false);
     }
 }
 
@@ -612,7 +614,7 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
             }
             else if (value->type == UG_TYPE_STR)
             {
-                r = Value_newBoolean(!is_eq_string(String_get(value->string), TVALUE_TRUE), NULL);
+                r = Value_newBoolean(!is_eq_string(value->string, TVALUE_TRUE), NULL);
             }
             else if (value->type == UG_TYPE_NIL)
             {
@@ -634,7 +636,7 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
         else if (is_eq_string(act, TVALUE_STR))
         {
             char *content = Value_toString(value);
-            r = Value_newString(String_format("%s", content), NULL);
+            r = Value_newString(content, NULL);
             pct_free(content);
         }
         else if (is_eq_string(act, TVALUE_BOL))
@@ -643,7 +645,7 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
         }
         else if (is_eq_string(act, TVALUE_WORKER) || is_eq_string(act, TVALUE_CREATOR) || is_eq_string(act, TVALUE_ASSISTER))
         {
-            char *funcName = String_get(value->string);
+            char *funcName = value->string;
             Token *funcToken = Token_name(funcName);
             // TODO: memory leak
             Value *funcValue = Executer_getValueByToken(this, funcToken, true);
@@ -798,12 +800,12 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
         }
     } else if (Value_isString(value)) {
         utf8_iter iterator;
-        utf8_init(&iterator, String_get(value->string));
+        utf8_init(&iterator, value->string);
         while (utf8_next(&iterator)) {
             Executer_pushScope(this, TVALUE_SPREAD);
             current1 = Value_newNumber(iterator.position, iter1);
             Executer_setValueByToken(this, iter1, current1, true);
-            current2 = Value_newString(String_format(utf8_getchar(&iterator)), iter2);
+            current2 = Value_newString(utf8_getchar(&iterator), iter2);
             Executer_setValueByToken(this, iter2, current2, true);
             Executer_consumeTree(this, leaf);
             Executer_popScope(this);
@@ -829,7 +831,7 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
         for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
             ptr = map->bucket[i];
             while (ptr != NULL) {
-                String *_key = String_clone(ptr->key);
+                CString _key = String_get(ptr->key);
                 Value *val = ptr->value;
                 //
                 Executer_pushScope(this, TVALUE_SPREAD);
@@ -866,8 +868,7 @@ void Executer_consumeException(Executer *this, Leaf *leaf)
     this->isCatch = false;
     Value *error = NULL;
     if (this->errorMsg != NULL) {
-        String *message = String_format("%s", this->errorMsg);
-        error = Value_newString(message, NULL);
+        error = Value_newString(this->errorMsg, NULL);
     } else {
         error = Value_newEmpty(NULL);
     }
@@ -989,7 +990,7 @@ Value *Executer_applyCreator(Executer *this, Token *token, Value *creatorValue, 
     Value *func = Executer_getValueFromContainer(this, creatorValue, Token_function());
     Executer_assert(this, Runnable_isWorker(func), token, LANG_ERR_EXECUTER_APPLY_NOT_VALID);
     //
-    Queue *parents = Queue_new();
+    Queue *parents = Queue_new(IS_RETAIN_VALUES);
     Queue_push(parents, creatorValue);
     Objective *self = Objective_newObj(NULL, parents);
     //

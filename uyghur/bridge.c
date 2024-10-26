@@ -27,7 +27,7 @@ Bridge *Bridge_new(Uyghur *uyghur)
 {
     Bridge *bridge = malloc(sizeof(Bridge));
     bridge->uyghur = uyghur;
-    bridge->stack = Stack_new();
+    bridge->stack = Stack_new(IS_RETAIN_VALUES);
     bridge->type = 0;
     bridge->last = NULL;
     return bridge;
@@ -61,7 +61,7 @@ void Bridge_pushKey(Bridge *this, char *key)
 {
     tools_assert(this->type == BRIDGE_STACK_TP_BOX, "invalid bridge status, key available for only box");
     tools_assert(this->last != BRIDGE_ITEM_TP_KEY, "invalid bridge status, key neceessary for last value");
-    Value *keyValue = Value_newString(String_format(key), NULL);
+    Value *keyValue = Value_newString(key, NULL);
     Stack_push(this->stack, keyValue);
     this->last = BRIDGE_ITEM_TP_KEY;
 }
@@ -97,7 +97,7 @@ void Bridge_pushNumber(Bridge *this, double value)
 
 void Bridge_pushString(Bridge *this, char *value)
 {
-    Bridge_pushValue(this, Value_newString(String_format(value), NULL));
+    Bridge_pushValue(this, Value_newString(value, NULL));
 }
 
 // rgister box or globals to script
@@ -123,7 +123,7 @@ void Bridge_bindNumber(Bridge *this, UG_NAMES name, double num)
 void Bridge_bindString(Bridge *this, UG_NAMES name, char *str)
 {
     Bridge_pushKey(this, name);
-    Bridge_pushValue(this, Value_newString(String_format(str), NULL));
+    Bridge_pushValue(this, Value_newString(str, NULL));
 }
 
 void Bridge_bindNative(Bridge *this, UG_NAMES name, NATIVE fun)
@@ -164,7 +164,7 @@ void Bridge_register(Bridge *this, char *boxName)
     while (value != NULL)
     {
         Value *key = Stack_pop(this->stack);
-        char *_key =  String_get(key->string);
+        char *_key =  key->string;
         helper_set_aliased_key(holdable, _key, value);
         Machine_releaseObj(key);
         value = Stack_pop(this->stack);
@@ -232,7 +232,7 @@ double Bridge_receiveNumber(Bridge *this)
 char *Bridge_receiveString(Bridge *this)
 {
     Value *v = Bridge_receiveValue(this, UG_TYPE_STR);
-    return String_get(v->string);
+    return v->string;
 }
 
 // return result to script from c
@@ -264,7 +264,7 @@ void Bridge_returnNumber(Bridge *this, double val)
 
 void Bridge_returnString(Bridge *this, char *val)
 {
-    Value *v = Value_newString(String_format(val), NULL);
+    Value *v = Value_newString(val, NULL);
     Bridge_returnValue(this, v);
 }
 

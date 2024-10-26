@@ -68,10 +68,10 @@ Value *Value_newNumber(double number, void *extra)
     return value;
 }
 
-Value *Value_newString(String *string, void *extra)
+Value *Value_newString(CString string, void *extra)
 {
     Value *value = _value_newValue(false, UG_TYPE_STR);
-    value->string = string;
+    value->string = strdup(string);
     value->extra = extra;
     return value;
 }
@@ -167,7 +167,7 @@ void Value_print(Value *this)
     }
     else if (this->type == UG_TYPE_STR)
     {
-        char *value = String_get(this->string);
+        char *value = this->string;
         printf("<V:String => v:%s p:%p>\n", value, this);
     }
     else if (is_type_listable(this->type))
@@ -210,7 +210,7 @@ char *Value_toString(Value *this)
     } if (this->type == UG_TYPE_NUM) {
         return tools_number_to_string(this->number);
     } if (this->type == UG_TYPE_STR) {
-        return String_dump(this->string);
+        return strdup(this->string);
     } if (is_type_listable(this->type)) {
         return Holdable_toString(this);
     } if (is_type_dictable(this->type)) {
@@ -235,7 +235,7 @@ Value *Value_toBoolean(Value *this)
     } else if (this->type == UG_TYPE_NUM) {
         return Value_newBoolean(this->number > 0, NULL);
     } else if (this->type == UG_TYPE_STR) {
-        return Value_newBoolean(is_eq_string(String_get(this->string), TVALUE_TRUE), NULL);
+        return Value_newBoolean(is_eq_string(this->string, TVALUE_TRUE), NULL);
     } else if (this->type == UG_TYPE_BOL) {
         Machine_retainObj(this);
         return this;
@@ -254,7 +254,7 @@ Value *Value_toNumber(Value *this)
     }
     else if (this->type == UG_TYPE_STR)
     {
-        return Value_newNumber(atof(String_get(this->string)), NULL);
+        return Value_newNumber(atof(this->string), NULL);
     }
     else if (this->type == UG_TYPE_NIL)
     {
@@ -279,7 +279,7 @@ int Value_compareTo(Value *this, Value *other)
         if (this->number > other->number) return CODE_TRUE;
         if (this->number < other->number) return CODE_FALSE;
     } else if (this->type == UG_TYPE_STR) {
-        return String_compare(this->string, other->string);
+        return strcmp(this->string, other->string);
     } else if (this->type == UG_TYPE_BOL) {
         if (this->boolean && !other->boolean) return CODE_TRUE;
         if (!this->boolean && other->boolean) return CODE_FALSE;
@@ -300,14 +300,14 @@ bool Value_isTrue(Value *this)
 
 void Value_free(Value *this)
 {
-    // char *tag = _get_cache_tag(this->type, this->boolean, this->number, String_get(this->string));
+    // char *tag = _get_cache_tag(this->type, this->boolean, this->number, this->string);
     // // printf("%s\n", tag);
     // if (tag != NULL)
     // {
     //     free(tag);
     // }
     if (this->type == UG_TYPE_STR) {
-        Machine_releaseObj(this->string);
+        pct_free(this->string);
     } else if (is_type_listable(this->type)) {
         Machine_releaseObj(this->map);
     } else if (is_type_dictable(this->type)) {

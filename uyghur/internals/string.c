@@ -97,12 +97,12 @@ void native_string_format(Bridge *bridge)
     Value *v = Bridge_receiveValue(bridge, UG_TYPE_NON);
     Value *t = Bridge_nextValue(bridge);
     tools_assert(t == NULL, "too many arguments for string format");
-    String *r = NULL;
-    if (v->type == UG_TYPE_NUM) r = String_format(f, v->number);
-    if (v->type == UG_TYPE_STR) r = String_format(f, String_get(v->string));
-    if (v->type == UG_TYPE_BOL) r = String_format(f, v->boolean);
-    if (r == NULL) r = String_format(f, v->obj);
-    Bridge_returnString(bridge, String_get(r));
+    CString r = NULL;
+    if (v->type == UG_TYPE_NUM) r = tools_format(f, v->number);
+    if (v->type == UG_TYPE_STR) r = tools_format(f, v->string);
+    if (v->type == UG_TYPE_BOL) r = tools_format(f, v->boolean);
+    if (r == NULL) r = tools_format(f, v->obj);
+    Bridge_returnString(bridge, r);
     Object_release(r);
 }
 

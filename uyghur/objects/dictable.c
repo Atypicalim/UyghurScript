@@ -39,7 +39,7 @@ void Dictable_delLocation(Dictable *this, char *key)
     Hashmap_del(this->map, key);
 }
 
-void *Dictable_getLocation(Value *this, char *key)
+Value *Dictable_getLocation(Dictable *this, char *key)
 {
     return Hashmap_get(this->map, key);
 }
@@ -56,7 +56,7 @@ bool _hashmap_set_check_dictable(Value *old, Value *new) {
     return true;
 }
 
-void Dictable_setLocation(Value *this, char *key, void *value)
+void Dictable_setLocation(Value *this, char *key, Value *value)
 {
     if (value == NULL) return Dictable_delLocation(this, key);
     // Hashmap_set(this->map, key, value);

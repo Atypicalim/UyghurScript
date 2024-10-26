@@ -15,8 +15,8 @@ Leaf *Leaf_new(char type)
     Object_init(leaf, PCT_OBJ_LEAF);
     leaf->type = type;
     leaf->parent = NULL;
-    leaf->tokens = Stack_new();
-    leaf->leafs = Queue_new();
+    leaf->tokens = Stack_new(true);
+    leaf->leafs = Queue_new(true);
     return leaf;
 }
 
