@@ -66,6 +66,8 @@ void Object_freeByType(char, void *);
 void Object_printByType(char, void *);
 #include "../../../pure-c-tools/tools.h"
 
+String *TEMPORARY_String = NULL;
+
 // 
 
 USTRING helper_translate_letter(char *);

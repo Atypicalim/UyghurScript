@@ -55,8 +55,11 @@ Executer *Executer_new(Uyghur *uyghur)
     executer->callStack = machine->calls;
     executer->globalScope = machine->globals;
     // 
+    ug_index.value = 0;
+    ug_index.freeable = false;
     ug_location.value = NULL;
     ug_location.freeable = false;
+    TEMPORARY_String = String_new();
     //
     return executer;
 }
@@ -496,16 +499,14 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
         bool hasNum = bLeftNum || bRightNum;
         if (hasStr && hasNum && is_eq_string(sign, TVALUE_SIGN_RPT)) {
             if (bLeftStr) {
-                String *r = String_format(left->string);
+                String *r = String_set(TEMPORARY_String, left->string);
                 String_repeat(r, right->number);
                 result = Value_newString(String_get(r), token);
-                String_free(r);
             }
             if (bRightStr) {
-                String *r = String_format(right->string);
+                String *r = String_set(TEMPORARY_String, right->string);
                 String_repeat(r, left->number);
                 result = Value_newString(String_get(r), token);
-                String_free(r);
             }
         }
     }
