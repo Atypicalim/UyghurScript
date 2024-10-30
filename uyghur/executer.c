@@ -800,13 +800,13 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
             if (this->errorMsg != NULL) break;
         }
     } else if (Value_isString(value)) {
-        utf8_iter iterator;
-        utf8_init(&iterator, value->string);
-        while (utf8_next(&iterator)) {
+        utf8iter_iter iterator;
+        utf8iter_init(&iterator, value->string);
+        while (utf8iter_next(&iterator)) {
             Executer_pushScope(this, TVALUE_SPREAD);
             current1 = Value_newNumber(iterator.position, iter1);
             Executer_setValueByToken(this, iter1, current1, true);
-            current2 = Value_newString(utf8_getchar(&iterator), iter2);
+            current2 = Value_newString(utf8iter_getchar(&iterator), iter2);
             Executer_setValueByToken(this, iter2, current2, true);
             Executer_consumeTree(this, leaf);
             Executer_popScope(this);

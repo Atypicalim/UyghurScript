@@ -19,8 +19,8 @@
 #include <setjmp.h>
 
 #include "utf8.h"
-#include "libs/utf8iter/utf-8.h"
-#include "libs/utf8iter/utf-8.c"
+#include "libs/utf8iter/utf8iter.h"
+#include "libs/utf8iter/utf8iter.c"
 
 // #define STDSTRING_IMPLEMENTATION
 // #include "stdstring.h"
@@ -265,8 +265,8 @@ typedef struct _Tokenizer {
     const char *code;
     Token *head;
     Token *tail;
-    utf8_iter *iterStatic;
-    utf8_iter *iterDynamic;
+    utf8iter_iter *iterStatic;
+    utf8iter_iter *iterDynamic;
 } Tokenizer;
 
 typedef struct _Parser

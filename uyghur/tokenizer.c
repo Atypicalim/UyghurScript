@@ -18,8 +18,8 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     Tokenizer *tokenizer = malloc(sizeof(Tokenizer));
     tokenizer->uyghur = uyghur;
     // iters
-    tokenizer->iterStatic = malloc(sizeof(utf8_iter));
-    tokenizer->iterDynamic = malloc(sizeof(utf8_iter));
+    tokenizer->iterStatic = malloc(sizeof(utf8iter_iter));
+    tokenizer->iterDynamic = malloc(sizeof(utf8iter_iter));
     // reset
     Tokenizer_reset(tokenizer);
     return tokenizer;
@@ -52,10 +52,10 @@ UCHAR Tokenizer_getchar(Tokenizer *this, int indent)
     this->iterDynamic->count = this->iterStatic->count;
     for (size_t i = 0; i < abs(indent); i++)
     {
-        if (indent > 0) utf8_next(this->iterDynamic);
-        if (indent < 0) utf8_previous(this->iterDynamic);
+        if (indent > 0) utf8iter_next(this->iterDynamic);
+        if (indent < 0) utf8iter_previous(this->iterDynamic);
     }
-    return utf8_getchar(this->iterDynamic);
+    return utf8iter_getchar(this->iterDynamic);
 }
 
 bool Tokenizer_isChar(Tokenizer *this, int indent, UCHAR c) {
@@ -78,7 +78,7 @@ UCHAR Tokenizer_skipN(Tokenizer *this, int n)
 {
     this->column = this->column + n;
     for (size_t i = 0; i < n; i++) {
-        utf8_next(this->iterStatic);
+        utf8iter_next(this->iterStatic);
     }
 }
 
@@ -214,11 +214,11 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
     bool isCalculator = false;
     String *scopeObject = NULL;
 
-    utf8_iter ITER;
-    utf8_init(this->iterStatic, code);
-    utf8_init(this->iterDynamic, code);
-    utf8_next(this->iterStatic);
-    utf8_next(this->iterDynamic);
+    utf8iter_iter ITER;
+    utf8iter_init(this->iterStatic, code);
+    utf8iter_init(this->iterDynamic, code);
+    utf8iter_next(this->iterStatic);
+    utf8iter_next(this->iterDynamic);
     while (this->iterStatic->next < this->iterStatic->length) {
         // 
         tempChar = Tokenizer_getchar(this, 0);
