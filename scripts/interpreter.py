@@ -160,6 +160,7 @@ bldr.start()
 task = builder.c()
 task.setName("UYGHUR")
 task.setDebug(True)
+task.setRelease(False)
 task.setInput('./main.c')
 task.setLibs([
     "incbin",

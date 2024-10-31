@@ -800,7 +800,7 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
             if (this->errorMsg != NULL) break;
         }
     } else if (Value_isString(value)) {
-        utf8iter_iter iterator;
+        UTF8Iter iterator;
         utf8iter_init(&iterator, value->string);
         while (utf8iter_next(&iterator)) {
             Executer_pushScope(this, TVALUE_SPREAD);

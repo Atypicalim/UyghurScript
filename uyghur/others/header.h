@@ -21,6 +21,8 @@
 #include "utf8.h"
 #include "libs/utf8iter/utf8iter.h"
 #include "libs/utf8iter/utf8iter.c"
+#include "libs/utf8string/utf8string.h"
+#include "libs/utf8string/utf8string.c"
 
 // #define STDSTRING_IMPLEMENTATION
 // #include "stdstring.h"
@@ -67,6 +69,8 @@ void Object_printByType(char, void *);
 #include "../../../pure-c-tools/tools.h"
 
 String *TEMPORARY_String = NULL;
+UTF8Iter *TEMPORARY_UTF8Iter = NULL;
+UTF8String *TEMPORARY_UTF8String = NULL;
 
 // 
 
@@ -265,8 +269,8 @@ typedef struct _Tokenizer {
     const char *code;
     Token *head;
     Token *tail;
-    utf8iter_iter *iterStatic;
-    utf8iter_iter *iterDynamic;
+    UTF8Iter *iterStatic;
+    UTF8Iter *iterDynamic;
 } Tokenizer;
 
 typedef struct _Parser

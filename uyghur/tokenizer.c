@@ -18,8 +18,8 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
     Tokenizer *tokenizer = malloc(sizeof(Tokenizer));
     tokenizer->uyghur = uyghur;
     // iters
-    tokenizer->iterStatic = malloc(sizeof(utf8iter_iter));
-    tokenizer->iterDynamic = malloc(sizeof(utf8iter_iter));
+    tokenizer->iterStatic = malloc(sizeof(UTF8Iter));
+    tokenizer->iterDynamic = malloc(sizeof(UTF8Iter));
     // reset
     Tokenizer_reset(tokenizer);
     return tokenizer;
@@ -214,7 +214,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
     bool isCalculator = false;
     String *scopeObject = NULL;
 
-    utf8iter_iter ITER;
+    UTF8Iter ITER;
     utf8iter_init(this->iterStatic, code);
     utf8iter_init(this->iterDynamic, code);
     utf8iter_next(this->iterStatic);

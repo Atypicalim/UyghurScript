@@ -12,8 +12,11 @@
 
 > 🛒: 
 * origin  `USTRING`
-* direction  `double`
-* num  `double`
+* fromText  `USTRING`
+* toText  `USTRING`
+* fromIndex  `double`
+* toIndex  `double`
+* replaceCount  `double`
 
 
 ### 2. replace_first
@@ -24,6 +27,8 @@
 
 > 🛒: 
 * origin  `USTRING`
+* fromText  `USTRING`
+* toText  `USTRING`
 
 
 ### 3. replace_last
@@ -34,6 +39,8 @@
 
 > 🛒: 
 * origin  `USTRING`
+* fromText  `USTRING`
+* toText  `USTRING`
 
 
 ### 4. replace_all
@@ -44,6 +51,8 @@
 
 > 🛒: 
 * origin  `USTRING`
+* fromText  `USTRING`
+* toText  `USTRING`
 
 
 ### 5. find
@@ -54,8 +63,8 @@
 
 > 🛒: 
 * origin  `USTRING`
-* from  `double`
-* to  `double`
+* fromIndex  `double`
+* toIndex  `double`
 * index  `double`
 
 
@@ -87,8 +96,8 @@
 
 > 🛒: 
 * origin  `USTRING`
-* from  `double`
-* to  `double`
+* fromIndex  `double`
+* toIndex  `double`
 
 
 ### 9. count
@@ -119,8 +128,8 @@
 > 🔙: String
 
 > 🛒: 
-* f  `USTRING`
-* v  `Value`
+* format  `USTRING`
+* value  `Value`
 
 
 ### 12. fill
@@ -130,7 +139,8 @@
 > 🔙: String
 
 > 🛒: 
-* f  `USTRING`
+* format  `USTRING`
+* value  `Value`
 
 
 ---
