@@ -1088,3 +1088,47 @@ ALIAS_control_show_label:
   uz: xat_ko'rsatish
   tr: dize_göstermek
   kz: хат_көрсету
+
+############################# voyager
+ALIAS_voyager:
+  en: voyager
+  uy: سەييەھ
+  ug: seyyah
+  uz: sayyoh
+  tr: seyyah
+  kz: сейях
+ALIAS_voyager_bring:
+  en: bring
+  uy: كۈلتۈرۈش
+  ug: kelturmek
+  uz: keltirmoq
+  tr: getirmek
+  kz: әкелу
+ALIAS_voyager_gain:
+  en: gain
+  uy: ئالماق
+  ug: almaq
+  uz: olmoq
+  tr: almak
+  kz: алу
+ALIAS_voyager_give:
+  en: give
+  uy: بەرمەك
+  ug: bermek
+  uz: bermoq
+  tr: vermek
+  kz: беру
+ALIAS_voyager_distribution:
+  en: distribution
+  uy: تارقاتماق
+  ug: tarqatmaq
+  uz: tarqatmoq
+  tr: dağıtmak
+  kz: тарату
+
+# // # as server
+# // sahibBolsun
+# // # as client
+# // mihmanBolsun
+# // # stop
+# // toxtisun
