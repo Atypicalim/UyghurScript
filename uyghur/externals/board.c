@@ -7,7 +7,7 @@
 
 Color color_from_bridge(Bridge *bridge)
 {
-    USTRING str = Bridge_receiveString(bridge);
+    CString str = Bridge_receiveString(bridge);
     int len = strlen(str);
     if (len != 6 && len != 8) return BLACK;
     int r = char_to_int(str[0]) * 16 + char_to_int(str[1]);
@@ -48,7 +48,7 @@ Texture texture_from_bridge(Bridge *bridge)
     return t;
 }
 
-Image raylib_load_image(USTRING path)
+Image raylib_load_image(CString path)
 {
     if (path == NULL || strlen(path) == 0) return defaultImage;
     Image image = LoadImage(path);
@@ -56,7 +56,7 @@ Image raylib_load_image(USTRING path)
     return image;
 }
 
-Font raylib_load_font(USTRING path, int size)
+Font raylib_load_font(CString path, int size)
 {
     if (path == NULL || strlen(path) == 0) return defaultFont;
     //
@@ -70,15 +70,15 @@ Font raylib_load_font(USTRING path, int size)
 }
 
 typedef struct ImgInfo {
-    USTRING path;
+    CString path;
     bool flipX;
     bool flipY;
     bool isGray;
 } ImgInfo;
 
 typedef struct TxtInfo {
-    USTRING path;
-    USTRING text;
+    CString path;
+    CString text;
     float size;
     float spacing;
 } TxtInfo;
@@ -294,8 +294,8 @@ void native_board_draw_polygon_stroke(Bridge *bridge)
 
 void native_board_draw_text(Bridge *bridge)
 {
-    USTRING font = Bridge_receiveString(bridge);
-    USTRING text = Bridge_receiveString(bridge);
+    CString font = Bridge_receiveString(bridge);
+    CString text = Bridge_receiveString(bridge);
     float size = Bridge_receiveNumber(bridge);
     float spacing = Bridge_receiveNumber(bridge);
     Color color = color_from_bridge(bridge);
@@ -307,8 +307,8 @@ void native_board_draw_text(Bridge *bridge)
 
 void native_board_measure_text(Bridge *bridge)
 {
-    USTRING font = Bridge_receiveString(bridge);
-    USTRING text = Bridge_receiveString(bridge);
+    CString font = Bridge_receiveString(bridge);
+    CString text = Bridge_receiveString(bridge);
     float size = Bridge_receiveNumber(bridge);
     float spacing = Bridge_receiveNumber(bridge);
     Font fnt = raylib_load_font(font, 32);
@@ -320,7 +320,7 @@ void native_board_measure_text(Bridge *bridge)
 
 void native_board_texturize_image(Bridge *bridge)
 {
-    USTRING image = Bridge_receiveString(bridge);
+    CString image = Bridge_receiveString(bridge);
     bool isGray = Bridge_receiveBoolean(bridge);
     bool flipX = Bridge_receiveBoolean(bridge);
     bool flipY = Bridge_receiveBoolean(bridge);
@@ -335,8 +335,8 @@ void native_board_texturize_image(Bridge *bridge)
 
 void native_board_texturize_text(Bridge *bridge)
 {
-    USTRING font = Bridge_receiveString(bridge);
-    USTRING text = Bridge_receiveString(bridge);
+    CString font = Bridge_receiveString(bridge);
+    CString text = Bridge_receiveString(bridge);
     float size = Bridge_receiveNumber(bridge);
     float spacing = Bridge_receiveNumber(bridge);
     //

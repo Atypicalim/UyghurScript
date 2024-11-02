@@ -14,15 +14,15 @@ double bind_time_get_seconds()
 
 void native_time_convert_to_seconds(Bridge *bridge)
 {
-    USTRING str = Bridge_receiveString(bridge);
+    CString str = Bridge_receiveString(bridge);
     Bridge_returnNumber(bridge, time_convert_to_seconds(str));
 }
 
 void native_time_convert_from_seconds(Bridge *bridge)
 {
     int seconds = Bridge_receiveNumber(bridge);
-    USTRING str = Bridge_receiveString(bridge);
-    USTRING time = time_convert_from_seconds(seconds, str);
+    CString str = Bridge_receiveString(bridge);
+    CString time = time_convert_from_seconds(seconds, str);
     Bridge_returnString(bridge, time);
     pct_free(time);
 }

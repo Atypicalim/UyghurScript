@@ -32,14 +32,14 @@ bool is_eq_to_char(char *str, char c)
     return strlen(str) == 1 && str[0] == c;
 }
 
-bool is_eq_to_uchar(char *str, UCHAR ch)
+bool is_eq_to_uchar(char *str, UTFCHAR ch)
 {
     return utf8cmp(str, ch) == 0;
 }
 
 ////////////////////////////////////////////////////////////////////////
 
-bool is_uchar_eq_char(UCHAR ch, char c) {
+bool is_uchar_eq_char(UTFCHAR ch, char c) {
     if (ch[1] != '\0') return false;
     return ch[0] == c;
 }
@@ -48,63 +48,63 @@ bool is_char_eq_char(char c1, char c2) {
     return c1 == c2;
 }
 
-bool is_uchar_eq_uchar(UCHAR ch1, UCHAR ch2) {
+bool is_uchar_eq_uchar(UTFCHAR ch1, UTFCHAR ch2) {
     return utf8cmp(ch1, ch2) == 0;
 }
 
-bool is_line(UCHAR uChar) {
+bool is_line(UTFCHAR uChar) {
     if (uChar[1] != '\0') return false;
     return uChar[0] == '\n';
 }
 
-bool is_empty(UCHAR uChar) {
+bool is_empty(UTFCHAR uChar) {
     return strlen(uChar) == 0 && uChar[0] == '\0';
 }
 
-bool is_space(UCHAR uChar) {
+bool is_space(UTFCHAR uChar) {
     if (uChar[1] != '\0') return false;
     return !!isspace(uChar[0]);
 }
 
-bool is_cntrl(UCHAR uChar) {
+bool is_cntrl(UTFCHAR uChar) {
     if (uChar[1] != '\0') return false;
     return !!iscntrl(uChar[0]);
 }
 
-bool is_alnum(UCHAR uChar) {
+bool is_alnum(UTFCHAR uChar) {
     if (uChar[1] != '\0') return false;
     return !!isalnum(uChar[0]);
 }
 
-bool is_alpha(UCHAR uChar) {
+bool is_alpha(UTFCHAR uChar) {
     if (uChar[1] != '\0') return false;
     return !!isalpha(uChar[0]);
 }
 
-bool is_digit(UCHAR uChar) {
+bool is_digit(UTFCHAR uChar) {
     if (uChar[1] != '\0') return false;
     return !!isdigit(uChar[0]);
 }
 
-int is_sign(UCHAR uChar) {
+int is_sign(UTFCHAR uChar) {
     if (uChar[1] != '\0') return false;
     char c = uChar[0];
     return isprint(c) && !isalpha(c) && !isdigit(c);
 }
 
-bool is_special(UCHAR uChar) {
+bool is_special(UTFCHAR uChar) {
     return is_space(uChar) || is_cntrl(uChar) || is_sign(uChar);
 }
 
 ////////////////////////////////////////////////////////////////////////
 
-UCHAR clone_uchar(UCHAR ch) {
+UTFCHAR clone_uchar(UTFCHAR ch) {
     char *_ch = malloc(sizeof(char) * 10);
     strcpy(_ch, ch);
     return _ch;
 }
 
-bool free_uchar(UCHAR _ch) {
+bool free_uchar(UTFCHAR _ch) {
     free(_ch);
 }
 
@@ -140,7 +140,7 @@ bool is_eq_characters(char target, int num, char *s, ...)
     return false;
 }
 
-bool is_number_begin(UCHAR c, UCHAR n)
+bool is_number_begin(UTFCHAR c, UTFCHAR n)
 {
     if (is_digit(c)) return true;
     if ((is_uchar_eq_uchar(c, SIGN_ADD) || is_uchar_eq_uchar(c, SIGN_SUB)) && is_digit(n)) return true;
@@ -148,37 +148,37 @@ bool is_number_begin(UCHAR c, UCHAR n)
 
 }
 
-bool is_number_body(UCHAR c)
+bool is_number_body(UTFCHAR c)
 {
     return is_digit(c) || is_uchar_eq_char(c, '.');
 }
 
-bool is_letter_begin(UCHAR c, UCHAR n)
+bool is_letter_begin(UTFCHAR c, UTFCHAR n)
 {
     if (!is_special(c)) return true;
     if ((is_uchar_eq_char(c, '_') || is_uchar_eq_char(c, '$')) && !is_special(n)) return true;
     return false;
 }
 
-bool is_letter_body(UCHAR c)
+bool is_letter_body(UTFCHAR c)
 {
     return !is_special(c) || is_uchar_eq_char(c, '_');
 }
 
-bool is_string_open(UCHAR c) {
+bool is_string_open(UTFCHAR c) {
     return is_uchar_eq_char(c, '"');
 }
 
-bool is_string_body(UCHAR c) {
+bool is_string_body(UTFCHAR c) {
     return !is_uchar_eq_char(c, '"');
 }
 
-bool is_string_close(UCHAR c) {
+bool is_string_close(UTFCHAR c) {
     return is_uchar_eq_char(c, '"');
 }
 
-UCHAR convert_border_pair(UCHAR c) {
-    UCHAR r = " ";
+UTFCHAR convert_border_pair(UTFCHAR c) {
+    UTFCHAR r = " ";
     switch (c[0])
     {
     case '{':
@@ -208,15 +208,15 @@ UCHAR convert_border_pair(UCHAR c) {
     return r;
 }
 
-bool is_scope_open(UCHAR c) {
+bool is_scope_open(UTFCHAR c) {
     return is_uchar_eq_char(c, '{') || is_uchar_eq_char(c, ':');
 }
 
-bool is_border_open(UCHAR c) {
+bool is_border_open(UTFCHAR c) {
     return is_uchar_eq_char(c, '{') || is_uchar_eq_char(c, '[') || is_uchar_eq_char(c, '(');
 }
 
-bool is_border_close(UCHAR c) {
+bool is_border_close(UTFCHAR c) {
     return is_uchar_eq_char(c, '}') || is_uchar_eq_char(c, ']') || is_uchar_eq_char(c, ')');
 }
 
@@ -228,12 +228,12 @@ bool can_generate_close(char *last) {
     return last == NULL || !is_eq_string(last, TVALUE_COLON);
 }
 
-bool is_equaling(UCHAR c)
+bool is_equaling(UTFCHAR c)
 {
     return is_uchar_eq_char(c, '=');
 }
 
-bool is_scope(UCHAR c)
+bool is_scope(UTFCHAR c)
 {
     return is_uchar_eq_char(c, '*') || is_uchar_eq_char(c, '+') || is_uchar_eq_char(c, '-');
 }

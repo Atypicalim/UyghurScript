@@ -29,8 +29,9 @@
 
 // 
 
-#define IS_DEVELOP false
 bool isTest = false;
+
+#define UG_IS_DEVELOP false
 #define MAX_STACK_SIZE 1000
 #define MAX_TRACE_SIZE 5
 
@@ -49,12 +50,11 @@ bool isTest = false;
 #define MACHINE_OBJECTS_EXTRA_COUNT 10000
 
 // 
+typedef const char* UTFCHAR;
+typedef const char* CName;
 typedef char* CString;
 typedef void* CPointer;
 
-typedef char* UG_NAMES;
-typedef const char* UCHAR;
-typedef const char* USTRING;
 typedef struct {
     const char* key;
     const char* val;
@@ -74,9 +74,9 @@ UTF8String *TEMPORARY_UTF8String = NULL;
 
 // 
 
-USTRING helper_translate_letter(char *);
-USTRING helper_translate_alias(char *);
-USTRING helper_translate_something(char *);
+CString helper_translate_letter(char *);
+CString helper_translate_alias(char *);
+CString helper_translate_something(char *);
 CString helper_value_to_string(CPointer, CString);
 CString helper_value_to_string_ext(CPointer, CString, CString);
 // 
@@ -312,7 +312,7 @@ typedef struct _Uyghur {
     bool running;
     Hashmap *lettersMap;
     Hashmap *wordsMap;
-    USTRING language;
+    CString language;
     Tokenizer *tokenizer;
     Parser *parser;
     Executer *executer;

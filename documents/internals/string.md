@@ -11,9 +11,9 @@
 > 🔙: String
 
 > 🛒: 
-* origin  `USTRING`
-* fromText  `USTRING`
-* toText  `USTRING`
+* origin  `CString`
+* fromText  `CString`
+* toText  `CString`
 * fromIndex  `double`
 * toIndex  `double`
 * replaceCount  `double`
@@ -26,9 +26,9 @@
 > 🔙: String
 
 > 🛒: 
-* origin  `USTRING`
-* fromText  `USTRING`
-* toText  `USTRING`
+* origin  `CString`
+* fromText  `CString`
+* toText  `CString`
 
 
 ### 3. replace_last
@@ -38,9 +38,9 @@
 > 🔙: String
 
 > 🛒: 
-* origin  `USTRING`
-* fromText  `USTRING`
-* toText  `USTRING`
+* origin  `CString`
+* fromText  `CString`
+* toText  `CString`
 
 
 ### 4. replace_all
@@ -50,9 +50,9 @@
 > 🔙: String
 
 > 🛒: 
-* origin  `USTRING`
-* fromText  `USTRING`
-* toText  `USTRING`
+* origin  `CString`
+* fromText  `CString`
+* toText  `CString`
 
 
 ### 5. find
@@ -62,7 +62,7 @@
 > 🔙: Number
 
 > 🛒: 
-* origin  `USTRING`
+* origin  `CString`
 * fromIndex  `double`
 * toIndex  `double`
 * index  `double`
@@ -75,7 +75,7 @@
 > 🔙: Number
 
 > 🛒: 
-* origin  `USTRING`
+* origin  `CString`
 
 
 ### 7. find_last
@@ -85,7 +85,7 @@
 > 🔙: Number
 
 > 🛒: 
-* origin  `USTRING`
+* origin  `CString`
 
 
 ### 8. cut
@@ -95,7 +95,7 @@
 > 🔙: String
 
 > 🛒: 
-* origin  `USTRING`
+* origin  `CString`
 * fromIndex  `double`
 * toIndex  `double`
 
@@ -107,7 +107,7 @@
 > 🔙: Number
 
 > 🛒: 
-* origin  `USTRING`
+* origin  `CString`
 
 
 ### 10. link
@@ -117,8 +117,8 @@
 > 🔙: String
 
 > 🛒: 
-* origin  `USTRING`
-* other  `USTRING`
+* origin  `CString`
+* other  `CString`
 
 
 ### 11. format
@@ -128,7 +128,7 @@
 > 🔙: String
 
 > 🛒: 
-* format  `USTRING`
+* format  `CString`
 * value  `Value`
 
 
@@ -139,7 +139,7 @@
 > 🔙: String
 
 > 🛒: 
-* format  `USTRING`
+* format  `CString`
 * value  `Value`
 
 

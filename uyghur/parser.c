@@ -521,7 +521,7 @@ void Parser_consumeAstGenerator(Parser *this)
     while (true) {
         current = currents->tail != NULL ? currents->tail->data : NULL;
         Token *token = Parser_getToken(this, 1);
-        UCHAR *value = token->value;
+        UTFCHAR *value = token->value;
         //
         void *box = NULL;
         if (Parser_isWord(this, 1, SIGN_OPEN_BIG)) {

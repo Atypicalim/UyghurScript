@@ -5,24 +5,24 @@
 // get the value of current language
 void native_get_language(Bridge *bridge)
 {
-    USTRING r = bridge->uyghur->language;
+    CString r = bridge->uyghur->language;
     Bridge_returnString(bridge, r);
 }
 
 // get the name of current language
 void native_get_name(Bridge *bridge)
 {
-    USTRING lang = bridge->uyghur->language;
+    CString lang = bridge->uyghur->language;
     int size = configs_get_size_by_name(LANG_LANGUAGE_TRANSLATION);
     PAIR_CONFIGS *conf = configs_get_conf_by_name(LANG_LANGUAGE_TRANSLATION);
-    USTRING trans = helper_filter_multilang_by_key(lang, size, conf);
+    CString trans = helper_filter_multilang_by_key(lang, size, conf);
     Bridge_returnString(bridge, trans);
 }
 
 // input a value from termial
 void native_read(Bridge *bridge)
 {
-    USTRING r = system_scanf();
+    CString r = system_scanf();
     Bridge_returnString(bridge, r);
     pct_free(r);
 }
@@ -42,9 +42,9 @@ void native_write(Bridge *bridge)
 // print trace of the func call
 void native_trace(Bridge *bridge)
 {
-    USTRING _msg = "TRACE";
+    CString _msg = "TRACE";
     if (Bridge_topType(bridge) == UG_TYPE_STR) {
-        USTRING msg = Bridge_receiveString(bridge);
+        CString msg = Bridge_receiveString(bridge);
         _msg = msg;
     }
     printf("\n[%s] %s\n", UG_TAG_LOG, _msg);
@@ -55,7 +55,7 @@ void native_trace(Bridge *bridge)
 // inport a module and return a box
 void native_import(Bridge *bridge)
 {
-    USTRING path = Bridge_receiveString(bridge);
+    CString path = Bridge_receiveString(bridge);
     Uyghur *uyghur = bridge->uyghur;
     Holdable *global = uyghur->executer->globalScope;
     Value *box = Dictable_getLocation(global, path);
@@ -67,7 +67,7 @@ void native_import(Bridge *bridge)
 // clean a module from module cache
 void native_clean(Bridge *bridge)
 {
-    USTRING path = Bridge_receiveString(bridge);
+    CString path = Bridge_receiveString(bridge);
     Dictable_delLocation(bridge->uyghur->executer->globalScope, path);
     Bridge_returnEmpty(bridge);
 }

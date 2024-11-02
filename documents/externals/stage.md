@@ -52,7 +52,7 @@
 > 🛒: 
 * w  `int`
 * h  `int`
-* title  `USTRING`
+* title  `CString`
 * mode  `int`
 
 
@@ -153,7 +153,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* path  `USTRING`
+* path  `CString`
 
 
 ### 17. set_position
@@ -243,7 +243,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* c  `USTRING`
+* c  `CString`
 
 
 ### 26. get_clipboard
@@ -330,7 +330,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* path  `USTRING`
+* path  `CString`
 
 
 ### 35. audio_set_volume

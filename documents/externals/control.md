@@ -12,7 +12,7 @@
 
 > 🛒: 
 * rectangle  `Rectangle`
-* text  `USTRING`
+* text  `CString`
 
 
 ### 2. show_label
@@ -23,7 +23,7 @@
 
 > 🛒: 
 * rectangle  `Rectangle`
-* text  `USTRING`
+* text  `CString`
 
 
 ---

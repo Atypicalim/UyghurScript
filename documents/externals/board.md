@@ -229,8 +229,8 @@
 > 🔙: Empty
 
 > 🛒: 
-* font  `USTRING`
-* text  `USTRING`
+* font  `CString`
+* text  `CString`
 * size  `float`
 * spacing  `float`
 * color  `Color`
@@ -244,8 +244,8 @@
 > 🔙: Number
 
 > 🛒: 
-* font  `USTRING`
-* text  `USTRING`
+* font  `CString`
+* text  `CString`
 * size  `float`
 * spacing  `float`
 
@@ -257,7 +257,7 @@
 > 🔙: Value
 
 > 🛒: 
-* image  `USTRING`
+* image  `CString`
 * isGray  `bool`
 * flipX  `bool`
 * flipY  `bool`
@@ -270,8 +270,8 @@
 > 🔙: Value
 
 > 🛒: 
-* font  `USTRING`
-* text  `USTRING`
+* font  `CString`
+* text  `CString`
 * size  `float`
 * spacing  `float`
 

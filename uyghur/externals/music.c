@@ -5,7 +5,7 @@
 
 // tool
 
-Music *raylib_load_music_by_path(USTRING path)
+Music *raylib_load_music_by_path(CString path)
 {
     Music m = LoadMusicStream(path);
     Music *music = (Music *)malloc(sizeof(m));
@@ -35,7 +35,7 @@ Music music_from_bridge(Bridge *bridge)
 
 void native_music_load(Bridge *bridge)
 {
-    USTRING path = Bridge_receiveString(bridge);
+    CString path = Bridge_receiveString(bridge);
     Music *music = raylib_load_music_by_path(path);
     Loadable *loadable = Loadable_newResource(music, ALIAS_music, path, _raylib_release_music);
     Bridge_returnValue(bridge, loadable);

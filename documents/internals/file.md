@@ -11,8 +11,8 @@
 > 🔙: Boolean
 
 > 🛒: 
-* path  `USTRING`
-* content  `USTRING`
+* path  `CString`
+* content  `CString`
 
 
 ### 2. read
@@ -22,7 +22,7 @@
 > 🔙: String
 
 > 🛒: 
-* path  `USTRING`
+* path  `CString`
 
 
 ### 3. copy
@@ -32,8 +32,8 @@
 > 🔙: Boolean
 
 > 🛒: 
-* from  `USTRING`
-* to  `USTRING`
+* from  `CString`
+* to  `CString`
 
 
 ### 4. rename
@@ -43,8 +43,8 @@
 > 🔙: Number
 
 > 🛒: 
-* from  `USTRING`
-* to  `USTRING`
+* from  `CString`
+* to  `CString`
 
 
 ### 5. remove
@@ -54,7 +54,7 @@
 > 🔙: Number
 
 > 🛒: 
-* path  `USTRING`
+* path  `CString`
 
 
 ### 6. exist
@@ -64,7 +64,7 @@
 > 🔙: Boolean
 
 > 🛒: 
-* path  `USTRING`
+* path  `CString`
 
 
 ### 7. is_file
@@ -74,7 +74,7 @@
 > 🔙: Boolean
 
 > 🛒: 
-* path  `USTRING`
+* path  `CString`
 
 
 ### 8. is_directory
@@ -84,7 +84,7 @@
 > 🔙: Boolean
 
 > 🛒: 
-* path  `USTRING`
+* path  `CString`
 
 
 ### 9. create_directory
@@ -94,7 +94,7 @@
 > 🔙: Number
 
 > 🛒: 
-* path  `USTRING`
+* path  `CString`
 
 
 ---

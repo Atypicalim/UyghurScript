@@ -11,7 +11,7 @@
 > 🔙: Value
 
 > 🛒: 
-* path  `USTRING`
+* path  `CString`
 
 
 ### 2. unload

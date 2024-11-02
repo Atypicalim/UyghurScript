@@ -30,7 +30,7 @@
 > 🔙: String
 
 > 🛒: 
-* command  `USTRING`
+* command  `CString`
 
 
 ### 4. set_env
@@ -40,8 +40,8 @@
 > 🔙: Empty
 
 > 🛒: 
-* name  `USTRING`
-* value  `USTRING`
+* name  `CString`
+* value  `CString`
 
 
 ### 5. get_env
@@ -51,7 +51,7 @@
 > 🔙: String
 
 > 🛒: 
-* name  `USTRING`
+* name  `CString`
 
 
 ---

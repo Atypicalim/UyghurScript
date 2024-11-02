@@ -121,32 +121,32 @@ void helper_print_btree(Foliage *root, char *_space)
     printf("%s[BTREE]\n", space);
 }
 
-bool is_calculator_common(UCHAR c)
+bool is_calculator_common(UTFCHAR c)
 {
     return is_eq_strings(c, TVAUE_GROUP_CALCULATION_ALL);
 }
 
-bool is_calculation_number(UCHAR c)
+bool is_calculation_number(UTFCHAR c)
 {
     return is_eq_strings(c, TVAUE_GROUP_CALCULATION_NUM);
 }
 
-bool is_calculation_bool(UCHAR c)
+bool is_calculation_bool(UTFCHAR c)
 {
     return is_eq_strings(c, TVAUE_GROUP_CALCULATION_BOL);
 }
 
-bool is_calculation_string(UCHAR c)
+bool is_calculation_string(UTFCHAR c)
 {
     return is_eq_strings(c, TVAUE_GROUP_CALCULATION_STR);
 }
 
-bool is_calculation_logicals(UCHAR c)
+bool is_calculation_logicals(UTFCHAR c)
 {
     return is_eq_strings(c, TVAUE_GROUP_CALCULATION_ALL) || is_eq_strings(c, TVAUE_GROUP_CALCULATION_BOL);
 }
 
-bool is_calculation_char(UCHAR c)
+bool is_calculation_char(UTFCHAR c)
 {
     return is_calculator_common(c) || is_calculation_number(c) || is_calculation_bool(c) || is_calculation_string(c);
 }
@@ -320,7 +320,7 @@ void Object_printByType(char type, void *object)
     pct_object_print(object);
 }
 
-USTRING _helper_translate_letter(char *letter, char *def) {
+CString _helper_translate_letter(char *letter, char *def) {
     char *lang = __uyghur->language;
     int size = letters_get_size_by_name(letter);
     const PAIR_LETTERS* pairs = letters_get_conf_by_name(letter);
@@ -331,11 +331,11 @@ USTRING _helper_translate_letter(char *letter, char *def) {
     return def;
 }
 
-USTRING helper_translate_letter(char *letter) {
+CString helper_translate_letter(char *letter) {
     return _helper_translate_letter(letter, letter);
 }
 
-USTRING _helper_translate_alias(char *alias, char *def) {
+CString _helper_translate_alias(char *alias, char *def) {
     char *lang = __uyghur->language;
     int size = aliases_get_size_by_name(alias);
     const PAIR_ALIASES* pairs = aliases_get_conf_by_name(alias);
@@ -346,11 +346,11 @@ USTRING _helper_translate_alias(char *alias, char *def) {
     return def;
 }
 
-USTRING helper_translate_alias(char *alias) {
+CString helper_translate_alias(char *alias) {
     return _helper_translate_alias(alias, alias);
 }
 
-USTRING helper_translate_something(char *something) {
+CString helper_translate_something(char *something) {
     char *_something = NULL;
     if (_something == NULL) _something = _helper_translate_letter(something, NULL);
     if (_something == NULL) _something = _helper_translate_alias(something, NULL);
@@ -358,7 +358,7 @@ USTRING helper_translate_something(char *something) {
     return _something;
 }
 
-USTRING helper_parse_language(char *path) {
+CString helper_parse_language(char *path) {
     int size = UG_LANGUAGE_COUNT;
     for (size_t i = 0; i < size; i++)
     {

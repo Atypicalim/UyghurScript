@@ -108,25 +108,25 @@ void Bridge_startBox(Bridge *this)
     this->type = BRIDGE_STACK_TP_BOX;
 }
 
-void Bridge_bindBoolean(Bridge *this, UG_NAMES name, bool bol)
+void Bridge_bindBoolean(Bridge *this, CName name, bool bol)
 {
     Bridge_pushKey(this, name);
     Bridge_pushValue(this, Value_newBoolean(bol, NULL));
 }
 
-void Bridge_bindNumber(Bridge *this, UG_NAMES name, double num)
+void Bridge_bindNumber(Bridge *this, CName name, double num)
 {
     Bridge_pushKey(this, name);
     Bridge_pushValue(this, Value_newNumber(num, NULL));
 }
 
-void Bridge_bindString(Bridge *this, UG_NAMES name, char *str)
+void Bridge_bindString(Bridge *this, CName name, char *str)
 {
     Bridge_pushKey(this, name);
     Bridge_pushValue(this, Value_newString(str, NULL));
 }
 
-void Bridge_bindNative(Bridge *this, UG_NAMES name, NATIVE fun)
+void Bridge_bindNative(Bridge *this, CName name, NATIVE fun)
 {
     Bridge_pushKey(this, name);
     Token *token = Token_new(UG_TTYPE_NAM, name);
@@ -136,7 +136,7 @@ void Bridge_bindNative(Bridge *this, UG_NAMES name, NATIVE fun)
     Bridge_pushValue(this, Runnable_newNative(fun, name));
 }
 
-void Bridge_bindNativeExt(Bridge *this, UG_NAMES name, NATIVE fun, CString file, int line)
+void Bridge_bindNativeExt(Bridge *this, CName name, NATIVE fun, CString file, int line)
 {
     Bridge_pushKey(this, name);
     Token *token = Token_new(UG_TTYPE_NAM, name);

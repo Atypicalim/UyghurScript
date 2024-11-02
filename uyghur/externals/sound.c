@@ -5,7 +5,7 @@
 
 // tool
 
-Sound *raylib_load_sound_by_path(USTRING path)
+Sound *raylib_load_sound_by_path(CString path)
 {
     Sound s = LoadSound(path);
     Sound *sound = (Sound *)malloc(sizeof(s));
@@ -35,7 +35,7 @@ Sound sound_from_bridge(Bridge *bridge)
 
 void native_sound_load(Bridge *bridge)
 {
-    USTRING path = Bridge_receiveString(bridge);
+    CString path = Bridge_receiveString(bridge);
     Sound *sound = raylib_load_sound_by_path(path);
     Loadable *loadable = Loadable_newResource(sound, ALIAS_sound, path, _raylib_release_sound);
     Bridge_returnValue(bridge, loadable);

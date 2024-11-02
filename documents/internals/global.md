@@ -47,7 +47,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* msg  `USTRING`
+* msg  `CString`
 
 
 ### 6. import
@@ -57,7 +57,7 @@
 > 🔙: Value
 
 > 🛒: 
-* path  `USTRING`
+* path  `CString`
 
 
 ### 7. clean
@@ -67,7 +67,7 @@
 > 🔙: Empty
 
 > 🛒: 
-* path  `USTRING`
+* path  `CString`
 
 
 ### 8. sweep

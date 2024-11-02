@@ -2,7 +2,7 @@
 
 ### 1. Types
 
-* USTRING
+* CString
 * float
 * int
 * Color

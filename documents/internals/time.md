@@ -29,7 +29,7 @@
 > 🔙: Number
 
 > 🛒: 
-* str  `USTRING`
+* str  `CString`
 
 
 ### 4. convert_from_seconds
@@ -40,7 +40,7 @@
 
 > 🛒: 
 * seconds  `int`
-* str  `USTRING`
+* str  `CString`
 
 
 ### 5. get_time

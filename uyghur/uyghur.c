@@ -68,11 +68,11 @@ Value *_Uyghur_runScript(Uyghur *this, char *path, char *code) {
     if (path == NULL) path = UG_SCRIPT_NAME;
     //
     log_warn("uyghur.run: %s", path);
-    USTRING lang = helper_parse_language(path);
+    CString lang = helper_parse_language(path);
     tools_assert(lang != NULL, "invalid lang for path:[%s]", path);
     log_warn("uyghur.lang: %s", lang);
     helper_add_languages(this, lang);
-    if (!IS_DEVELOP) {
+    if (!UG_IS_DEVELOP) {
         helper_set_languages(this, lang);
     }
     //
