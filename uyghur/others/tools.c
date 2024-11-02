@@ -251,7 +251,11 @@ bool is_type_complex(char tp) {
 
 bool is_bridge_type(char tp)
 {
-    return is_type_simple(tp) || is_type_complex(tp) || tp == UG_TYPE_WKR || tp == UG_TYPE_RSR;
+    return is_type_simple(tp)
+    || is_type_complex(tp)
+    || tp == UG_TYPE_WKR
+    || tp == UG_TYPE_RSR
+    || tp == UG_TYPE_TSK;
 }
 
 bool is_type_listable(char tp) {
@@ -308,6 +312,7 @@ char* get_value_name(char tp, char* def) {
         case UG_TYPE_WKR: name = TVALUE_WORKER;  break;
         //
         case UG_TYPE_RSR: name = TVALUE_RESOURCE;  break;
+        case UG_TYPE_TSK: name = TVALUE_TASK;  break;
         //
         default: name = def;
     }

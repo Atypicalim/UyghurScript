@@ -256,6 +256,13 @@ TVALUE_RESOURCE:
   uz: ashyo
   tr: eşya
   kz: ресурс
+TVALUE_TASK:
+  en: task
+  uy: ۋەزىپە
+  ug: vezipe
+  uz: vazifa
+  tr: vazife
+  kz: вәзипа
 #
 TVALUE_CONTENT:
   en: content

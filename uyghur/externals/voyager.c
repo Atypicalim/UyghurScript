@@ -6,8 +6,10 @@
 void native_voyager_gain(Bridge *bridge)
 {
     CString toUrl = Bridge_receiveString(bridge);
-    Value *callback = Bridge_receiveValue(bridge, UG_TYPE_WKR);
-    Bridge_returnEmpty(bridge);
+
+    Waitable *task = Waitable_newTask(NULL, "http.get", toUrl, NULL);
+
+    Bridge_returnValue(bridge, task);
 }
 
 // do http post request
