@@ -283,6 +283,10 @@ bool is_type_loadable(char tp) {
     return tp == UG_TYPE_RSR;
 }
 
+bool is_type_waitable(char tp) {
+    return tp == UG_TYPE_TSK;
+}
+
 char* get_value_name(char tp, char* def) {
     char *name = NULL;
     switch (tp) {

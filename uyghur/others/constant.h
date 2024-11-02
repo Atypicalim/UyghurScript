@@ -19,6 +19,7 @@
 #define UG_TYPE_SCP 's'
 #define UG_TYPE_MDL 'm'
 #define UG_TYPE_RSR 'r'
+#define UG_TYPE_TSK 't'
 
 // char values
 #define CHAR_EMPTY ' '

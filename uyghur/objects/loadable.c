@@ -4,8 +4,8 @@
 #include "../others/header.h"
 #endif
 
-#ifndef H_UG_STORABLE
-#define H_UG_STORABLE
+#ifndef H_UG_LOADABLE
+#define H_UG_LOADABLE
 
 Loadable *Loadable_new(char tp, Token *token)
 {

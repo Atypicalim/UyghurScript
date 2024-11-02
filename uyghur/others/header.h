@@ -240,6 +240,18 @@ void Loadable_print(Loadable *);
 
 typedef void (*LOADABLE_RELEASE_FUNC)(void *);
 
+// waitable
+
+typedef struct _Waitable {
+    struct _Value;
+} Waitable;
+
+Waitable *Waitable_new(char, Token*);
+char *Waitable_toString(Waitable *);
+void Waitable_print(Waitable *);
+
+typedef void (*WAITABLE_RELEASE_FUNC)(void *);
+
 // 
 
 void Runtime_error(char *);
@@ -386,6 +398,7 @@ void Debug_assert(Uyghur *);
 #include "../objects/holdable.c"
 #include "../objects/objective.c"
 #include "../objects/loadable.c"
+#include "../objects/waitable.c"
 
 #include "helpers.c"
 

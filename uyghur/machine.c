@@ -218,6 +218,11 @@ void _machine_free_object(Machine *this, Object* object) {
             if (func != NULL) {
                 func(value);
             }
+        } else if (is_type_waitable(value->type)) {
+            WAITABLE_RELEASE_FUNC func = value->linka;
+            if (func != NULL) {
+                func(value);
+            }
         }
         Machine_freeCacheableValue(value);
     } else if (object->objType == PCT_OBJ_ARRAY) {
@@ -306,6 +311,8 @@ void _machine_mark_listable(Listable *);
 void _machine_mark_dictable(Dictable *);
 void _machine_mark_holdable(Holdable *);
 void _machine_mark_objective(Objective *);
+void _machine_mark_loadable(Loadable *);
+void _machine_mark_waitable(Waitable *);
 void _machine_mark_hashkey(Hashkey *, void *);
 void _machine_mark_value(Value *);
 
@@ -327,7 +334,9 @@ void _machine_mark_value(Value *value) {
     } else if (is_type_runnable(value->type)) {
         _machine_mark_object(value);
     } else if (is_type_loadable(value->type)) {
-        _machine_mark_object(value);
+        _machine_mark_loadable(value);
+    } else if (is_type_waitable(value->type)) {
+        _machine_mark_waitable(value);
     } else {
         log_warn("value type not registered for marking");
         Value_print(value);
@@ -391,6 +400,15 @@ void _machine_mark_objective(Objective *objective) {
             }
         }
     }
+}
+
+void _machine_mark_loadable(Loadable *loadable) {
+    _machine_mark_object(loadable);
+}
+
+void _machine_mark_waitable(Waitable *waitable) {
+    _machine_mark_object(waitable);
+    _machine_mark_value(waitable->obj);
 }
 
 void _machine_mark_hstack(void *ptr, void *other) {

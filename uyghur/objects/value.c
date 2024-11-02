@@ -136,6 +136,11 @@ bool Value_isLoadable(Value *this)
     return this != NULL && is_type_loadable(this->type);
 }
 
+bool Value_isWaitable(Value *this)
+{
+    return this != NULL && is_type_waitable(this->type);
+}
+
 bool Value_isSimple(Value *this)
 {
     return this != NULL && is_type_simple(this->type);
@@ -194,6 +199,10 @@ void Value_print(Value *this)
     {
         Loadable_print(this);
     }
+    else if (is_type_waitable(this->type))
+    {
+        Waitable_print(this);
+    }
     else
     {
         printf("<Value => t:%c p:%p>\n", this->type, this);
@@ -223,6 +232,8 @@ char *Value_toString(Value *this)
         return Runnable_toString(this);
     } if (is_type_loadable(this->type)) {
         return Loadable_toString(this);
+    } if (is_type_waitable(this->type)) {
+        return Waitable_toString(this);
     } else {
         return tools_format("<Object %p p:%p t:%c>", this, this->obj, this->type);
     } 
