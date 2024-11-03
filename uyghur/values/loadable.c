@@ -16,20 +16,20 @@ Loadable *Loadable_new(char tp, Token *token)
     return loadable;
 }
 
-Loadable *Loadable_newResource(void *data, CString name, CString path, CPointer releaser)
+Loadable *Loadable_newStuf(void *data, CString name, CString path, CPointer releaser)
 {
     char *_name = helper_translate_something(name);
     Token *token = Token_new(UG_TTYPE_NAM, _name);
-    Loadable *loadable = Loadable_new(UG_TYPE_RSR, token);
+    Loadable *loadable = Loadable_new(UG_TYPE_STF, token);
     loadable->obj = data;
     loadable->extra = path;
     loadable->linka = releaser;
     return loadable;
 }
 
-bool Loadable_isResource(Loadable *this)
+bool Loadable_isStuf(Loadable *this)
 {
-    return this != NULL && this->type == UG_TYPE_RSR;
+    return this != NULL && this->type == UG_TYPE_STF;
 }
 
 char *Loadable_toString(Loadable *this)

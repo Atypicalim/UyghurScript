@@ -26,6 +26,28 @@ ALIAS_unload: &__unload
   tr: boşaltmak
   kz: босату
 
+ALIAS_start: &__start
+  en: start
+  uy: باشلاش
+  ug: bashlash
+  uz: boshlash
+  tr: başlamak
+  kz: бастау
+ALIAS_stop: &__stop
+  en: stop
+  uy: توختىتىش
+  ug: toxtitish
+  uz: to'xtatish
+  tr: durdurmak
+  kz: тоқтату
+ALIAS_is_working: &__working
+  en: is_working
+  uy: ئىشلەۋاتامدۇ
+  ug: ishlewatamdu
+  uz: ishlavotommi
+  tr: çalışıyormu
+  kz: істептырбу
+
 ############################# global
 # information
 ALIAS_get_language:
@@ -339,6 +361,33 @@ ALIAS_list_count:
 ############################# dict
 ALIAS_dict_count:
   en: count
+
+############################# stuf
+
+ALIAS_stuf_place:
+  en: get_place
+  uy: ئورنىنى_ئېلىش
+  ug: ornini_elish
+  uz: joyini_olish
+  tr: yerini_almak
+  kz: орнын_алу
+ALIAS_stuf_type:
+  en: get_type
+  uy: تۈرىنى_ئېلىش
+  ug: turini_elish
+  uz: turini_olish
+  tr: türünü_almak
+  kz: түрін_алу
+
+
+############################# task
+
+ALIAS_task_start:
+  <<: *__start
+ALIAS_task_stop:
+  <<: *__stop
+ALIAS_task_working:
+  <<: *__working
 
 ############################# time
 ALIAS_time:
@@ -950,13 +999,6 @@ ALIAS_play: &__play
   uz: o'ynatish
   tr: çalmak
   kz: ойнау
-ALIAS_stop: &__stop
-  en: stop
-  uy: توختىتىش
-  ug: toxtitish
-  uz: to'xtatish
-  tr: durdur
-  kz: тоқтату
 ALIAS_pause: &__pause
   en: pause
   uy: تۇرغۇزۇش
@@ -1100,28 +1142,21 @@ ALIAS_voyager:
 ALIAS_voyager_bring:
   en: bring
   uy: كۈلتۈرۈش
-  ug: kelturmek
+  ug: kelturush
   uz: keltirmoq
   tr: getirmek
   kz: әкелу
-ALIAS_voyager_gain:
-  en: gain
-  uy: ئالماق
-  ug: almaq
-  uz: olmoq
-  tr: almak
-  kz: алу
-ALIAS_voyager_give:
-  en: give
-  uy: بەرمەك
-  ug: bermek
-  uz: bermoq
-  tr: vermek
-  kz: беру
-ALIAS_voyager_distribution:
-  en: distribution
-  uy: تارقاتماق
-  ug: tarqatmaq
+ALIAS_voyager_request:
+  en: request
+  uy: يوللاش
+  ug: yollash
+  uz: yo'llash
+  tr: yollamak
+  kz: жоllау
+ALIAS_voyager_distrubute:
+  en: distrubute
+  uy: تارقىتىش
+  ug: tarqitish
   uz: tarqatmoq
   tr: dağıtmak
   kz: тарату

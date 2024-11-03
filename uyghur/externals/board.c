@@ -42,7 +42,7 @@ void _raylib_release_texture(Loadable *loadable) {
 
 Texture texture_from_bridge(Bridge *bridge)
 {
-    Loadable *loadable = Bridge_receiveValue(bridge, UG_TYPE_RSR);
+    Loadable *loadable = Bridge_receiveValue(bridge, UG_TYPE_STF);
     Texture *texture = loadable->obj;
     Texture t = texture != NULL ? texture[0] : defaultTexture;
     return t;
@@ -327,7 +327,7 @@ void native_board_texturize_image(Bridge *bridge)
     //
     ImgInfo info = (ImgInfo) {image, flipX, flipY, isGray};
     Texture *texture = raylib_texturize_image(info);
-    Loadable *loadable = Loadable_newResource(texture, ALIAS_texture, image, _raylib_release_texture);
+    Loadable *loadable = Loadable_newStuf(texture, ALIAS_texture, image, _raylib_release_texture);
     Bridge_returnValue(bridge, loadable);
 }
 
@@ -342,7 +342,7 @@ void native_board_texturize_text(Bridge *bridge)
     //
     TxtInfo info = (TxtInfo) {font, text, size, spacing};
     Texture *texture = raylib_texturize_text(info);
-    Loadable *loadable = Loadable_newResource(texture, ALIAS_texture, font, _raylib_release_texture);
+    Loadable *loadable = Loadable_newStuf(texture, ALIAS_texture, font, _raylib_release_texture);
     Bridge_returnValue(bridge, loadable);
 }
 

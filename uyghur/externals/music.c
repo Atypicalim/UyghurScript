@@ -25,7 +25,7 @@ void _raylib_release_music(Loadable *loadable) {
 
 Music music_from_bridge(Bridge *bridge)
 {
-    Loadable *loadable = Bridge_receiveValue(bridge, UG_TYPE_RSR);
+    Loadable *loadable = Bridge_receiveValue(bridge, UG_TYPE_STF);
     Music *music = loadable->obj;
     Music m = music != NULL ? music[0] : defaulMusic;
     return m;
@@ -37,7 +37,7 @@ void native_music_load(Bridge *bridge)
 {
     CString path = Bridge_receiveString(bridge);
     Music *music = raylib_load_music_by_path(path);
-    Loadable *loadable = Loadable_newResource(music, ALIAS_music, path, _raylib_release_music);
+    Loadable *loadable = Loadable_newStuf(music, ALIAS_music, path, _raylib_release_music);
     Bridge_returnValue(bridge, loadable);
 }
 

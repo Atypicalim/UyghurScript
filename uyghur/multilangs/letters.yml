@@ -249,8 +249,8 @@ TVALUE_OBJECT:
   tr: obekit
   kz: объект
 #
-TVALUE_RESOURCE:
-  en: resource
+TVALUE_STUF:
+  en: stuf
   uy: ئەشيا
   ug: eshya
   uz: ashyo
@@ -263,6 +263,20 @@ TVALUE_TASK:
   uz: vazifa
   tr: vazife
   kz: вәзипа
+TVALUE_EXT:
+  en: extend
+  uy: قوشۇمچە
+  ug: qoshumche
+  uz: qo'shimcha
+  tr: katılma
+  kz: қосымша
+TVALUE_COMON:
+  en: common
+  uy: ئورتاق
+  ug: ortaq
+  uz: O'rtoq
+  tr: ortak
+  kz: ортақ
 #
 TVALUE_CONTENT:
   en: content

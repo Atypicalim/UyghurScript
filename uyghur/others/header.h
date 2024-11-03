@@ -141,6 +141,7 @@ typedef struct _Value {
     struct _Object;
     char type;
     Token *token;
+    void *proxy;
     void *linka;
     void *extra;
     bool fixed;
@@ -340,6 +341,8 @@ struct Machine {
     Holdable *kindStr;
     Holdable *kindList;
     Holdable *kindDict;
+    Holdable *proxStuf;
+    Holdable *proxTask;
     int numObjects;
     int maxObjects;
     Object *cacheMap;
@@ -392,13 +395,13 @@ void Debug_assert(Uyghur *);
 ////////////////////////////////////////////////////////////////////////////
 
 #include "../objects/value.c"
-#include "../objects/runnable.c"
-#include "../objects/listable.c"
-#include "../objects/dictable.c"
-#include "../objects/holdable.c"
-#include "../objects/objective.c"
-#include "../objects/loadable.c"
-#include "../objects/waitable.c"
+#include "../values/runnable.c"
+#include "../values/listable.c"
+#include "../values/dictable.c"
+#include "../values/holdable.c"
+#include "../values/objective.c"
+#include "../values/loadable.c"
+#include "../values/waitable.c"
 
 #include "helpers.c"
 

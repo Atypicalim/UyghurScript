@@ -3,13 +3,12 @@
 #ifndef H_LIB_EXTERNAL_HEADER
 #define H_LIB_EXTERNAL_HEADER
 
-Hashmap *resourcesMap;
-
 #include "../../build/bind/externals/stage.c"
 #include "../../build/bind/externals/board.c"
 #include "../../build/bind/externals/music.c"
 #include "../../build/bind/externals/sound.c"
 #include "../../build/bind/externals/control.c"
+#include "../../build/bind/externals/voyager.c"
 
 
 void cFuncTest(Bridge *bridge)
@@ -56,13 +55,12 @@ void lib_test_call(Bridge *bridge)
 void register_external_libraries(Bridge *bridge)
 {
     //
-    resourcesMap = Hashmap_new(false);
-    //
     lib_stage_register(bridge);
     lib_board_register(bridge);
     lib_music_register(bridge);
     lib_sound_register(bridge);
     lib_control_register(bridge);
+    lib_voyager_register(bridge);
 }
 
 #endif

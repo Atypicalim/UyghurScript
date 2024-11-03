@@ -153,7 +153,10 @@ void Bridge_register(Bridge *this, char *boxName)
     Machine *machine = this->uyghur->machine;
     Holdable *global = this->uyghur->executer->globalScope;
     // 
-    Holdable *holdable = boxName == NULL ? global : Machine_readKind(machine, boxName);
+    Holdable *holdable = NULL;
+    if (holdable == NULL && boxName == NULL) holdable = global;
+    if (holdable == NULL) holdable = Machine_readKind(machine, boxName);
+    if (holdable == NULL) holdable = Machine_readProxy(machine, boxName);
     if (holdable == NULL) {
         holdable = Holdable_newProxy(boxName);
         Machine_retainObj(holdable);

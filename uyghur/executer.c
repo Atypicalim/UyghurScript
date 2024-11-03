@@ -52,6 +52,7 @@ Executer *Executer_new(Uyghur *uyghur)
     machine->globals = Holdable_newScope("global", NULL);
     //
     Machine_initKinds(machine);
+    Machine_initProxies(machine);
     executer->callStack = machine->calls;
     executer->globalScope = machine->globals;
     // 
@@ -227,6 +228,12 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
     if (Value_isString(*rContainer) || *rContainer == (Value *)this->machine->kindStr) {
         Executer_assert(this, key != NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
         *rValue = Dictable_getLocation(this->machine->kindStr, key);
+        return;
+    }
+    // prox
+    if (*rContainer != NULL && (*rContainer)->proxy != NULL) {
+        Executer_assert(this, key != NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
+        *rValue = Dictable_getLocation((*rContainer)->proxy, key);
         return;
     }
     // list
@@ -1019,6 +1026,10 @@ Value *Executer_applyNative(Executer *this, Token *token, Value *nativeValue, Ho
 {
     Bridge *bridge = this->uyghur->bridge;
     Bridge_startArgument(bridge);
+    //
+    if (container != NULL && container->proxy != NULL) {
+        Bridge_pushValue(bridge, container);
+    }
     // 
     Stack_RESTE(this->callStack);
     Value *value = Stack_NEXT(this->callStack);

@@ -18,7 +18,7 @@
 #define UG_TYPE_PXY 'p'
 #define UG_TYPE_SCP 's'
 #define UG_TYPE_MDL 'm'
-#define UG_TYPE_RSR 'r'
+#define UG_TYPE_STF 'f'
 #define UG_TYPE_TSK 't'
 
 // char values
@@ -271,3 +271,5 @@ const UG_PAIRS UG_WORDS_MAP[] = {
 #define ALIAS_string TVALUE_STR
 #define ALIAS_list TVALUE_LST
 #define ALIAS_dict TVALUE_DCT
+#define ALIAS_stuf TVALUE_STUF
+#define ALIAS_task TVALUE_TASK

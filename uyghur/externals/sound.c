@@ -25,7 +25,7 @@ void _raylib_release_sound(Loadable *loadable) {
 
 Sound sound_from_bridge(Bridge *bridge)
 {
-    Loadable *loadable = Bridge_receiveValue(bridge, UG_TYPE_RSR);
+    Loadable *loadable = Bridge_receiveValue(bridge, UG_TYPE_STF);
     Sound *sound = loadable->obj;
     Sound s = sound != NULL ? sound[0] : defaulSound;
     return s;
@@ -37,7 +37,7 @@ void native_sound_load(Bridge *bridge)
 {
     CString path = Bridge_receiveString(bridge);
     Sound *sound = raylib_load_sound_by_path(path);
-    Loadable *loadable = Loadable_newResource(sound, ALIAS_sound, path, _raylib_release_sound);
+    Loadable *loadable = Loadable_newStuf(sound, ALIAS_sound, path, _raylib_release_sound);
     Bridge_returnValue(bridge, loadable);
 }
 

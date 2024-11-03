@@ -36,6 +36,65 @@ Machine *Machine_new(Uyghur *uyghur) {
 
 ///////////////////////////////////////////////////////////////////////////
 
+Holdable *Machine_getProxyOrKindByType(Machine *this, char tp) {
+    if (tp == UG_TYPE_BOL) return this->kindLgc;
+    if (tp == UG_TYPE_NUM) return this->kindNum;
+    if (tp == UG_TYPE_STR) return this->kindStr;
+    if (tp == UG_TYPE_LST) return this->kindList;
+    if (tp == UG_TYPE_DCT) return this->kindDict;
+    if (tp == UG_TYPE_STF) return this->proxStuf;
+    if (tp == UG_TYPE_TSK) return this->proxTask;
+    return NULL;
+}
+
+Holdable *_Machine_writeKind(Machine *this, char *name) {
+    Holdable *holdable = Holdable_newKind(name);
+    Machine_retainObj(holdable);
+    helper_set_aliased_key(this->globals, name, holdable);
+    log_debug("kind: %s %p", name, holdable);
+    return holdable;
+}
+
+Holdable *_Machine_writeProxy(Machine *this, char *name) {
+    Holdable *holdable = Holdable_newProxy(name);
+    Machine_retainObj(holdable);
+    helper_set_aliased_key(this->globals, name, holdable);
+    log_debug("proxy: %s %p", name, holdable);
+    return holdable;
+}
+
+void Machine_initKinds(Machine *this) {
+    this->kindLgc = _Machine_writeKind(this, TVALUE_BOL);
+    this->kindNum = _Machine_writeKind(this, TVALUE_NUM);
+    this->kindStr = _Machine_writeKind(this, TVALUE_STR);
+    this->kindList = _Machine_writeKind(this, TVALUE_LST);
+    this->kindDict = _Machine_writeKind(this, TVALUE_DCT);
+}
+
+void Machine_initProxies(Machine *this) {
+    this->proxStuf = _Machine_writeProxy(this, TVALUE_STUF);
+    this->proxTask = _Machine_writeProxy(this, TVALUE_TASK);
+}
+
+Holdable *Machine_readKind(Machine *this, char *name) {
+    if (name == NULL) return NULL;
+    if (is_eq_string(name, TVALUE_BOL)) return this->kindLgc;
+    if (is_eq_string(name, TVALUE_NUM)) return this->kindNum;
+    if (is_eq_string(name, TVALUE_STR)) return this->kindStr;
+    if (is_eq_string(name, TVALUE_LST)) return this->kindList;
+    if (is_eq_string(name, TVALUE_DCT)) return this->kindDict;
+    return NULL;
+}
+
+Holdable *Machine_readProxy(Machine *this, char *name) {
+    if (name == NULL) return NULL;
+    if (is_eq_string(name, TVALUE_STUF)) return this->proxStuf;
+    if (is_eq_string(name, TVALUE_TASK)) return this->proxTask;
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////
+
 Object *_machine_readFromCache(Object **cache, size_t size) {
     Object *object = *cache;
     if (object) {
@@ -99,6 +158,7 @@ Value *Machine_newNormalValue(bool freeze, char typ) {
     value->obj = NULL;
     value->fixed = false;
     value->token = NULL;
+    value->proxy = NULL;
     value->linka = NULL;
     value->extra = NULL;
     // log_debug("new=%s: %p", get_value_name(typ, "value"), value);
@@ -132,6 +192,7 @@ Value *Machine_newCacheableValue(char tp, bool isDebug) {
     value->type = tp;
     value->fixed = false;
     value->token = NULL;
+    value->proxy = Machine_getProxyOrKindByType(this, tp);
     value->linka = NULL;
     value->extra = NULL;
     return value;
@@ -142,6 +203,7 @@ void Machine_freeCacheableValue(Value *value) {
     value->obj = NULL;
     value->fixed = NULL;
     value->token = NULL;
+    value->proxy = NULL;
     value->linka = NULL;
     value->extra = NULL;
     //
@@ -234,32 +296,6 @@ void _machine_free_object(Machine *this, Object* object) {
     } else {
         free(object);
     }
-}
-
-Holdable *_Machine_writeKind(Machine *this, char *name) {
-    Holdable *holdable = Holdable_newKind(name);
-    Machine_retainObj(holdable);
-    helper_set_aliased_key(this->globals, name, holdable);
-    log_debug("proxy: %s %p", name, holdable);
-    return holdable;
-}
-
-void Machine_initKinds(Machine *this) {
-    this->kindLgc = _Machine_writeKind(this, TVALUE_BOL);
-    this->kindNum = _Machine_writeKind(this, TVALUE_NUM);
-    this->kindStr = _Machine_writeKind(this, TVALUE_STR);
-    this->kindList = _Machine_writeKind(this, TVALUE_LST);
-    this->kindDict = _Machine_writeKind(this, TVALUE_DCT);
-}
-
-Holdable *Machine_readKind(Machine *this, char *name) {
-    if (name == NULL) return NULL;
-    if (is_eq_string(name, TVALUE_BOL)) return this->kindLgc;
-    if (is_eq_string(name, TVALUE_NUM)) return this->kindNum;
-    if (is_eq_string(name, TVALUE_STR)) return this->kindStr;
-    if (is_eq_string(name, TVALUE_LST)) return this->kindList;
-    if (is_eq_string(name, TVALUE_DCT)) return this->kindDict;
-    return NULL;
 }
 
 void Machine_pushHolder(Machine *this, Holdable* holdable) {
