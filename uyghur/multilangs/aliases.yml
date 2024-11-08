@@ -580,13 +580,6 @@ ALIAS_stage:
   uz: sahna
   tr: sahne
   kz: сахна
-ALIAS_stage_set_log:
-  en: set_log
-  uy: لوگ_بېكىتىش
-  ug: logBikitish
-  uz: log_o'rnatish
-  tr: günlüğü_ayarla
-  kz: лог_орнату
 ALIAS_stage_set_fps:
   en: set_fps
   uy: ئەفپىئەس_بېكىتىش
@@ -736,13 +729,6 @@ ALIAS_stage_show_cursor:
   uz: kursorni_ko'rsatish
   tr: imleci_göstermek
   kz: курсор_көрсету
-ALIAS_stage_enable_cursor:
-  en: enable_cursor
-  uy: ئىستىرىلكا_قوزغىتىش
-  ug: istirilkaQozghitish
-  uz: kursorni_boshlash
-  tr: imleci_başlatmak
-  kz: курсор_бастау
 ALIAS_stage_have_cursor:
   en: have_cursor
   uy: ئىستىرىلكا_ئىچىدىمۇ

@@ -166,8 +166,8 @@ task.setLibs([
     "incbin",
     # "string",
     "utf8",
+    # "RSGL",
     "raylib",
-    "raygui",
 ])
 # task.addLib("c_std", {
 #     "URL": "git@github.com:KaisenAmin/c_std.git",

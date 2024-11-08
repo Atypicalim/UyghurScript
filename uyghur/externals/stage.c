@@ -1,87 +1,54 @@
 // stage
 
-#include "raylib.h"
-#define RAYGUI_IMPLEMENTATION
-#include "src/raygui.h"  
-#include "styles/ashes/ashes.h"  
+#include "../delegates/lib_callbacks.h"
+#include "../delegates/raylib_lib.h"
+// #include "../delegates/riley_lib.h"
 #include "../uyghur.c"
 
-// data
-Font defaultFont;
-Image defaultImage;
-Texture2D defaultTexture;
-Music defaulMusic;
-Sound defaulSound;
+int mouseWheelMovement = 0;
 
 // callback
 
-void raylib_on_focus()
-{
-    // RLAPI bool IsWindowFocused(void);
+void stage_on_show() {
 }
 
-void raylib_on_resize()
-{
-    // RLAPI bool IsWindowResized(void); 
+void stage_on_hide() {
 }
 
-void raylib_on_drop()
+void stage_on_focus()
 {
-    // RLAPI bool IsFileDropped(void);                                   // Check if a file has been dropped into window
-    // RLAPI char **GetDroppedFiles(int *count);                         // Get dropped files names (memory should be freed)
-    // RLAPI void ClearDroppedFiles(void); 
-
 }
 
-void raylib_on_hide()
-{
-
+void stage_on_resize() {
 }
 
-// tool
+void stage_on_drop() {
+}
 
-void raylib_run_program(int width, int height, CString title, int mode)
-{
-    if (IsWindowReady()) return;
-    if (width < 0) width = 500;
-    if (height < 0) height = 500;
-    if (strlen(title) == 0) title = UG_PROJECT_NAME;
-    if (mode < 0) mode = FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_TOPMOST; // FLAG_WINDOW_TRANSPARENT
-    SetConfigFlags(mode);
-    InitWindow(width, height, title);
-    InitAudioDevice();
-    GuiLoadStyleAshes();
-    defaultFont = GetFontDefault();
-    defaultImage = GenImageGradientRadial(300, 300, 0, (Color){255, 255, 255, 50}, (Color){0, 0, 0, 50});
-    defaultTexture = LoadTextureFromImage(defaultImage);
-    // SetTargetFPS(60);
+void mouse_on_wheel(int movement) {
+    mouseWheelMovement = movement;
 }
 
 // api
 
-void native_stage_set_log(Bridge *bridge)
-{
-    int level = Bridge_receiveNumber(bridge);
-    SetTraceLogLevel(level);
-    Bridge_returnEmpty(bridge);
-}
-
 void native_stage_set_fps(Bridge *bridge)
 {
-    SetTargetFPS(Bridge_receiveNumber(bridge));
+    int fps = Bridge_receiveNumber(bridge);
+    delegate_stage_set_fps(fps);
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_get_fps(Bridge *bridge)
 {
-    Bridge_returnNumber(bridge, GetFPS());
+    int fps = delegate_stage_get_fps();
+    Bridge_returnNumber(bridge, fps);
 }
 
 void native_stage_draw_fps(Bridge *bridge)
 {
     int x = Bridge_receiveNumber(bridge);
     int y = Bridge_receiveNumber(bridge);
-    DrawFPS(x, y);
+    delegate_draw_debug(x, y);
     Bridge_returnEmpty(bridge);
 }
 
@@ -91,87 +58,75 @@ void native_stage_show_window(Bridge *bridge)
     int h = Bridge_receiveNumber(bridge);
     CString title = Bridge_receiveString(bridge);
     int mode = Bridge_receiveNumber(bridge);
-    raylib_run_program(w, h, title, mode);
+    delegate_stage_run_program(w, h, title, mode);
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_update_window(Bridge *bridge)
 {
-    //
-    if (IsWindowReady()) {
-        DrawFPS(10, 10);
-        EndDrawing();
-        BeginDrawing();
-        ClearBackground(BLACK);
-    }
-    //
-    bool closeable = WindowShouldClose();
-    Value *value = Value_newBoolean(closeable, NULL);
-    helper_set_proxy_value(ALIAS_stage, ALIAS_stage_is_closeable, value);
-    //
-    if (closeable && IsWindowReady()) {
-        CloseAudioDevice();
-        CloseWindow();
-    }
-    //
+    delegate_stage_update_program();
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_is_fullscreen(Bridge *bridge)
 {
-    Bridge_returnBoolean(bridge, IsWindowFullscreen());
+    bool ok = STAGE_IS_FULLSCREEN;
+    Bridge_returnBoolean(bridge, ok);
 }
 
 void native_stage_is_hidden(Bridge *bridge)
 {
-    Bridge_returnBoolean(bridge, IsWindowHidden());
+    bool ok = STAGE_IS_HIDDEN;
+    Bridge_returnBoolean(bridge, ok);
 }
 
 void native_stage_is_minimized(Bridge *bridge)
 {
-    Bridge_returnBoolean(bridge, IsWindowMinimized());
+    bool ok = STAGE_IS_MINIMIZED;
+    Bridge_returnBoolean(bridge, ok);
 }
 
 void native_stage_is_maximized(Bridge *bridge)
 {
-    Bridge_returnBoolean(bridge, IsWindowMaximized());
+    bool ok = STAGE_IS_MAXIMIZED;
+    Bridge_returnBoolean(bridge, ok);
 }
 
 void native_stage_toggle_fullscreen(Bridge *bridge)
 {
-    ToggleFullscreen();
+    stage_toggle_fullscreen();
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_set_minimize(Bridge *bridge)
 {
-    MinimizeWindow();
+    STAGE_SET_MINIMIZE;
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_set_maximize(Bridge *bridge)
 {
-    MaximizeWindow();
+    STAGE_SET_MAXIMIZE;
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_set_normalize(Bridge *bridge)
 {
-    RestoreWindow();
+    STAGE_SET_NORMALIZE;
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_set_title(Bridge *bridge)
 {
-    SetWindowTitle(Bridge_receiveString(bridge));
+    CString title = Bridge_receiveString(bridge);
+    stage_set_title(title);
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_set_icon(Bridge *bridge)
 {
     CString path = Bridge_receiveString(bridge);
-    Image image = LoadImage(path);
-    SetWindowIcon(image);
+    stage_set_icon(path);
     Bridge_returnEmpty(bridge);
 }
 
@@ -179,134 +134,127 @@ void native_stage_set_position(Bridge *bridge)
 {
     int x = Bridge_receiveNumber(bridge);
     int y = Bridge_receiveNumber(bridge);
-    SetWindowPosition(x, y);
+    stage_set_position(x, y);
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_get_position(Bridge *bridge)
 {
-    Vector2 vector2 = GetWindowPosition();
-    Bridge_returnNumbers(bridge, 2, vector2.x, vector2.y);
+    int x = 0;
+    int y = 0;
+    stage_get_position(&x, &y);
+    Bridge_returnNumbers(bridge, 2, x, y);
 }
 
 void native_stage_set_size(Bridge *bridge)
 {
     int w = Bridge_receiveNumber(bridge);
     int h = Bridge_receiveNumber(bridge);
-    SetWindowSize(w, h); 
+    stage_set_size(w, h); 
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_get_size(Bridge *bridge)
 {
-    Bridge_returnNumbers(bridge, 2, GetScreenWidth(), GetScreenHeight());
+    int w = 0;
+    int h = 0;
+    stage_get_size(&w, &h);
+    Bridge_returnNumbers(bridge, 2, w, h);
 }
 
 void native_stage_set_min_size(Bridge *bridge)
 {
     int w = Bridge_receiveNumber(bridge);
     int h = Bridge_receiveNumber(bridge);
-    SetWindowMinSize(w, h);
+    delegate_set_min_size(w, h);
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_show_cursor(Bridge *bridge)
 {
     bool b = Bridge_receiveBoolean(bridge);
-    if (b) ShowCursor();
-    if (!b) HideCursor();
-    Bridge_returnEmpty(bridge);
-}
-
-void native_stage_enable_cursor(Bridge *bridge)
-{
-    bool b = Bridge_receiveBoolean(bridge);
-    if (b) EnableCursor();
-    if (!b) DisableCursor();
+    delegate_show_cursor(b);
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_have_cursor(Bridge *bridge)
 {
-    Bridge_returnBoolean(bridge, IsCursorOnScreen());
+    bool b = delegate_have_cursor();
+    Bridge_returnBoolean(bridge, b);
 } 
 
 void native_stage_set_clipboard(Bridge *bridge)
 {
     CString c = Bridge_receiveString(bridge);
-    SetClipboardText(c);
+    delegate_set_clipboard(c);
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_get_clipboard(Bridge *bridge)
 {
-    CString r = (CString)GetClipboardText();
+    CString r = delegate_get_clipboard();
     Bridge_returnString(bridge, r);
 }
 
 void native_stage_set_mouse_cursor(Bridge *bridge)
 {
     int c = Bridge_receiveNumber(bridge);
-    SetMouseCursor(c);
+    delegate_set_mouse_cursor(c);
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_get_mouse_position(Bridge *bridge)
 {
-    Bridge_returnNumbers(bridge, 2, GetMouseX(), GetMouseY());
+    int x = 0; 
+    int y = 0;
+    delegate_get_mouse_location(&x, &y);
+    Bridge_returnNumbers(bridge, 2, x, y);
 }
 
 void native_stage_get_mouse_wheel(Bridge *bridge)
 {
-    Bridge_returnNumber(bridge, GetMouseWheelMove());
+    int move = mouseWheelMovement;
+    Bridge_returnNumber(bridge, move);
 }
 
 void native_stage_get_mouse_key_action(Bridge *bridge)
 {
     int keyCode = Bridge_receiveNumber(bridge);
-    int action = 0;
-    if (IsMouseButtonPressed(keyCode)) action = 1;
-    if (IsMouseButtonReleased(keyCode)) action = -1;
+    int action = delegate_was_mouse_pressed(keyCode);
     Bridge_returnNumber(bridge, action);
 }
 
 void native_stage_get_mouse_key_state(Bridge *bridge)
 {
     int keyCode = Bridge_receiveNumber(bridge);
-    int action = 0;
-    if (IsMouseButtonDown(keyCode)) action = 1;
-    if (IsMouseButtonUp(keyCode)) action = -1;
+    int action = delegate_is_mouse_pressed(keyCode);
     Bridge_returnNumber(bridge, action);
 }
 
 void native_stage_get_keyboard_key_action(Bridge *bridge)
 {
     int keyCode = Bridge_receiveNumber(bridge);
-    int action = 0;
-    if (IsKeyPressed(keyCode)) action = 1;
-    if (IsKeyReleased(keyCode)) action = -1;
+    int action = delegate_was_key_pressed(keyCode);
     Bridge_returnNumber(bridge, action);
 }
 
 void native_stage_get_keyboard_key_state(Bridge *bridge)
 {
     int keyCode = Bridge_receiveNumber(bridge);
-    int action = 0;
-    if (IsKeyDown(keyCode)) action = 1;
-    if (IsKeyUp(keyCode)) action = -1;
+    int action = delegate_is_key_pressed(keyCode);
     Bridge_returnNumber(bridge, action);
 }
 
 void native_stage_save_screenshot(Bridge *bridge)
 {
     CString path = Bridge_receiveString(bridge);
-    TakeScreenshot(path);
+    delegate_stage_save_screenshot(path);
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_audio_set_volume(Bridge *bridge)
 {
     float v = Bridge_receiveNumber(bridge);
-    SetMasterVolume(v);
+    // SetMasterVolume(v);
     Bridge_returnEmpty(bridge);
 }

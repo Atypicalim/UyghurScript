@@ -8,7 +8,7 @@
 #include "../../build/bind/externals/music.c"
 #include "../../build/bind/externals/sound.c"
 #include "../../build/bind/externals/control.c"
-#include "../../build/bind/externals/voyager.c"
+// #include "../../build/bind/externals/voyager.c"
 
 
 void cFuncTest(Bridge *bridge)
@@ -60,7 +60,7 @@ void register_external_libraries(Bridge *bridge)
     lib_music_register(bridge);
     lib_sound_register(bridge);
     lib_control_register(bridge);
-    lib_voyager_register(bridge);
+    // lib_voyager_register(bridge);
 }
 
 #endif

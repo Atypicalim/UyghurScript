@@ -137,6 +137,9 @@ def _tryWalkLibraryHeader(libPath):
     _names = []
     _lines = readLines(headerPath)
     for _line in _lines:
+        _line = _line.strip()
+        if _line.startswith("//"):
+            continue;
         match = BRIDGE_RGSTR_PATTERN.search(_line)
         if match:
             name = match.group(1).strip()
