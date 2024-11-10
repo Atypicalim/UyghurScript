@@ -1,8 +1,7 @@
 // implementation
 
-#define CARGS_IMPLEMENTATION
-#include "libs/cargs/cargs.h"
 #include "incbin.h"
+#include "uyghur/include.h"
 #include "uyghur/uyghur.c"
 
 #include <locale.h>

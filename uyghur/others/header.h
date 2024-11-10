@@ -3,26 +3,7 @@
 #ifndef H_UG_HEADER
 #define H_UG_HEADER
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <ctype.h>
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
-#include <ctype.h>
-#include <stdarg.h>
-#include <time.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <limits.h>
-#include <setjmp.h>
-
-#include "utf8.h"
-#include "libs/utf8iter/utf8iter.h"
-#include "libs/utf8iter/utf8iter.c"
-#include "libs/utf8string/utf8string.h"
-#include "libs/utf8string/utf8string.c"
+#include "../include.h"
 
 // #define STDSTRING_IMPLEMENTATION
 // #include "stdstring.h"
@@ -66,7 +47,6 @@ typedef struct {
 void Object_initByType(char, void *);
 void Object_freeByType(char, void *);
 void Object_printByType(char, void *);
-#include "../../../pure-c-tools/tools.h"
 
 String *TEMPORARY_String = NULL;
 UTF8Iter *TEMPORARY_UTF8Iter = NULL;

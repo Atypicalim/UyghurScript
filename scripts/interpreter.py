@@ -14,6 +14,23 @@ DST_SCRIPT = DST_ALIAS + "." + SCRIPT_EXT
 
 ################################################################
 
+def downloadGitTo(url, path):
+    if tools.files.is_folder(path):
+        print("folder exist:", path)
+    else:
+        print("clone repo:", url)
+        try:
+            subprocess.run(['git', 'clone', url, path], check=True)
+            print("Git clone completed successfully.")
+        except subprocess.CalledProcessError as e:
+            print(f"An error occurred while cloning: {e}")
+        pass
+
+downloadGitTo("git@github.com:Atypicalim/c-pure-tools.git", "../c-pure-tools")
+downloadGitTo("git@github.com:Atypicalim/c-extra-tools.git", "../c-extra-tools")
+
+################################################################
+
 def formatVariables(template, names):
     variables = []
     for name in names:
@@ -182,6 +199,7 @@ task.addWarnings(False, [
     "attributes",
     "incompatible-pointer-types"
 ])
-task.addFlags(["-I ../pure-c-tools/"])
+task.addFlags(["-I ../c-pure-tools/"])
+task.addFlags(["-I ../c-extra-tools/"])
 task.start()
 task.run()
