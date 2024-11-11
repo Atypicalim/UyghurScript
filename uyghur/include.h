@@ -32,6 +32,7 @@
 
 
 #ifdef BUILDER_USE_RAYSAN
+    #define RAUDIO_NO_IMLEMENT
     #define RAYGUI_IMPLEMENTATION
     #include "raylib.h"
     #include "raygui.h"

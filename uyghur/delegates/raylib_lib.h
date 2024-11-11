@@ -2,6 +2,50 @@
 
 #include "../include.h"
 
+// audio
+#define RSound Sound
+#define RMusic Music
+// 
+#define raudio_InitAudioDevice InitAudioDevice
+#define raudio_CloseAudioDevice CloseAudioDevice
+#define raudio_IsAudioDeviceReady IsAudioDeviceReady
+#define raudio_SetMasterVolume SetMasterVolume
+#define raudio_GetMasterVolume GetMasterVolume
+//
+#define raudio_LoadSound LoadSound
+#define raudio_IsSoundReady IsSoundReady
+#define raudio_UpdateSound UpdateSound
+#define raudio_UnloadSound UnloadSound
+//
+#define raudio_LoadMusic LoadMusicStream
+#define raudio_IsMusicReady IsMusicReady
+#define raudio_UpdateMusic UpdateMusicStream
+#define raudio_UnloadMusic UnloadMusicStream
+//
+#define raudio_PlaySound PlaySound
+#define raudio_StopSound StopSound
+#define raudio_PauseSound PauseSound
+#define raudio_ResumeSound ResumeSound
+#define raudio_IsSoundPlaying IsSoundPlaying
+#define raudio_SetSoundVolume SetSoundVolume
+//
+#define raudio_PlayMusic PlayMusicStream
+#define raudio_StopMusic StopMusicStream
+#define raudio_PauseMusic PauseMusicStream
+#define raudio_ResumeMusic ResumeMusicStream
+#define raudio_IsMusicPlaying IsMusicStreamPlaying
+#define raudio_SetMusicVolume SetMusicVolume
+#define raudio_GetMusicLength GetMusicTimeLength
+#define raudio_GetMusicTime GetMusicTimePlayed
+#define raudio_SetMusicTime SeekMusicStream
+//
+#define raudio_SetSoundPitch SetSoundPitch
+#define raudio_SetSoundPan SetSoundPan
+//
+#define raudio_SetMusicPitch SetMusicPitch
+#define raudio_SetMusicPan SetMusicPan
+
+
 // data
 Font defaultFont;
 Image defaultImage;
