@@ -1,33 +1,33 @@
 // music
 
-#include "raylib.h"
-#include "../uyghur.c"
+#include "../include.h"
+RMusic __defaulRMusic;
 
 // tool
 
-Music *raylib_load_music_by_path(CString path)
+RMusic *raylib_load_music_by_path(CString path)
 {
-    Music m = LoadMusicStream(path);
-    Music *music = (Music *)malloc(sizeof(m));
+    RMusic m = raudio_LoadMusic(path);
+    RMusic *music = (RMusic *)malloc(sizeof(m));
     music[0] = m;
     return music;
 }
 
 void _raylib_release_music(Loadable *loadable) {
     if (loadable->obj) {
-        Music *music = loadable->obj;
-        Music m = music[0];
-        UnloadMusicStream(m);
+        RMusic *music = loadable->obj;
+        RMusic m = music[0];
+        raudio_UnloadMusic(m);
         pct_free(music);
         loadable->obj = NULL;
     }
 }
 
-Music music_from_bridge(Bridge *bridge)
+RMusic music_from_bridge(Bridge *bridge)
 {
     Loadable *loadable = Bridge_receiveValue(bridge, UG_TYPE_STF);
-    Music *music = loadable->obj;
-    Music m = music != NULL ? music[0] : defaulMusic;
+    RMusic *music = loadable->obj;
+    RMusic m = music != NULL ? music[0] : __defaulRMusic;
     return m;
 }
 
@@ -36,7 +36,7 @@ Music music_from_bridge(Bridge *bridge)
 void native_music_load(Bridge *bridge)
 {
     CString path = Bridge_receiveString(bridge);
-    Music *music = raylib_load_music_by_path(path);
+    RMusic *music = raylib_load_music_by_path(path);
     Loadable *loadable = Loadable_newStuf(music, ALIAS_music, path, _raylib_release_music);
     Bridge_returnValue(bridge, loadable);
 }
@@ -45,72 +45,72 @@ void native_music_unload(Bridge *bridge){}
 
 void native_music_play(Bridge *bridge)
 {
-    Music music = music_from_bridge(bridge);
-    PlayMusicStream(music);
+    RMusic music = music_from_bridge(bridge);
+    raudio_PlayMusic(music);
     Bridge_returnEmpty(bridge);
 }
 
 void native_music_stop(Bridge *bridge)
 {
-    Music music = music_from_bridge(bridge);
-    StopMusicStream(music);
+    RMusic music = music_from_bridge(bridge);
+    raudio_StopMusic(music);
     Bridge_returnEmpty(bridge);
 }
 
 void native_music_resume(Bridge *bridge)
 {
-    Music music = music_from_bridge(bridge);
-    ResumeMusicStream(music);
+    RMusic music = music_from_bridge(bridge);
+    raudio_ResumeMusic(music);
     Bridge_returnEmpty(bridge);
 }
 
 void native_music_pause(Bridge *bridge)
 {
-    Music music = music_from_bridge(bridge);
-    PauseMusicStream(music);
+    RMusic music = music_from_bridge(bridge);
+    raudio_PauseMusic(music);
     Bridge_returnEmpty(bridge);
 }
 
 void native_music_is_playing(Bridge *bridge)
 {
-    Music music = music_from_bridge(bridge);
-    bool r = IsMusicStreamPlaying(music);
+    RMusic music = music_from_bridge(bridge);
+    bool r = raudio_IsMusicPlaying(music);
     Bridge_returnBoolean(bridge, r);
 }
 
 void native_music_set_volume(Bridge *bridge)
 {
-    Music music = music_from_bridge(bridge);
+    RMusic music = music_from_bridge(bridge);
     float volume = Bridge_receiveNumber(bridge);
-    SetMusicVolume(music, volume);
+    raudio_SetMusicVolume(music, volume);
     Bridge_returnEmpty(bridge);
 }
 
 void native_music_update(Bridge *bridge)
 {
-    Music music = music_from_bridge(bridge);
-    UpdateMusicStream(music);
+    RMusic music = music_from_bridge(bridge);
+    raudio_UpdateMusic(music);
     Bridge_returnEmpty(bridge);
 }
 
 void native_music_get_length(Bridge *bridge)
 {
-    Music music = music_from_bridge(bridge);
-    float r = GetMusicTimeLength(music);
+    RMusic music = music_from_bridge(bridge);
+    float r = raudio_GetMusicLength(music);
     Bridge_returnNumber(bridge, r);
 }
 
 void native_music_get_position(Bridge *bridge)
 {
-    Music music = music_from_bridge(bridge);
-    float r = GetMusicTimePlayed(music);
+    RMusic music = music_from_bridge(bridge);
+    float r = raudio_GetMusicTime(music);
     Bridge_returnNumber(bridge, r);
 }
 
 void native_music_set_position(Bridge *bridge)
 {
-    Music music = music_from_bridge(bridge);
+    RMusic music = music_from_bridge(bridge);
     float position = Bridge_receiveNumber(bridge);
-    SeekMusicStream(music, position);
+    raudio_SetMusicTime(music, position);
     Bridge_returnEmpty(bridge);
 }

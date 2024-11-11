@@ -1,16 +1,11 @@
 // raylib
 
-#define RAYGUI_IMPLEMENTATION
-#include "raylib.h"
-#include "raygui.h"  
-// #include "styles/ashes/ashes.h"  
+#include "../include.h"
 
 // data
 Font defaultFont;
 Image defaultImage;
 Texture2D defaultTexture;
-Music defaulMusic;
-Sound defaulSound;
 
 #define STAGE_IS_FULLSCREEN IsWindowFullscreen()
 #define STAGE_IS_HIDDEN IsWindowHidden()

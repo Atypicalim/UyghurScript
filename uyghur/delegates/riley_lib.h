@@ -1,7 +1,6 @@
 // riley
 
-#define RSGL_IMPLEMENTATION
-#include "RSGL.h"
+#include "../include.h"
 
 
 RGFW_window* _rileyWindow = NULL;
