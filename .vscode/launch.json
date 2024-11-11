@@ -9,7 +9,7 @@
             "name": "Uyghur",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/build.py",
+            "program": "${workspaceFolder}/run.py",
             "console": "integratedTerminal"
         },
         {
