@@ -14,115 +14,105 @@
 * path  `CString`
 
 
-### 2. unload
-
-> 📝:  unload func of music module
-
-> 🔙: Empty
-
-> 🛒: 
-* music  `Music`
-
-
-### 3. play
+### 2. play
 
 > 📝:  play func of music module
 
 > 🔙: Empty
 
 > 🛒: 
-* music  `Music`
+* music  `RMusic`
 
 
-### 4. stop
+### 3. stop
 
 > 📝:  stop func of music module
 
 > 🔙: Empty
 
 > 🛒: 
-* music  `Music`
+* music  `RMusic`
 
 
-### 5. resume
+### 4. resume
 
 > 📝:  resume func of music module
 
 > 🔙: Empty
 
 > 🛒: 
-* music  `Music`
+* music  `RMusic`
 
 
-### 6. pause
+### 5. pause
 
 > 📝:  pause func of music module
 
 > 🔙: Empty
 
 > 🛒: 
-* music  `Music`
+* music  `RMusic`
 
 
-### 7. is_playing
+### 6. is_playing
 
 > 📝:  is_playing func of music module
 
 > 🔙: Boolean
 
 > 🛒: 
-* music  `Music`
+* music  `RMusic`
 
 
-### 8. set_volume
+### 7. set_volume
 
 > 📝:  set_volume func of music module
 
 > 🔙: Empty
 
 > 🛒: 
-* music  `Music`
+* music  `RMusic`
 * volume  `float`
 
 
-### 9. update
+### 8. update
 
 > 📝:  update func of music module
 
 > 🔙: Empty
 
 > 🛒: 
-* music  `Music`
+* music  `RMusic`
 
 
-### 10. get_length
+### 9. get_length
 
 > 📝:  get_length func of music module
 
 > 🔙: Number
 
 > 🛒: 
-* music  `Music`
+* music  `RMusic`
 
 
-### 11. get_position
+### 10. get_position
 
 > 📝:  get_position func of music module
 
 > 🔙: Number
 
 > 🛒: 
-* music  `Music`
+* music  `RMusic`
 
 
-### 12. set_position
+### 11. set_position
 
 > 📝:  set_position func of music module
 
 > 🔙: Empty
 
 > 🛒: 
-* music  `Music`
+* music  `RMusic`
 * position  `float`
 
 

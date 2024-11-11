@@ -137,7 +137,6 @@ void delegate_stage_run_program(int width, int height, CString title, int mode) 
     int level = UG_IS_DEVELOP ? LOG_ALL : LOG_WARNING;
     SetTraceLogLevel(level);
     InitWindow(width, height, title);
-    InitAudioDevice();
     // GuiLoadStyleAshes();
     defaultFont = GetFontDefault();
     defaultImage = GenImageGradientRadial(300, 300, 0, (Color){255, 255, 255, 50}, (Color){0, 0, 0, 50});
@@ -145,7 +144,7 @@ void delegate_stage_run_program(int width, int height, CString title, int mode) 
     // SetTargetFPS(60);
 }
 
-void delegate_stage_update_program() {   
+bool delegate_stage_update_program() {   
     if (IsWindowReady()) {
         DrawFPS(10, 10);
         EndDrawing();
@@ -158,7 +157,9 @@ void delegate_stage_update_program() {
     helper_set_proxy_value(ALIAS_stage, ALIAS_stage_is_closeable, value);
     //
     if (closeable && IsWindowReady()) {
-        CloseAudioDevice();
         CloseWindow();
+        return true;
+    } else {
+        return false;
     }
 }

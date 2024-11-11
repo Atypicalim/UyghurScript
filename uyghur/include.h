@@ -30,13 +30,18 @@
 #include "../../c-extra-tools/utf8string/utf8string.h"
 #include "../../c-extra-tools/utf8string/utf8string.c"
 
-// #define RSGL_IMPLEMENTATION
-// #include "RSGL.h"
 
-#define RAYGUI_IMPLEMENTATION
-#include "raylib.h"
-#include "raygui.h"
-// #include "styles/ashes/ashes.h"  
+#ifdef BUILDER_USE_RAYSAN
+    #define RAYGUI_IMPLEMENTATION
+    #include "raylib.h"
+    #include "raygui.h"
+#endif
+
+#ifdef BUILDER_USE_RILEY
+    #define RSGL_IMPLEMENTATION
+    #include "RSGL.h"
+#endif
+
 
 #define RA_NO_WIN_EXTRA
 #include "../../c-extra-tools/raudio/raudio.h"

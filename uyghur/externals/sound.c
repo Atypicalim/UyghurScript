@@ -5,7 +5,7 @@ RSound __defaulRSound;
 
 // tool
 
-RSound *raylib_load_sound_by_path(CString path)
+RSound *_load_rsound_by_path(CString path)
 {
     RSound s = raudio_LoadSound(path);
     RSound *sound = (RSound *)malloc(sizeof(s));
@@ -13,7 +13,7 @@ RSound *raylib_load_sound_by_path(CString path)
     return sound;
 }
 
-void _raylib_release_sound(Loadable *loadable) {
+void __release_rsound(Loadable *loadable) {
     if (loadable->obj) {
         RSound *sound = loadable->obj;
         RSound s = sound[0];
@@ -36,12 +36,10 @@ RSound sound_from_bridge(Bridge *bridge)
 void native_sound_load(Bridge *bridge)
 {
     CString path = Bridge_receiveString(bridge);
-    RSound *sound = raylib_load_sound_by_path(path);
-    Loadable *loadable = Loadable_newStuf(sound, ALIAS_sound, path, _raylib_release_sound);
+    RSound *sound = _load_rsound_by_path(path);
+    Loadable *loadable = Loadable_newStuf(sound, ALIAS_sound, path, __release_rsound);
     Bridge_returnValue(bridge, loadable);
 }
-
-void native_sound_unload(Bridge *bridge) {}
 
 void native_sound_play(Bridge *bridge)
 {

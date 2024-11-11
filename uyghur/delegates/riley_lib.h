@@ -141,7 +141,7 @@ void delegate_stage_run_program() {
     RSGL_setFont(RSGL_loadFont("../resources/ukij.ttf"));
 }
 
-void delegate_stage_update_program() {
+bool delegate_stage_update_program() {
     //
     CHECK_WRILEY_WINDOW();
     bool closeable = RGFW_window_shouldClose(_rileyWindow);
@@ -157,5 +157,8 @@ void delegate_stage_update_program() {
         RSGL_free();
         RGFW_window_close(_rileyWindow);
         _rileyWindow = NULL;
+        return true;
+    } else {
+        return false;
     }
 }

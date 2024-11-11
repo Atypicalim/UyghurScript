@@ -1024,8 +1024,6 @@ ALIAS_music:
   kz: музыка
 ALIAS_music_load:
   <<: *__load
-ALIAS_music_unload:
-  <<: *__unload
 ALIAS_music_play:
   <<: *__play
 ALIAS_music_stop:
@@ -1072,8 +1070,6 @@ ALIAS_sound:
   kz: дыбыс
 ALIAS_sound_load:
   <<: *__load
-ALIAS_sound_unload:
-  <<: *__unload
 ALIAS_sound_play:
   <<: *__play
 ALIAS_sound_stop:

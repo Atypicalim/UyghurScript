@@ -14,74 +14,64 @@
 * path  `CString`
 
 
-### 2. unload
-
-> 📝:  unload func of sound module
-
-> 🔙: Empty
-
-> 🛒: 
-* sound  `Sound`
-
-
-### 3. play
+### 2. play
 
 > 📝:  play func of sound module
 
 > 🔙: Empty
 
 > 🛒: 
-* sound  `Sound`
+* sound  `RSound`
 
 
-### 4. stop
+### 3. stop
 
 > 📝:  stop func of sound module
 
 > 🔙: Empty
 
 > 🛒: 
-* sound  `Sound`
+* sound  `RSound`
 
 
-### 5. resume
+### 4. resume
 
 > 📝:  resume func of sound module
 
 > 🔙: Empty
 
 > 🛒: 
-* sound  `Sound`
+* sound  `RSound`
 
 
-### 6. pause
+### 5. pause
 
 > 📝:  pause func of sound module
 
 > 🔙: Empty
 
 > 🛒: 
-* sound  `Sound`
+* sound  `RSound`
 
 
-### 7. is_playing
+### 6. is_playing
 
 > 📝:  is_playing func of sound module
 
 > 🔙: Boolean
 
 > 🛒: 
-* sound  `Sound`
+* sound  `RSound`
 
 
-### 8. set_volume
+### 7. set_volume
 
 > 📝:  set_volume func of sound module
 
 > 🔙: Empty
 
 > 🛒: 
-* sound  `Sound`
+* sound  `RSound`
 * volume  `float`
 
 

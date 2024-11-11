@@ -5,7 +5,7 @@ RMusic __defaulRMusic;
 
 // tool
 
-RMusic *raylib_load_music_by_path(CString path)
+RMusic *_load_rmusic_by_path(CString path)
 {
     RMusic m = raudio_LoadMusic(path);
     RMusic *music = (RMusic *)malloc(sizeof(m));
@@ -13,7 +13,7 @@ RMusic *raylib_load_music_by_path(CString path)
     return music;
 }
 
-void _raylib_release_music(Loadable *loadable) {
+void __release_rmusic(Loadable *loadable) {
     if (loadable->obj) {
         RMusic *music = loadable->obj;
         RMusic m = music[0];
@@ -36,12 +36,10 @@ RMusic music_from_bridge(Bridge *bridge)
 void native_music_load(Bridge *bridge)
 {
     CString path = Bridge_receiveString(bridge);
-    RMusic *music = raylib_load_music_by_path(path);
-    Loadable *loadable = Loadable_newStuf(music, ALIAS_music, path, _raylib_release_music);
+    RMusic *music = _load_rmusic_by_path(path);
+    Loadable *loadable = Loadable_newStuf(music, ALIAS_music, path, __release_rmusic);
     Bridge_returnValue(bridge, loadable);
 }
-
-void native_music_unload(Bridge *bridge){}
 
 void native_music_play(Bridge *bridge)
 {

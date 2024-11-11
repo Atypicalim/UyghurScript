@@ -174,31 +174,45 @@ bldr.start()
 
 ############################################################################### task
 
+isUseRaysan = True
+isUseRiley = not isUseRaysan
+
+_ugLibs = [
+    "incbin",
+    "utf8",
+    # "string",
+]
+if isUseRaysan:
+    _ugLibs.append("raylib")
+if isUseRiley:
+    _ugLibs.append("RSGL")
+
 task = builder.c()
 task.setName("UYGHUR")
 task.setDebug(True)
 task.setRelease(False)
 task.setInput('./main.c')
-task.setLibs([
-    "incbin",
-    # "string",
-    "utf8",
-    # "RSGL",
-    "raylib",
-])
+task.setLibs(_ugLibs)
+task.setOutput(DST_ALIAS)
+task.setIcon('./resources/icon.ico')
+#
 # task.addLib("c_std", {
 #     "URL": "git@github.com:KaisenAmin/c_std.git",
 #     "BRANCH": "main",
 #     "DIR_I": "./",
 # })
-task.setOutput(DST_ALIAS)
-# task.setIcon('./resources/icon.ico')
 task.addWarnings(False, [
     "unused-result",
     "discarded-qualifiers",
     "attributes",
     "incompatible-pointer-types"
 ])
+#
+if isUseRaysan:
+    task.addFlags(["-D BUILDER_USE_RAYSAN"])
+if isUseRiley:
+    task.addFlags(["-D BUILDER_USE_RILEY"])
+#
 task.addFlags(["-I ../c-pure-tools/"])
 task.addFlags(["-I ../c-extra-tools/"])
 task.start()

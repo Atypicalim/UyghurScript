@@ -1,8 +1,15 @@
 // stage
 
 #include "../delegates/lib_callbacks.h"
+
+#ifdef BUILDER_USE_RAYSAN
 #include "../delegates/raylib_lib.h"
-// #include "../delegates/riley_lib.h"
+#endif
+
+#ifdef BUILDER_USE_RILEY
+#include "../delegates/riley_lib.h"
+#endif
+
 #include "../uyghur.c"
 
 int mouseWheelMovement = 0;
@@ -59,12 +66,16 @@ void native_stage_show_window(Bridge *bridge)
     CString title = Bridge_receiveString(bridge);
     int mode = Bridge_receiveNumber(bridge);
     delegate_stage_run_program(w, h, title, mode);
+    raudio_InitAudioDevice();
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_update_window(Bridge *bridge)
 {
-    delegate_stage_update_program();
+    bool isClose = delegate_stage_update_program();
+    if (isClose) {
+        raudio_CloseAudioDevice();
+    }
     Bridge_returnEmpty(bridge);
 }
 
