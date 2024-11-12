@@ -1,18 +1,7 @@
 // stage
 
-#include "../delegates/lib_callbacks.h"
-
-#ifdef BUILDER_USE_RAYSAN
-#include "../delegates/raylib_lib.h"
-#endif
-
-#ifdef BUILDER_USE_RILEY
-#include "../delegates/riley_lib.h"
-#endif
-
+#include "../delegates/header.h"
 #include "../uyghur.c"
-
-int mouseWheelMovement = 0;
 
 // callback
 
@@ -30,10 +19,6 @@ void stage_on_resize() {
 }
 
 void stage_on_drop() {
-}
-
-void mouse_on_wheel(int movement) {
-    mouseWheelMovement = movement;
 }
 
 // api
@@ -181,19 +166,6 @@ void native_stage_set_min_size(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-void native_stage_show_cursor(Bridge *bridge)
-{
-    bool b = Bridge_receiveBoolean(bridge);
-    delegate_show_cursor(b);
-    Bridge_returnEmpty(bridge);
-}
-
-void native_stage_have_cursor(Bridge *bridge)
-{
-    bool b = delegate_have_cursor();
-    Bridge_returnBoolean(bridge, b);
-} 
-
 void native_stage_set_clipboard(Bridge *bridge)
 {
     CString c = Bridge_receiveString(bridge);
@@ -207,65 +179,9 @@ void native_stage_get_clipboard(Bridge *bridge)
     Bridge_returnString(bridge, r);
 }
 
-void native_stage_set_mouse_cursor(Bridge *bridge)
-{
-    int c = Bridge_receiveNumber(bridge);
-    delegate_set_mouse_cursor(c);
-    Bridge_returnEmpty(bridge);
-}
-
-void native_stage_get_mouse_position(Bridge *bridge)
-{
-    int x = 0; 
-    int y = 0;
-    delegate_get_mouse_location(&x, &y);
-    Bridge_returnNumbers(bridge, 2, x, y);
-}
-
-void native_stage_get_mouse_wheel(Bridge *bridge)
-{
-    int move = mouseWheelMovement;
-    Bridge_returnNumber(bridge, move);
-}
-
-void native_stage_get_mouse_key_action(Bridge *bridge)
-{
-    int keyCode = Bridge_receiveNumber(bridge);
-    int action = delegate_was_mouse_pressed(keyCode);
-    Bridge_returnNumber(bridge, action);
-}
-
-void native_stage_get_mouse_key_state(Bridge *bridge)
-{
-    int keyCode = Bridge_receiveNumber(bridge);
-    int action = delegate_is_mouse_pressed(keyCode);
-    Bridge_returnNumber(bridge, action);
-}
-
-void native_stage_get_keyboard_key_action(Bridge *bridge)
-{
-    int keyCode = Bridge_receiveNumber(bridge);
-    int action = delegate_was_key_pressed(keyCode);
-    Bridge_returnNumber(bridge, action);
-}
-
-void native_stage_get_keyboard_key_state(Bridge *bridge)
-{
-    int keyCode = Bridge_receiveNumber(bridge);
-    int action = delegate_is_key_pressed(keyCode);
-    Bridge_returnNumber(bridge, action);
-}
-
 void native_stage_save_screenshot(Bridge *bridge)
 {
     CString path = Bridge_receiveString(bridge);
     delegate_stage_save_screenshot(path);
-    Bridge_returnEmpty(bridge);
-}
-
-void native_stage_audio_set_volume(Bridge *bridge)
-{
-    float v = Bridge_receiveNumber(bridge);
-    // SetMasterVolume(v);
     Bridge_returnEmpty(bridge);
 }

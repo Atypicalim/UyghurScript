@@ -47,6 +47,20 @@ ALIAS_is_working: &__working
   uz: ishlavotommi
   tr: çalışıyormu
   kz: істептырбу
+ALIAS_show: &__show
+  en: show
+  uy: كۆرسىتىش
+  ug: korsitish
+  uz: korsatish
+  tr: gösteriş
+  kz: көрсету
+ALIAS_is_visible: &__is_visible
+  en: is_visible
+  uy: كۆرۈنەمدۇ
+  ug: korvnemdu
+  uz: korindimi
+  tr: görünüyormu
+  kz: көрінедіме
 
 ############################# global
 # information
@@ -722,20 +736,6 @@ ALIAS_stage_set_min_size:
   uz: eng_kichik_kattalikni_o'rnatish
   tr: en_küçük_boyutu_ayarlamak
   kz: ең_кішкентай_өлшемін_орнату
-ALIAS_stage_show_cursor:
-  en: show_cursor
-  uy: ئىستىرىلكا_كۆرسىتىش
-  ug: istirilkaKorsitish
-  uz: kursorni_ko'rsatish
-  tr: imleci_göstermek
-  kz: курсор_көрсету
-ALIAS_stage_have_cursor:
-  en: have_cursor
-  uy: ئىستىرىلكا_ئىچىدىمۇ
-  ug: istirilkaIchidimu
-  uz: kursor_ichidami
-  tr: imleci_içindemı
-  kz: курсор_ішіндеме
 ALIAS_stage_set_clipboard:
   en: set_clipboard
   uy: چاپلاش_تاختىسىنى_يېزىش
@@ -750,41 +750,6 @@ ALIAS_stage_get_clipboard:
   uz: ko'chirish_taxtasi_o'qish
   tr: panoyu_okumak
   kz: қою_тақтаны_оқу
-ALIAS_stage_set_mouse_cursor:
-  en: set_mouse_cursor
-  uy: ئائۇس_ئىستىرىلكا_بەلگىسىنى_بېكىتىش
-  ug: mausIstirilkaBelgisiniBikitish
-  uz: sichqoncha_kursor_belgisini_o'rnatish
-  tr: fare_imlecini_ayarla
-  kz: тінтуір_курсорын_орнату
-ALIAS_stage_get_mouse_position:
-  en: get_mouse_position
-  uy: ئائۇس_ئىستىرىلكا_ئورنىنى_ئېلىش
-  ug: mausIstirilkaOrniniElish
-  uz: sichqoncha_kursor_pozitsiyasini_olish
-  tr: fare_pozisyonu_almak
-  kz: тінтуір_позициясын_алу
-ALIAS_stage_get_mouse_wheel:
-  en: get_mouse_wheel
-  uy: ئائۇس_ئايلانما_ئورنىنى_ئېلىش
-  ug: mausAylanmaOrniniElish
-  uz: sichqoncha_g'ildiragi_pozitsiyasini_olish
-  tr: fare_tekerleğini_almak
-  kz: тінтуір_Айналым_алу
-ALIAS_stage_get_mouse_key_action:
-  en: get_mouse_key_action
-  uy: مائۇس_كۇنۇپكا_ھەركىتىنى_ئېلىش
-  ug: mausKunupkisiHerkitiniElish
-  uz: sichqoncha_tugmasini_harakati_olish
-  tr: fare_anahtar_eylemi_almak
-  kz: тінтуір_пернесін_әрекет_алу
-ALIAS_stage_get_mouse_key_state:
-  en: get_mouse_key_state
-  uy: مائۇس_كۇنۇپكا_ھالىتىنى_ئېلىش
-  ug: mausKunupkisiHalitiniElish
-  uz: sichqoncha_tugmasini_holati_olish
-  tr: fare_anahtar_durumu_almak
-  kz: тінтуір_кілтінің_күйін_алу
 ALIAS_stage_get_keyboard_key_action:
   en: get_keyboard_key_action
   uy: تاختاي_كۇنۇپكا_ھەركىتىنى_ئېلىش
@@ -806,13 +771,78 @@ ALIAS_stage_save_screenshot:
   uz: ekranni_rasmga_olip_saqlash
   tr: ekran_görüntüsi_alip_saklamak
   kz: экранды_суретке_түсіру_сақтау
-ALIAS_stage_audio_set_volume:
-  en: audio_set_volume
-  uy: پىروگرامما_ئاۋازىنى_بېكىتىش
-  ug: programmaAwaziniBikitish
-  uz: dastur_ovozini_o'rnatish
-  tr: program_sesi_ayarlamak
-  kz: бағдарламаны_дыбысты_орнату
+
+############################# buttons
+ALIAS_button_get_action: &__button_get_action
+  en: get_button_action
+  uy: كۇنۇپكا_ھەركىتىنى_ئېلىش
+  ug: kunupkisiHerkitiniElish
+  uz: tugmasini_harakati_olish
+  tr: anahtar_eylemi_almak
+  kz: пернесін_әрекет_алу
+ALIAS_button_get_state: &__button_get_state
+  en: get_button_state
+  uy: كۇنۇپكا_ھالىتىنى_ئېلىش
+  ug: kunupkisiHalitiniElish
+  uz: tugmasini_holati_olish
+  tr: anahtar_durumu_almak
+  kz: кілтінің_күйін_алу
+ALIAS_button_is_pressed: &__button_is_pressed
+  en: is_pressed
+  uy: بېسىلدىمۇ
+  ug: besildimu
+  uz: bosildimi
+  tr: basıldımı
+  kz: басылдыма
+ALIAS_button_is_released: &__button_is_released
+  en: is_released
+  uy: بوشىتىلدىمۇ
+  ug: boshitildimu
+  uz: boshotildimi
+  tr: bırakıldımi
+  kz: босатылдыма
+
+############################# mouse
+ALIAS_mouse:
+  en: mouse
+  uy: مائۇس
+  ug: maus
+  uz: sichqoncha
+  tr: fare
+  kz: тінтуір
+ALIAS_mouse_set_visible:
+  <<: *__show
+ALIAS_mouse_is_visible:
+  <<: *__is_visible
+ALIAS_mouse_set_cursor:
+  en: set_cursor
+  uy: بەلگىسىنى_بېكىتىش
+  ug: belgisiniBikitish
+  uz: belgisini_o'rnatish
+  tr: imlecini_ayarla
+  kz: курсорын_орнату
+ALIAS_mouse_get_position:
+  en: get_position
+  uy: ئورنىنى_ئېلىش
+  ug: orniniElish
+  uz: pozitsiyasini_olish
+  tr: pozisyonu_almak
+  kz: позициясын_алу
+ALIAS_mouse_get_wheel:
+  en: get_wheel
+  uy: ئايلانمىنى_ئېلىش
+  ug: aylanminiElish
+  uz: g'ildiragini_olish
+  tr: tekerleğini_almak
+  kz: Айналым_алу
+ALIAS_mouse_get_key_action:
+  <<: *__button_get_action
+ALIAS_mouse_get_key_state:
+  <<: *__button_get_state
+ALIAS_mouse_is_pressed:
+  <<: *__button_is_pressed
+ALIAS_mouse_is_released:
+  <<: *__button_is_released
 
 ############################# baord
 ALIAS_board:
@@ -822,29 +852,46 @@ ALIAS_board:
   uz: taxta
   tr: tahta
   kz: тақта
+ALIAS_board_get_key_action:
+  <<: *__button_get_action
+ALIAS_board_get_key_state:
+  <<: *__button_get_state
+ALIAS_board_is_pressed:
+  <<: *__button_is_pressed
+ALIAS_board_is_released:
+  <<: *__button_is_released
+
+############################# pencil
+ALIAS_pencil:
+  en: pencil
+  uy: قەلەم
+  ug: qelem
+  uz: qalam
+  tr: kalem
+  kz: қалам
 # draw point & line
-ALIAS_board_draw_pixel:
+ALIAS_pencil_draw_pixel:
   en: draw_pixel
   uy: نۇقتا_سىزىش
   ug: nuqtaSizish
   uz: nuqta_chizish
   tr: nokta_çizmek
   kz: нүкте_сызу
-ALIAS_board_draw_line_no_controll:
+ALIAS_pencil_draw_line_no_controll:
   en: draw_line_no_controll
   uy: سىزىق_سىزىش
   ug: siziqSizish
   uz: chiziq_chizish
   tr: çizgi_çizmek
   kz: сызық_сызу
-ALIAS_board_draw_line_one_controll:
+ALIAS_pencil_draw_line_one_controll:
   en: draw_line_one_controll
   uy: سىزىق_سىزىش_بىر_كونتىروللۇق
   ug: siziqSizishBirKontrolluq
   uz: chiziq_chizish_bir_control
   tr: çizgi_çizmek_tek_kontrol
   kz: сызық_сызу_Бір_басқару
-ALIAS_board_draw_line_two_controll:
+ALIAS_pencil_draw_line_two_controll:
   en: draw_line_two_controll
   uy: سىزىق_سىزىش_ئىككى_كونتىروللۇق
   ug: siziqSizishIkkiKontirolluq
@@ -852,28 +899,28 @@ ALIAS_board_draw_line_two_controll:
   tr: çizgi_çizmek_iki_kontrol
   kz: сызық_сызу_екі_басқару
 # draw rectangle
-ALIAS_board_draw_rectangle_fill_transformed:
+ALIAS_pencil_draw_rectangle_fill_transformed:
   en: draw_rectangle_fill_transformed
   uy: تۆت_تەرەپلىك_تولدۇرۇش_ئايلاندۇرۇلغان
   ug: totTereplikToldurushAylandurulghan
   uz: to'rtburchak_to'ldirish_aylantirilgan
   tr: dörtgen_doldurmak_dönüştürülen
   kz: төртбұрыш_толтыру_түрленген
-ALIAS_board_draw_rectangle_fill_colorful:
+ALIAS_pencil_draw_rectangle_fill_colorful:
   en: draw_rectangle_fill_colorful
   uy: تۆت_تەرەپلىك_تولدۇرۇش_بويالغان
   ug: totTereplikToldurushBoyalghan
   uz: to'rtburchak_to'ldirish_boyalgan
   tr: dörtgen_doldurmak_boyalı
   kz: төртбұрыш_толтыру_боялған
-ALIAS_board_draw_rectangle_fill_round:
+ALIAS_pencil_draw_rectangle_fill_round:
   en: draw_rectangle_fill_round
   uy: تۆت_تەرەپلىك_تولدۇرۇش_يۇمۇلاق
   ug: totTereplikToldurushYumulaq
   uz: to'rtburchak_to'ldirish_dumaloq
   tr: dörtgen_doldurmak_yuvarlak
   kz: төртбұрыш_толтыру_дөңгелек
-ALIAS_board_draw_rectangle_stroke:
+ALIAS_pencil_draw_rectangle_stroke:
   en: draw_rectangle_stroke
   uy: تۆت_تەرەپلىك_سىزىش
   ug: totTereplikSizish
@@ -881,28 +928,28 @@ ALIAS_board_draw_rectangle_stroke:
   tr: dörtgen_çizmek
   kz: төртбұрыш_сызу
 # draw circle & ring
-ALIAS_board_draw_circle_fill:
+ALIAS_pencil_draw_circle_fill:
   en: draw_circle_fill
   uy: چەمبەر_تولدۇرۇش
   ug: chemberToldurush
   uz: doira_to'ldirish
   tr: çember_doldurmak
   kz: шеңбер_толтыру
-ALIAS_board_draw_circle_stroke:
+ALIAS_pencil_draw_circle_stroke:
   en: draw_circle_stroke
   uy: چەمبەر_سىزىش
   ug: chemberSizish
   uz: doira_chizish
   tr: çember_çizmek
   kz: шеңбер_сызу
-ALIAS_board_draw_ring_fill:
+ALIAS_pencil_draw_ring_fill:
   en: draw_ring_fill
   uy: ئۈزۈك_تولدۇرۇش
   ug: uzukToldurush
   uz: uzuk_fill
   tr: yüzük_doldurmak
   kz: жүзік_толтыру
-ALIAS_board_draw_ring_stroke:
+ALIAS_pencil_draw_ring_stroke:
   en: draw_ring_stroke
   uy: ئۈزۈك_سىزىش
   ug: uzukSizish
@@ -910,28 +957,28 @@ ALIAS_board_draw_ring_stroke:
   tr: yüzük_çizmek
   kz: жүзік_сызу
 # draw triangle & polygon
-ALIAS_board_draw_triangle_fill:
+ALIAS_pencil_draw_triangle_fill:
   en: draw_triangle_fill
   uy: ئۈچ_تەرەپلىك_تولدۇرۇش
   ug: uchTereplikToldurush
   uz: uchburchak_to'ldirish
   tr: üçgen_doldurmak
   kz: үшбұрыш_толтыру
-ALIAS_board_draw_triangle_stroke:
+ALIAS_pencil_draw_triangle_stroke:
   en: draw_triangle_stroke
   uy: ئۈچ_تەرەپلىك_سىزىش
   ug: uchTereplikSizish
   uz: uchburchak_chizish
   tr: üçgen_çizmek
   kz: үшбұрыш_сызу
-ALIAS_board_draw_polygon_fill:
+ALIAS_pencil_draw_polygon_fill:
   en: draw_polygon_fill
   uy: كۆپ_تەرەپلىك_تولدۇرۇش
   ug: kopTereplikToldurush
   uz: ko'pburchak_fill
   tr: çokgen_doldurmak
   kz: көпбұрыш_толтыру
-ALIAS_board_draw_polygon_stroke:
+ALIAS_pencil_draw_polygon_stroke:
   en: draw_polygon_stroke
   uy: كۆپ_تەرەپلىك_سىزىش
   ug: kopTereplikSizish
@@ -939,14 +986,14 @@ ALIAS_board_draw_polygon_stroke:
   tr: çokgen_çizmek
   kz: көпбұрыш_сызу
 # font
-ALIAS_board_draw_text:
+ALIAS_pencil_draw_text:
   en: draw_text
   uy: خەت_يېزىش
   ug: xetYezish
   uz: xat_yozish
   tr: dize_çizmek
   kz: хат_сызу
-ALIAS_board_measure_text:
+ALIAS_pencil_measure_text:
   en: measure_text
   uy: خەت_مۆلچەرلەش
   ug: xetMolcherlesh
@@ -954,21 +1001,21 @@ ALIAS_board_measure_text:
   tr: dize_ölçmek
   kz: хат_өлшеу
 # texture
-ALIAS_board_texturize_image:
+ALIAS_pencil_texturize_image:
   en: texturize_image
   uy: سىزما_نەقىشلەش
   ug: sizmaNeqishlesh
   uz: chizuv_neqishlesh
   tr: çekme_nakışlemek
   kz: сызу_неқишлу
-ALIAS_board_texturize_text:
+ALIAS_pencil_texturize_text:
   en: texturize_text
   uy: يازما_نەقىشلەش
   ug: yazmaNeqishlesh
   uz: yozuv_neqishlesh
   tr: yazma_nakışlemek
   kz: жазба_неқишлу
-ALIAS_board_draw_texture:
+ALIAS_pencil_draw_texture:
   en: draw_texture
   uy: نەقىش_سىزىش
   ug: neqishSizish

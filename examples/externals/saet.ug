@@ -82,7 +82,7 @@ xizmetchi istirilkaSizish miqdar istirilka bulung mezmuni
     x = merkezX + x
     y = merkezY - y
     # 
-    xizmetchi @taxta:siziqSizish bilen merkezX merkezY x y 5 "eeeeee" ishlitilsun
+    xizmetchi @qelem:siziqSizish bilen merkezX merkezY x y 5 "eeeeee" ishlitilsun
 tamamlansun
 
 xizmetchi istirilkaHisablash miqdar hazirqiWaqit mezmuni
@@ -114,13 +114,13 @@ nawada @sehne:yepilmaqchi bolmisa
     #
     xizmetchi @waqit:sikuntElish ishlitilsun we hazirqiWaqit elinsun
     # teglik sizish
-    xizmetchi @taxta:totTereplikToldurushAylandurulghan bilen 0 0 ikranKengliki ikranIgizliki "101010" 0 0 0 ishlitilsun
-    xizmetchi @taxta:totTereplikToldurushAylandurulghan bilen 5 5 490 590 "303030" 0 0 0 ishlitilsun
-    xizmetchi @taxta:chemberToldurush bilen merkezX merkezY teglikRadiusi teglikRadiusi "101010" ishlitilsun
+    xizmetchi @qelem:totTereplikToldurushAylandurulghan bilen 0 0 ikranKengliki ikranIgizliki "101010" 0 0 0 ishlitilsun
+    xizmetchi @qelem:totTereplikToldurushAylandurulghan bilen 5 5 490 590 "303030" 0 0 0 ishlitilsun
+    xizmetchi @qelem:chemberToldurush bilen merkezX merkezY teglikRadiusi teglikRadiusi "101010" ishlitilsun
     # xet yezish
-    xizmetchi @taxta:xetYezish bilen "../resources/ukij.ttf" tema 36 0 "bbbbbb" 35 20 ishlitilsun
+    xizmetchi @qelem:xetYezish bilen "../resources/ukij.ttf" tema 36 0 "bbbbbb" 35 20 ishlitilsun
     xizmetchi @waqit:sikuntniAylandurush bilen hazirqiWaqit "%Y-%m-%d %H:%M:%S" ishlitilsun we chisla elinsun
-    xizmetchi @taxta:xetYezish bilen "../resources/ukij.ttf" chisla 36 0 "eeeeee" 115 450 ishlitilsun
+    xizmetchi @qelem:xetYezish bilen "../resources/ukij.ttf" chisla 36 0 "eeeeee" 115 450 ishlitilsun
     # istirilka hisablash
     xizmetchi istirilkaHisablash bilen hazirqiWaqit ishlitilsun
     # istirilka sizish
@@ -128,7 +128,7 @@ nawada @sehne:yepilmaqchi bolmisa
     xizmetchi istirilkaSizish bilen MINUT minutGradusi ishlitilsun
     xizmetchi istirilkaSizish bilen SIKUNIT sikunitGradusi ishlitilsun
     # mekez sizish
-    xizmetchi @taxta:chemberToldurush bilen merkezX merkezY 10 10 "303030" ishlitilsun
+    xizmetchi @qelem:chemberToldurush bilen merkezX merkezY 10 10 "303030" ishlitilsun
     #
     xizmetchi @sehne:yengilash ishlitilsun
 tamamlansun

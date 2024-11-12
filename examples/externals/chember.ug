@@ -17,7 +17,7 @@ nawada @sehne:yepilmaqchi bolmisa
     tamamlansun
     x = x + d
     y = y + d
-    xizmetchi @taxta:chemberSizish bilen x y 100 100 "55aaff" ishlitilsun
+    xizmetchi @qelem:chemberSizish bilen x y 100 100 "55aaff" ishlitilsun
     #
     xizmetchi @sehne:yengilash ishlitilsun
 tamamlansun

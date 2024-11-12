@@ -26,10 +26,11 @@
 
 
 - [stage](externals/stage.md)
-- [board](externals/board.md)
+- [pencil](externals/pencil.md)
 - [music](externals/music.md)
 - [sound](externals/sound.md)
-- [control](externals/control.md)
+- [mouse](externals/mouse.md)
+- [board](externals/board.md)
 
 ### 4. Others
 

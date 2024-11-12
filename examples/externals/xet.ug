@@ -6,8 +6,8 @@ miqdar o qimmiti 0 bolsun
 
 xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
 
-xizmetchi @taxta:xetMolcherlesh bilen "../resources/ukij.ttf" "SINAQ" 36 0 ishlitilsun we w elinsun
-xizmetchi @taxta:yazmaNeqishlesh bilen "../resources/ukij.ttf" "سىناق" 36 0 ishlitilsun we r elinsun
+xizmetchi @qelem:xetMolcherlesh bilen "../resources/ukij.ttf" "SINAQ" 36 0 ishlitilsun we w elinsun
+xizmetchi @qelem:yazmaNeqishlesh bilen "../resources/ukij.ttf" "سىناق" 36 0 ishlitilsun we r elinsun
 
 nawada @sehne:yepilmaqchi bolmisa
     #
@@ -20,9 +20,9 @@ nawada @sehne:yepilmaqchi bolmisa
     #
     o = w / 2
     o = 250 - o
-    xizmetchi @taxta:xetYezish bilen "../resources/ukij.ttf" "SINAQ" 36 0 "ff0000ff" o 50 ishlitilsun
+    xizmetchi @qelem:xetYezish bilen "../resources/ukij.ttf" "SINAQ" 36 0 "ff0000ff" o 50 ishlitilsun
     #
-    xizmetchi @taxta:neqishSizish bilen r 250 250 0.5 0.5 "ffaaaaff" 0 0 -1 -1 0 s ishlitilsun
+    xizmetchi @qelem:neqishSizish bilen r 250 250 0.5 0.5 "ffaaaaff" 0 0 -1 -1 0 s ishlitilsun
     #
     xizmetchi @sehne:yengilash ishlitilsun
 tamamlansun

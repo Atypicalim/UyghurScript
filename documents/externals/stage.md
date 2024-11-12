@@ -199,26 +199,7 @@
 * h  `int`
 
 
-### 21. show_cursor
-
-> 📝:  show_cursor func of stage module
-
-> 🔙: Empty
-
-> 🛒: 
-* b  `bool`
-
-
-### 22. have_cursor
-
-> 📝:  have_cursor func of stage module
-
-> 🔙: Boolean
-
-> 🛒:  none
-
-
-### 23. set_clipboard
+### 21. set_clipboard
 
 > 📝:  set_clipboard func of stage module
 
@@ -228,7 +209,7 @@
 * c  `CString`
 
 
-### 24. get_clipboard
+### 22. get_clipboard
 
 > 📝:  get_clipboard func of stage module
 
@@ -237,75 +218,7 @@
 > 🛒:  none
 
 
-### 25. set_mouse_cursor
-
-> 📝:  set_mouse_cursor func of stage module
-
-> 🔙: Empty
-
-> 🛒: 
-* c  `int`
-
-
-### 26. get_mouse_position
-
-> 📝:  get_mouse_position func of stage module
-
-> 🔙: Numbers
-
-> 🛒:  none
-
-
-### 27. get_mouse_wheel
-
-> 📝:  get_mouse_wheel func of stage module
-
-> 🔙: Number
-
-> 🛒:  none
-
-
-### 28. get_mouse_key_action
-
-> 📝:  get_mouse_key_action func of stage module
-
-> 🔙: Number
-
-> 🛒: 
-* keyCode  `int`
-
-
-### 29. get_mouse_key_state
-
-> 📝:  get_mouse_key_state func of stage module
-
-> 🔙: Number
-
-> 🛒: 
-* keyCode  `int`
-
-
-### 30. get_keyboard_key_action
-
-> 📝:  get_keyboard_key_action func of stage module
-
-> 🔙: Number
-
-> 🛒: 
-* keyCode  `int`
-
-
-### 31. get_keyboard_key_state
-
-> 📝:  get_keyboard_key_state func of stage module
-
-> 🔙: Number
-
-> 🛒: 
-* keyCode  `int`
-
-
-### 32. save_screenshot
+### 23. save_screenshot
 
 > 📝:  save_screenshot func of stage module
 
@@ -313,16 +226,6 @@
 
 > 🛒: 
 * path  `CString`
-
-
-### 33. audio_set_volume
-
-> 📝:  audio_set_volume func of stage module
-
-> 🔙: Empty
-
-> 🛒: 
-* v  `float`
 
 
 ---
