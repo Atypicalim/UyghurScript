@@ -226,16 +226,34 @@ bool Bridge_receiveBoolean(Bridge *this)
     return v->boolean;
 }
 
+bool Bridge_receiveBooleanWithDefault(Bridge *this, bool _default)
+{
+    Value *v = Bridge_nextValue(this);
+    return Value_isBoolean(v) ? v->boolean : _default;
+}
+
 double Bridge_receiveNumber(Bridge *this)
 {
     Value *v = Bridge_receiveValue(this, UG_TYPE_NUM);
     return v->number;
 }
 
+double Bridge_receiveNumberWithDefault(Bridge *this, double _default)
+{
+    Value *v = Bridge_nextValue(this);
+    return Value_isNumber(v) ? v->number : _default;
+}
+
 char *Bridge_receiveString(Bridge *this)
 {
     Value *v = Bridge_receiveValue(this, UG_TYPE_STR);
     return v->string;
+}
+
+char *Bridge_receiveStringWithDefault(Bridge *this, CString _default)
+{
+    Value *v = Bridge_nextValue(this);
+    return Value_isString(v) ? v->string : _default;
 }
 
 // return result to script from c
@@ -267,7 +285,7 @@ void Bridge_returnNumber(Bridge *this, double val)
 
 void Bridge_returnString(Bridge *this, char *val)
 {
-    Value *v = Value_newString(val, NULL);
+    Value *v = val == NULL ? Value_newEmpty(NULL) : Value_newString(val, NULL);
     Bridge_returnValue(this, v);
 }
 

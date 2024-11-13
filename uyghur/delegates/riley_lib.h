@@ -1,5 +1,7 @@
 // riley
 
+#ifndef RAYLIB_DELEGATE_H
+#define RAYLIB_DELEGATE_H
 #include "../include.h"
 #include "./define.h"
 
@@ -154,10 +156,22 @@ void __riley_on_mouve_button_event(RGFW_window* win, u8 button, double scroll, b
 RGFW_window* _rileyWindow = NULL;
 bool _rileyHasCursor = true;
 
-#define CHECK_WRILEY_WINDOW() \
+#define CHECK_RILEY_WINDOW_V() \
     if (_rileyWindow == NULL) { \
         printf("riley window is not created yet!\n"); \
         return; \
+    }
+
+#define CHECK_RILEY_WINDOW_B() \
+    if (_rileyWindow == NULL) { \
+        printf("riley window is not created yet!\n"); \
+        return false; \
+    }
+
+#define CHECK_RILEY_WINDOW_S() \
+    if (_rileyWindow == NULL) { \
+        printf("riley window is not created yet!\n"); \
+        return NULL; \
     }
 
 #define STAGE_IS_FULLSCREEN RGFW_window_isFullscreen(_rileyWindow)
@@ -177,12 +191,8 @@ int delegate_stage_get_fps() {
     return 60;
 }
 
-int delegate_draw_debug(int x, int y) {
-    RSGL_drawText("60", RSGL_CIRCLE(x, y, 24), RSGL_RGB(255, 0, 0));
-}
-
 void stage_toggle_fullscreen() {
-    CHECK_WRILEY_WINDOW();
+    CHECK_RILEY_WINDOW_V();
     _rileyWindow->_winArgs ^= RGFW_FULLSCREEN;
 }
 
@@ -210,7 +220,7 @@ void stage_set_position(int x, int y) {
 }
 
 void stage_get_position(int *x, int *y) {
-    CHECK_WRILEY_WINDOW();
+    CHECK_RILEY_WINDOW_V();
     RGFW_rect rect = _rileyWindow->r;
     *x = rect.x;
     *y = rect.y;
@@ -222,14 +232,10 @@ void stage_set_size(int w, int h) {
 }
 
 void stage_get_size(int *w, int *h) {
-    CHECK_WRILEY_WINDOW();
+    CHECK_RILEY_WINDOW_V();
     RGFW_rect rect = _rileyWindow->r;
     *w = rect.w;
     *h = rect.h;
-}
-
-void delegate_set_min_size(int w, int h) {
-    RGFW_window_setMinSize(_rileyWindow, RGFW_AREA(w, h));
 }
 
 void delegate_set_clipboard(CString text) {
@@ -299,7 +305,7 @@ void delegate_stage_run_program() {
 
 bool delegate_stage_update_program() {
     //
-    CHECK_WRILEY_WINDOW();
+    CHECK_RILEY_WINDOW_B();
     bool closeable = RGFW_window_shouldClose(_rileyWindow);
     Value *value = Value_newBoolean(closeable, NULL);
     helper_set_proxy_value(ALIAS_stage, ALIAS_stage_is_closeable, value);
@@ -318,3 +324,5 @@ bool delegate_stage_update_program() {
         return false;
     }
 }
+
+#endif

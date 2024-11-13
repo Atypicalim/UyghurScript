@@ -1,0 +1,39 @@
+# dialog
+
+miqdar r qimmiti quruq bolsun
+
+xizmetchi @sohbet:bildurush bilen "title" "content..." ishlitilsun
+
+# plaintext
+xizmetchi @sohbet:kirguzush bilen "title" "default..." ishlitilsun we r elinsun
+buyruq "\n text:" yezilsun
+buyruq r yezilsun
+# password
+xizmetchi @sohbet:kirguzush bilen "title" ishlitilsun we r elinsun
+buyruq "\n pass:" yezilsun
+buyruq r yezilsun
+
+# yes_or_not
+xizmetchi @sohbet:testiqlash bilen "title" "content..." ishlitilsun we r elinsun
+buyruq "\n confirm:" yezilsun
+buyruq r yezilsun
+
+# to_saving
+xizmetchi @sohbet:saqlashTallash bilen "title" "./" "*.txt" ishlitilsun we r elinsun
+buyruq "\n save_to:" yezilsun
+buyruq r yezilsun
+# to_opening
+xizmetchi @sohbet:echishTallash bilen "title" "./" "*.txt" ishlitilsun we r elinsun
+buyruq "\n open_from:" yezilsun
+buyruq r yezilsun
+
+# chose_folder
+xizmetchi @sohbet:qisquchTallash bilen "title" "./" ishlitilsun we r elinsun
+buyruq "\n target_folder:" yezilsun
+buyruq r yezilsun
+# chose_color
+xizmetchi @sohbet:rengTallash bilen "title" "#ffffff"  ishlitilsun we r elinsun
+buyruq "\n selected_folder:" yezilsun
+buyruq r yezilsun
+
+buyruq "\n" yezilsun

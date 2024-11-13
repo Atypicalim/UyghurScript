@@ -1,5 +1,7 @@
-// raylib
+// raysan
 
+#ifndef RAYSAN_DELEGATE_H
+#define RAYSAN_DELEGATE_H
 #include "../include.h"
 #include "./define.h"
 
@@ -206,10 +208,6 @@ int delegate_stage_get_fps() {
     return GetFPS();
 }
 
-int delegate_draw_debug(int x, int y) {
-    DrawFPS(x, y);
-}
-
 void stage_toggle_fullscreen() {
     ToggleFullscreen();
 }
@@ -241,10 +239,6 @@ void stage_set_size(int w, int h) {
 void stage_get_size(int *w, int *h) {
     *w = GetScreenWidth();
     *h = GetScreenHeight();
-}
-
-void delegate_set_min_size(int w, int h) {
-    SetWindowMinSize(w, h);
 }
 
 void delegate_set_clipboard(CString text) {
@@ -339,3 +333,5 @@ bool delegate_stage_update_program() {
         return false;
     }
 }
+
+#endif

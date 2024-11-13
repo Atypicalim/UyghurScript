@@ -19,6 +19,7 @@
 #include <setjmp.h>
 
 #include "utf8.h"
+#include "tinyfiledialogs.h"
 
 #include "../../c-pure-tools/tools.h"
 

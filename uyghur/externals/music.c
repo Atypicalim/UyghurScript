@@ -1,6 +1,7 @@
 // music
 
 #include "../include.h"
+#include "../delegates/header.h"
 RMusic __defaulRMusic;
 
 // tool

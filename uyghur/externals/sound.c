@@ -1,6 +1,7 @@
 // sound
 
 #include "../include.h"
+#include "../delegates/header.h"
 RSound __defaulRSound;
 
 // tool

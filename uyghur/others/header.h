@@ -128,7 +128,7 @@ typedef struct _Value {
     union { 
         bool boolean;
         double number;
-        String *string;
+        CString string;
         Object *obj;
         Array *arr;
         Hashmap *map;

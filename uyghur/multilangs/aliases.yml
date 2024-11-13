@@ -61,6 +61,20 @@ ALIAS_is_visible: &__is_visible
   uz: korindimi
   tr: görünüyormu
   kz: көрінедіме
+ALIAS_save: &__save
+  en: save
+  uy: ساقلاش
+  ug: saqlash
+  uz: saqlash
+  tr: kaydetmek
+  kz: сақтау
+ALIAS_open: &__open
+  en: open
+  uy: ئېچىش
+  ug: echish
+  uz: ochmoq
+  tr: açmak
+  kz: ашу
 
 ############################# global
 # information
@@ -608,20 +622,8 @@ ALIAS_stage_get_fps:
   uz: fps_olish
   tr: fps_almak
   kz: фпс_алу
-ALIAS_stage_draw_fps:
-  en: draw_fps
-  uy: ئەفپىئەس_سىزىش
-  ug: fpsSizish
-  uz: fps_chizish
-  tr: fps_çizmek
-  kz: фпс_draw
 ALIAS_stage_show_window:
-  en: show
-  uy: كۆرسىتىش
-  ug: korsitish
-  uz: ko'rsatish
-  tr: göstermek
-  kz: көрсету
+  <<: *__show
 ALIAS_stage_is_closeable:
   en: is_closeable
   uy: يېپىلماقچى
@@ -729,13 +731,6 @@ ALIAS_stage_get_size:
   uz: kattalikni_olish
   tr: boyutu_almak
   kz: өлшемін_алу
-ALIAS_stage_set_min_size:
-  en: set_min_size
-  uy: ئەڭ_كىچىك_چوڭلىقىنى_بېكىتىش
-  ug: engKichikChongliqiniBikitish
-  uz: eng_kichik_kattalikni_o'rnatish
-  tr: en_küçük_boyutu_ayarlamak
-  kz: ең_кішкентай_өлшемін_орнату
 ALIAS_stage_set_clipboard:
   en: set_clipboard
   uy: چاپلاش_تاختىسىنى_يېزىش
@@ -750,24 +745,10 @@ ALIAS_stage_get_clipboard:
   uz: ko'chirish_taxtasi_o'qish
   tr: panoyu_okumak
   kz: қою_тақтаны_оқу
-ALIAS_stage_get_keyboard_key_action:
-  en: get_keyboard_key_action
-  uy: تاختاي_كۇنۇپكا_ھەركىتىنى_ئېلىش
-  ug: tahtayKunupkisiHerkitiniElish
-  uz: klaviatura_tugmasini_harakati_olish
-  tr: klavye_anahtar_eylemi_almak
-  kz: пернетақта_кілтінің_әрекетін_алу
-ALIAS_stage_get_keyboard_key_state:
-  en: get_keyboard_key_state
-  uy: تاختاي_كۇنۇپكا_ھالىتىنى_ئېلىش
-  ug: tahtayKunupkisiHalitiniElish
-  uz: klaviatura_tugmasini_holati_olish
-  tr: klavye_anahtar_durumu_almak
-  kz: пернетақта_кілтінің_күйін_алу
 ALIAS_stage_save_screenshot:
   en: save_screenshot
   uy: ئېكراننى_رەسىمگە_تارتىپ_ساقلاش
-  ug: ikranniResimgeTartipSaxlash
+  ug: ikranniResimgeTartipSaqlash
   uz: ekranni_rasmga_olip_saqlash
   tr: ekran_görüntüsi_alip_saklamak
   kz: экранды_суретке_түсіру_сақтау
@@ -1159,6 +1140,64 @@ ALIAS_control_show_label:
   uz: xat_ko'rsatish
   tr: dize_göstermek
   kz: хат_көрсету
+
+############################# dialog
+ALIAS_dialog:
+  en: dialog
+  uy: سۆھبەت
+  ug: sohbet
+  uz: suhbat
+  tr: sohbet
+  kz: сұхбат
+ALIAS_dialog_inform:
+  en: inform
+  uy: بىلدۈرۈش
+  ug: bildurush
+  uz: bildirmoq
+  tr: bildirmek
+  kz: білдіру
+ALIAS_dialog_confirm:
+  en: confirm
+  uy: تەستىقلاش
+  ug: testiqlash
+  uz: tasdiqlash
+  tr: tasdiklemek
+  kz: тастіқlау
+ALIAS_dialog_input:
+  en: input
+  uy: كىرگۈزۈش
+  ug: kirguzush
+  uz: kiritish
+  tr: girguzmek
+  kz: кіргузу
+ALIAS_dialog_select_save:
+  en: select_save
+  uy: ساقلاشقا_تاللاش
+  ug: saqlashTallash
+  uz: saqlash_tanlash
+  tr: kaydetmek_seçmek
+  kz: сақтау_таңдау
+ALIAS_dialog_select_open:
+  en: select_open
+  uy: ئېچىشقا_تاللاش
+  ug: echishTallash
+  uz: ochmoq_tanlash
+  tr: açmak_seçmek
+  kz: ашу_таңдау
+ALIAS_dialog_select_folder:
+  en: select_folder
+  uy: قىسقۇچ_تاللاش
+  ug: qisquchTallash
+  uz: papka_tanlash
+  tr: klasör_seçmek
+  kz: папка_таңдау
+ALIAS_dialog_select_color:
+  en: select_color
+  uy: رەڭ_تاللاش
+  ug: rengTallash
+  uz: rang_tanlash
+  tr: renk_seçmek
+  kz: түс_таңдау
 
 ############################# voyager
 ALIAS_voyager:

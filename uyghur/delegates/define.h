@@ -144,6 +144,6 @@ typedef enum UG_BOARD_KEYS {
     UG_BOARD_KEY_RIGHT_CONTROL,     // Key: Control right
     UG_BOARD_KEY_RIGHT_ALT,         // Key: Alt right
     UG_BOARD_KEY_RIGHT_SUPER,       // Key: Super right
-};
+} UG_BOARD_KEYS;
 
 #endif

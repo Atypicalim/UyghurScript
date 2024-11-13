@@ -36,14 +36,6 @@ void native_stage_get_fps(Bridge *bridge)
     Bridge_returnNumber(bridge, fps);
 }
 
-void native_stage_draw_fps(Bridge *bridge)
-{
-    int x = Bridge_receiveNumber(bridge);
-    int y = Bridge_receiveNumber(bridge);
-    delegate_draw_debug(x, y);
-    Bridge_returnEmpty(bridge);
-}
-
 void native_stage_show_window(Bridge *bridge)
 {
     int w = Bridge_receiveNumber(bridge);
@@ -156,14 +148,6 @@ void native_stage_get_size(Bridge *bridge)
     int h = 0;
     stage_get_size(&w, &h);
     Bridge_returnNumbers(bridge, 2, w, h);
-}
-
-void native_stage_set_min_size(Bridge *bridge)
-{
-    int w = Bridge_receiveNumber(bridge);
-    int h = Bridge_receiveNumber(bridge);
-    delegate_set_min_size(w, h);
-    Bridge_returnEmpty(bridge);
 }
 
 void native_stage_set_clipboard(Bridge *bridge)

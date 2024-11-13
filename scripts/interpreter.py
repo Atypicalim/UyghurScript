@@ -176,16 +176,18 @@ bldr.start()
 
 isUseRaysan = True
 isUseRiley = not isUseRaysan
+ugStageLib = None
+if isUseRaysan:
+    ugStageLib = "raylib"
+if isUseRiley:
+    ugStageLib = "RSGL"
 
 _ugLibs = [
+    ugStageLib,
     "incbin",
     "utf8",
-    # "string",
+    "tinyfiledialogs",
 ]
-if isUseRaysan:
-    _ugLibs.append("raylib")
-if isUseRiley:
-    _ugLibs.append("RSGL")
 
 task = builder.c()
 task.setName("UYGHUR")

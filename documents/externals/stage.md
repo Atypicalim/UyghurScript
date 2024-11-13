@@ -23,18 +23,7 @@
 > 🛒:  none
 
 
-### 3. draw_fps
-
-> 📝:  draw_fps func of stage module
-
-> 🔙: Empty
-
-> 🛒: 
-* x  `int`
-* y  `int`
-
-
-### 4. show_window
+### 3. show_window
 
 > 📝:  show_window func of stage module
 
@@ -47,7 +36,7 @@
 * mode  `int`
 
 
-### 5. update_window
+### 4. update_window
 
 > 📝:  update_window func of stage module
 
@@ -56,7 +45,7 @@
 > 🛒:  none
 
 
-### 6. is_fullscreen
+### 5. is_fullscreen
 
 > 📝:  is_fullscreen func of stage module
 
@@ -65,7 +54,7 @@
 > 🛒:  none
 
 
-### 7. is_hidden
+### 6. is_hidden
 
 > 📝:  is_hidden func of stage module
 
@@ -74,7 +63,7 @@
 > 🛒:  none
 
 
-### 8. is_minimized
+### 7. is_minimized
 
 > 📝:  is_minimized func of stage module
 
@@ -83,7 +72,7 @@
 > 🛒:  none
 
 
-### 9. is_maximized
+### 8. is_maximized
 
 > 📝:  is_maximized func of stage module
 
@@ -92,7 +81,7 @@
 > 🛒:  none
 
 
-### 10. toggle_fullscreen
+### 9. toggle_fullscreen
 
 > 📝:  toggle_fullscreen func of stage module
 
@@ -101,7 +90,7 @@
 > 🛒:  none
 
 
-### 11. set_minimize
+### 10. set_minimize
 
 > 📝:  set_minimize func of stage module
 
@@ -110,7 +99,7 @@
 > 🛒:  none
 
 
-### 12. set_maximize
+### 11. set_maximize
 
 > 📝:  set_maximize func of stage module
 
@@ -119,7 +108,7 @@
 > 🛒:  none
 
 
-### 13. set_normalize
+### 12. set_normalize
 
 > 📝:  set_normalize func of stage module
 
@@ -128,7 +117,7 @@
 > 🛒:  none
 
 
-### 14. set_title
+### 13. set_title
 
 > 📝:  set_title func of stage module
 
@@ -138,7 +127,7 @@
 * title  `CString`
 
 
-### 15. set_icon
+### 14. set_icon
 
 > 📝:  set_icon func of stage module
 
@@ -148,7 +137,7 @@
 * path  `CString`
 
 
-### 16. set_position
+### 15. set_position
 
 > 📝:  set_position func of stage module
 
@@ -159,7 +148,7 @@
 * y  `int`
 
 
-### 17. get_position
+### 16. get_position
 
 > 📝:  get_position func of stage module
 
@@ -168,7 +157,7 @@
 > 🛒:  none
 
 
-### 18. set_size
+### 17. set_size
 
 > 📝:  set_size func of stage module
 
@@ -179,7 +168,7 @@
 * h  `int`
 
 
-### 19. get_size
+### 18. get_size
 
 > 📝:  get_size func of stage module
 
@@ -188,18 +177,7 @@
 > 🛒:  none
 
 
-### 20. set_min_size
-
-> 📝:  set_min_size func of stage module
-
-> 🔙: Empty
-
-> 🛒: 
-* w  `int`
-* h  `int`
-
-
-### 21. set_clipboard
+### 19. set_clipboard
 
 > 📝:  set_clipboard func of stage module
 
@@ -209,7 +187,7 @@
 * c  `CString`
 
 
-### 22. get_clipboard
+### 20. get_clipboard
 
 > 📝:  get_clipboard func of stage module
 
@@ -218,7 +196,7 @@
 > 🛒:  none
 
 
-### 23. save_screenshot
+### 21. save_screenshot
 
 > 📝:  save_screenshot func of stage module
 

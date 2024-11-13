@@ -16,7 +16,7 @@ void stage_on_resize();
 void stage_on_drop();
 
 #ifdef BUILDER_USE_RAYSAN
-#include "../delegates/raylib_lib.h"
+#include "../delegates/raysan_lib.h"
 #endif
 
 #ifdef BUILDER_USE_RILEY
