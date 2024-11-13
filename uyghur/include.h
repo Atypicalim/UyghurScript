@@ -44,6 +44,13 @@
     #include "RSGL.h"
 #endif
 
+#ifndef BUILDER_USE_TIGR
+#undef _WIN32
+#define TIGR_HEADLESS
+#endif
+#undef __IOS__
+#undef __ANDROID__
+#include "../../c-extra-tools/tigr/tigr.c"
 
 #define RA_NO_WIN_EXTRA
 #include "../../c-extra-tools/raudio/raudio.h"

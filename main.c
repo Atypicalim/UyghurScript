@@ -89,7 +89,7 @@ void run_execute_cmd(CString name, args_t args, CString path) {
 
 // 
 
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
     INCTXT(Script, UG_SCRIPT_PATH);
     // log

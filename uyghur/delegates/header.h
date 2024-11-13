@@ -23,4 +23,8 @@ void stage_on_drop();
 #include "../delegates/riley_lib.h"
 #endif
 
+#ifdef BUILDER_USE_TIGR
+#include "../delegates/tigr_lib.h"
+#endif
+
 #endif

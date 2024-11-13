@@ -175,7 +175,7 @@ bldr.start()
 ############################################################################### task
 
 isUseRaysan = True
-isUseRiley = not isUseRaysan
+isUseRiley = False
 ugStageLib = None
 if isUseRaysan:
     ugStageLib = "raylib"
@@ -183,11 +183,13 @@ if isUseRiley:
     ugStageLib = "RSGL"
 
 _ugLibs = [
-    ugStageLib,
     "incbin",
     "utf8",
     "tinyfiledialogs",
 ]
+if ugStageLib:
+    _ugLibs.insert(0, ugStageLib)
+    
 
 task = builder.c()
 task.setName("UYGHUR")
@@ -195,9 +197,14 @@ task.setDebug(True)
 task.setRelease(False)
 task.setInput('./main.c')
 task.setLibs(_ugLibs)
+task.addLinks([
+    "gdi32",
+    "winmm",
+    "opengl32",
+])
 task.setOutput(DST_ALIAS)
 task.setIcon('./resources/icon.ico')
-#
+# 
 # task.addLib("c_std", {
 #     "URL": "git@github.com:KaisenAmin/c_std.git",
 #     "BRANCH": "main",
@@ -212,8 +219,12 @@ task.addWarnings(False, [
 #
 if isUseRaysan:
     task.addFlags(["-D BUILDER_USE_RAYSAN"])
-if isUseRiley:
+elif isUseRiley:
     task.addFlags(["-D BUILDER_USE_RILEY"])
+else:
+    task.addFlags(["-D BUILDER_NO_BACKEND"])
+    task.addFlags(["-D BUILDER_USE_TIGR"])
+
 #
 task.addFlags(["-I ../c-pure-tools/"])
 task.addFlags(["-I ../c-extra-tools/"])
