@@ -42,6 +42,9 @@ void native_stage_show_window(Bridge *bridge)
     int h = Bridge_receiveNumber(bridge);
     CString title = Bridge_receiveString(bridge);
     int mode = Bridge_receiveNumber(bridge);
+    if (w <= 50) w = 500;
+    if (h <= 50) h = 500;
+    mode = delegate_stage_mode_swap(mode);
     delegate_stage_run_program(w, h, title, mode);
     raudio_InitAudioDevice();
     Bridge_returnEmpty(bridge);

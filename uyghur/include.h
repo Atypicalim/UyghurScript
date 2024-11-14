@@ -37,6 +37,7 @@
     #define RAYGUI_IMPLEMENTATION
     #include "raylib.h"
     #include "raygui.h"
+    #undef _WIN32
 #endif
 
 #ifdef BUILDER_USE_RILEY
@@ -45,12 +46,12 @@
 #endif
 
 #ifndef BUILDER_USE_TIGR
-#undef _WIN32
-#define TIGR_HEADLESS
+#define TIGR_EXT_NO_DESKTOP
 #endif
 #undef __IOS__
 #undef __ANDROID__
-#include "../../c-extra-tools/tigr/tigr.c"
+#define TIGR_EXT_NO_MOBILE
+#include "../../c-extra-tools/tigr4ext/tigr4ext.h"
 
 #define RA_NO_WIN_EXTRA
 #include "../../c-extra-tools/raudio/raudio.h"

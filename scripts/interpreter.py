@@ -174,7 +174,7 @@ bldr.start()
 
 ############################################################################### task
 
-isUseRaysan = True
+isUseRaysan = False
 isUseRiley = False
 ugStageLib = None
 if isUseRaysan:
@@ -222,7 +222,7 @@ if isUseRaysan:
 elif isUseRiley:
     task.addFlags(["-D BUILDER_USE_RILEY"])
 else:
-    task.addFlags(["-D BUILDER_NO_BACKEND"])
+    # task.addFlags(["-D BUILDER_NO_BACKEND"])
     task.addFlags(["-D BUILDER_USE_TIGR"])
 
 #

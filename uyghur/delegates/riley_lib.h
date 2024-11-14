@@ -1,11 +1,23 @@
 // riley
 
-#ifndef RAYLIB_DELEGATE_H
-#define RAYLIB_DELEGATE_H
+#ifndef UG_DELEGATE_RILEY_H
+#define UG_DELEGATE_RILEY_H
 #include "../include.h"
 #include "./define.h"
 
 //////////////////////////////////////////////////////////////
+
+int delegate_stage_mode_swap(int mode) {
+    if (mode < 0) return mode;
+    int _mode = 0;
+    _UG_MODE_SWAP_CONVET(UG_STAGE_WINDOW_MODE_DEFAULT, _GU_INVALID_MAX_BITWISE);
+    // _UG_MODE_SWAP_CONVET(UG_STAGE_WINDOW_MODE_FIXED, RGFW_NO_RESIZE);
+    _UG_MODE_SWAP_CONVET(UG_STAGE_WINDOW_MODE_MAXIMIZED, RGFW_SCALE_TO_MONITOR);
+    _UG_MODE_SWAP_CONVET(UG_STAGE_WINDOW_MODE_FULLSCREEN, RGFW_FULLSCREEN);
+    _UG_MODE_SWAP_CONVET(UG_STAGE_WINDOW_MODE_TRANSPARENT, RGFW_TRANSPARENT_WINDOW);
+    _UG_MODE_SWAP_CONVET(UG_STAGE_WINDOW_MODE_BORDERLESS, RGFW_NO_BORDER);
+    return _mode;
+}
 
 int delegate_mouse_code_swap(int code, bool fromU) {
     _UG_CODE_SWAP_RETURN(UG_MOUSE_BUTTON_CODE_LEFT, RGFW_mouseLeft);
@@ -296,8 +308,9 @@ int delegate_get_board_state(int key) {
 void delegate_stage_save_screenshot(CString path) {
 }
 
-void delegate_stage_run_program() {
-    _rileyWindow = RGFW_createWindow("name", (RSGL_rect){500, 500, 500, 500}, RGFW_CENTER);
+void delegate_stage_run_program(int width, int height, CString title, int mode) {
+    if (mode < 0) mode = RGFW_CENTER;
+    _rileyWindow = RGFW_createWindow(title, (RSGL_rect){500, 500, width, height}, mode);
 	RSGL_init(RSGL_AREA(_rileyWindow->r.w, _rileyWindow->r.h), RGFW_getProcAddress);
     RSGL_setFont(RSGL_loadFont("../resources/ukij.ttf"));
     RGFW_setMouseButtonCallback(__riley_on_mouve_button_event);

@@ -1,11 +1,24 @@
 // raysan
 
-#ifndef RAYSAN_DELEGATE_H
-#define RAYSAN_DELEGATE_H
+#ifndef UG_DELEGATE_RAYSAN_H
+#define UG_DELEGATE_RAYSAN_H
 #include "../include.h"
 #include "./define.h"
 
 //////////////////////////////////////////////////////////////
+
+int delegate_stage_mode_swap(int mode) {
+    if (mode < 0) return mode;
+    int _mode = 0;
+    _UG_MODE_SWAP_CONVET(UG_STAGE_WINDOW_MODE_DEFAULT, _GU_INVALID_MAX_BITWISE);
+    // _UG_MODE_SWAP_CONVET(UG_STAGE_WINDOW_MODE_FIXED, FLAG_WINDOW_RESIZABLE);
+    _UG_MODE_SWAP_CONVET(UG_STAGE_WINDOW_MODE_MAXIMIZED, FLAG_WINDOW_MAXIMIZED);
+    _UG_MODE_SWAP_CONVET(UG_STAGE_WINDOW_MODE_FULLSCREEN, FLAG_FULLSCREEN_MODE);
+    _UG_MODE_SWAP_CONVET(UG_STAGE_WINDOW_MODE_TRANSPARENT, FLAG_WINDOW_TRANSPARENT);
+    _UG_MODE_SWAP_CONVET(UG_STAGE_WINDOW_MODE_BORDERLESS, FLAG_WINDOW_UNDECORATED);
+    _UG_MODE_SWAP_CONVET(UG_STAGE_WINDOW_MODE_PINNED, FLAG_WINDOW_TOPMOST);
+    return _mode;
+}
 
 int delegate_mouse_code_swap(int code, bool fromU) {
     _UG_CODE_SWAP_RETURN(UG_MOUSE_BUTTON_CODE_LEFT, MOUSE_BUTTON_LEFT);
@@ -302,7 +315,7 @@ void delegate_stage_run_program(int width, int height, CString title, int mode) 
     if (width < 0) width = 500;
     if (height < 0) height = 500;
     if (strlen(title) == 0) title = UG_PROJECT_NAME;
-    if (mode < 0) mode = FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_TOPMOST; // FLAG_WINDOW_TRANSPARENT
+    if (mode < 0) mode = FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_TOPMOST;
     SetConfigFlags(mode);
     int level = UG_IS_DEVELOP ? LOG_ALL : LOG_WARNING;
     SetTraceLogLevel(level);

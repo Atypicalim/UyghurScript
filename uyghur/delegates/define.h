@@ -3,9 +3,21 @@
 #ifndef UG_DELEGATE_DEFINE
 #define UG_DELEGATE_DEFINE
 
+#define _GU_INVALID_MAX_BITWISE 1024
+
 // swap helper
+#define _UG_MODE_SWAP_CONVET(uMode, oMode) if(mode & uMode) _mode = _mode | oMode;
 #define _UG_CODE_SWAP_RETURN(uCode, oCode) if(fromU && code == uCode) return oCode; if (!fromU && code == oCode) return uCode;
-#define _UG_TYPE_SWAP_RETURN(uCode, oCode) if(fromU && type == uCode) return oCode; if (!fromU && type == oCode) return uCode;
+#define _UG_TYPE_SWAP_RETURN(uType, oType) if(fromU && type == uType) return oType; if (!fromU && type == oType) return uType;
+
+// stage window
+#define UG_STAGE_WINDOW_MODE_DEFAULT 0
+#define UG_STAGE_WINDOW_MODE_FIXED 2
+#define UG_STAGE_WINDOW_MODE_MAXIMIZED 8
+#define UG_STAGE_WINDOW_MODE_FULLSCREEN 16
+#define UG_STAGE_WINDOW_MODE_TRANSPARENT 32
+#define UG_STAGE_WINDOW_MODE_BORDERLESS 32
+#define UG_STAGE_WINDOW_MODE_PINNED 4
 
 // mouse btn
 #define UG_MOUSE_BUTTON_CODE_LEFT 1
