@@ -37,7 +37,6 @@
     #define RAYGUI_IMPLEMENTATION
     #include "raylib.h"
     #include "raygui.h"
-    #undef _WIN32
 #endif
 
 #ifdef BUILDER_USE_RILEY
