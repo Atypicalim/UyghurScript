@@ -205,6 +205,14 @@ void *Bridge_return(Bridge *this)
 
 // receive arguments from script to c
 
+char Bridge_nextType(Bridge *this) {
+    Block *temp = Cursor_get(this->stack->cursor);
+    if (temp == NULL) return UG_TYPE_NON;
+    Value *data = temp->data;
+    if (data == NULL) return UG_TYPE_NON;
+    return data->type;
+}
+
 Value *Bridge_receiveValue(Bridge *this, char tp)
 {
     Value *v = Bridge_nextValue(this);

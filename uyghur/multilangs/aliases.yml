@@ -858,28 +858,21 @@ ALIAS_pencil_draw_pixel:
   uz: nuqta_chizish
   tr: nokta_çizmek
   kz: нүкте_сызу
-ALIAS_pencil_draw_line_no_controll:
-  en: draw_line_no_controll
+ALIAS_pencil_draw_line:
+  en: draw_line
   uy: سىزىق_سىزىش
   ug: siziqSizish
   uz: chiziq_chizish
   tr: çizgi_çizmek
   kz: сызық_сызу
-ALIAS_pencil_draw_line_one_controll:
-  en: draw_line_one_controll
-  uy: سىزىق_سىزىش_بىر_كونتىروللۇق
-  ug: siziqSizishBirKontrolluq
-  uz: chiziq_chizish_bir_control
-  tr: çizgi_çizmek_tek_kontrol
-  kz: сызық_сызу_Бір_басқару
-ALIAS_pencil_draw_line_two_controll:
-  en: draw_line_two_controll
-  uy: سىزىق_سىزىش_ئىككى_كونتىروللۇق
-  ug: siziqSizishIkkiKontirolluq
-  uz: chiziq_chizish_ikki_control
-  tr: çizgi_çizmek_iki_kontrol
-  kz: сызық_сызу_екі_басқару
 # draw rectangle
+ALIAS_pencil_draw_circle_fill:
+  en: draw_rectangle_fill
+  uy: تۆت_تەرەپلىك_تولدۇرۇش
+  ug: totTereplikToldurush
+  uz: to'rtburchak_to'ldirish
+  tr: dörtgen_doldurmak
+  kz: төртбұрыш_толтыру
 ALIAS_pencil_draw_rectangle_fill_transformed:
   en: draw_rectangle_fill_transformed
   uy: تۆت_تەرەپلىك_تولدۇرۇش_ئايلاندۇرۇلغان
@@ -923,20 +916,6 @@ ALIAS_pencil_draw_circle_stroke:
   uz: doira_chizish
   tr: çember_çizmek
   kz: шеңбер_сызу
-ALIAS_pencil_draw_ring_fill:
-  en: draw_ring_fill
-  uy: ئۈزۈك_تولدۇرۇش
-  ug: uzukToldurush
-  uz: uzuk_fill
-  tr: yüzük_doldurmak
-  kz: жүзік_толтыру
-ALIAS_pencil_draw_ring_stroke:
-  en: draw_ring_stroke
-  uy: ئۈزۈك_سىزىش
-  ug: uzukSizish
-  uz: uzuk_chizish
-  tr: yüzük_çizmek
-  kz: жүзік_сызу
 # draw triangle & polygon
 ALIAS_pencil_draw_triangle_fill:
   en: draw_triangle_fill
@@ -966,11 +945,34 @@ ALIAS_pencil_draw_polygon_stroke:
   uz: ko'pburchak_chizish
   tr: çokgen_çizmek
   kz: көпбұрыш_сызу
+# load
+ALIAS_pencil_load_image:
+  en: load_image
+  uy: 
+  ug: resimEkirish
+  uz: 
+  tr: 
+  kz: 
+ALIAS_pencil_load_font:
+  en: load_font
+  uy: 
+  ug: fontEkirish
+  uz: 
+  tr: 
+  kz: 
+# image
+ALIAS_pencil_draw_image:
+  en: draw_image
+  uy: 
+  ug: resimSizish
+  uz: 
+  tr: 
+  kz: 
 # font
 ALIAS_pencil_draw_text:
   en: draw_text
   uy: خەت_يېزىش
-  ug: xetYezish
+  ug: fontSizish
   uz: xat_yozish
   tr: dize_çizmek
   kz: хат_сызу
@@ -981,28 +983,6 @@ ALIAS_pencil_measure_text:
   uz: xat_o'lchesh
   tr: dize_ölçmek
   kz: хат_өлшеу
-# texture
-ALIAS_pencil_texturize_image:
-  en: texturize_image
-  uy: سىزما_نەقىشلەش
-  ug: sizmaNeqishlesh
-  uz: chizuv_neqishlesh
-  tr: çekme_nakışlemek
-  kz: сызу_неқишлу
-ALIAS_pencil_texturize_text:
-  en: texturize_text
-  uy: يازما_نەقىشلەش
-  ug: yazmaNeqishlesh
-  uz: yozuv_neqishlesh
-  tr: yazma_nakışlemek
-  kz: жазба_неқишлу
-ALIAS_pencil_draw_texture:
-  en: draw_texture
-  uy: نەقىش_سىزىش
-  ug: neqishSizish
-  uz: neqish_chizish
-  tr: nakış_çizmek
-  kz: неқиш_сызу
 
 ############################# common
 

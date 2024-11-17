@@ -347,4 +347,178 @@ bool delegate_stage_update_program() {
     }
 }
 
+//////////////////////////////////////////////////////////
+
+#define _COLOR (Color){color.r, color.g, color.b, color.a}
+#define _VECTOR (Vector2){vector.x, vector.y}
+#define _CENTER (Vector2){center.x, center.y}
+#define _ANCHOR (Vector2){anchor.x, anchor.y}
+#define _POINT (Vector2){point.x, point.y}
+#define _POINT1 (Vector2){point1.x, point1.y}
+#define _POINT2 (Vector2){point2.x, point2.y}
+#define _POINT3 (Vector2){point3.x, point3.y}
+#define _RECTANGLE (Rectangle){rectangle.x, rectangle.y, rectangle.w, rectangle.h}
+
+////////////////////////////////////////////////////////// pencil
+
+
+void delegate_pencil_draw_pixel(UGVector point, UGColor color) {
+    DrawPixelV(_POINT, _COLOR);
+}
+
+void delegate_pencil_draw_line(UGVector point1, UGVector point2, int thickness, UGColor color) {
+    DrawLineEx(_POINT1, _POINT2, thickness, _COLOR);
+}
+
+void delegate_pencil_draw_rectangle_fill(UGRectangle rectangle, UGColor color)
+{
+    DrawRectangle(rectangle.x, rectangle.y, rectangle.w, rectangle.h, _COLOR);
+}
+
+void delegate_pencil_draw_rectangle_fill_transformed(UGRectangle rectangle, UGColor color,  UGVector anchor, float rotation)
+{
+    anchor.x = anchor.x * rectangle.w;
+    anchor.y = anchor.y * rectangle.h;
+    DrawRectanglePro(_RECTANGLE, _ANCHOR, rotation, _COLOR);
+}
+
+void delegate_pencil_draw_rectangle_fill_colorful(UGRectangle rectangle, UGColor lt, UGColor lb, UGColor rb, UGColor rt)
+{
+    Color _lt = (Color){lt.r, lt.g, lt.b, lt.a};
+    Color _lb = (Color){lb.r, lb.g, lb.b, lb.a};
+    Color _rb = (Color){rb.r, rb.g, rb.b, rb.a};
+    Color _rt = (Color){rt.r, rt.g, rt.b, rt.a};
+    DrawRectangleGradientEx(_RECTANGLE, _lt, _lb, _rb, _rt);
+}
+
+void delegate_pencil_draw_rectangle_fill_round(UGRectangle rectangle, UGColor color, int roundness)
+{
+    DrawRectangleRounded(_RECTANGLE, roundness, 0, _COLOR);
+}
+
+void delegate_pencil_draw_rectangle_stroke(UGRectangle rectangle, UGColor color, double thickness)
+{
+    DrawRectangleRoundedLines(_RECTANGLE, 0, 0, thickness, _COLOR);
+}
+
+void delegate_pencil_draw_circle_fill(UGVector point, UGSize size, UGColor color)
+{
+    DrawEllipse(point.x, point.y, size.w, size.h, _COLOR);
+}
+
+void delegate_pencil_draw_circle_stroke(UGVector point, UGSize size, UGColor color, double thickness)
+{
+    DrawEllipseLines(point.x, point.y, size.w, size.h, _COLOR);
+}
+
+void delegate_pencil_draw_triangle_fill(UGVector point1, UGVector point2, UGVector point3, UGColor color)
+{
+    DrawTriangle(_POINT1, _POINT2, _POINT3, _COLOR);
+}
+
+void delegate_pencil_draw_triangle_stroke(UGVector point1, UGVector point2, UGVector point3, UGColor color, double thickness)
+{
+    DrawTriangleLines(_POINT1, _POINT2, _POINT3, _COLOR);
+}
+
+void delegate_pencil_draw_polygon_fill(UGVector center, int sides, double radius, double rotation, UGColor color)
+{
+    DrawPoly(_CENTER, sides, radius, rotation, _COLOR);
+}
+
+void delegate_pencil_draw_polygon_stroke(UGVector center, int sides, double radius, double rotation, UGColor color, double thickness)
+{
+    DrawPolyLinesEx(_CENTER, sides, radius, rotation, thickness, _COLOR);
+}
+
+//////////////////////////////////////////////////////////
+
+void *delegate_unload_image(UGImage *img) {
+    Texture *_image = img->image;
+    if (_image != NULL) {UnloadTexture(_image[0]);}
+    return _image;
+}
+
+void *delegate_unload_font(UGFont *fnt) {
+    Font *_font = fnt->font;
+    if (_font != NULL) {UnloadFont(_font[0]);}
+    return _font;
+}
+
+UGImage *delegate_load_image(UGImage *img)
+{
+    Image image0 = LoadImage(img->path);
+    int x = img->x > 0 ? img->x : 0;
+    int y = img->y > 0 ? img->y : 0;
+    int w = img->w > 0 ? img->w : image0.width;
+    int h = img->h > 0 ? img->h : image0.height;
+    Image image1 = ImageFromImage(image0, (Rectangle){x, y, w, h});
+    Texture texture = LoadTextureFromImage(image1);
+    UnloadImage(image0);
+    //
+    img->w = texture.width;
+    img->h = texture.height;
+    //
+    Texture *_image = (Texture *)malloc(sizeof(Texture));
+    _image[0] = texture;
+    img->image = (void*)_image;
+    return img;
+}
+
+UGFont *delegate_load_font(UGFont *fnt)
+{
+    int codepoints[1024 * 3] = { 0 };
+    for (int i = 0; i < 1024; i++) codepoints[0 + i] = 0 + i; // latin
+    for (int i = 0; i < 1024; i++) codepoints[1024 + i] = 0x0400 + i; // cyrillic
+    for (int i = 0; i < 1024; i++) codepoints[2048 + i] = 0xfb00 + i; // arabic
+    Font font = LoadFontEx(fnt->path, fnt->size, codepoints, 1024 * 3);
+    //
+    Font *_font = (Font *)malloc(sizeof(Font));
+    _font[0] = font;
+    fnt->font = (void*)_font;
+    return fnt;
+}
+
+//////////////////////////////////////////////////////////
+
+void delegate_draw_image(UGImage *image, int x, int y, float anchorX, float anchorY, UGColor color, float rotation, float scale) {
+
+    Texture *tex = image->image;
+    Texture texture = tex[0];
+    //
+    Rectangle source = (Rectangle){0, 0, texture.width, texture.height};
+    float destW = texture.width * scale;
+    float destH = texture.height * scale;
+    float destX = x;
+    float destY = y;
+    Rectangle dest = (Rectangle){destX, destY, destW, destH};
+    Vector2 origin = (Vector2){destW * anchorX, destH * anchorY};
+    DrawTexturePro(texture, source, dest, origin, rotation, _COLOR);
+}
+
+void delegate_draw_font(UGFont *font, char *text, int size, int spacing, UGColor color, UGPoint point) {
+    Font *fnt = font->font;
+    DrawTextEx(fnt[0], text, _POINT, size, spacing, _COLOR);
+}
+
+int delegate_measure_font(UGFont *font, char *text, int size, int spacing) {
+    Font *fnt = font->font;
+    Vector2 space = MeasureTextEx(fnt[0], text, size, spacing);
+    return space.x;
+}
+
+//////////////////////////////////////////////////////////
+
+#undef _COLOR
+#undef _VECTOR
+#undef _CENTER
+#undef _ANCHOR
+#undef _POINT
+#undef _POINT1
+#undef _POINT2
+#undef _POINT3
+#undef _RECTANGLE
+
+//////////////////////////////////////////////////////////
+
 #endif

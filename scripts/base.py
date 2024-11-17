@@ -301,6 +301,8 @@ def tryDetectBindManuFunction(path, module, index, lines):
     for num in range(1,50):
         _index = index + num
         _line = lines[_index]
+        if _line.strip().startswith("//"):
+            continue
         _return = _tryConvertBindManuReturn(_line)
         if _return:
             rtrn = _return

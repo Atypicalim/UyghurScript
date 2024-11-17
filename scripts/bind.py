@@ -98,6 +98,9 @@ def _tryWalkBindModule(module, fromPath):
     functionsBindable: List[BindInfo] = []
     functionsBinded: List[BindInfo] = []
     def _onLine(index, lines):
+        line = lines[index]
+        if line.startswith("//"):
+            return
         bindableInfo = tryDetectBindAutoFunction(fromPath, module, index, lines)
         if bindableInfo:
             # print("-->", bindableInfo)

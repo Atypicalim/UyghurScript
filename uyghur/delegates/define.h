@@ -2,6 +2,7 @@
 
 #ifndef UG_DELEGATE_DEFINE
 #define UG_DELEGATE_DEFINE
+#include "../include.h"
 
 #define _GU_INVALID_MAX_BITWISE 1024
 
@@ -157,5 +158,85 @@ typedef enum UG_BOARD_KEYS {
     UG_BOARD_KEY_RIGHT_ALT,         // Key: Alt right
     UG_BOARD_KEY_RIGHT_SUPER,       // Key: Super right
 } UG_BOARD_KEYS;
+
+void* __ugStage = NULL;
+
+typedef struct UGColor {
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+    unsigned char a;
+} UGColor;
+
+typedef struct UGSize {
+    float w;
+    float h;
+} UGSize;
+
+typedef struct UGVector {
+    float x;
+    float y;
+} UGVector;
+
+typedef struct UGRectangle {
+    float x;
+    float y;
+    union {
+        float w;
+        float width;
+    };
+    union {
+        float h;
+        float height;
+    };
+} UGRectangle;
+
+typedef UGSize UGArea;
+typedef UGVector UGPoint;
+typedef UGRectangle UGRect;
+
+
+UGVector UG_VECTOR_LERP(UGVector p1, UGVector p2, float t) {
+    return (UGVector) {math_lerp(p1.x, p2.x, t), math_lerp(p1.y, p2.y, t)};
+}
+
+UGVector UG_POINT_LERP(UGPoint p1, UGPoint p2, float t) {
+    return (UGPoint) {math_lerp(p1.x, p2.x, t), math_lerp(p1.y, p2.y, t)};
+}
+
+typedef struct UGImage {
+    char *path;
+    void *image;
+    int x;
+    int y;
+    int w;
+    int h;
+} UGImage;
+
+typedef struct UGFont {
+    char *path;
+    int size;
+    void *font;
+} UGFont;
+
+
+UGFont *UG_NEW_IMAGE(char *path, int x, int y, int w, int h) {
+    UGImage *img = (UGImage *)malloc(sizeof(UGImage));
+    img->path = path;
+    img->x = x;
+    img->y = y;
+    img->w = h;
+    img->h = h;
+    img->image = NULL;
+    return img;
+}
+
+UGFont *UG_NEW_FONT(char *path, int size) {
+    UGFont *fnt = (UGFont *)malloc(sizeof(UGFont));
+    fnt->path = path;
+    fnt->size = size;
+    fnt->font = NULL;
+    return fnt;
+}
 
 #endif

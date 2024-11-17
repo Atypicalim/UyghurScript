@@ -1,7 +1,7 @@
 
 miqdar QIZIL qimmiti "ff0000" bolsun
-miqdar KOK qimmiti "00ff00" bolsun
-miqdar YESHIL qimmiti "0000ff" bolsun
+miqdar YESHIL qimmiti "00ff00" bolsun
+miqdar KOK qimmiti "0000ff" bolsun
 miqdar QARA qimmiti "000000" bolsun
 
 xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
@@ -14,11 +14,14 @@ nawada @sehne:yepilmaqchi bolmisa
     xizmetchi @qelem:nuqtaSizish bilen 10 10 QIZIL ishlitilsun
     xizmetchi @qelem:nuqtaSizish bilen 490 10 QIZIL ishlitilsun
 
+    # a line no anchor point
     xizmetchi @qelem:siziqSizish bilen 20 10 480 10 2 QIZIL ishlitilsun
-    xizmetchi @qelem:totTereplikToldurushBoyalghan bilen 175 185 150 150 QIZIL YESHIL KOK QARA ishlitilsun
+    # a curve with one anchor
+    xizmetchi @qelem:siziqSizish bilen 400 50 400 450 5 KOK 550 250 ishlitilsun
+
+    xizmetchi @qelem:totTereplikToldurushBoyalghan bilen 175 185 150 150 QIZIL KOK YESHIL QARA ishlitilsun
 
     xizmetchi @qelem:chemberToldurush bilen 75 250 70 50 YESHIL ishlitilsun
-    xizmetchi @qelem:uzukToldurush bilen 400 250 30 50 KOK 15 345 ishlitilsun
 
     xizmetchi @qelem:uchTereplikToldurush bilen 100 175 400 175 250 10 QIZIL ishlitilsun
     xizmetchi @qelem:kopTereplikToldurush bilen 250 420 8 75 0 KOK ishlitilsun
