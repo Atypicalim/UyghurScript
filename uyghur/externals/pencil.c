@@ -260,7 +260,8 @@ void native_pencil_draw_polygon_stroke(Bridge *bridge)
 
 void _pencil_release_image(Loadable *loadable) {
     if (loadable->obj) {
-        void *data = delegate_unload_image(loadable->obj);
+        UGImage *data = delegate_unload_image(loadable->obj);
+        pct_free(data->path);
         pct_free(data);
         pct_free(loadable->obj);
         loadable->obj = NULL;
@@ -269,7 +270,8 @@ void _pencil_release_image(Loadable *loadable) {
 
 void _pencil_release_font(Loadable *loadable) {
     if (loadable->obj) {
-        void *data = delegate_unload_font(loadable->obj);
+        UGFont *data = delegate_unload_font(loadable->obj);
+        pct_free(data->path);
         pct_free(data);
         pct_free(loadable->obj);
         loadable->obj = NULL;

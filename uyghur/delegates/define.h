@@ -222,7 +222,7 @@ typedef struct UGFont {
 
 UGFont *UG_NEW_IMAGE(char *path, int x, int y, int w, int h) {
     UGImage *img = (UGImage *)malloc(sizeof(UGImage));
-    img->path = path;
+    img->path = strdup(path);
     img->x = x;
     img->y = y;
     img->w = h;
@@ -233,7 +233,7 @@ UGFont *UG_NEW_IMAGE(char *path, int x, int y, int w, int h) {
 
 UGFont *UG_NEW_FONT(char *path, int size) {
     UGFont *fnt = (UGFont *)malloc(sizeof(UGFont));
-    fnt->path = path;
+    fnt->path = strdup(path);
     fnt->size = size;
     fnt->font = NULL;
     return fnt;
