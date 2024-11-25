@@ -46,7 +46,7 @@ void native_stage_show_window(Bridge *bridge)
     if (h <= 50) h = 500;
     mode = delegate_stage_mode_swap(mode);
     delegate_stage_run_program(w, h, title, mode);
-    raudio_InitAudioDevice();
+    replay_InitAudioDevice();
     Bridge_returnEmpty(bridge);
 }
 
@@ -54,7 +54,7 @@ void native_stage_update_window(Bridge *bridge)
 {
     bool isClose = delegate_stage_update_program();
     if (isClose) {
-        raudio_CloseAudioDevice();
+        replay_CloseAudioDevice();
     }
     Bridge_returnEmpty(bridge);
 }

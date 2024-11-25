@@ -15,10 +15,10 @@ DST_SCRIPT = DST_ALIAS + "." + SCRIPT_EXT
 ################################################################
 
 def downloadGitTo(url, path):
+    print("\ndownload:", url)
     if tools.files.is_folder(path):
-        print("folder exist:", path)
+        print("exist!")
     else:
-        print("clone repo:", url)
         try:
             subprocess.run(['git', 'clone', url, path], check=True)
             print("Git clone completed successfully.")
@@ -26,8 +26,11 @@ def downloadGitTo(url, path):
             print(f"An error occurred while cloning: {e}")
         pass
 
+downloadGitTo("git@github.com:Atypicalim/pure-js-tools.git", "../pure-js-tools")
 downloadGitTo("git@github.com:Atypicalim/c-pure-tools.git", "../c-pure-tools")
-downloadGitTo("git@github.com:Atypicalim/c-extra-tools.git", "../c-extra-tools")
+downloadGitTo("git@github.com:Atypicalim/c-xtra-tools.git", "../c-xtra-tools")
+downloadGitTo("git@github.com:Atypicalim/replay.git", "../c-replay-library")
+downloadGitTo("git@github.com:Atypicalim/replot.git", "../c-replot-library")
 
 ################################################################
 

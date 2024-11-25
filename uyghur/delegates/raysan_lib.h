@@ -160,42 +160,42 @@ int delegate_board_code_swap(int code, bool fromU) {
 #define RSound Sound
 #define RMusic Music
 // 
-#define raudio_InitAudioDevice InitAudioDevice
-#define raudio_CloseAudioDevice CloseAudioDevice
-#define raudio_IsAudioDeviceReady IsAudioDeviceReady
+#define replay_InitAudioDevice InitAudioDevice
+#define replay_CloseAudioDevice CloseAudioDevice
+#define replay_IsAudioDeviceReady IsAudioDeviceReady
 //
-#define raudio_LoadSound LoadSound
-#define raudio_IsSoundReady IsSoundReady
-#define raudio_UpdateSound UpdateSound
-#define raudio_UnloadSound UnloadSound
+#define replay_LoadSound LoadSound
+#define replay_IsSoundReady IsSoundReady
+#define replay_UpdateSound UpdateSound
+#define replay_UnloadSound UnloadSound
 //
-#define raudio_LoadMusic LoadMusicStream
-#define raudio_IsMusicReady IsMusicReady
-#define raudio_UpdateMusic UpdateMusicStream
-#define raudio_UnloadMusic UnloadMusicStream
+#define replay_LoadMusic LoadMusicStream
+#define replay_IsMusicReady IsMusicReady
+#define replay_UpdateMusic UpdateMusicStream
+#define replay_UnloadMusic UnloadMusicStream
 //
-#define raudio_PlaySound PlaySound
-#define raudio_StopSound StopSound
-#define raudio_PauseSound PauseSound
-#define raudio_ResumeSound ResumeSound
-#define raudio_IsSoundPlaying IsSoundPlaying
-#define raudio_SetSoundVolume SetSoundVolume
+#define replay_PlaySound PlaySound
+#define replay_StopSound StopSound
+#define replay_PauseSound PauseSound
+#define replay_ResumeSound ResumeSound
+#define replay_IsSoundPlaying IsSoundPlaying
+#define replay_SetSoundVolume SetSoundVolume
 //
-#define raudio_PlayMusic PlayMusicStream
-#define raudio_StopMusic StopMusicStream
-#define raudio_PauseMusic PauseMusicStream
-#define raudio_ResumeMusic ResumeMusicStream
-#define raudio_IsMusicPlaying IsMusicStreamPlaying
-#define raudio_SetMusicVolume SetMusicVolume
-#define raudio_GetMusicLength GetMusicTimeLength
-#define raudio_GetMusicTime GetMusicTimePlayed
-#define raudio_SetMusicTime SeekMusicStream
+#define replay_PlayMusic PlayMusicStream
+#define replay_StopMusic StopMusicStream
+#define replay_PauseMusic PauseMusicStream
+#define replay_ResumeMusic ResumeMusicStream
+#define replay_IsMusicPlaying IsMusicStreamPlaying
+#define replay_SetMusicVolume SetMusicVolume
+#define replay_GetMusicLength GetMusicTimeLength
+#define replay_GetMusicTime GetMusicTimePlayed
+#define replay_SetMusicTime SeekMusicStream
 //
-#define raudio_SetSoundPitch SetSoundPitch
-#define raudio_SetSoundPan SetSoundPan
+#define replay_SetSoundPitch SetSoundPitch
+#define replay_SetSoundPan SetSoundPan
 //
-#define raudio_SetMusicPitch SetMusicPitch
-#define raudio_SetMusicPan SetMusicPan
+#define replay_SetMusicPitch SetMusicPitch
+#define replay_SetMusicPan SetMusicPan
 
 //////////////////////////////////////////////////////////////
 

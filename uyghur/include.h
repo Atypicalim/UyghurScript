@@ -13,7 +13,6 @@
 #include <ctype.h>
 #include <stdarg.h>
 #include <time.h>
-#include <unistd.h>
 #include <sys/stat.h>
 #include <limits.h>
 #include <setjmp.h>
@@ -24,16 +23,17 @@
 #include "../../c-pure-tools/tools.h"
 
 #define CARGS_IMPLEMENTATION
-#include "../../c-extra-tools/cargs/cargs.h"
+#include "../../c-xtra-tools/cargs/cargs.h"
 
-#include "../../c-extra-tools/utf8iter/utf8iter.h"
-#include "../../c-extra-tools/utf8iter/utf8iter.c"
-#include "../../c-extra-tools/utf8string/utf8string.h"
-#include "../../c-extra-tools/utf8string/utf8string.c"
+#include "../../c-xtra-tools/utf8iter/utf8iter.h"
+#include "../../c-xtra-tools/utf8iter/utf8iter.c"
+#include "../../c-xtra-tools/utf8string/utf8string.h"
+#include "../../c-xtra-tools/utf8string/utf8string.c"
 
 
 #ifdef BUILDER_USE_RAYSAN
-    #define RAUDIO_NO_IMLEMENT
+    #define REPLAY_NO_IMLEMENT
+    #define REPLOT_STB_NO_INCLUDE
     #define RAYGUI_IMPLEMENTATION
     #include "raylib.h"
     #include "raygui.h"
@@ -50,10 +50,12 @@
 #undef __IOS__
 #undef __ANDROID__
 #define TIGR_EXT_NO_MOBILE
-#include "../../c-extra-tools/tigr4ext/tigr4ext.h"
+#include "../../c-xtra-tools/tigr4ext/tigr4ext.h"
 
-#define RA_NO_WIN_EXTRA
-#include "../../c-extra-tools/raudio/raudio.h"
+#define REPLAY_WIN_NO_EXTRA
+#include "../../c-replay-library/replay.h"
 
+#define REPLOT_WIN_NO_EXTRA
+#include "../../c-replot-library/replot.h"
 
 #endif
