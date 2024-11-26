@@ -1,7 +1,7 @@
 // mouse
 
+#include "./externals.h"
 #include "../delegates/header.h"
-#include "../uyghur.c"
 
 bool __mouseIsVisible = true;
 

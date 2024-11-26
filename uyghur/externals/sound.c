@@ -1,6 +1,6 @@
 // sound
 
-#include "../include.h"
+#include "./externals.h"
 #include "../delegates/header.h"
 RSound __defaulRSound;
 

@@ -1,8 +1,18 @@
-// delegate define
+// externals
 
-#ifndef UG_DELEGATE_DEFINE
-#define UG_DELEGATE_DEFINE
+#ifndef UG_EXTERNALS_HEADER
+#define UG_EXTERNALS_HEADER
+
 #include "../include.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+#include <math.h>
+#include <stdarg.h>
 
 #define _GU_INVALID_MAX_BITWISE 1024
 
@@ -159,8 +169,6 @@ typedef enum UG_BOARD_KEYS {
     UG_BOARD_KEY_RIGHT_SUPER,       // Key: Super right
 } UG_BOARD_KEYS;
 
-void* __ugStage = NULL;
-
 typedef struct UGColor {
     unsigned char r;
     unsigned char g;
@@ -173,12 +181,12 @@ typedef struct UGSize {
     float h;
 } UGSize;
 
-typedef struct UGVector {
+typedef struct UGPoint {
     float x;
     float y;
-} UGVector;
+} UGPoint;
 
-typedef struct UGRectangle {
+typedef struct UGRect {
     float x;
     float y;
     union {
@@ -189,18 +197,14 @@ typedef struct UGRectangle {
         float h;
         float height;
     };
-} UGRectangle;
-
-typedef UGSize UGArea;
-typedef UGVector UGPoint;
-typedef UGRectangle UGRect;
+} UGRect;
 
 
-UGVector UG_VECTOR_LERP(UGVector p1, UGVector p2, float t) {
-    return (UGVector) {math_lerp(p1.x, p2.x, t), math_lerp(p1.y, p2.y, t)};
+UGPoint UG_VECTOR_LERP(UGPoint p1, UGPoint p2, float t) {
+    return (UGPoint) {math_lerp(p1.x, p2.x, t), math_lerp(p1.y, p2.y, t)};
 }
 
-UGVector UG_POINT_LERP(UGPoint p1, UGPoint p2, float t) {
+UGPoint UG_POINT_LERP(UGPoint p1, UGPoint p2, float t) {
     return (UGPoint) {math_lerp(p1.x, p2.x, t), math_lerp(p1.y, p2.y, t)};
 }
 
@@ -237,6 +241,56 @@ UGFont *UG_NEW_FONT(char *path, int size) {
     fnt->size = size;
     fnt->font = NULL;
     return fnt;
+}
+
+// tool
+
+UGColor color_from_bridge(Bridge *bridge)
+{
+    CString str = Bridge_receiveString(bridge);
+    int len = strlen(str);
+    if (len != 6 && len != 8) return (UGColor){0, 0, 0, 255};
+    int r = char_to_int(str[0]) * 16 + char_to_int(str[1]);
+    int g = char_to_int(str[2]) * 16 + char_to_int(str[3]);
+    int b = char_to_int(str[4]) * 16 + char_to_int(str[5]);
+    int a = len == 6 ? 255 : char_to_int(str[6]) * 16 + char_to_int(str[7]);
+    return (UGColor){r, g, b, a};
+}
+
+UGPoint point_from_bridge(Bridge *bridge)
+{
+    float x = Bridge_receiveNumber(bridge);
+    float y = Bridge_receiveNumber(bridge);
+    return (UGPoint){x, y};
+}
+
+UGSize size_from_bridge(Bridge *bridge)
+{
+    float w = Bridge_receiveNumber(bridge);
+    float h = Bridge_receiveNumber(bridge);
+    return (UGSize){w, h};
+}
+
+UGRect rect_from_bridge(Bridge *bridge)
+{
+    float x = Bridge_receiveNumber(bridge);
+    float y = Bridge_receiveNumber(bridge);
+    float w = Bridge_receiveNumber(bridge);
+    float h = Bridge_receiveNumber(bridge);
+    return (UGRect){x, y, w, h};
+}
+
+#define UG_PENCIL_FOCUS_NONE 0
+#define UG_PENCIL_FOCUS_PAPER 1
+#define UG_PENCIL_FOCUS_STAGE 2
+char __ugPencilFocus = 0;
+void* __ugPencilTarget = NULL;
+
+void pencil_focus_to(int type) {
+    __ugPencilFocus = type;
+    if (type == UG_PENCIL_FOCUS_NONE) {
+        __ugPencilTarget = NULL;
+    }
 }
 
 #endif

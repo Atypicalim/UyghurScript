@@ -2,8 +2,7 @@
 
 #ifndef UG_DELEGATE_RILEY_H
 #define UG_DELEGATE_RILEY_H
-#include "../include.h"
-#include "./define.h"
+#include "./delegates.h"
 
 //////////////////////////////////////////////////////////////
 
@@ -348,33 +347,33 @@ bool delegate_stage_update_program() {
 #define _POINT1 (RSGL_pointF){point1.x, point1.y}
 #define _POINT2 (RSGL_pointF){point2.x, point2.y}
 #define _POINT3 (RSGL_pointF){point3.x, point3.y}
-#define _RECTANGLE (RSGL_rectF){rectangle.x, rectangle.y, rectangle.w, rectangle.h}
+#define _RECT (RSGL_rectF){rect.x, rect.y, rect.w, rect.h}
 
 ////////////////////////////////////////////////////////// pencil
 
-void delegate_pencil_draw_pixel(UGVector point, UGColor color) {
+void delegate_pencil_draw_pixel(UGPoint point, UGColor color) {
     RSGL_drawPointF(_POINT, _COLOR);
 }
 
-void delegate_pencil_draw_line(UGVector point1, UGVector point2, int thickness, UGColor color) {
+void delegate_pencil_draw_line(UGPoint point1, UGPoint point2, int thickness, UGColor color) {
     RSGL_drawLineF(_POINT1, _POINT2, thickness, _COLOR);
 }
 
-void delegate_pencil_draw_rectangle_fill(UGRectangle rectangle, UGColor color)
+void delegate_pencil_draw_rectangle_fill(UGRect rect, UGColor color)
 {
-    RSGL_drawRectF(_RECTANGLE, _COLOR);
+    RSGL_drawRectF(_RECT, _COLOR);
 }
 
-void delegate_pencil_draw_rectangle_fill_transformed(UGRectangle rectangle, UGColor color,  UGVector anchor, float rotation)
+void delegate_pencil_draw_rectangle_fill_transformed(UGRect rect, UGColor color,  UGPoint anchor, float rotation)
 {
-    rectangle.x = rectangle.x + anchor.x * rectangle.w;
-    rectangle.y = rectangle.y + anchor.y * rectangle.h;
+    rect.x = rect.x + anchor.x * rect.w;
+    rect.y = rect.y + anchor.y * rect.h;
     RSGL_rotate(RSGL_POINT3D(0, 0, rotation));
-    RSGL_drawRectF(_RECTANGLE, _COLOR);
+    RSGL_drawRectF(_RECT, _COLOR);
     RSGL_rotate(RSGL_POINT3D(0, 0, 0));
 }
 
-void delegate_pencil_draw_rectangle_fill_colorful(UGRectangle rectangle, UGColor lt, UGColor lb, UGColor rb, UGColor rt)
+void delegate_pencil_draw_rectangle_fill_colorful(UGRect rect, UGColor lt, UGColor lb, UGColor rb, UGColor rt)
 {
     float gradient[4 * 4] = {
         lt.r / 255.0f, lt.g / 255.0f, lt.b / 255.0f, 1,
@@ -384,47 +383,47 @@ void delegate_pencil_draw_rectangle_fill_colorful(UGRectangle rectangle, UGColor
     };
 	RSGL_setGradient(gradient, 4);
     RSGL_color _color = RSGL_RGBA(lt.r, lt.g, lt.b, lt.a);
-    RSGL_drawRectF(_RECTANGLE, _color);
+    RSGL_drawRectF(_RECT, _color);
     float gradient0[0] = {};
     RSGL_setGradient(gradient0, 0);
 }
 
-void delegate_pencil_draw_rectangle_fill_round(UGRectangle rectangle, UGColor color, int roundness)
+void delegate_pencil_draw_rectangle_fill_round(UGRect rect, UGColor color, int roundness)
 {
     RSGL_point _point = (RSGL_point){roundness, roundness};
-    RSGL_drawRoundRectF(_RECTANGLE, _point, _COLOR);
+    RSGL_drawRoundRectF(_RECT, _point, _COLOR);
 }
 
-void delegate_pencil_draw_rectangle_stroke(UGRectangle rectangle, UGColor color, double thickness)
+void delegate_pencil_draw_rectangle_stroke(UGRect rect, UGColor color, double thickness)
 {
-    RSGL_drawRectFOutline(_RECTANGLE, thickness, _COLOR);
+    RSGL_drawRectFOutline(_RECT, thickness, _COLOR);
 }
 
-void delegate_pencil_draw_circle_fill(UGVector point, UGSize size, UGColor color)
+void delegate_pencil_draw_circle_fill(UGPoint point, UGSize size, UGColor color)
 {
     RSGL_rectF _rect = (RSGL_rectF){point.x - size.w, point.y - size.h, size.w * 2, size.h * 2};
     RSGL_drawOvalF(_rect, _COLOR);
 }
 
-void delegate_pencil_draw_circle_stroke(UGVector point, UGSize size, UGColor color, int thickness)
+void delegate_pencil_draw_circle_stroke(UGPoint point, UGSize size, UGColor color, int thickness)
 {
     RSGL_rectF _rect = (RSGL_rectF){point.x - size.w, point.y - size.h, size.w * 2, size.h * 2};
     RSGL_drawOvalFOutline(_rect, thickness, _COLOR);
 }
 
-void delegate_pencil_draw_triangle_fill(UGVector point1, UGVector point2, UGVector point3, UGColor color)
+void delegate_pencil_draw_triangle_fill(UGPoint point1, UGPoint point2, UGPoint point3, UGColor color)
 {
     RSGL_triangleF _trianlge = (RSGL_triangleF){_POINT1, _POINT2, _POINT3};	
     RSGL_drawTriangleF(_trianlge, _COLOR);
 }
 
-void delegate_pencil_draw_triangle_stroke(UGVector point1, UGVector point2, UGVector point3, UGColor color, int thickness)
+void delegate_pencil_draw_triangle_stroke(UGPoint point1, UGPoint point2, UGPoint point3, UGColor color, int thickness)
 {
     RSGL_triangleF _trianlge = (RSGL_triangleF){_POINT1, _POINT2, _POINT3};
     RSGL_drawTriangleFOutline(_trianlge, thickness, _COLOR);
 }
 
-void delegate_pencil_draw_polygon_fill(UGVector center, int sides, double radius, double rotation, UGColor color)
+void delegate_pencil_draw_polygon_fill(UGPoint center, int sides, double radius, double rotation, UGColor color)
 {
     RSGL_rectF _rect = (RSGL_rectF){center.x - radius, center.y - radius, radius * 2, radius * 2};
     RSGL_rotate(RSGL_POINT3D(0, 0, rotation));
@@ -432,7 +431,7 @@ void delegate_pencil_draw_polygon_fill(UGVector center, int sides, double radius
     RSGL_rotate(RSGL_POINT3D(0, 0, 0));
 }
 
-void delegate_pencil_draw_polygon_stroke(UGVector center, int sides, double radius, double rotation, UGColor color, double thickness)
+void delegate_pencil_draw_polygon_stroke(UGPoint center, int sides, double radius, double rotation, UGColor color, double thickness)
 {
     RSGL_rectF _rect = (RSGL_rectF){center.x - radius, center.y - radius, radius * 2, radius * 2};
     RSGL_rotate(RSGL_POINT3D(0, 0, rotation));
@@ -520,7 +519,7 @@ int delegate_measure_font(UGFont *font, char *text, int size, int spacing) {
 #undef _POINT1
 #undef _POINT2
 #undef _POINT3
-#undef _RECTANGLE
+#undef _RECT
 
 //////////////////////////////////////////////////////////
 

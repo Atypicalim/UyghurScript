@@ -1,7 +1,7 @@
 // mouse
 
+#include "./externals.h"
 #include "../delegates/header.h"
-#include "../uyghur.c"
 
 int __board_get_code_from_number(double num) {
     if (num <= 0) return 0;

@@ -61,20 +61,41 @@ ALIAS_is_visible: &__is_visible
   uz: korindimi
   tr: görünüyormu
   kz: көрінедіме
-ALIAS_save: &__save
-  en: save
-  uy: ساقلاش
-  ug: saqlash
-  uz: saqlash
-  tr: kaydetmek
-  kz: сақтау
-ALIAS_open: &__open
-  en: open
-  uy: ئېچىش
-  ug: echish
-  uz: ochmoq
-  tr: açmak
-  kz: ашу
+ALIAS_create: &__create
+  en: create
+  uy: قۇرۇش
+  ug: qurush
+  uz: qurish
+  tr: yapmak
+  kz: жасау
+ALIAS_read: &__read
+  en: read
+  uy: ئوقۇش
+  ug: oqush
+  uz: o'qish
+  tr: okumak
+  kz: оқу
+ALIAS_write: &__write
+  en: write
+  uy: يېزىش
+  ug: yezish
+  uz: yozish
+  tr: yazmak
+  kz: жазу
+ALIAS_copy: &__copy
+  en: copy
+  uy: كۆچۈرۈش
+  ug: kochurush
+  uz: kochirish
+  tr: kopylaş
+  kz: көшіру
+ALIAS_crop: &__crop
+  en: crop
+  uy: kesish
+  ug: كېسىش
+  uz: kesish
+  tr: kesmek
+  kz: кесу
 
 ############################# global
 # information
@@ -93,20 +114,10 @@ ALIAS_get_name:
   tr: isim_almak
   kz: есім_алу
 # console
-ALIAS_read:
-  en: read
-  uy: ئوقۇش
-  ug: oqush
-  uz: o'qish
-  tr: okumak
-  kz: оқу
-ALIAS_write:
-  en: write
-  uy: يېزىش
-  ug: yezish
-  uz: yozish
-  tr: yazmak
-  kz: жазу
+ALIAS_console_read:
+  <<: *__read
+ALIAS_console_write:
+  <<: *__write
 # trace
 ALIAS_trace:
   en: trace
@@ -841,6 +852,26 @@ ALIAS_board_is_pressed:
   <<: *__button_is_pressed
 ALIAS_board_is_released:
   <<: *__button_is_released
+
+############################# paper
+ALIAS_paper:
+  en: paper
+  uy: قەغەز
+  ug: qeghez
+  uz: qogoz
+  tr: kağıt
+  kz: қағаз
+ALIAS_paper_create:
+  <<: *__create
+ALIAS_paper_read:
+  <<: *__read
+ALIAS_paper_write:
+  <<: *__write
+ALIAS_paper_copy:
+  <<: *__copy
+ALIAS_paper_crop:
+  <<: *__crop
+
 
 ############################# pencil
 ALIAS_pencil:

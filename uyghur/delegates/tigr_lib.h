@@ -2,8 +2,7 @@
 
 #ifndef UG_DELEGATE_TIGER_H
 #define UG_DELEGATE_TIGER_H
-#include "../include.h"
-#include "./define.h"
+#include "./delegates.h"
 
 //////////////////////////////////////////////////////////////
 

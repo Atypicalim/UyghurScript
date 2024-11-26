@@ -2,8 +2,7 @@
 
 #ifndef UG_DELEGATE_RAYSAN_H
 #define UG_DELEGATE_RAYSAN_H
-#include "../include.h"
-#include "./define.h"
+#include "./delegates.h"
 
 //////////////////////////////////////////////////////////////
 
@@ -357,76 +356,76 @@ bool delegate_stage_update_program() {
 #define _POINT1 (Vector2){point1.x, point1.y}
 #define _POINT2 (Vector2){point2.x, point2.y}
 #define _POINT3 (Vector2){point3.x, point3.y}
-#define _RECTANGLE (Rectangle){rectangle.x, rectangle.y, rectangle.w, rectangle.h}
+#define _RECT (Rectangle){rect.x, rect.y, rect.w, rect.h}
 
 ////////////////////////////////////////////////////////// pencil
 
 
-void delegate_pencil_draw_pixel(UGVector point, UGColor color) {
+void delegate_pencil_draw_pixel(UGPoint point, UGColor color) {
     DrawPixelV(_POINT, _COLOR);
 }
 
-void delegate_pencil_draw_line(UGVector point1, UGVector point2, int thickness, UGColor color) {
+void delegate_pencil_draw_line(UGPoint point1, UGPoint point2, int thickness, UGColor color) {
     DrawLineEx(_POINT1, _POINT2, thickness, _COLOR);
 }
 
-void delegate_pencil_draw_rectangle_fill(UGRectangle rectangle, UGColor color)
+void delegate_pencil_draw_rectangle_fill(UGRect rect, UGColor color)
 {
-    DrawRectangle(rectangle.x, rectangle.y, rectangle.w, rectangle.h, _COLOR);
+    DrawRectangle(rect.x, rect.y, rect.w, rect.h, _COLOR);
 }
 
-void delegate_pencil_draw_rectangle_fill_transformed(UGRectangle rectangle, UGColor color,  UGVector anchor, float rotation)
+void delegate_pencil_draw_rectangle_fill_transformed(UGRect rect, UGColor color,  UGPoint anchor, float rotation)
 {
-    anchor.x = anchor.x * rectangle.w;
-    anchor.y = anchor.y * rectangle.h;
-    DrawRectanglePro(_RECTANGLE, _ANCHOR, rotation, _COLOR);
+    anchor.x = anchor.x * rect.w;
+    anchor.y = anchor.y * rect.h;
+    DrawRectanglePro(_RECT, _ANCHOR, rotation, _COLOR);
 }
 
-void delegate_pencil_draw_rectangle_fill_colorful(UGRectangle rectangle, UGColor lt, UGColor lb, UGColor rb, UGColor rt)
+void delegate_pencil_draw_rectangle_fill_colorful(UGRect rect, UGColor lt, UGColor lb, UGColor rb, UGColor rt)
 {
     Color _lt = (Color){lt.r, lt.g, lt.b, lt.a};
     Color _lb = (Color){lb.r, lb.g, lb.b, lb.a};
     Color _rb = (Color){rb.r, rb.g, rb.b, rb.a};
     Color _rt = (Color){rt.r, rt.g, rt.b, rt.a};
-    DrawRectangleGradientEx(_RECTANGLE, _lt, _lb, _rb, _rt);
+    DrawRectangleGradientEx(_RECT, _lt, _lb, _rb, _rt);
 }
 
-void delegate_pencil_draw_rectangle_fill_round(UGRectangle rectangle, UGColor color, int roundness)
+void delegate_pencil_draw_rectangle_fill_round(UGRect rect, UGColor color, int roundness)
 {
-    DrawRectangleRounded(_RECTANGLE, roundness, 0, _COLOR);
+    DrawRectangleRounded(_RECT, roundness, 0, _COLOR);
 }
 
-void delegate_pencil_draw_rectangle_stroke(UGRectangle rectangle, UGColor color, double thickness)
+void delegate_pencil_draw_rectangle_stroke(UGRect rect, UGColor color, double thickness)
 {
-    DrawRectangleRoundedLines(_RECTANGLE, 0, 0, thickness, _COLOR);
+    DrawRectangleRoundedLines(_RECT, 0, 0, thickness, _COLOR);
 }
 
-void delegate_pencil_draw_circle_fill(UGVector point, UGSize size, UGColor color)
+void delegate_pencil_draw_circle_fill(UGPoint point, UGSize size, UGColor color)
 {
     DrawEllipse(point.x, point.y, size.w, size.h, _COLOR);
 }
 
-void delegate_pencil_draw_circle_stroke(UGVector point, UGSize size, UGColor color, double thickness)
+void delegate_pencil_draw_circle_stroke(UGPoint point, UGSize size, UGColor color, double thickness)
 {
     DrawEllipseLines(point.x, point.y, size.w, size.h, _COLOR);
 }
 
-void delegate_pencil_draw_triangle_fill(UGVector point1, UGVector point2, UGVector point3, UGColor color)
+void delegate_pencil_draw_triangle_fill(UGPoint point1, UGPoint point2, UGPoint point3, UGColor color)
 {
     DrawTriangle(_POINT1, _POINT2, _POINT3, _COLOR);
 }
 
-void delegate_pencil_draw_triangle_stroke(UGVector point1, UGVector point2, UGVector point3, UGColor color, double thickness)
+void delegate_pencil_draw_triangle_stroke(UGPoint point1, UGPoint point2, UGPoint point3, UGColor color, double thickness)
 {
     DrawTriangleLines(_POINT1, _POINT2, _POINT3, _COLOR);
 }
 
-void delegate_pencil_draw_polygon_fill(UGVector center, int sides, double radius, double rotation, UGColor color)
+void delegate_pencil_draw_polygon_fill(UGPoint center, int sides, double radius, double rotation, UGColor color)
 {
     DrawPoly(_CENTER, sides, radius, rotation, _COLOR);
 }
 
-void delegate_pencil_draw_polygon_stroke(UGVector center, int sides, double radius, double rotation, UGColor color, double thickness)
+void delegate_pencil_draw_polygon_stroke(UGPoint center, int sides, double radius, double rotation, UGColor color, double thickness)
 {
     DrawPolyLinesEx(_CENTER, sides, radius, rotation, thickness, _COLOR);
 }
@@ -517,7 +516,7 @@ int delegate_measure_font(UGFont *font, char *text, int size, int spacing) {
 #undef _POINT1
 #undef _POINT2
 #undef _POINT3
-#undef _RECTANGLE
+#undef _RECT
 
 //////////////////////////////////////////////////////////
 

@@ -1,6 +1,6 @@
 // music
 
-#include "../include.h"
+#include "./externals.h"
 #include "../delegates/header.h"
 RMusic __defaulRMusic;
 
