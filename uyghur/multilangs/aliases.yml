@@ -881,6 +881,20 @@ ALIAS_pencil:
   uz: qalam
   tr: kalem
   kz: қалам
+ALIAS_pencil_facelize:
+  en: facelize
+  uy: yuzleshturush
+  ug: يۈزلەشتۈرۈش
+  uz: yuzloshtirish
+  tr: yüzleştirmek
+  kz: жүзлештру
+ALIAS_pencil_customize:
+  en: adjust
+  uy: xaslashturush
+  ug: خاسلاشتۇرۇش
+  uz: moslashtirish
+  tr: özelleştirmek
+  kz: өзгелештру
 # draw point & line
 ALIAS_pencil_draw_pixel:
   en: draw_pixel
@@ -896,124 +910,112 @@ ALIAS_pencil_draw_line:
   uz: chiziq_chizish
   tr: çizgi_çizmek
   kz: сызық_сызу
-# draw rectangle
-ALIAS_pencil_draw_circle_fill:
-  en: draw_rectangle_fill
-  uy: تۆت_تەرەپلىك_تولدۇرۇش
-  ug: totTereplikToldurush
-  uz: to'rtburchak_to'ldirish
-  tr: dörtgen_doldurmak
-  kz: төртбұрыш_толтыру
-ALIAS_pencil_draw_rectangle_fill_transformed:
-  en: draw_rectangle_fill_transformed
-  uy: تۆت_تەرەپلىك_تولدۇرۇش_ئايلاندۇرۇلغان
-  ug: totTereplikToldurushAylandurulghan
-  uz: to'rtburchak_to'ldirish_aylantirilgan
-  tr: dörtgen_doldurmak_dönüştürülen
-  kz: төртбұрыш_толтыру_түрленген
-ALIAS_pencil_draw_rectangle_fill_colorful:
-  en: draw_rectangle_fill_colorful
-  uy: تۆت_تەرەپلىك_تولدۇرۇش_بويالغان
-  ug: totTereplikToldurushBoyalghan
-  uz: to'rtburchak_to'ldirish_boyalgan
-  tr: dörtgen_doldurmak_boyalı
-  kz: төртбұрыш_толтыру_боялған
-ALIAS_pencil_draw_rectangle_fill_round:
-  en: draw_rectangle_fill_round
-  uy: تۆت_تەرەپلىك_تولدۇرۇش_يۇمۇلاق
-  ug: totTereplikToldurushYumulaq
-  uz: to'rtburchak_to'ldirish_dumaloq
-  tr: dörtgen_doldurmak_yuvarlak
-  kz: төртбұрыш_толтыру_дөңгелек
-ALIAS_pencil_draw_rectangle_stroke:
-  en: draw_rectangle_stroke
-  uy: تۆت_تەرەپلىك_سىزىش
-  ug: totTereplikSizish
-  uz: to'rtburchak_chizish
-  tr: dörtgen_çizmek
-  kz: төртбұрыш_сызу
-# draw circle & ring
-ALIAS_pencil_draw_circle_fill:
-  en: draw_circle_fill
-  uy: چەمبەر_تولدۇرۇش
-  ug: chemberToldurush
-  uz: doira_to'ldirish
-  tr: çember_doldurmak
-  kz: шеңбер_толтыру
-ALIAS_pencil_draw_circle_stroke:
-  en: draw_circle_stroke
-  uy: چەمبەر_سىزىش
-  ug: chemberSizish
-  uz: doira_chizish
-  tr: çember_çizmek
-  kz: шеңбер_сызу
-# draw triangle & polygon
-ALIAS_pencil_draw_triangle_fill:
-  en: draw_triangle_fill
-  uy: ئۈچ_تەرەپلىك_تولدۇرۇش
-  ug: uchTereplikToldurush
-  uz: uchburchak_to'ldirish
-  tr: üçgen_doldurmak
-  kz: үшбұрыш_толтыру
-ALIAS_pencil_draw_triangle_stroke:
-  en: draw_triangle_stroke
+# draw triangle
+ALIAS_pencil_draw_triangle:
+  en: draw_triangle
   uy: ئۈچ_تەرەپلىك_سىزىش
   ug: uchTereplikSizish
   uz: uchburchak_chizish
   tr: üçgen_çizmek
   kz: үшбұрыш_сызу
-ALIAS_pencil_draw_polygon_fill:
-  en: draw_polygon_fill
-  uy: كۆپ_تەرەپلىك_تولدۇرۇش
-  ug: kopTereplikToldurush
-  uz: ko'pburchak_fill
-  tr: çokgen_doldurmak
-  kz: көпбұрыш_толтыру
-ALIAS_pencil_draw_polygon_stroke:
-  en: draw_polygon_stroke
+ALIAS_pencil_fill_triangle:
+  en: fill_triangle
+  uy: ئۈچ_تەرەپلىك_تولدۇرۇش
+  ug: uchTereplikToldurush
+  uz: uchburchak_to'ldirish
+  tr: üçgen_doldurmak
+  kz: үшбұрыш_толтыру
+# draw rectangle
+ALIAS_pencil_draw_rectangle:
+  en: draw_rectangle
+  uy: تۆت_تەرەپلىك_سىزىش
+  ug: totTereplikSizish
+  uz: to'rtburchak_chizish
+  tr: dörtgen_çizmek
+  kz: төртбұрыш_сызу
+ALIAS_pencil_fill_rectangle:
+  en: fill_rectangle
+  uy: تۆت_تەرەپلىك_تولدۇرۇش
+  ug: totTereplikToldurush
+  uz: to'rtburchak_to'ldirish
+  tr: dörtgen_doldurmak
+  kz: төртбұрыш_толтыру
+# draw circle
+ALIAS_pencil_draw_circle:
+  en: draw_circle
+  uy: چەمبەر_سىزىش
+  ug: chemberSizish
+  uz: doira_chizish
+  tr: çember_çizmek
+  kz: шеңбер_сызу
+ALIAS_pencil_fill_circle:
+  en: fill_circle
+  uy: چەمبەر_تولدۇرۇش
+  ug: chemberToldurush
+  uz: doira_to'ldirish
+  tr: çember_doldurmak
+  kz: шеңбер_толтыру
+# draw polygon
+ALIAS_pencil_draw_polygon:
+  en: draw_polygon
   uy: كۆپ_تەرەپلىك_سىزىش
   ug: kopTereplikSizish
   uz: ko'pburchak_chizish
   tr: çokgen_çizmek
   kz: көпбұрыш_сызу
+ALIAS_pencil_fill_polygon:
+  en: fill_polygon
+  uy: كۆپ_تەرەپلىك_تولدۇرۇش
+  ug: kopTereplikToldurush
+  uz: ko'pburchak_to'ldirish
+  tr: çokgen_doldurmak
+  kz: көпбұрыш_толтыру
+# text
+ALIAS_pencil_print_text:
+  en: print_text
+  uy: خەت_يېزىش
+  ug: xetYezish
+  uz: xat_yozish
+  tr: dize_yazmak
+  kz: хат_жазу
 # load
 ALIAS_pencil_load_image:
   en: load_image
-  uy: 
+  uy: رەسىم_ئەكىرىش
   ug: resimEkirish
-  uz: 
-  tr: 
-  kz: 
+  uz: surat_kiritish
+  tr: resim_içermek
+  kz: сурет_әкелу
 ALIAS_pencil_load_font:
   en: load_font
-  uy: 
+  uy: فونت_ئەكىرىش
   ug: fontEkirish
-  uz: 
-  tr: 
-  kz: 
+  uz: shrift_kiritish
+  tr: font_içermek
+  kz: шрифт_әкелу
 # image
 ALIAS_pencil_draw_image:
   en: draw_image
-  uy: 
+  uy: رەسىم_سىزىش
   ug: resimSizish
-  uz: 
-  tr: 
-  kz: 
+  uz: surat_yozish
+  tr: resim_çizmek
+  kz: сурет_сызу
 # font
-ALIAS_pencil_draw_text:
-  en: draw_text
-  uy: خەت_يېزىش
+ALIAS_pencil_draw_font:
+  en: draw_font
+  uy: فونت_سىزىش
   ug: fontSizish
-  uz: xat_yozish
-  tr: dize_çizmek
-  kz: хат_сызу
-ALIAS_pencil_measure_text:
-  en: measure_text
-  uy: خەت_مۆلچەرلەش
-  ug: xetMolcherlesh
-  uz: xat_o'lchesh
-  tr: dize_ölçmek
-  kz: хат_өлшеу
+  uz: shrift_yozish
+  tr: font_çizmek
+  kz: шрифт_сызу
+ALIAS_pencil_measure_font:
+  en: measure_font
+  uy: فونت_ئۆلچەش
+  ug: fontOlchesh
+  uz: shrift_o'lchesh
+  tr: font_ölçmek
+  kz: шрифт_өлшеу
 
 ############################# common
 

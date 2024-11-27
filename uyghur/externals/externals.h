@@ -208,6 +208,19 @@ UGPoint UG_POINT_LERP(UGPoint p1, UGPoint p2, float t) {
     return (UGPoint) {math_lerp(p1.x, p2.x, t), math_lerp(p1.y, p2.y, t)};
 }
 
+void UG_POINT_SWAP(UGPoint *p1, UGPoint *p2) {
+    int t = (*p1).x;
+    (*p1).x = (*p2).x;
+    (*p2).x = t;
+    t = (*p1).y;
+    (*p1).y = (*p2).y;
+    (*p2).y = t;
+}
+
+void UG_POINT_PRINT(UGPoint *p) {
+    printf("<point:%p %f,%f>", *p, (*p).x, (*p).y);
+}
+
 typedef struct UGImage {
     char *path;
     void *image;

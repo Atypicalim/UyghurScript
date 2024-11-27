@@ -1,24 +1,44 @@
 
 # xizmetchi @qeghez:qurush bilen 300 300 ishlitilsun we q elinsun
-xizmetchi @qeghez:oqush bilen "./test.png" ishlitilsun we q elinsun
+# xizmetchi @qeghez:oqush bilen "./test.png" ishlitilsun we q elinsun
+xizmetchi @sehne:korsitish bilen 300 300 "Yuguresh" -1 ishlitilsun
+
+xizmetchi @qelem:fontEkirish bilen "../resources/ukij.ttf" 36 ishlitilsun we font elinsun
 
 yeyilghan 1 miqdar k bulup
-    buyruq q yezilsun
+    # buyruq q yezilsun
     buyruq "\n" yezilsun
     xizmetchi @waqit:programminiUxlitish bilen 1 ishlitilsun
 tamamlansun
 
-# xizmetchi @qeghez:kesish bilen q 150 150 100 100 ishlitilsun
 
-xizmetchi @qelem:nuqtaSizish bilen 50 50 "ff0000" ishlitilsun
-xizmetchi @qelem:nuqtaSizish bilen 50 51 "00ff00" ishlitilsun
-xizmetchi @qelem:nuqtaSizish bilen 50 52 "0000ff" ishlitilsun
-xizmetchi @qelem:nuqtaSizish bilen 50 53 "ffffff" ishlitilsun
+nawada @sehne:yepilmaqchi bolmisa
 
-xizmetchi @qelem:siziqSizish bilen 100 100 50 200 3 "22ffff" ishlitilsun
+    xizmetchi @qelem:xaslashturush bilen "eeeeee" ishlitilsun
 
-miqdar isim qimmiti "paper_test.png" bolsun
-xizmetchi @qeghez:yezish bilen q isim ishlitilsun
-xizmetchi @sestima:ijraQilish bilen isim ishlitilsun
+    xizmetchi @qelem:nuqtaSizish bilen 10 10 ishlitilsun
+    xizmetchi @qelem:nuqtaSizish bilen 10 11 ishlitilsun
+    xizmetchi @qelem:nuqtaSizish bilen 10 12 ishlitilsun
+    xizmetchi @qelem:nuqtaSizish bilen 10 13 ishlitilsun
 
-q = quruq
+    xizmetchi @qelem:siziqSizish bilen 20 20 40 280 ishlitilsun
+
+    xizmetchi @qelem:uchTereplikToldurush bilen 50 50 150 50 100 150 ishlitilsun
+    xizmetchi @qelem:chemberSizish bilen 200 250 50 ishlitilsun
+    
+    xizmetchi @qelem:kopTereplikToldurush bilen 250 100 8 25 ishlitilsun
+
+    xizmetchi @qelem:xaslashturush bilen "aaffaa" ishlitilsun
+    xizmetchi @qelem:xetYezish bilen 150 175 "abcde" 2 ishlitilsun
+
+    xizmetchi @qelem:xaslashturush bilen "ffaaaa" ishlitilsun
+    xizmetchi @qelem:totTereplikToldurush bilen 225 50 25 25 ishlitilsun
+
+    xizmetchi @sehne:yengilash ishlitilsun
+tamamlansun
+
+
+
+# miqdar isim qimmiti "paper_test.png" bolsun
+# xizmetchi @qeghez:yezish bilen q isim ishlitilsun
+# xizmetchi @sestima:ijraQilish bilen isim ishlitilsun

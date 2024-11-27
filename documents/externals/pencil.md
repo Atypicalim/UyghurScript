@@ -4,7 +4,28 @@
 > source code [pencil.c](../../uyghur/externals/pencil.c)
 ---
 
-### 1. draw_pixel
+### 1. facelize
+
+> 📝:  facelize func of pencil module
+
+> 🔙: Empty
+
+> 🛒: 
+* paper  `Loadable`
+
+
+### 2. customize
+
+> 📝:  customize func of pencil module
+
+> 🔙: Empty
+
+> 🛒: 
+* color  `UGColor`
+* rotation  `int`
+
+
+### 3. draw_pixel
 
 > 📝:  draw_pixel func of pencil module
 
@@ -12,10 +33,9 @@
 
 > 🛒: 
 * point  `UGPoint`
-* color  `UGColor`
 
 
-### 2. draw_line
+### 4. draw_line
 
 > 📝:  draw_line func of pencil module
 
@@ -24,102 +44,13 @@
 > 🛒: 
 * point1  `UGPoint`
 * point2  `UGPoint`
-* thickness  `int`
-* color  `UGColor`
-* controll  `UGPoint`
-* _controll  `UGPoint`
+* controll1  `UGPoint`
+* controll2  `UGPoint`
 
 
-### 3. draw_rectangle_fill
+### 5. draw_triangle
 
-> 📝:  draw_rectangle_fill func of pencil module
-
-> 🔙: Empty
-
-> 🛒: 
-* rect  `UGRect`
-* color  `UGColor`
-
-
-### 4. draw_rectangle_fill_transformed
-
-> 📝:  draw_rectangle_fill_transformed func of pencil module
-
-> 🔙: Empty
-
-> 🛒: 
-* rect  `UGRect`
-* color  `UGColor`
-* anchor  `UGPoint`
-* rotation  `float`
-
-
-### 5. draw_rectangle_fill_colorful
-
-> 📝:  draw_rectangle_fill_colorful func of pencil module
-
-> 🔙: Empty
-
-> 🛒: 
-* rect  `UGRect`
-* leftTop  `UGColor`
-* leftBottom  `UGColor`
-* rightBottom  `UGColor`
-* rightTop  `UGColor`
-
-
-### 6. draw_rectangle_fill_round
-
-> 📝:  draw_rectangle_fill_round func of pencil module
-
-> 🔙: Empty
-
-> 🛒: 
-* rect  `UGRect`
-* color  `UGColor`
-* roundness  `int`
-
-
-### 7. draw_rectangle_stroke
-
-> 📝:  draw_rectangle_stroke func of pencil module
-
-> 🔙: Empty
-
-> 🛒: 
-* rect  `UGRect`
-* color  `UGColor`
-* thickness  `double`
-
-
-### 8. draw_circle_fill
-
-> 📝:  draw_circle_fill func of pencil module
-
-> 🔙: Empty
-
-> 🛒: 
-* point  `UGPoint`
-* size  `UGSize`
-* color  `UGColor`
-
-
-### 9. draw_circle_stroke
-
-> 📝:  draw_circle_stroke func of pencil module
-
-> 🔙: Empty
-
-> 🛒: 
-* point  `UGPoint`
-* size  `UGSize`
-* color  `UGColor`
-* thickness  `double`
-
-
-### 10. draw_triangle_fill
-
-> 📝:  draw_triangle_fill func of pencil module
+> 📝:  draw_triangle func of pencil module
 
 > 🔙: Empty
 
@@ -127,12 +58,11 @@
 * point1  `UGPoint`
 * point2  `UGPoint`
 * point3  `UGPoint`
-* color  `UGColor`
 
 
-### 11. draw_triangle_stroke
+### 6. fill_triangle
 
-> 📝:  draw_triangle_stroke func of pencil module
+> 📝:  fill_triangle func of pencil module
 
 > 🔙: Empty
 
@@ -140,37 +70,86 @@
 * point1  `UGPoint`
 * point2  `UGPoint`
 * point3  `UGPoint`
-* color  `UGColor`
-* thickness  `double`
 
 
-### 12. draw_polygon_fill
+### 7. draw_rectangle
 
-> 📝:  draw_polygon_fill func of pencil module
+> 📝:  draw_rectangle func of pencil module
 
 > 🔙: Empty
 
 > 🛒: 
-* center  `UGPoint`
-* sides  `int`
-* radius  `double`
-* rotation  `double`
-* color  `UGColor`
+* point  `UGPoint`
+* size  `UGSize`
 
 
-### 13. draw_polygon_stroke
+### 8. fill_rectangle
 
-> 📝:  draw_polygon_stroke func of pencil module
+> 📝:  fill_rectangle func of pencil module
 
 > 🔙: Empty
 
 > 🛒: 
-* center  `UGPoint`
+* point  `UGPoint`
+* size  `UGSize`
+
+
+### 9. draw_circle
+
+> 📝:  draw_circle func of pencil module
+
+> 🔙: Empty
+
+> 🛒: 
+* point  `UGPoint`
+* radius  `double`
+
+
+### 10. fill_circle
+
+> 📝:  fill_circle func of pencil module
+
+> 🔙: Empty
+
+> 🛒: 
+* point  `UGPoint`
+* radius  `double`
+
+
+### 11. draw_polygon
+
+> 📝:  draw_polygon func of pencil module
+
+> 🔙: Empty
+
+> 🛒: 
+* point  `UGPoint`
 * sides  `int`
 * radius  `double`
-* rotation  `double`
-* color  `UGColor`
-* thickness  `double`
+
+
+### 12. fill_polygon
+
+> 📝:  fill_polygon func of pencil module
+
+> 🔙: Empty
+
+> 🛒: 
+* point  `UGPoint`
+* sides  `int`
+* radius  `double`
+
+
+### 13. print_text
+
+> 📝:  print_text func of pencil module
+
+> 🔙: Empty
+
+> 🛒: 
+* point  `UGPoint`
+* text  `CString`
+* size  `double`
 
 
 ### 14. load_image
@@ -193,32 +172,29 @@
 * path  `CString`
 
 
-### 16. draw_text
+### 16. draw_font
 
-> 📝:  draw_text func of pencil module
+> 📝:  draw_font func of pencil module
 
 > 🔙: Empty
 
 > 🛒: 
 * font  `UGFont`
-* text  `CString`
 * size  `float`
-* spacing  `float`
-* color  `UGColor`
-* position  `UGPoint`
+* text  `CString`
+* point  `UGPoint`
 
 
-### 17. measure_text
+### 17. measure_font
 
-> 📝:  measure_text func of pencil module
+> 📝:  measure_font func of pencil module
 
 > 🔙: Number
 
 > 🛒: 
 * font  `UGFont`
-* text  `CString`
 * size  `float`
-* spacing  `float`
+* text  `CString`
 
 
 ### 18. draw_image
@@ -229,13 +205,8 @@
 
 > 🛒: 
 * image  `UGImage`
-* x  `int`
-* y  `int`
-* anchorX  `float`
-* anchorY  `float`
-* color  `UGColor`
-* rotation  `float`
-* scale  `float`
+* point  `UGPoint`
+* size  `UGSize`
 
 
 ---

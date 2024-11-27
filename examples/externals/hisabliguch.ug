@@ -32,6 +32,8 @@ miqdar buTengmu qimmiti quruq bolsun
 
 miqdar sinaqQimmet qimmiti quruq bolsun
 
+xizmetchi @qelem:fontEkirish bilen "../resources/ukij.ttf" 36 ishlitilsun we font elinsun
+
 # get sign
 xizmetchi belgilerniElish miqdar x mezmuni
     miqdar r qimmiti quruq bolsun
@@ -207,9 +209,12 @@ nawada @sehne:yepilmaqchi bolmisa
         tekshuruldighanQimmet = kunupkaNumuri < kunupkaSani
     tamamlansun
     # screen
-    xizmetchi @qelem:totTereplikToldurushAylandurulghan bilen 7 5 500 55 "555555" 0 0 0 ishlitilsun
-    xizmetchi @qelem:totTereplikToldurushAylandurulghan bilen 12 10 333 45 "333333" 0 0 0 ishlitilsun
-    xizmetchi @qelem:totTereplikToldurushAylandurulghan bilen 350 20 70 35 "88888833" 0 0 0 ishlitilsun
+    xizmetchi @qelem:xaslashturush bilen "555555" ishlitilsun
+    xizmetchi @qelem:totTereplikToldurush bilen 7 5 500 55 ishlitilsun
+    xizmetchi @qelem:xaslashturush bilen "333333" ishlitilsun
+    xizmetchi @qelem:totTereplikToldurush bilen 12 10 333 45 ishlitilsun
+    xizmetchi @qelem:xaslashturush bilen "88888833" ishlitilsun
+    xizmetchi @qelem:totTereplikToldurush bilen 350 20 70 35 ishlitilsun
     # # clear
     xizmetchi @zapchas:kunupkaKorsitish bilen 425 10 75 45 "Tazilash" ishlitilsun we rr elinsun
     eger rr bolsa
@@ -217,13 +222,13 @@ nawada @sehne:yepilmaqchi bolmisa
     tamamlansun
     # input
     xizmetchi belgilerniElish bilen herketQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @qelem:xetYezish bilen "" sinaqXet 36 2 "111111" 377 21 ishlitilsun
+    xizmetchi @qelem:fontSizish bilen font 36 sinaqXet 377 21 ishlitilsun
     # result
     xizmetchi @xet:formatlash bilen "%f" netijeQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @qelem:xetYezish bilen "" sinaqXet 24 2 "aaaaaa" 25 15 ishlitilsun
+    xizmetchi @qelem:fontSizish bilen font 24 sinaqXet 25 15 ishlitilsun
     # action
     xizmetchi @xet:formatlash bilen "%f" hazirqiQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @qelem:xetYezish bilen "" sinaqXet 16 2 "aaaaaa" 25 38 ishlitilsun
+    xizmetchi @qelem:fontSizish bilen font 16 sinaqXet 25 38 ishlitilsun
     #
     xizmetchi @sehne:yengilash ishlitilsun
 tamamlansun

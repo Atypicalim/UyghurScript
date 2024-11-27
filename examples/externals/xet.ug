@@ -4,10 +4,11 @@ miqdar s qimmiti 1 bolsun
 miqdar t qimmiti quruq bolsun
 miqdar o qimmiti 0 bolsun
 
+
 xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
 
-xizmetchi @qelem:xetMolcherlesh bilen "../resources/ukij.ttf" "SINAQ" 36 0 ishlitilsun we w elinsun
-xizmetchi @qelem:yazmaNeqishlesh bilen "../resources/ukij.ttf" "سىناق" 36 0 ishlitilsun we r elinsun
+xizmetchi @qelem:fontEkirish bilen "../resources/ukij.ttf" 36 ishlitilsun we font elinsun
+xizmetchi @qelem:fontOlchesh bilen font 36 "SINAQ" ishlitilsun we w elinsun
 
 nawada @sehne:yepilmaqchi bolmisa
     #
@@ -20,9 +21,7 @@ nawada @sehne:yepilmaqchi bolmisa
     #
     o = w / 2
     o = 250 - o
-    xizmetchi @qelem:xetYezish bilen "../resources/ukij.ttf" "SINAQ" 36 0 "ff0000ff" o 50 ishlitilsun
-    #
-    xizmetchi @qelem:neqishSizish bilen r 250 250 0.5 0.5 "ffaaaaff" 0 0 -1 -1 0 s ishlitilsun
+    xizmetchi @qelem:fontSizish bilen font 36 "SINAQ" o 50 ishlitilsun
     #
     xizmetchi @sehne:yengilash ishlitilsun
 tamamlansun

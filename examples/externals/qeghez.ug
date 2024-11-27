@@ -1,0 +1,17 @@
+
+xizmetchi @qeghez:qurush bilen 300 300 ishlitilsun we paper elinsun
+
+# draw a text
+xizmetchi @qelem:xaslashturush bilen "aaffaa" ishlitilsun
+xizmetchi @qelem:xetYezish bilen 150 150 "abcde" 2 ishlitilsun
+
+# draw some shape
+xizmetchi @qelem:xaslashturush bilen "aa22aa" ishlitilsun
+xizmetchi @qelem:uchTereplikToldurush bilen 100 25 200 25 150 125 ishlitilsun
+xizmetchi @qelem:chemberSizish bilen 150 225 50 ishlitilsun
+
+# save as image
+miqdar name qimmiti "paper_test.png" bolsun
+xizmetchi @qeghez:yezish bilen paper name ishlitilsun
+# open saved file
+xizmetchi @sestima:ijraQilish bilen name ishlitilsun

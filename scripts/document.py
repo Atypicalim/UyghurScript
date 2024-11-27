@@ -117,15 +117,19 @@ tplDocBodyLine = '''- [{name}]({path})'''
 
 def _buildDocument(document, modules):
     # 
-    mdLibrariesText = ""
+    mdLibrariesTextOut = ""
+    mdLibrariesTextIn = ""
     for index, name in enumerate(modules):
-        path = document + "/" + name + ".md"
-        internalText = tplDocBodyLine.format(index=index, name=name, path=path)
-        mdLibrariesText = mdLibrariesText + "\n" + internalText
+        pathOut = document + "/" + name + ".md"
+        pathIn = name + ".md"
+        textOut = tplDocBodyLine.format(index=index, name=name, path=pathOut)
+        textIn = tplDocBodyLine.format(index=index, name=name, path=pathIn)
+        mdLibrariesTextOut = mdLibrariesTextOut + "\n" + textOut
+        mdLibrariesTextIn = mdLibrariesTextIn + "\n" + textIn
     #
     def _onMacro(code, command, argument = None):
         if command == "MD_LIBRARIES":
-            return mdLibrariesText
+            return mdLibrariesTextIn
         elif command == "DOCUMENT_NAME":
             return code.format(document=document)
     #
@@ -138,7 +142,7 @@ def _buildDocument(document, modules):
     bldr.onLine(lambda line: line)
     bldr.start()
     #
-    return mdLibrariesText
+    return mdLibrariesTextOut
 
 mdInternalsText = _buildDocument(NAME_INTERNALS, INTERNAL_MODULES)
 mdExternalsText = _buildDocument(NAME_EXTERNALS, EXTERNAL_MODULES)

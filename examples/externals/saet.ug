@@ -39,6 +39,8 @@ miqdar minutRadiusi qimmiti 135 bolsun
 miqdar sikunitRadiusi qimmiti 175 bolsun
 miqdar hazirqiRadius qimmiti quruq bolsun
 
+xizmetchi @qelem:fontEkirish bilen "../resources/ukij.ttf" 36 ishlitilsun we font elinsun
+
 # miqdardin bulung hisablash
 xizmetchi bulungHisablash miqdar hazirqi umumiy mezmuni
     miqdar waqitliqQimmet qimmiti 360 bolsun
@@ -82,7 +84,8 @@ xizmetchi istirilkaSizish miqdar istirilka bulung mezmuni
     x = merkezX + x
     y = merkezY - y
     # 
-    xizmetchi @qelem:siziqSizish bilen merkezX merkezY x y 5 "eeeeee" ishlitilsun
+    xizmetchi @qelem:xaslashturush bilen "eeeeee" 0 5 ishlitilsun
+    xizmetchi @qelem:siziqSizish bilen merkezX merkezY x y ishlitilsun
 tamamlansun
 
 xizmetchi istirilkaHisablash miqdar hazirqiWaqit mezmuni
@@ -114,13 +117,17 @@ nawada @sehne:yepilmaqchi bolmisa
     #
     xizmetchi @waqit:sikuntElish ishlitilsun we hazirqiWaqit elinsun
     # teglik sizish
-    xizmetchi @qelem:totTereplikToldurushAylandurulghan bilen 0 0 ikranKengliki ikranIgizliki "101010" 0 0 0 ishlitilsun
-    xizmetchi @qelem:totTereplikToldurushAylandurulghan bilen 5 5 490 590 "303030" 0 0 0 ishlitilsun
-    xizmetchi @qelem:chemberToldurush bilen merkezX merkezY teglikRadiusi teglikRadiusi "101010" ishlitilsun
+    xizmetchi @qelem:xaslashturush bilen "101010" ishlitilsun
+    xizmetchi @qelem:totTereplikToldurush bilen 0 0 ikranKengliki ikranIgizliki ishlitilsun
+    xizmetchi @qelem:xaslashturush bilen "303030" ishlitilsun
+    xizmetchi @qelem:totTereplikToldurush bilen 5 5 490 590 ishlitilsun
+    xizmetchi @qelem:xaslashturush bilen "101010" ishlitilsun
+    xizmetchi @qelem:chemberToldurush bilen merkezX merkezY teglikRadiusi teglikRadiusi ishlitilsun
     # xet yezish
-    xizmetchi @qelem:xetYezish bilen "../resources/ukij.ttf" tema 36 0 "bbbbbb" 35 20 ishlitilsun
+    xizmetchi @qelem:xaslashturush bilen "eeeeee" ishlitilsun
+    xizmetchi @qelem:fontSizish bilen font 36 tema 35 20 ishlitilsun
     xizmetchi @waqit:sikuntniAylandurush bilen hazirqiWaqit "%Y-%m-%d %H:%M:%S" ishlitilsun we chisla elinsun
-    xizmetchi @qelem:xetYezish bilen "../resources/ukij.ttf" chisla 36 0 "eeeeee" 115 450 ishlitilsun
+    xizmetchi @qelem:fontSizish bilen font 36 chisla 115 450 ishlitilsun
     # istirilka hisablash
     xizmetchi istirilkaHisablash bilen hazirqiWaqit ishlitilsun
     # istirilka sizish
@@ -128,7 +135,8 @@ nawada @sehne:yepilmaqchi bolmisa
     xizmetchi istirilkaSizish bilen MINUT minutGradusi ishlitilsun
     xizmetchi istirilkaSizish bilen SIKUNIT sikunitGradusi ishlitilsun
     # mekez sizish
-    xizmetchi @qelem:chemberToldurush bilen merkezX merkezY 10 10 "303030" ishlitilsun
+    xizmetchi @qelem:xaslashturush bilen "303030" ishlitilsun
+    xizmetchi @qelem:chemberToldurush bilen merkezX merkezY 10 ishlitilsun
     #
     xizmetchi @sehne:yengilash ishlitilsun
 tamamlansun
