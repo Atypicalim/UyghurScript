@@ -152,7 +152,19 @@
 * size  `double`
 
 
-### 14. load_image
+### 14. draw_paper
+
+> 📝:  draw_paper func of pencil module
+
+> 🔙: Empty
+
+> 🛒: 
+* point  `UGPoint`
+* paper  `RPaper`
+* size  `UGSize`
+
+
+### 15. load_image
 
 > 📝:  load_image func of pencil module
 
@@ -162,7 +174,7 @@
 * path  `CString`
 
 
-### 15. load_font
+### 16. load_font
 
 > 📝:  load_font func of pencil module
 
@@ -172,7 +184,7 @@
 * path  `CString`
 
 
-### 16. draw_font
+### 17. draw_font
 
 > 📝:  draw_font func of pencil module
 
@@ -183,18 +195,6 @@
 * size  `float`
 * text  `CString`
 * point  `UGPoint`
-
-
-### 17. measure_font
-
-> 📝:  measure_font func of pencil module
-
-> 🔙: Number
-
-> 🛒: 
-* font  `UGFont`
-* size  `float`
-* text  `CString`
 
 
 ### 18. draw_image
