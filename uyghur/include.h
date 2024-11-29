@@ -33,7 +33,7 @@
 
 #ifdef BUILDER_USE_RAYSAN
     #define REPLAY_NO_IMLEMENT
-    #define REPLOT_STB_NO_INCLUDE
+    #define REPLOT_NO_STB
     #define RAYGUI_IMPLEMENTATION
     #include "raylib.h"
     #include "raygui.h"

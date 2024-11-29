@@ -5,28 +5,6 @@
 
 /////////////////////////////////////////////////
 
-#define RPaper Replot*
-
-RPaper paper_from_bridge(Bridge *bridge)
-{
-    Loadable *loadable = Bridge_receiveValue(bridge, UG_TYPE_STF);
-    RPaper paper = loadable->obj;
-    return paper;
-}
-
-void __release_paper(Loadable *loadable) {
-    if (loadable->obj) {
-        RPaper paper = loadable->obj;
-        if (paper == __ugPencilTarget) {
-            pencil_focus_to(UG_PENCIL_FOCUS_NONE);
-        }
-        Replot_free(paper);
-        loadable->obj = NULL;
-    }
-}
-
-/////////////////////////////////////////////////
-
 void native_paper_create(Bridge *bridge)
 {
     int w = Bridge_receiveNumber(bridge);

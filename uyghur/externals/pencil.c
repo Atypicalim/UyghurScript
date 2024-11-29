@@ -93,6 +93,13 @@ void __pencil_draw_curve2(UGPoint point1, UGPoint point2, UGPoint anchor1, UGPoi
     }
 }
 
+void __pencil_apply_styles() {
+    __UG_PENCIL_CALL(customize, _ugColor, _ugRotation) {
+        Replot_setColor(_PAPER, _COLOR);
+        Replot_setRotation(_PAPER, _ROTATION);
+    }
+}
+
 void native_pencil_facelize(Bridge *bridge) {
     Loadable *paper = Bridge_receiveValue(bridge, UG_TYPE_NON);
     if (Loadable_isStuf(paper) && paper->linka == __release_paper) {
@@ -101,6 +108,7 @@ void native_pencil_facelize(Bridge *bridge) {
     } else {
         pencil_focus_to(UG_PENCIL_FOCUS_NONE);
     }
+    __pencil_apply_styles();
     Bridge_returnEmpty(bridge);
 }
 
@@ -114,10 +122,7 @@ void native_pencil_customize(Bridge *bridge) {
         _ugRotation = rotation;
     }
     //
-    __UG_PENCIL_CALL(customize, _ugColor, _ugRotation) {
-        Replot_setColor(_PAPER, _COLOR);
-        Replot_setRotation(_PAPER, _ROTATION);
-    }
+    __pencil_apply_styles();
     Bridge_returnEmpty(bridge);
 }
 
@@ -233,20 +238,25 @@ void native_pencil_fill_polygon(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-#define _UG_PRINTER_W 500
-#define _UG_PRINTER_H 100
-Replot *_ugPrinter = NULL;
-UGPoint _ugPrintCenter;
-UGPoint _ugPrintP;
-UGColor _ugPrintC;
-void __ug_pencel_print(int x, int y, int r, int g, int b, int a) {
-    _ugPrintP.x = _ugPrintCenter.x + x - _UG_PRINTER_W / 2;
-    _ugPrintP.y = _ugPrintCenter.y + y - _UG_PRINTER_H / 2;
-    _ugPrintC.r = r;
-    _ugPrintC.g = g;
-    _ugPrintC.b = b;
-    _ugPrintC.a = a;
-    __UG_PENCIL_CALL(draw_pixel, _ugPrintP, _ugPrintC) {}
+#define _UG_PAINTER_W 500
+#define _UG_PAINTER_H 500
+Replot *_ugPainter = NULL;
+UGPoint _ugPaintCenter;
+UGPoint _ugPaintPoint;
+UGColor _ugPaintColor;
+void __ug_pencel_plot(int x, int y, int r, int g, int b, int a) {
+    _ugPaintPoint.x = _ugPaintCenter.x + x - _UG_PAINTER_W / 2;
+    _ugPaintPoint.y = _ugPaintCenter.y + y - _UG_PAINTER_H / 2;
+    _ugPaintColor.r = r;
+    _ugPaintColor.g = g;
+    _ugPaintColor.b = b;
+    _ugPaintColor.a = a;
+    __UG_PENCIL_CALL(draw_pixel, _ugPaintPoint, _ugPaintColor) {}
+}
+void __ug_painter_check() {
+    if (_ugPainter != NULL) return;
+    _ugPainter = Replot_new(_UG_PAINTER_W, _UG_PAINTER_H);
+    _ugPainter->plot = __ug_pencel_plot;
 }
 
 void native_pencil_print_text(Bridge *bridge)
@@ -258,14 +268,27 @@ void native_pencil_print_text(Bridge *bridge)
     if (__ugPencilFocus == UG_PENCIL_FOCUS_PAPER) {
         Replot_printText(_PAPER, _POINT, size, text);
     } else {
-        if (!_ugPrinter) {
-            _ugPrinter = Replot_new(_UG_PRINTER_W, _UG_PRINTER_H);
-            _ugPrinter->plot = __ug_pencel_print;
-        } else {
-            _ugPrintCenter.x = point.x;
-            _ugPrintCenter.y = point.y;
-            Replot_printText(_ugPrinter, RPOINT(_UG_PRINTER_W / 2, _UG_PRINTER_H / 2), size, text);
-        }
+        __ug_painter_check();
+        _ugPaintCenter.x = point.x;
+        _ugPaintCenter.y = point.y;
+        Replot_printText(_ugPainter, RPOINT(_UG_PAINTER_W / 2, _UG_PAINTER_H / 2), size, text);
+    }
+    Bridge_returnEmpty(bridge);
+}
+
+void native_pencil_draw_paper(Bridge *bridge)
+{
+    UGPoint point = point_from_bridge(bridge);
+    RPaper paper = paper_from_bridge(bridge);
+    UGSize size = size_from_bridge(bridge);
+    // 
+    if (__ugPencilFocus == UG_PENCIL_FOCUS_PAPER) {
+        Replot_drawCanvas(_PAPER, _POINT, _SIZE, paper);
+    } else {
+        __ug_painter_check();
+        _ugPaintCenter.x = point.x;
+        _ugPaintCenter.y = point.y;
+        Replot_drawCanvas(_ugPainter, RPOINT(_UG_PAINTER_W / 2, _UG_PAINTER_H / 2), _SIZE, paper);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -331,18 +354,6 @@ void native_pencil_draw_font(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-void native_pencil_measure_font(Bridge *bridge)
-{
-    UGFont *font = font_from_bridge(bridge);
-    float size = Bridge_receiveNumber(bridge);
-    CString text = Bridge_receiveString(bridge);
-    int width = 0;
-    __UG_PENCIL_CALL(measure_font, font, text, size, &width) {
-        tools_error("font not supported for paper");
-    }
-    Bridge_returnNumber(bridge, width);
-}
-
 // image
 
 void native_pencil_draw_image(Bridge *bridge)
@@ -360,7 +371,6 @@ void native_pencil_draw_image(Bridge *bridge)
         h = image->h;
     }
     __UG_PENCIL_CALL(draw_image, image, point.x, point.y, 0.5, 0.5, _ugColor, _ugRotation, 1) {
-        Replot_setColor(_PAPER, _COLOR);
         Replot_setImage(_PAPER, image->path);
         Replot_drawRect(_PAPER, _POINT, RSIZE(w, h));
     }

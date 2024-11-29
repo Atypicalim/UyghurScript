@@ -323,8 +323,8 @@ bool delegate_stage_update_program() {
     helper_set_proxy_value(ALIAS_stage, ALIAS_stage_is_closeable, value);
     // 
     RSGL_checkEvent(_rileyWindow);
-    RSGL_clear(RSGL_RGB(50, 50, 50));
     RGFW_window_swapBuffers(_rileyWindow);
+    RSGL_clear(RSGL_RGB(33, 33, 33));
     RGFW_window_checkFPS(_rileyWindow, 0);
     //
     if (closeable && _rileyWindow != NULL) {
@@ -377,13 +377,13 @@ void delegate_pencil_fill_triangle(UGPoint point1, UGPoint point2, UGPoint point
 
 void delegate_pencil_draw_rectangle(UGPoint point, UGSize size, UGColor color, double thickness)
 {
-    RSGL_rectF _rect = (RSGL_rectF){point.x - size.w, point.y - size.h, size.w, size.h};
+    RSGL_rectF _rect = (RSGL_rectF){point.x - size.w / 2, point.y - size.h / 2, size.w, size.h};
     RSGL_drawRectFOutline(_rect, thickness, _COLOR);
 }
 
 void delegate_pencil_fill_rectangle(UGPoint point, UGSize size, UGColor color)
 {
-    RSGL_rectF _rect = (RSGL_rectF){point.x - size.w, point.y - size.h, size.w, size.h};
+    RSGL_rectF _rect = (RSGL_rectF){point.x - size.w / 2, point.y - size.h / 2, size.w, size.h};
     RSGL_drawRectF(_rect, _COLOR);
 }
 
@@ -475,13 +475,14 @@ void delegate_pencil_draw_image(UGImage *image, int x, int y, float anchorX, flo
 
 void delegate_pencil_draw_font(UGFont *font, char *text, int size, UGColor color, UGPoint point) {
     int *fnt = font->font;
+    // 
+    int count = strlen(text);
+    point.x = point.x - count*size/3.25;
+    point.y = point.y - size/2;
+    // 
     RSGL_circle _circle = (RSGL_circle) {point.x, point.y, size};
     RSGL_setFont(*fnt);
     RSGL_drawText(text, _circle, _COLOR);
-}
-
-void delegate_pencil_measure_font(UGFont *font, char *text, int size, int *width) {
-    *width = strlen(text) * size;
 }
 
 //////////////////////////////////////////////////////////

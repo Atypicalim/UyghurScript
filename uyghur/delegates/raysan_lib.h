@@ -331,7 +331,7 @@ bool delegate_stage_update_program() {
         DrawFPS(10, 10);
         EndDrawing();
         BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground((Color){33, 33, 33, 255});
     }
     //
     bool closeable = WindowShouldClose();
@@ -390,13 +390,13 @@ void delegate_pencil_fill_triangle(UGPoint point1, UGPoint point2, UGPoint point
 
 void delegate_pencil_draw_rectangle(UGPoint point, UGSize size, UGColor color, double thickness)
 {
-    Rectangle _rect = (Rectangle){point.x - size.w, point.y - size.h, size.w, size.h};
+    Rectangle _rect = (Rectangle){point.x - size.w / 2, point.y - size.h / 2, size.w, size.h};
     DrawRectangleLinesEx(_rect, thickness, _COLOR);
 }
 
 void delegate_pencil_fill_rectangle(UGPoint point, UGSize size, UGColor color)
 {
-    Rectangle _rect = (Rectangle){point.x - size.w, point.y - size.h, size.w, size.h};
+    Rectangle _rect = (Rectangle){point.x - size.w / 2, point.y - size.h / 2, size.w, size.h};
     Vector2 _anchor = (Vector2){0.5, 0.5};
     DrawRectanglePro(_rect, _anchor, 0, _COLOR);
 }
@@ -476,25 +476,23 @@ void delegate_pencil_draw_image(UGImage *image, int x, int y, float anchorX, flo
     Texture *tex = image->image;
     Texture texture = tex[0];
     //
-    Rectangle source = (Rectangle){0, 0, texture.width, texture.height};
+    Rectangle source = (Rectangle){image->x, image->y, image->w, image->h};
     float destW = texture.width * scale;
     float destH = texture.height * scale;
-    float destX = x;
-    float destY = y;
+    float destX = x - destW / 2;
+    float destY = y - destH / 2;
     Rectangle dest = (Rectangle){destX, destY, destW, destH};
-    Vector2 origin = (Vector2){destW * anchorX, destH * anchorY};
+    Vector2 origin = (Vector2){0, 0};
     DrawTexturePro(texture, source, dest, origin, rotation, _COLOR);
 }
 
 void delegate_pencil_draw_font(UGFont *font, char *text, int size, UGColor color, UGPoint point) {
     Font *fnt = font->font;
-    DrawTextEx(fnt[0], text, _POINT, size, 0, _COLOR);
-}
-
-void delegate_pencil_measure_font(UGFont *font, char *text, int size, int *width) {
-    Font *fnt = font->font;
-    Vector2 space = MeasureTextEx(fnt[0], text, size, 0);
-    *width = space.x;
+    Font _fnt = fnt[0];
+    Vector2 space = MeasureTextEx(_fnt, text, size, 0);
+    point.x = point.x - space.x / 2;
+    point.y = point.y - space.y / 2;
+    DrawTextEx(_fnt, text, _POINT, size, 0, _COLOR);
 }
 
 //////////////////////////////////////////////////////////

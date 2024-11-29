@@ -978,6 +978,14 @@ ALIAS_pencil_print_text:
   uz: xat_yozish
   tr: dize_yazmak
   kz: хат_жазу
+# paper
+ALIAS_pencil_draw_paper:
+  en: draw_paper
+  uy: قەغەز_سىزىش
+  ug: qeghezSizish
+  uz: qogoz_chizish
+  tr: kağıt_çizmek
+  kz: қағаз_сызу
 # load
 ALIAS_pencil_load_image:
   en: load_image
@@ -993,29 +1001,21 @@ ALIAS_pencil_load_font:
   uz: shrift_kiritish
   tr: font_içermek
   kz: шрифт_әкелу
-# image
+# paint
 ALIAS_pencil_draw_image:
   en: draw_image
   uy: رەسىم_سىزىش
   ug: resimSizish
-  uz: surat_yozish
+  uz: surat_chizish
   tr: resim_çizmek
   kz: сурет_сызу
-# font
 ALIAS_pencil_draw_font:
   en: draw_font
   uy: فونت_سىزىش
   ug: fontSizish
-  uz: shrift_yozish
+  uz: shrift_chizish
   tr: font_çizmek
   kz: шрифт_сызу
-ALIAS_pencil_measure_font:
-  en: measure_font
-  uy: فونت_ئۆلچەش
-  ug: fontOlchesh
-  uz: shrift_o'lchesh
-  tr: font_ölçmek
-  kz: шрифт_өлшеу
 
 ############################# common
 
