@@ -230,13 +230,53 @@ void Parser_consumeAstConvert(Parser *this)
     Parser_error(this, NULL);
 }
 
+bool _parser_isToApply(Parser *this) {
+    return Parser_isTypes(this, 1, TVAUES_GROUP_CHANGEABLE) && Parser_isWord(this, 2, TVALUE_OPEN);
+}
+
+Leaf *_parser_consumeAstApply(Parser *this, Token *startToken, Token *endToken) {
+    Token *name = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
+    Leaf *leaf = Leaf_new(UG_ATYPE_APPLY);
+    // args
+    if (Parser_isWord(this, 1, startToken)) {
+        Parser_checkValue(this, 1, 1, startToken);
+        while (Parser_isTypes(this, 1, TTYPES_GROUP_VALUES)) {
+            Token *variable = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+            Stack_push(leaf->tokens, variable);
+        }
+    }
+    Stack_reverse(leaf->tokens);
+    Parser_checkWord(this, 1, 1, endToken);
+    // result
+    Token *result = Token_empty();
+    if (Parser_isValue(this, 1, TVALUE_FURTHER))
+    {
+        Parser_checkValue(this, 1, 1, TVALUE_FURTHER);
+        result = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
+        Parser_checkWord(this, 1, 1, TVALUE_RECIEVED);
+    }
+    Stack_push(leaf->tokens, result);
+    // name
+    Stack_push(leaf->tokens, name);
+    return leaf;
+}
+
 void Parser_consumeAstJudge(Parser *this, char aType)
 {
-    Token *first = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+    Object *first = NULL;
+    //
+    if (_parser_isToApply(this)) {
+        first = _parser_consumeAstApply(this, TVALUE_OPEN, TVALUE_CLOSE);
+    } else {
+        first = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+    }
+    // 
     if (Parser_isType(this, 1, UG_TTYPE_CLC)) {
         Token *clcltn = Parser_checkType(this, 1, 1, UG_TTYPE_CLC);
-        Token *second = NULL;
-        if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
+        Object *second = NULL;
+        if (_parser_isToApply(this)) {
+            second = _parser_consumeAstApply(this, TVALUE_OPEN, TVALUE_CLOSE);
+        } else if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
             second = Parser_checkValue(this, 1, TVAUES_GROUP_UTYPES);
         } else {
             second = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
@@ -400,35 +440,7 @@ void Parser_consumeAstApply(Parser *this)
     Parser_assert(this, isWorker || isCrator || isAssister, LANG_ERR_PARSER_INVALID_VARIABLE);
     Parser_checkType(this, 0, 1, UG_TTYPE_WRD);
     //
-    Token *name = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
-    Leaf *leaf = Leaf_new(UG_ATYPE_APPLY);
-    // args
-    if (Parser_isValue(this, 1, TVALUE_WITH))
-    {
-        Parser_checkValue(this, 1, 1, TVALUE_WITH);
-        Token *variable = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
-        while (variable != NULL)
-        {
-            Stack_push(leaf->tokens, variable);
-            variable = Parser_isValue(this, 1, TVALUE_APPLY) ? NULL : Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
-        }
-    }
-    Stack_reverse(leaf->tokens);
-    //
-    Parser_checkWord(this, 1, 1, TVALUE_APPLY);
-    // result
-    Token *result = NULL;
-    if (Parser_isValue(this, 1, TVALUE_FURTHER))
-    {
-        Parser_checkValue(this, 1, 1, TVALUE_FURTHER);
-        result = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
-        Parser_checkWord(this, 1, 1, TVALUE_RECIEVED);
-    } else {
-        result = Token_empty();
-    }
-    Stack_push(leaf->tokens, result);
-    //
-    Stack_push(leaf->tokens, name);
+    Leaf *leaf = _parser_consumeAstApply(this, TVALUE_WITH, TVALUE_APPLY);
     Leaf_pushLeaf(this->leaf, leaf);
 }
 

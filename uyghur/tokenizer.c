@@ -405,14 +405,14 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             }
         }
         // open
-        if (isCalculator && is_uchar_eq_uchar(currChar, SIGN_OPEN_SMALL))
+        if (is_uchar_eq_uchar(currChar, SIGN_OPEN_SMALL))
         {
             Tokenizer_addLetter(this, String_format("%s", TVALUE_OPEN));
             Tokenizer_skipN(this, 1);
             continue;
         }
         // close
-        if (isCalculator && is_uchar_eq_uchar(currChar, SIGN_CLOSE_SMALL))
+        if (is_uchar_eq_uchar(currChar, SIGN_CLOSE_SMALL))
         {
             Tokenizer_addLetter(this, String_format("%s", TVALUE_CLOSE));
             Tokenizer_skipN(this, 1);

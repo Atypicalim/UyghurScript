@@ -19,6 +19,7 @@ typedef struct {
 UG_LOCATION ug_location;
 
 Value *Executer_getValueByToken(Executer *, Token *, bool);
+Value *Executer_consumeApply(Executer *, Leaf *);
 void Executer_consumeLeaf(Executer *, Leaf *);
 void Executer_consumeTree(Executer *, Leaf *);
 
@@ -672,6 +673,17 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
     Machine_releaseObj(value);
 }
 
+Value *_executer_calculateJudge(Executer *this, Object *some, Token *judge) {
+    if (some->objType == PCT_OBJ_LEAF) {
+        Leaf *_leaf = (Leaf *)some;
+        Executer_assert(this, _leaf->type == UG_ATYPE_APPLY, judge, LANG_ERR_EXECUTER_EXCEPTION);
+        return Executer_consumeApply(this, _leaf);
+    } else {
+        Executer_assert(this, some->objType == PCT_OBJ_TOKEN, judge, LANG_ERR_EXECUTER_EXCEPTION);
+        return Executer_getValueByToken(this, some, true);
+    }
+}
+
 bool Executer_checkJudge(Executer *this, Leaf *leaf)
 {
     //
@@ -681,17 +693,17 @@ bool Executer_checkJudge(Executer *this, Leaf *leaf)
     Token *clcltn = Stack_NEXT(leaf->tokens);
     Token *second = Stack_NEXT(leaf->tokens);
     //
-    Value *firstV = first == NULL ? NULL : Executer_getValueByToken(this, first, true);
-    Value *secondV = second == NULL ? NULL : Executer_getValueByToken(this, second, true);
-    Executer_assert(this, firstV != NULL, first, LANG_ERR_EXECUTER_EXCEPTION);
+    Value *firstV = first == NULL ? NULL : _executer_calculateJudge(this, first, judge);
+    Value *secondV = second == NULL ? NULL : _executer_calculateJudge(this, second, judge);
+    Executer_assert(this, firstV != NULL, judge, LANG_ERR_EXECUTER_EXCEPTION);
     Value *resultV = NULL;
     //
     if (clcltn == NULL) {
-        Executer_assert(this, secondV == NULL, first, LANG_ERR_EXECUTER_EXCEPTION);
+        Executer_assert(this, secondV == NULL, judge, LANG_ERR_EXECUTER_EXCEPTION);
         Machine_retainObj(firstV);
         resultV = firstV;
     } else {
-        Executer_assert(this, secondV != NULL, first, LANG_ERR_EXECUTER_EXCEPTION);
+        Executer_assert(this, secondV != NULL, judge, LANG_ERR_EXECUTER_EXCEPTION);
         resultV = Executer_calculateValues(this, firstV, clcltn, secondV);
     }
     // 
@@ -1066,7 +1078,7 @@ Value *Executer_pushStack(Executer *this, Value *value)
     Stack_push(this->callStack, value);
 }
 
-void Executer_consumeApply(Executer *this, Leaf *leaf)
+Value *Executer_consumeApply(Executer *this, Leaf *leaf)
 {
     Stack_clear(this->callStack);
     Stack_RESTE(leaf->tokens);
@@ -1112,6 +1124,7 @@ void Executer_consumeApply(Executer *this, Leaf *leaf)
     // release objects
     // Machine_releaseObj(runnableValue);
     Stack_clear(this->callStack);
+    return r;
 }
 
 void Executer_consumeResult(Executer *this, Leaf *leaf)
