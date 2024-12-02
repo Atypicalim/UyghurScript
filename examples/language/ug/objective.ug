@@ -34,7 +34,7 @@ xizmetchi @r:test ishlitilsun
 # Y.test...
 
 # check obj is created by or assisted by
-eger r % X bolsa
+eger r ! X bolsa
     buyruq "yes\n" yezilsun
 tamamlansun
 # yes

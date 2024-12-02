@@ -19,4 +19,4 @@ s = {a: "aa", b: "bb", c: 123}
 # alias: this: - bu, module: + bolek, global: * дүние
 
 # check түр
-b = t % тертіп
+b = t ! тертіп

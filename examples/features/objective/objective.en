@@ -34,7 +34,7 @@ worker @r:test applied
 # Y.test...
 
 # check obj is created by or assisted by
-if r % X then
+if r ! X then
     command "yes\n" write
 finish
 # yes

@@ -34,7 +34,7 @@
 # Y.test...
 
 # check obj is created by or assisted by
-егер r % X болса
+егер r ! X болса
     бұйрық "yes\n" жазу
 аяқталсын
 # yes

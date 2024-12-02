@@ -34,7 +34,7 @@ xizmatchi @r:test ishlatilsin
 # Y.test...
 
 # check obj is created by or assisted by
-agar r % X bo'lsa
+agar r ! X bo'lsa
     buyruq "yes\n" yozilsin
 tamomlansin
 # yes

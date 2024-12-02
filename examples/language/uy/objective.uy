@@ -34,7 +34,7 @@
 # Y.test...
 
 # check obj is created by or assisted by
-ئەگەر r % X بولسا
+ئەگەر r ! X بولسا
     بۇيرۇق "yes\n" يېزىلسۇن
 تاماملانسۇن
 # yes

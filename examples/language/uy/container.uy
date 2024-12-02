@@ -19,4 +19,4 @@ s = {a: "aa", b: "bb", c: 123}
 # alias: this: - bu, module: + bolek, global: * دۇنيا
 
 # check تىپ
-b = t % تەرتىپ
+b = t ! تەرتىپ

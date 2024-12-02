@@ -19,4 +19,4 @@ s = {a: "aa", b: "bb", c: 123}
 # alias: this: - bu, module: + bolek, global: * global
 
 # check type
-b = t % list
+b = t ! list

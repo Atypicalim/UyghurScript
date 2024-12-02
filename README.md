@@ -97,6 +97,7 @@ x = 1 + 2 # 3
 x = 1 + 2 * 3 # 9
 x = 1 + (2 * 3) # 7
 x = 64 ^ (1 / 3) # 4
+x = 10 % 7 # 3
 
 # bitwise
 x = 3 & 2 # 2
@@ -117,10 +118,11 @@ x = "ab" > "ac" # false
 x = "ab" + "cd" # abcd
 x = "ab" * 2 # abab
 
-# checking
-x = 10 % 7 # 3
-x = 10 % num # true
-x = 10 % empty # false
+# check
+x = 10 ! num # true
+x = 10 ! empty # false
+x = 3 ! 1 # true
+x = "abc" ! "b" # true
 ```
 
 * [command](examples/features/command)
@@ -264,7 +266,7 @@ s = {a: "aa", b: "bb", c: 123}
 # alias: this: - bu, module: + bolek, global: * global
 
 # check type
-b = t % list
+b = t ! list
 ```
 
 * [objective](examples/features/objective)
@@ -305,7 +307,7 @@ worker @r:test applied
 # Y.test...
 
 # check obj is created by or assisted by
-if r % X then
+if r ! X then
     command "yes\n" write
 finish
 # yes

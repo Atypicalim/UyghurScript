@@ -34,7 +34,7 @@ hizmetçi @r:test kullanılsın
 # Y.test...
 
 # check obj is created by or assisted by
-eğer r % X olsa
+eğer r ! X olsa
     buyruk "yes\n" yaz
 tamamlansin
 # yes

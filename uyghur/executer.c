@@ -468,7 +468,7 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
         } else if (sameType && is_eq_string(sign, TVALUE_SIGN_LESS)) {
             bool r = compCode == CODE_FALSE;
             result = Value_newBoolean(r, token);
-        } else if (is_eq_string(sign, TVALUE_SIGN_PER)) {
+        } else if (is_eq_string(sign, TVALUE_SIGN_CHK)) {
             if (is_type_objective(rType)) {
                 bool r = Objective_isInstanceOf(left, right);
                 result = Value_newBoolean(r, token);
@@ -479,8 +479,11 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
                 bool r = lType == UG_TYPE_NIL;
                 result = Value_newBoolean(r, token);
             } else if (lType == UG_TYPE_NUM && rType == UG_TYPE_NUM) {
-                double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);
-                result = Value_newNumber(r, token);
+                bool r = ((int)left->number & (int)right->number) == (int)right->number;
+                result = Value_newBoolean(r, token);
+            } else if (lType == UG_TYPE_STR && rType == UG_TYPE_STR) {
+                bool r = strstr(left->string, right->string) != NULL;
+                result = Value_newBoolean(r, token);
             }
         }
     } else if (sameType) {
