@@ -233,9 +233,14 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
     }
     // prox
     if (*rContainer != NULL && (*rContainer)->proxy != NULL) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
-        *rValue = Dictable_getLocation((*rContainer)->proxy, key);
-        return;
+        // only string keys available for proxies
+        if (key != NULL) {
+            *rValue = Dictable_getLocation((*rContainer)->proxy, key);
+            // return value when found the key in proxy
+            if (*rValue != NULL) {
+                return;
+            }
+        }
     }
     // list
     if (Value_isListable(*rContainer)) {

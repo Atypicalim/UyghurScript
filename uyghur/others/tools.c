@@ -209,7 +209,7 @@ UTFCHAR convert_border_pair(UTFCHAR c) {
 }
 
 bool is_scope_open(UTFCHAR c) {
-    return is_uchar_eq_char(c, '{') || is_uchar_eq_char(c, ':');
+    return is_uchar_eq_char(c, '{') || is_uchar_eq_char(c, ':') || is_uchar_eq_char(c, '.');
 }
 
 bool is_border_open(UTFCHAR c) {

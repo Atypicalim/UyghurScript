@@ -141,7 +141,22 @@ String *Tokenizer_readLetter(Tokenizer *this) {
     return str;
 }
 
-String *Tokenizer_readNumber(Tokenizer *this, bool canBeFloat) {
+int _tokenizer_readNumber(Tokenizer *this, String *str, UTFCHAR *c) {
+    bool dotCount = false;
+    Tokenizer_skipN(this, 1);
+    *c = Tokenizer_getchar(this, 0);
+    while (is_digit(*c) || is_uchar_eq_uchar(*c, SIGN_DOT)) {
+        if (is_uchar_eq_uchar(*c, SIGN_DOT)) {
+            dotCount++;
+        }
+        String_appendStr(str, *c);
+        Tokenizer_skipN(this, 1);
+        *c = Tokenizer_getchar(this, 0);
+    }
+    return dotCount;
+}
+
+String *Tokenizer_readNumber(Tokenizer *this) {
     String *str = String_new();
     UTFCHAR c = Tokenizer_getchar(this, 0);
     //
@@ -157,46 +172,66 @@ String *Tokenizer_readNumber(Tokenizer *this, bool canBeFloat) {
     } else {
         Tokenizer_error(this, LANG_ERR_INVALID_NMBR);
     }
-    // 
-    bool hasDot = false;
-    Tokenizer_skipN(this, 1);
-    c = Tokenizer_getchar(this, 0);
-    while (is_digit(c) || (is_uchar_eq_uchar(c, SIGN_DOT) && !hasDot)) {
-        if (is_uchar_eq_uchar(c, SIGN_DOT)) {
-            Tokenizer_assert(this, canBeFloat, LANG_ERR_CANNOT_BE_FLOAT);
-            hasDot = true;
-        }
-        String_appendStr(str, c);
-        Tokenizer_skipN(this, 1);
-        c = Tokenizer_getchar(this, 0);
-    }
     //
+    bool dotCount = _tokenizer_readNumber(this, str, &c);
+    Tokenizer_assert(this, dotCount <= 1, LANG_ERR_INVALID_NMBR);
     return str;
 }
 
-String *Tokenizer_readString(Tokenizer *this, bool breakOnSpace) {
+String *Tokenizer_readNumKey(Tokenizer *this) {
     String *str = String_new();
     UTFCHAR c = Tokenizer_getchar(this, 0);
-    while (is_string_body(c)) {
-        // 
-        if (breakOnSpace && is_space(c)) {
+    //
+    if (is_uchar_eq_uchar(c, SIGN_ADD) || is_uchar_eq_uchar(c, SIGN_SUB)) {
+        Tokenizer_error(this, LANG_ERR_INVALID_NMBR);
+    } else if (is_digit(c)) {
+        String_appendStr(str, SIGN_ADD);
+        String_appendStr(str, c);
+    } else {
+        Tokenizer_error(this, LANG_ERR_INVALID_NMBR);
+    }
+    //
+    bool dotCount = _tokenizer_readNumber(this, str, &c);
+    Tokenizer_assert(this, dotCount <= 0, LANG_ERR_CANNOT_BE_FLOAT);
+    return str;
+}
+
+void _tokenizer_readString(Tokenizer *this, String *str, UTFCHAR *c) {
+    if (is_uchar_eq_uchar(*c, SIGN_ESCAPE)) {
+        Tokenizer_skipN(this, 1);
+        UTFCHAR _escp = Tokenizer_getchar(this, 0);
+        char escp = CHAR_QUESSION;
+        if (strlen(_escp) == 1) {
+            escp = decode_escape(_escp[0]);
+        }
+        String_appendChar(str, escp);
+    } else {
+        String_appendStr(str, *c);
+    }
+    Tokenizer_skipN(this, 1);
+    *c = Tokenizer_getchar(this, 0);
+}
+
+String *Tokenizer_readString(Tokenizer *this) {
+    String *str = String_new();
+    UTFCHAR c = Tokenizer_getchar(this, 0);
+    while (true) {
+        if (!is_string_body(c)) {
             break;
         }
-        //
-        if (is_uchar_eq_uchar(c, SIGN_ESCAPE)) {
-            Tokenizer_skipN(this, 1);
-            UTFCHAR _escp = Tokenizer_getchar(this, 0);
-            char escp = CHAR_QUESSION;
-            if (strlen(_escp) == 1) {
-                escp = decode_escape(_escp[0]);
-            }
-            String_appendChar(str, escp);
-        } else {
-            String_appendStr(str, c);
+        _tokenizer_readString(this, str, &c);
+    }
+    return str;
+}
+
+String *Tokenizer_readStrKey(Tokenizer *this) {
+    String *str = String_new();
+    UTFCHAR c = Tokenizer_getchar(this, 0);
+    while (true) {
+        if (!is_string_body(c) || is_special(c) || is_eq_strings(c, 2, "(", ")")) {
+            break;
         }
-        //
-        Tokenizer_skipN(this, 1);
-        c = Tokenizer_getchar(this, 0);
+        _tokenizer_readString(this, str, &c);
     }
     return str;
 }
@@ -290,12 +325,20 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             // get key
             String *txt = NULL;
             char *typ = NULL;
-            if (is_uchar_eq_uchar(openChar, TVALUE_COLON)) {
+            if (is_uchar_eq_uchar(openChar, TVALUE_DOT)) {
                 if (is_digit(c)) {
-                    txt = Tokenizer_readNumber(this, false);
+                    txt = Tokenizer_readNumKey(this);
                     typ = UG_TTYPE_NUM;
                 } else {
-                    txt = Tokenizer_readString(this, true);
+                    txt = Tokenizer_readStrKey(this);
+                    typ = UG_TTYPE_STR;
+                }
+            } else if (is_uchar_eq_uchar(openChar, TVALUE_COLON)) {
+                if (is_digit(c)) {
+                    txt = Tokenizer_readNumKey(this);
+                    typ = UG_TTYPE_NUM;
+                } else {
+                    txt = Tokenizer_readStrKey(this);
                     typ = UG_TTYPE_STR;
                 }
             } else if (is_uchar_eq_uchar(openChar, SIGN_OPEN_MIDDLE)) {
@@ -327,7 +370,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         {
             Tokenizer_skipN(this, 1);
             //
-            String *str = Tokenizer_readString(this, false);
+            String *str = Tokenizer_readString(this);
             Token *tkn = Token_new(UG_TTYPE_STR, String_get(str));
             Token_addToken(this, tkn);
             // 
@@ -339,7 +382,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         // number
         if (is_number_begin(currChar, Tokenizer_getchar(this, 1)))
         {
-            String *num = Tokenizer_readNumber(this, true);
+            String *num = Tokenizer_readNumber(this);
             Token *tkn = Token_new(UG_TTYPE_NUM, String_get(num));
             Token_addToken(this, tkn);
             continue; 
