@@ -47,18 +47,19 @@ UGFont *font_from_bridge(Bridge *bridge)
 // draw
 
 
-
+// TODO:wrap tigr as replot
 #ifdef BUILDER_USE_TIGR
-#define __UG_PENCIL_CALL(name, ...) if(__ugPencilFocus == UG_PENCIL_FOCUS_STAGE) { \
+#define __UG_PENCIL_CALL(name, ...) if (__ugPencilFocus == UG_PENCIL_FOCUS_NONE) { \
+    tools_error("invalid state for pencil"); \
+} else if(__ugPencilFocus == UG_PENCIL_FOCUS_STAGE) { \
     log_error("painting %s not implemented yet", #name); \
-} else if (__ugPencilFocus != UG_PENCIL_FOCUS_PAPER) { \
-    tools_error("invalid state for pencil"); \
-} else 
+    __ugPencilTarget = NULL; \
+}
 #else
-#define __UG_PENCIL_CALL(name, ...) if(__ugPencilFocus == UG_PENCIL_FOCUS_STAGE) { \
-    delegate_pencil_##name(__VA_ARGS__); \
-} else if (__ugPencilFocus != UG_PENCIL_FOCUS_PAPER) { \
+#define __UG_PENCIL_CALL(name, ...) if(__ugPencilFocus == UG_PENCIL_FOCUS_NONE) { \
     tools_error("invalid state for pencil"); \
+} else if (__ugPencilFocus == UG_PENCIL_FOCUS_STAGE) { \
+    delegate_pencil_##name(__VA_ARGS__); \
 } else 
 #endif
 
