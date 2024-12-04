@@ -47,16 +47,19 @@ void native_stage_show_window(Bridge *bridge)
     mode = delegate_stage_mode_swap(mode);
     delegate_stage_run_program(w, h, title, mode);
     replay_InitAudioDevice();
-    pencil_focus_to(UG_PENCIL_FOCUS_STAGE);
+    externals_stage_start();
     Bridge_returnEmpty(bridge);
 }
 
 void native_stage_update_window(Bridge *bridge)
 {
     bool isClose = delegate_stage_update_program();
+    Value *value = Value_newBoolean(isClose, NULL);
+    helper_set_proxy_value(ALIAS_stage, ALIAS_stage_is_closeable, value);
+    externals_stage_update();
     if (isClose) {
         replay_CloseAudioDevice();
-        pencil_focus_to(UG_PENCIL_FOCUS_NONE);
+        externals_stage_end();
     }
     Bridge_returnEmpty(bridge);
 }

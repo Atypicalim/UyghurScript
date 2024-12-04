@@ -151,7 +151,6 @@ void __tigr_on_mouve_button_event(Tigr* win, int button) {
 //////////////////////////////////////////////////////////////
 
 Tigr* _tigrWindow = NULL;
-int _tigrBtnFlags = 0;
 bool _tigrHasCursor = true;
 
 #define CHECK_TIGR_WINDOW_V() \
@@ -242,19 +241,6 @@ double delegate_get_mouse_wheel() {
     return movement;
 }
 
-int delegate_get_mouse_action(int key) {
-    int x = 0;
-    int y = 0;
-    int _flags = 0;
-    tigrMouse(_tigrWindow, &x, &y, &_flags);
-    int isPressed = _flags & key;
-    int wasPressed = _tigrBtnFlags & key;
-    _tigrBtnFlags = _flags;
-    if (isPressed && !wasPressed) return UG_BUTTON_ACTION_PRESS;
-    if (!isPressed && wasPressed) return UG_BUTTON_ACTION_RELEASE;
-    return UG_BUTTON_ACTION_NONE;
-}
-
 int delegate_get_mouse_state(int key) {
     int x = 0;
     int y = 0;
@@ -262,12 +248,6 @@ int delegate_get_mouse_state(int key) {
     tigrMouse(_tigrWindow, &x, &y, &_flags);
     if (_flags & key) return UG_BUTTON_STATE_DOWN;
     return UG_BUTTON_STATE_UP;
-}
-
-int delegate_get_board_action(int key) {
-    if (tigrKeyDown(_tigrWindow, key)) return UG_BUTTON_ACTION_PRESS;
-    if (tigrKeyUp(_tigrWindow, key)) return UG_BUTTON_ACTION_RELEASE;
-    return UG_BUTTON_ACTION_NONE;
 }
 
 int delegate_get_board_state(int key) {
@@ -283,7 +263,6 @@ void delegate_stage_save_screenshot(CString path) {
 void delegate_stage_run_program(int width, int height, CString title, int mode) {
     if (mode < 0) mode = TIGR_AUTO;
     _tigrWindow = tigrWindow(width, height, title, mode);
-    _tigrBtnFlags = 0;
     // __tigr_on_mouve_button_event
 }
 
@@ -291,8 +270,6 @@ bool delegate_stage_update_program() {
     //
     CHECK_TIGR_WINDOW_B();
     bool closeable = tigrClosed(_tigrWindow);
-    Value *value = Value_newBoolean(closeable, NULL);
-    helper_set_proxy_value(ALIAS_stage, ALIAS_stage_is_closeable, value);
     // 
     tigrClear(_tigrWindow, tigrRGB(0x80, 0x90, 0xa0));
     tigrUpdate(_tigrWindow);
@@ -304,6 +281,25 @@ bool delegate_stage_update_program() {
     } else {
         return false;
     }
+}
+//////////////////////////////////////////////////////////
+
+void *delegate_unload_image(UGImage *img) {
+    return NULL;
+}
+
+void *delegate_unload_font(UGFont *fnt) {
+    return NULL;
+}
+
+UGImage *delegate_load_image(UGImage *img)
+{
+    return img;
+}
+
+UGFont *delegate_load_font(UGFont *fnt)
+{
+    return fnt;
 }
 
 #endif

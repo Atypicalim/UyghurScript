@@ -46,11 +46,21 @@ UGFont *font_from_bridge(Bridge *bridge)
 
 // draw
 
+
+
+#ifdef BUILDER_USE_TIGR
+#define __UG_PENCIL_CALL(name, ...) if(__ugPencilFocus == UG_PENCIL_FOCUS_STAGE) { \
+    log_error("painting %s not implemented yet", #name); \
+} else if (__ugPencilFocus != UG_PENCIL_FOCUS_PAPER) { \
+    tools_error("invalid state for pencil"); \
+} else 
+#else
 #define __UG_PENCIL_CALL(name, ...) if(__ugPencilFocus == UG_PENCIL_FOCUS_STAGE) { \
     delegate_pencil_##name(__VA_ARGS__); \
-    } else if (__ugPencilFocus != UG_PENCIL_FOCUS_PAPER) { \
+} else if (__ugPencilFocus != UG_PENCIL_FOCUS_PAPER) { \
     tools_error("invalid state for pencil"); \
-    } else \
+} else 
+#endif
 
 void __pencil_draw_line(UGPoint point1, UGPoint point2) {
     __UG_PENCIL_CALL(draw_line, point1, point2, _ugThickness, _ugColor) {

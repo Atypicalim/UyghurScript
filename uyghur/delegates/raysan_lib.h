@@ -283,21 +283,9 @@ double delegate_get_mouse_wheel() {
     return (double)GetMouseWheelMove();
 }
 
-int delegate_get_mouse_action(int key) {
-    if (IsMouseButtonPressed(key)) return UG_BUTTON_ACTION_PRESS;
-    if (IsMouseButtonReleased(key)) return UG_BUTTON_ACTION_RELEASE;
-    return UG_BUTTON_ACTION_NONE;
-}
-
 int delegate_get_mouse_state(int key) {
     if (IsMouseButtonDown(key)) return UG_BUTTON_STATE_DOWN;
     return UG_BUTTON_STATE_UP;
-}
-
-int delegate_get_board_action(int key) {
-    if (IsKeyPressed(key)) return UG_BUTTON_ACTION_PRESS;
-    if (IsKeyReleased(key)) return UG_BUTTON_ACTION_RELEASE;
-    return UG_BUTTON_ACTION_NONE;
 }
 
 int delegate_get_board_state(int key) {
@@ -326,17 +314,16 @@ void delegate_stage_run_program(int width, int height, CString title, int mode) 
     // SetTargetFPS(60);
 }
 
-bool delegate_stage_update_program() {   
+bool delegate_stage_update_program() {
+    //
+    bool closeable = WindowShouldClose();
+    // 
     if (IsWindowReady()) {
         DrawFPS(10, 10);
         EndDrawing();
         BeginDrawing();
         ClearBackground((Color){33, 33, 33, 255});
     }
-    //
-    bool closeable = WindowShouldClose();
-    Value *value = Value_newBoolean(closeable, NULL);
-    helper_set_proxy_value(ALIAS_stage, ALIAS_stage_is_closeable, value);
     //
     if (closeable && IsWindowReady()) {
         CloseWindow();

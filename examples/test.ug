@@ -1,6 +1,15 @@
 
-eger @xojjet:buMewjutmu ("test.log") bolsa
-    buyruq "YES!!!!\n" yezilsun
-bolmisa
-    buyruq "NO!\n" yezilsun
+xizmetchi @sehne:korsitish bilen -1 -1 "Yuguresh" -1 ishlitilsun
+
+nawada @sehne:yepilmaqchi bolmisa
+    #
+    eger @taxta:besildimu ("f") bolsa
+        buyruq "OK!\n" yezilsun
+    tamamlansun
+    eger @taxta:boshitildimu ("f") bolsa
+        buyruq "NO!\n" yezilsun
+    tamamlansun
+    # 
+    #
+    xizmetchi @sehne:yengilash ishlitilsun
 tamamlansun

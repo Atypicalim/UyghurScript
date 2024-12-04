@@ -30,6 +30,10 @@
 #define UG_STAGE_WINDOW_MODE_BORDERLESS 32
 #define UG_STAGE_WINDOW_MODE_PINNED 4
 
+// button type
+#define UG_BUTTON_TYPE_MOUSE 1
+#define UG_BUTTON_TYPE_BOARD 2
+
 // mouse btn
 #define UG_MOUSE_BUTTON_CODE_LEFT 1
 #define UG_MOUSE_BUTTON_CODE_MIDDLE 2
@@ -324,6 +328,39 @@ void __release_paper(Loadable *loadable) {
         Replot_free(paper);
         loadable->obj = NULL;
     }
+}
+
+#define __UG_BOARD_SIZE 512
+#define __UG_MOUSE_SIZE 512
+int __ugBoardPressedOld[__UG_BOARD_SIZE];
+int __ugBoardPressedNew[__UG_BOARD_SIZE];
+int __ugMousePressedOld[__UG_MOUSE_SIZE];
+int __ugMousePressedNew[__UG_MOUSE_SIZE];
+
+void externals_stage_start() {
+    pencil_focus_to(UG_PENCIL_FOCUS_STAGE);
+}
+
+void externals_stage_end() {
+    pencil_focus_to(UG_PENCIL_FOCUS_NONE);
+}
+
+void externals_stage_update() {
+    memcpy(__ugBoardPressedOld, __ugBoardPressedNew, sizeof(int) * __UG_BOARD_SIZE);
+    memcpy(__ugMousePressedOld, __ugMousePressedNew, sizeof(int) * __UG_MOUSE_SIZE);
+}
+
+int externals_get_button_action(bool isMouse, int key, int newState) {
+    int oldState = isMouse ? __ugMousePressedOld[key] : __ugBoardPressedOld[key];
+    if (isMouse) {
+        __ugMousePressedNew[key] = newState;
+    } else {
+        __ugBoardPressedNew[key] = newState;
+    }
+    if (oldState != newState) {
+        return newState ? UG_BUTTON_ACTION_PRESS : UG_BUTTON_ACTION_RELEASE;
+    }
+    return UG_BUTTON_ACTION_NONE;
 }
 
 #endif

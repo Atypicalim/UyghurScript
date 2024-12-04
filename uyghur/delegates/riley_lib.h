@@ -282,21 +282,9 @@ double delegate_get_mouse_wheel() {
     return movement;
 }
 
-int delegate_get_mouse_action(int key) {
-    if (RGFW_wasMousePressed(_rileyWindow, key)) return UG_BUTTON_ACTION_PRESS;
-    if (RGFW_isMouseReleased(_rileyWindow, key)) return UG_BUTTON_ACTION_RELEASE;
-    return UG_BUTTON_ACTION_NONE;
-}
-
 int delegate_get_mouse_state(int key) {
     if (RGFW_isMousePressed(_rileyWindow, key)) return UG_BUTTON_STATE_DOWN;
     return UG_BUTTON_STATE_UP;
-}
-
-int delegate_get_board_action(int key) {
-    if (RGFW_wasPressed(_rileyWindow, key)) return UG_BUTTON_ACTION_PRESS;
-    if (RGFW_isReleased(_rileyWindow, key)) return UG_BUTTON_ACTION_RELEASE;
-    return UG_BUTTON_ACTION_NONE;
 }
 
 int delegate_get_board_state(int key) {
@@ -319,8 +307,6 @@ bool delegate_stage_update_program() {
     //
     CHECK_RILEY_WINDOW_B();
     bool closeable = RGFW_window_shouldClose(_rileyWindow);
-    Value *value = Value_newBoolean(closeable, NULL);
-    helper_set_proxy_value(ALIAS_stage, ALIAS_stage_is_closeable, value);
     // 
     RSGL_checkEvent(_rileyWindow);
     RGFW_window_swapBuffers(_rileyWindow);
