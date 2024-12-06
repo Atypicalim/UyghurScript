@@ -345,6 +345,20 @@ bool delegate_stage_update_program() {
 #define _POINT3 (Vector2){point3.x, point3.y}
 #define _RECT (Rectangle){rect.x, rect.y, rect.w, rect.h}
 
+//////////////////////////////////////////////////////////
+
+Color __plotColor;
+Vector2 __plotPoint;
+void deletage_paint_plot(int x, int y, int r, int g, int b, int a) {
+    __plotColor.r = r;
+    __plotColor.g = g;
+    __plotColor.b = b;
+    __plotColor.a = a;
+    __plotPoint.x = x;
+    __plotPoint.y = y;
+    DrawPixelV(__plotPoint, __plotColor);
+}
+
 ////////////////////////////////////////////////////////// pencil
 
 void delegate_pencil_customize(UGColor color, int rotation) {
@@ -411,9 +425,9 @@ void delegate_pencil_fill_polygon(UGPoint center, int sides, double radius, doub
 //////////////////////////////////////////////////////////
 
 void *delegate_unload_image(UGImage *img) {
-    Texture *_image = img->image;
-    if (_image != NULL) {UnloadTexture(_image[0]);}
-    return _image;
+    Texture *tex = img->txtr;
+    if (tex != NULL) {UnloadTexture(tex[0]);}
+    return tex;
 }
 
 void *delegate_unload_font(UGFont *fnt) {
@@ -422,23 +436,21 @@ void *delegate_unload_font(UGFont *fnt) {
     return _font;
 }
 
+
 UGImage *delegate_load_image(UGImage *img)
 {
-    Image image0 = LoadImage(img->path);
-    int x = img->x > 0 ? img->x : 0;
-    int y = img->y > 0 ? img->y : 0;
-    int w = img->w > 0 ? img->w : image0.width;
-    int h = img->h > 0 ? img->h : image0.height;
-    Image image1 = ImageFromImage(image0, (Rectangle){x, y, w, h});
-    Texture texture = LoadTextureFromImage(image1);
-    UnloadImage(image0);
+    int format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+    int mipmap = 1;
+    Texture2D texture = { 0 };
+    texture.id = rlLoadTexture(img->data, img->w, img->h, format, mipmap);
+    texture.width = img->w;
+    texture.height = img->h;
+    texture.mipmaps = mipmap;
+    texture.format = format;
     //
-    img->w = texture.width;
-    img->h = texture.height;
-    //
-    Texture *_image = (Texture *)malloc(sizeof(Texture));
-    _image[0] = texture;
-    img->image = (void*)_image;
+    Texture *_texture = (Texture *)malloc(sizeof(Texture));
+    _texture[0] = texture;
+    img->txtr = (void*)_texture;
     return img;
 }
 
@@ -460,10 +472,10 @@ UGFont *delegate_load_font(UGFont *fnt)
 
 void delegate_pencil_draw_image(UGImage *image, int x, int y, float anchorX, float anchorY, UGColor color, float rotation, float scale) {
 
-    Texture *tex = image->image;
+    Texture *tex = image->txtr;
     Texture texture = tex[0];
     //
-    Rectangle source = (Rectangle){image->x, image->y, image->w, image->h};
+    Rectangle source = (Rectangle){0, 0, image->w, image->h};
     float destW = texture.width * scale;
     float destH = texture.height * scale;
     float destX = x - destW / 2;

@@ -227,11 +227,11 @@ void UG_POINT_PRINT(UGPoint *p) {
 
 typedef struct UGImage {
     char *path;
-    void *image;
-    int x;
-    int y;
+    RTexture data;
+    void *txtr;
     int w;
     int h;
+    int c;
 } UGImage;
 
 typedef struct UGFont {
@@ -241,14 +241,18 @@ typedef struct UGFont {
 } UGFont;
 
 
-UGFont *UG_NEW_IMAGE(char *path, int x, int y, int w, int h) {
+// TODO: replace with replot and resize image
+UGImage *UG_NEW_IMAGE(char *path) {
     UGImage *img = (UGImage *)malloc(sizeof(UGImage));
+    int _w;
+    int _h;
+    int _c;
+    img->data = rimage_read(path, &_w, &_h, &_c);
     img->path = strdup(path);
-    img->x = x;
-    img->y = y;
-    img->w = h;
-    img->h = h;
-    img->image = NULL;
+    img->txtr = NULL;
+    img->w = _w;
+    img->h = _h;
+    img->c = _c;
     return img;
 }
 
@@ -297,20 +301,19 @@ UGRect rect_from_bridge(Bridge *bridge)
     return (UGRect){x, y, w, h};
 }
 
+#define RPaper Replot*
+Replot* __ugPainter = NULL;
+
 #define UG_PENCIL_FOCUS_NONE 0
 #define UG_PENCIL_FOCUS_PAPER 1
 #define UG_PENCIL_FOCUS_STAGE 2
 char __ugPencilFocus = 0;
 void* __ugPencilTarget = NULL;
 
-void pencil_focus_to(int type) {
+void pencil_focus_to(int type, void *target) {
     __ugPencilFocus = type;
-    if (type == UG_PENCIL_FOCUS_NONE) {
-        __ugPencilTarget = NULL;
-    }
+    __ugPencilTarget = target;
 }
-
-#define RPaper Replot*
 
 RPaper paper_from_bridge(Bridge *bridge)
 {
@@ -323,7 +326,7 @@ void __release_paper(Loadable *loadable) {
     if (loadable->obj) {
         RPaper paper = loadable->obj;
         if (paper == __ugPencilTarget) {
-            pencil_focus_to(UG_PENCIL_FOCUS_NONE);
+            pencil_focus_to(UG_PENCIL_FOCUS_NONE, NULL);
         }
         Replot_free(paper);
         loadable->obj = NULL;
@@ -337,12 +340,14 @@ int __ugBoardPressedNew[__UG_BOARD_SIZE];
 int __ugMousePressedOld[__UG_MOUSE_SIZE];
 int __ugMousePressedNew[__UG_MOUSE_SIZE];
 
-void externals_stage_start() {
-    pencil_focus_to(UG_PENCIL_FOCUS_STAGE);
+void externals_stage_start(int w, int h) {
+    if (__ugPainter != NULL) Replot_free(__ugPainter);
+    __ugPainter = Replot_new(w, h);
+    pencil_focus_to(UG_PENCIL_FOCUS_STAGE, __ugPainter);
 }
 
 void externals_stage_end() {
-    pencil_focus_to(UG_PENCIL_FOCUS_NONE);
+    pencil_focus_to(UG_PENCIL_FOCUS_NONE, NULL);
 }
 
 void externals_stage_update() {

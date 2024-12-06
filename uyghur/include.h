@@ -43,9 +43,12 @@
     #include "RSGL.h"
 #endif
 
-#ifndef BUILDER_USE_TIGR
+#ifdef BUILDER_USE_TIGR
+#define USE_SOFT_PAINT true
+#else
 #define TIGR_EXT_NO_DESKTOP
 #endif
+
 #undef __IOS__
 #undef __ANDROID__
 #define TIGR_EXT_NO_MOBILE

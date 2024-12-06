@@ -335,6 +335,20 @@ bool delegate_stage_update_program() {
 #define _POINT3 (RSGL_pointF){point3.x, point3.y}
 #define _RECT (RSGL_rectF){rect.x, rect.y, rect.w, rect.h}
 
+//////////////////////////////////////////////////////////
+
+RSGL_color __plotColor;
+RSGL_pointF __plotPoint;
+void deletage_paint_plot(int x, int y, int r, int g, int b, int a) {
+    __plotColor.r = r;
+    __plotColor.g = g;
+    __plotColor.b = b;
+    __plotColor.a = a;
+    __plotPoint.x = x;
+    __plotPoint.y = y;
+    RSGL_drawPointF(__plotPoint, __plotColor);
+}
+
 ////////////////////////////////////////////////////////// pencil
 
 void delegate_pencil_customize(UGColor color, int rotation) {
@@ -404,9 +418,9 @@ void delegate_pencil_fill_polygon(UGPoint center, int sides, double radius, doub
 //////////////////////////////////////////////////////////
 
 void *delegate_unload_image(UGImage *img) {
-    RSGL_image *_image = img->image;
-    if (_image != NULL) {}
-    return _image;
+    u32 *tex = img->txtr;
+    if (tex != NULL) {}
+    return tex;
 }
 
 void *delegate_unload_font(UGFont *fnt) {
@@ -417,19 +431,10 @@ void *delegate_unload_font(UGFont *fnt) {
 
 UGImage *delegate_load_image(UGImage *img)
 {
-    RSGL_image image0 = RSGL_loadImage(img->path);
-    RSGL_area size = image0.srcSize;
-    int x = img->x > 0 ? img->x : 0;
-    int y = img->y > 0 ? img->y : 0;
-    int w = img->w > 0 ? img->w : size.w;
-    int h = img->h > 0 ? img->h : size.h;
-    //
-    img->w = size.w;
-    img->h = size.h;
-    // //
-    RSGL_image *_image = (RSGL_image *)malloc(sizeof(RSGL_image));
-    _image[0] = image0;
-    img->image = (void*)_image;
+    u32 texture = RSGL_renderCreateTexture(img->data, (RSGL_area){img->w, img->h}, img->c);
+    u32 *_texture = (u32 *)malloc(sizeof(u32));
+    _texture[0] = texture;
+    img->txtr = (void*)_texture;
     return img;
 }
 
@@ -445,8 +450,8 @@ UGFont *delegate_load_font(UGFont *fnt)
 //////////////////////////////////////////////////////////
 
 void delegate_pencil_draw_image(UGImage *image, int x, int y, float anchorX, float anchorY, UGColor color, float rotation, float scale) {
-    RSGL_image *img = image->image;
-    RSGL_image _image = img[0];
+    u32 *tex = image->txtr;
+    u32 _texture = tex[0];
     // 
     int wVal = image->w * scale;
     int hVal = image->h * scale;
@@ -455,7 +460,8 @@ void delegate_pencil_draw_image(UGImage *image, int x, int y, float anchorX, flo
     //
     RSGL_rect _rect = (RSGL_rect){xPos, yPos, wVal, hVal};
     RSGL_rotate(RSGL_POINT3D(0, 0, rotation));
-    RSGL_drawImage(image->path, _rect);
+    RSGL_setTexture(_texture);
+    RSGL_drawRect(_rect, RSGL_RGB(255, 255, 255));
     RSGL_rotate(RSGL_POINT3D(0, 0, 0));
 }
 

@@ -47,7 +47,7 @@ void native_stage_show_window(Bridge *bridge)
     mode = delegate_stage_mode_swap(mode);
     delegate_stage_run_program(w, h, title, mode);
     replay_InitAudioDevice();
-    externals_stage_start();
+    externals_stage_start(w, h);
     Bridge_returnEmpty(bridge);
 }
 

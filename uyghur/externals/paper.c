@@ -11,8 +11,7 @@ void native_paper_create(Bridge *bridge)
     int h = Bridge_receiveNumber(bridge);
     RPaper paper = Replot_new(w, h);
     Loadable *loadable = Loadable_newStuf(paper, ALIAS_paper, "~", __release_paper);
-    pencil_focus_to(UG_PENCIL_FOCUS_PAPER);
-    __ugPencilTarget = paper;
+    pencil_focus_to(UG_PENCIL_FOCUS_PAPER, paper);
     Bridge_returnValue(bridge, loadable);
 }
 
@@ -40,8 +39,7 @@ void native_paper_read(Bridge *bridge)
     CString path = Bridge_receiveString(bridge);
     RPaper paper = Replot_read(path);
     Loadable *loadable = Loadable_newStuf(paper, ALIAS_paper, path, __release_paper);
-    pencil_focus_to(UG_PENCIL_FOCUS_PAPER);
-    __ugPencilTarget = paper;
+    pencil_focus_to(UG_PENCIL_FOCUS_PAPER, paper);
     Bridge_returnValue(bridge, loadable);
 }
 

@@ -48,12 +48,11 @@ UGFont *font_from_bridge(Bridge *bridge)
 
 
 // TODO:wrap tigr as replot
-#ifdef BUILDER_USE_TIGR
+#if USE_SOFT_PAINT
 #define __UG_PENCIL_CALL(name, ...) if (__ugPencilFocus == UG_PENCIL_FOCUS_NONE) { \
     tools_error("invalid state for pencil"); \
 } else if(__ugPencilFocus == UG_PENCIL_FOCUS_STAGE) { \
-    log_error("painting %s not implemented yet", #name); \
-    __ugPencilTarget = NULL; \
+    __ugPainter->plot = deletage_paint_plot; \
 }
 #else
 #define __UG_PENCIL_CALL(name, ...) if(__ugPencilFocus == UG_PENCIL_FOCUS_NONE) { \
@@ -114,10 +113,9 @@ void __pencil_apply_styles() {
 void native_pencil_facelize(Bridge *bridge) {
     Loadable *paper = Bridge_receiveValue(bridge, UG_TYPE_NON);
     if (Loadable_isStuf(paper) && paper->linka == __release_paper) {
-        pencil_focus_to(UG_PENCIL_FOCUS_PAPER);
-        __ugPencilTarget = paper->obj;
+        pencil_focus_to(UG_PENCIL_FOCUS_PAPER, paper->obj);
     } else {
-        pencil_focus_to(UG_PENCIL_FOCUS_NONE);
+        pencil_focus_to(UG_PENCIL_FOCUS_NONE, NULL);
     }
     __pencil_apply_styles();
     Bridge_returnEmpty(bridge);
@@ -249,27 +247,6 @@ void native_pencil_fill_polygon(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-#define _UG_PAINTER_W 500
-#define _UG_PAINTER_H 500
-Replot *_ugPainter = NULL;
-UGPoint _ugPaintCenter;
-UGPoint _ugPaintPoint;
-UGColor _ugPaintColor;
-void __ug_pencel_plot(int x, int y, int r, int g, int b, int a) {
-    _ugPaintPoint.x = _ugPaintCenter.x + x - _UG_PAINTER_W / 2;
-    _ugPaintPoint.y = _ugPaintCenter.y + y - _UG_PAINTER_H / 2;
-    _ugPaintColor.r = r;
-    _ugPaintColor.g = g;
-    _ugPaintColor.b = b;
-    _ugPaintColor.a = a;
-    __UG_PENCIL_CALL(draw_pixel, _ugPaintPoint, _ugPaintColor) {}
-}
-void __ug_painter_check() {
-    if (_ugPainter != NULL) return;
-    _ugPainter = Replot_new(_UG_PAINTER_W, _UG_PAINTER_H);
-    _ugPainter->plot = __ug_pencel_plot;
-}
-
 void native_pencil_print_text(Bridge *bridge)
 {
     UGPoint point = point_from_bridge(bridge);
@@ -279,10 +256,8 @@ void native_pencil_print_text(Bridge *bridge)
     if (__ugPencilFocus == UG_PENCIL_FOCUS_PAPER) {
         Replot_printText(_PAPER, _POINT, size, text);
     } else {
-        __ug_painter_check();
-        _ugPaintCenter.x = point.x;
-        _ugPaintCenter.y = point.y;
-        Replot_printText(_ugPainter, RPOINT(_UG_PAINTER_W / 2, _UG_PAINTER_H / 2), size, text);
+        __ugPainter->plot = deletage_paint_plot;
+        Replot_printText(__ugPainter, _POINT, size, text);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -296,10 +271,8 @@ void native_pencil_draw_paper(Bridge *bridge)
     if (__ugPencilFocus == UG_PENCIL_FOCUS_PAPER) {
         Replot_drawCanvas(_PAPER, _POINT, _SIZE, paper);
     } else {
-        __ug_painter_check();
-        _ugPaintCenter.x = point.x;
-        _ugPaintCenter.y = point.y;
-        Replot_drawCanvas(_ugPainter, RPOINT(_UG_PAINTER_W / 2, _UG_PAINTER_H / 2), _SIZE, paper);
+        __ugPainter->plot = deletage_paint_plot;
+        Replot_drawCanvas(__ugPainter, _POINT, _SIZE, paper);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -310,6 +283,8 @@ void _pencil_release_image(Loadable *loadable) {
     if (loadable->obj) {
         UGImage *data = delegate_unload_image(loadable->obj);
         pct_free(data->path);
+        rimage_free(data->data);
+        // TODO:free texture
         pct_free(data);
         pct_free(loadable->obj);
         loadable->obj = NULL;
@@ -334,7 +309,7 @@ void native_pencil_load_image(Bridge *bridge)
     double y = needArea ? Bridge_receiveNumber(bridge) : 0;
     double w = needArea ? Bridge_receiveNumber(bridge) : -1;
     double h = needArea ? Bridge_receiveNumber(bridge) : -1;
-    UGImage *image = UG_NEW_IMAGE(path, x, y, w, h);
+    UGImage *image = UG_NEW_IMAGE(path);
     delegate_load_image(image);
     Loadable *loadable = Loadable_newStuf(image, ALIAS_texture, path, _pencil_release_image);
     Bridge_returnValue(bridge, loadable);
@@ -360,7 +335,7 @@ void native_pencil_draw_font(Bridge *bridge)
     CString text = Bridge_receiveString(bridge);
     UGPoint point = point_from_bridge(bridge);
     __UG_PENCIL_CALL(draw_font, font, text, size, _ugColor, point) {
-        tools_error("font not supported for paper");
+        // font not supported
     }
     Bridge_returnEmpty(bridge);
 }
@@ -382,8 +357,8 @@ void native_pencil_draw_image(Bridge *bridge)
         h = image->h;
     }
     __UG_PENCIL_CALL(draw_image, image, point.x, point.y, 0.5, 0.5, _ugColor, _ugRotation, 1) {
-        Replot_setImage(_PAPER, image->path);
-        Replot_drawRect(_PAPER, _POINT, RSIZE(w, h));
+        Replot_setTexture(_PAPER, image->data, image->w, image->h);
+        Replot_fillRect(_PAPER, _POINT, RSIZE(w, h));
     }
     Bridge_returnEmpty(bridge);
 }

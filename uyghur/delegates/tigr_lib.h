@@ -271,7 +271,7 @@ bool delegate_stage_update_program() {
     CHECK_TIGR_WINDOW_B();
     bool closeable = tigrClosed(_tigrWindow);
     // 
-    tigrClear(_tigrWindow, tigrRGB(0x80, 0x90, 0xa0));
+    // tigrClear(_tigrWindow, tigrRGB(0x80, 0x90, 0xa0));
     tigrUpdate(_tigrWindow);
     //
     if (closeable && _tigrWindow != NULL) {
@@ -282,6 +282,19 @@ bool delegate_stage_update_program() {
         return false;
     }
 }
+
+//////////////////////////////////////////////////////////
+
+TPixel __plotColor;
+void deletage_paint_plot(int x, int y, int r, int g, int b, int a) {
+    CHECK_TIGR_WINDOW_V();
+    __plotColor.r = r;
+    __plotColor.g = g;
+    __plotColor.b = b;
+    __plotColor.a = a;
+    tigrPlot(_tigrWindow, x, y, __plotColor);
+}
+
 //////////////////////////////////////////////////////////
 
 void *delegate_unload_image(UGImage *img) {
