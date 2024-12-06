@@ -11,17 +11,16 @@ int _ugThickness = 1;
 
 /////////////////////////////////////////////////
 
-#define _COLOR (RColor){_ugColor.r, _ugColor.g, _ugColor.b, _ugColor.a}
-#define _VECTOR (RPoint){vector.x, vector.y}
-#define _CENTER (RPoint){center.x, center.y}
-#define _SIZE (RSize){size.w, size.h}
-#define _POINT (RPoint){point.x, point.y}
-#define _POINT1 (RPoint){point1.x, point1.y}
-#define _POINT2 (RPoint){point2.x, point2.y}
-#define _POINT3 (RPoint){point3.x, point3.y}
-#define _RECT (RRect){rect.x, rect.y, rect.w, rect.h}
-#define _RECT2P (RPoint){rect.x, rect.y}
-#define _RECT2S (RSize){rect.w, rect.h}
+#define _COLOR __eColor
+#define _CENTER center.x, center.y
+#define _SIZE size.w, size.h
+#define _POINT point.x, point.y
+#define _POINT1 point1.x, point1.y
+#define _POINT2 point2.x, point2.y
+#define _POINT3 point3.x, point3.y
+#define _RECT rect.x, rect.y, rect.w, rect.h
+#define _RECT2P rect.x, rect.y
+#define _RECT2S rect.w, rect.h
 
 #define _ROTATION _ugRotation
 #define _PAPER __ugPencilTarget
@@ -52,7 +51,6 @@ UGFont *font_from_bridge(Bridge *bridge)
 #define __UG_PENCIL_CALL(name, ...) if (__ugPencilFocus == UG_PENCIL_FOCUS_NONE) { \
     tools_error("invalid state for pencil"); \
 } else if(__ugPencilFocus == UG_PENCIL_FOCUS_STAGE) { \
-    __ugPainter->plot = deletage_paint_plot; \
 }
 #else
 #define __UG_PENCIL_CALL(name, ...) if(__ugPencilFocus == UG_PENCIL_FOCUS_NONE) { \
@@ -64,7 +62,7 @@ UGFont *font_from_bridge(Bridge *bridge)
 
 void __pencil_draw_line(UGPoint point1, UGPoint point2) {
     __UG_PENCIL_CALL(draw_line, point1, point2, _ugThickness, _ugColor) {
-        Replot_drawLine(_PAPER, _POINT1, _POINT2, 1);
+        pntr_draw_line(_PAPER, _POINT1, _POINT2, _COLOR);
     }
 }
 
@@ -105,8 +103,10 @@ void __pencil_draw_curve2(UGPoint point1, UGPoint point2, UGPoint anchor1, UGPoi
 
 void __pencil_apply_styles() {
     __UG_PENCIL_CALL(customize, _ugColor, _ugRotation) {
-        Replot_setColor(_PAPER, _COLOR);
-        Replot_setRotation(_PAPER, _ROTATION);
+        __eColor.rgba.r = _ugColor.r;
+        __eColor.rgba.g = _ugColor.g;
+        __eColor.rgba.b = _ugColor.b;
+        __eColor.rgba.a = _ugColor.a;
     }
 }
 
@@ -139,7 +139,7 @@ void native_pencil_draw_pixel(Bridge *bridge)
 {
     UGPoint point = point_from_bridge(bridge);
     __UG_PENCIL_CALL(draw_pixel, point, _ugColor) {
-        Replot_drawPoint(_PAPER, _POINT, 1);
+        pntr_draw_point(_PAPER, _POINT, _COLOR);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -169,7 +169,7 @@ void native_pencil_draw_triangle(Bridge *bridge)
     UGPoint point2 = point_from_bridge(bridge);
     UGPoint point3 = point_from_bridge(bridge);
     __UG_PENCIL_CALL(draw_triangle, point1, point2, point3, _ugColor, _ugThickness) {
-        Replot_drawTriangle(_PAPER, _POINT1, _POINT2, _POINT3);
+        pntr_draw_triangle(_PAPER, _POINT1, _POINT2, _POINT3, _COLOR);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -180,7 +180,7 @@ void native_pencil_fill_triangle(Bridge *bridge)
     UGPoint point2 = point_from_bridge(bridge);
     UGPoint point3 = point_from_bridge(bridge);
     __UG_PENCIL_CALL(fill_triangle, point1, point2, point3, _ugColor) {
-        Replot_fillTriangle(_PAPER, _POINT1, _POINT2, _POINT3);
+        pntr_draw_triangle_fill(_PAPER, _POINT1, _POINT2, _POINT3, _COLOR);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -190,7 +190,7 @@ void native_pencil_draw_rectangle(Bridge *bridge)
     UGPoint point = point_from_bridge(bridge);
     UGSize size = size_from_bridge(bridge);
     __UG_PENCIL_CALL(draw_rectangle, point, size, _ugColor, _ugThickness) {
-        Replot_drawRect(_PAPER, _POINT, _SIZE);
+        pntr_draw_rectangle(_PAPER, _POINT, _SIZE, _COLOR);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -200,7 +200,7 @@ void native_pencil_fill_rectangle(Bridge *bridge)
     UGPoint point = point_from_bridge(bridge);
     UGSize size = size_from_bridge(bridge);
     __UG_PENCIL_CALL(fill_rectangle, point, size, _ugColor) {
-        Replot_fillRect(_PAPER, _POINT, _SIZE);
+        pntr_draw_rectangle_fill(_PAPER, _POINT, _SIZE, _COLOR);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -210,7 +210,7 @@ void native_pencil_draw_circle(Bridge *bridge)
     UGPoint point = point_from_bridge(bridge);
     double radius = Bridge_receiveNumber(bridge);
     __UG_PENCIL_CALL(draw_circle, point, radius, _ugColor, _ugThickness) {
-        Replot_drawCircle(_PAPER, _POINT, radius);
+        pntr_draw_circle(_PAPER, _POINT, radius, _COLOR);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -220,7 +220,7 @@ void native_pencil_fill_circle(Bridge *bridge)
     UGPoint point = point_from_bridge(bridge);
     double radius = Bridge_receiveNumber(bridge);
     __UG_PENCIL_CALL(fill_circle, point, radius, _ugColor) {
-        Replot_fillCircle(_PAPER, _POINT, radius);
+        pntr_draw_circle_fill(_PAPER, _POINT, radius, _COLOR);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -231,7 +231,7 @@ void native_pencil_draw_polygon(Bridge *bridge)
     int sides = Bridge_receiveNumber(bridge);
     double radius = Bridge_receiveNumber(bridge);
     __UG_PENCIL_CALL(draw_polygon, point, sides, radius, _ugRotation, _ugColor, _ugThickness) {
-        Replot_fillPolygon(_PAPER, _POINT, radius, sides);
+        //
     }
     Bridge_returnEmpty(bridge);
 }
@@ -242,7 +242,7 @@ void native_pencil_fill_polygon(Bridge *bridge)
     int sides = Bridge_receiveNumber(bridge);
     double radius = Bridge_receiveNumber(bridge);
     __UG_PENCIL_CALL(fill_polygon, point, sides, radius, _ugRotation, _ugColor) {
-        Replot_fillPolygon(_PAPER, _POINT, radius, sides);
+        // 
     }
     Bridge_returnEmpty(bridge);
 }
@@ -254,10 +254,9 @@ void native_pencil_print_text(Bridge *bridge)
     double size = Bridge_receiveNumber(bridge);
     // 
     if (__ugPencilFocus == UG_PENCIL_FOCUS_PAPER) {
-        Replot_printText(_PAPER, _POINT, size, text);
+        pntr_draw_text(_PAPER, __eFont, text, _POINT, _COLOR);
     } else {
-        __ugPainter->plot = deletage_paint_plot;
-        Replot_printText(__ugPainter, _POINT, size, text);
+        pntr_draw_text(__ePaper, __eFont, text, _POINT, _COLOR);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -265,14 +264,13 @@ void native_pencil_print_text(Bridge *bridge)
 void native_pencil_draw_paper(Bridge *bridge)
 {
     UGPoint point = point_from_bridge(bridge);
-    RPaper paper = paper_from_bridge(bridge);
+    EPaper paper = paper_from_bridge(bridge);
     UGSize size = size_from_bridge(bridge);
     // 
     if (__ugPencilFocus == UG_PENCIL_FOCUS_PAPER) {
-        Replot_drawCanvas(_PAPER, _POINT, _SIZE, paper);
+        pntr_draw_image(_PAPER, paper, _POINT);
     } else {
-        __ugPainter->plot = deletage_paint_plot;
-        Replot_drawCanvas(__ugPainter, _POINT, _SIZE, paper);
+        pntr_draw_image(__ePaper, paper, _POINT);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -283,7 +281,7 @@ void _pencil_release_image(Loadable *loadable) {
     if (loadable->obj) {
         UGImage *data = delegate_unload_image(loadable->obj);
         pct_free(data->path);
-        rimage_free(data->data);
+        rimage_free(data->pxls);
         // TODO:free texture
         pct_free(data);
         pct_free(loadable->obj);
@@ -357,8 +355,10 @@ void native_pencil_draw_image(Bridge *bridge)
         h = image->h;
     }
     __UG_PENCIL_CALL(draw_image, image, point.x, point.y, 0.5, 0.5, _ugColor, _ugRotation, 1) {
-        Replot_setTexture(_PAPER, image->data, image->w, image->h);
-        Replot_fillRect(_PAPER, _POINT, RSIZE(w, h));
+        int _size = image->w * image->w * image->c * sizeof(unsigned char);
+        EPaper *paper = pntr_load_image_from_memory(PNTR_IMAGE_TYPE_PNG, image->pxls, _size);
+        pntr_draw_image(_PAPER, paper, _POINT);
+        EPaper_free(paper);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -366,7 +366,6 @@ void native_pencil_draw_image(Bridge *bridge)
 /////////////////////////////////////////////////
 
 #undef _COLOR
-#undef _VECTOR
 #undef _CENTER
 #undef _SIZE
 #undef _POINT

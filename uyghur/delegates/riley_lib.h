@@ -349,6 +349,10 @@ void deletage_paint_plot(int x, int y, int r, int g, int b, int a) {
     RSGL_drawPointF(__plotPoint, __plotColor);
 }
 
+void delegate_soft_render(UGPixels pixels, int w, int h) {
+    
+}
+
 ////////////////////////////////////////////////////////// pencil
 
 void delegate_pencil_customize(UGColor color, int rotation) {
@@ -431,7 +435,7 @@ void *delegate_unload_font(UGFont *fnt) {
 
 UGImage *delegate_load_image(UGImage *img)
 {
-    u32 texture = RSGL_renderCreateTexture(img->data, (RSGL_area){img->w, img->h}, img->c);
+    u32 texture = RSGL_renderCreateTexture(img->pxls, (RSGL_area){img->w, img->h}, img->c);
     u32 *_texture = (u32 *)malloc(sizeof(u32));
     _texture[0] = texture;
     img->txtr = (void*)_texture;

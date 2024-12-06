@@ -53,11 +53,22 @@ void native_stage_show_window(Bridge *bridge)
 
 void native_stage_update_window(Bridge *bridge)
 {
+    //
+    #ifdef USE_SOFT_PAINT
+    int w = __ePaper->width;
+    int h = __ePaper->height;
+    unsigned int size;
+    UGPixels pixels = (UGPixels)pntr_image_to_pixelformat(__ePaper, NULL, PNTR_PIXELFORMAT_RGBA8888);
+    delegate_soft_render(pixels, w, h);
+    pntr_clear_background(__ePaper, PNTR_BLANK);
+    #endif
+    // 
     bool isClose = delegate_stage_update_program();
     Value *value = Value_newBoolean(isClose, NULL);
     helper_set_proxy_value(ALIAS_stage, ALIAS_stage_is_closeable, value);
     externals_stage_update();
     if (isClose) {
+        pntr_save_image(__ePaper, "pntr_examples_shapes.png");
         replay_CloseAudioDevice();
         externals_stage_end();
     }

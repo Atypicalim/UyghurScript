@@ -158,7 +158,7 @@ bldr.start()
 ############################################################################### task
 
 isUseRaysan = False
-isUseRiley = True
+isUseRiley = False
 ugStageLib = None
 if isUseRaysan:
     ugStageLib = "raylib"

@@ -2,6 +2,8 @@
 xizmetchi @qeghez:oqush bilen "../resources/rose.png" ishlitilsun we p elinsun
 xizmetchi @sehne:korsitish bilen -1 -1 "Yuguresh" -1 ishlitilsun
 
+miqdar x qimmiti 250 bolsun
+
 nawada @sehne:yepilmaqchi bolmisa
     #
     eger @taxta:besildimu ("f") bolsa
@@ -11,9 +13,14 @@ nawada @sehne:yepilmaqchi bolmisa
         buyruq "NO!\n" yezilsun
     tamamlansun
     # 
-    xizmetchi @qelem:chemberToldurush bilen 250 250 70 ishlitilsun
-    xizmetchi @qelem:xetYezish bilen 250 50 "abcde" 2 ishlitilsun
-    xizmetchi @qelem:qeghezSizish bilen 250 450 p 100 100 ishlitilsun
+    # xizmetchi @qelem:chemberToldurush bilen 250 250 70 ishlitilsun
+    # xizmetchi @qelem:xetYezish bilen 250 50 "abcde" 2 ishlitilsun
+    # xizmetchi @qelem:qeghezSizish bilen 250 450 p 100 100 ishlitilsun
+    # 
+    x = x + 0.1
+    yeyilghan 1000 miqdar k bulup
+        xizmetchi @qelem:chemberToldurush bilen x 250 70 ishlitilsun
+    tamamlansun
     #
     xizmetchi @sehne:yengilash ishlitilsun
 tamamlansun

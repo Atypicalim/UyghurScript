@@ -54,11 +54,13 @@
 #define TIGR_EXT_NO_MOBILE
 #include "../../c-xtra-tools/tigr4ext/tigr4ext.h"
 
+#define PNTR_EXT_NO_STB
+#include "../../c-xtra-tools/pntr4ext/pntr4ext.h"
+
 #define REPLAY_WIN_NO_EXTRA
 #include "../../c-replay-library/replay.h"
 
 #define REPLOT_WIN_NO_EXTRA
-#define REPLOT_NO_STB
 #include "../../c-replot-library/replot.h"
 
 #endif

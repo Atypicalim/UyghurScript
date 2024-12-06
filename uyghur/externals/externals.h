@@ -173,6 +173,9 @@ typedef enum UG_BOARD_KEYS {
     UG_BOARD_KEY_RIGHT_SUPER,       // Key: Super right
 } UG_BOARD_KEYS;
 
+#define UGPixels unsigned char*
+#define UGTexture void*
+
 typedef struct UGColor {
     unsigned char r;
     unsigned char g;
@@ -225,10 +228,19 @@ void UG_POINT_PRINT(UGPoint *p) {
     printf("<point:%p %f,%f>", *p, (*p).x, (*p).y);
 }
 
+UGRect UG_RECT_GENERATE(UGPoint *p, UGSize *s) {
+    UGRect r;
+    r.x = p->x - s->w / 2;
+    r.y = p->y - s->h / 2;
+    r.w = s->w;
+    r.h = s->h;
+    return r;
+}
+
 typedef struct UGImage {
     char *path;
-    RTexture data;
-    void *txtr;
+    UGPixels pxls;
+    UGTexture txtr;
     int w;
     int h;
     int c;
@@ -241,13 +253,12 @@ typedef struct UGFont {
 } UGFont;
 
 
-// TODO: replace with replot and resize image
 UGImage *UG_NEW_IMAGE(char *path) {
     UGImage *img = (UGImage *)malloc(sizeof(UGImage));
     int _w;
     int _h;
     int _c;
-    img->data = rimage_read(path, &_w, &_h, &_c);
+    img->pxls = rimage_read(path, &_w, &_h, &_c);
     img->path = strdup(path);
     img->txtr = NULL;
     img->w = _w;
@@ -301,8 +312,15 @@ UGRect rect_from_bridge(Bridge *bridge)
     return (UGRect){x, y, w, h};
 }
 
-#define RPaper Replot*
-Replot* __ugPainter = NULL;
+#define EPaper pntr_image*
+#define EColor 
+#define EPaper_new pntr_new_image
+#define EPaper_free pntr_unload_image
+
+pntr_image* __ePaper = NULL;
+pntr_font *__eFont = NULL;
+pntr_color __eColor;
+
 
 #define UG_PENCIL_FOCUS_NONE 0
 #define UG_PENCIL_FOCUS_PAPER 1
@@ -315,20 +333,20 @@ void pencil_focus_to(int type, void *target) {
     __ugPencilTarget = target;
 }
 
-RPaper paper_from_bridge(Bridge *bridge)
+EPaper paper_from_bridge(Bridge *bridge)
 {
     Loadable *loadable = Bridge_receiveValue(bridge, UG_TYPE_STF);
-    RPaper paper = loadable->obj;
-    return paper;
+    EPaper painter = loadable->obj;
+    return painter;
 }
 
 void __release_paper(Loadable *loadable) {
     if (loadable->obj) {
-        RPaper paper = loadable->obj;
-        if (paper == __ugPencilTarget) {
+        EPaper painter = loadable->obj;
+        if (painter == __ugPencilTarget) {
             pencil_focus_to(UG_PENCIL_FOCUS_NONE, NULL);
         }
-        Replot_free(paper);
+        EPaper_free(painter);
         loadable->obj = NULL;
     }
 }
@@ -341,9 +359,12 @@ int __ugMousePressedOld[__UG_MOUSE_SIZE];
 int __ugMousePressedNew[__UG_MOUSE_SIZE];
 
 void externals_stage_start(int w, int h) {
-    if (__ugPainter != NULL) Replot_free(__ugPainter);
-    __ugPainter = Replot_new(w, h);
-    pencil_focus_to(UG_PENCIL_FOCUS_STAGE, __ugPainter);
+    if (__ePaper != NULL) EPaper_free(__ePaper);
+    if (__eFont != NULL) pntr_unload_font(__eFont);
+    __ePaper = pntr_gen_image_color(w, h, PNTR_BLANK);
+    __eFont = pntr_load_font_default();
+    __eColor = PNTR_RAYWHITE;
+    pencil_focus_to(UG_PENCIL_FOCUS_STAGE, __ePaper);
 }
 
 void externals_stage_end() {

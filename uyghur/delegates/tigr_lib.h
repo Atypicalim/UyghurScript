@@ -295,6 +295,10 @@ void deletage_paint_plot(int x, int y, int r, int g, int b, int a) {
     tigrPlot(_tigrWindow, x, y, __plotColor);
 }
 
+void delegate_soft_render(UGPixels pixels, int w, int h) {
+    
+}
+
 //////////////////////////////////////////////////////////
 
 void *delegate_unload_image(UGImage *img) {
@@ -314,5 +318,7 @@ UGFont *delegate_load_font(UGFont *fnt)
 {
     return fnt;
 }
+
+//////////////////////////////////////////////////////////
 
 #endif

@@ -359,6 +359,23 @@ void deletage_paint_plot(int x, int y, int r, int g, int b, int a) {
     DrawPixelV(__plotPoint, __plotColor);
 }
 
+void delegate_soft_render(UGPixels pixels, int w, int h) {
+    // 
+    int format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+    int mipmap = 1;
+    Texture2D texture = { 0 };
+    texture.id = rlLoadTexture(pixels, w, h, format, mipmap);
+    texture.width = w;
+    texture.height = h;
+    texture.mipmaps = mipmap;
+    texture.format = format;
+    //
+    Rectangle source = (Rectangle){0, 0, w, h};
+    Rectangle dest = (Rectangle){0, 0, w, h};
+    Vector2 origin = (Vector2){0, 0};
+    DrawTexturePro(texture, source, dest, origin, 0, (Color){255, 255, 255, 255});
+}
+
 ////////////////////////////////////////////////////////// pencil
 
 void delegate_pencil_customize(UGColor color, int rotation) {
@@ -442,7 +459,7 @@ UGImage *delegate_load_image(UGImage *img)
     int format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
     int mipmap = 1;
     Texture2D texture = { 0 };
-    texture.id = rlLoadTexture(img->data, img->w, img->h, format, mipmap);
+    texture.id = rlLoadTexture(img->pxls, img->w, img->h, format, mipmap);
     texture.width = img->w;
     texture.height = img->h;
     texture.mipmaps = mipmap;
