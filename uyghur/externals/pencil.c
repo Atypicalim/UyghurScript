@@ -190,7 +190,9 @@ void native_pencil_draw_rectangle(Bridge *bridge)
     UGPoint point = point_from_bridge(bridge);
     UGSize size = size_from_bridge(bridge);
     __UG_PENCIL_CALL(draw_rectangle, point, size, _ugColor, _ugThickness) {
-        pntr_draw_rectangle(_PAPER, _POINT, _SIZE, _COLOR);
+        int x = point.x - size.w / 2;
+        int y = point.y - size.h / 2;
+        pntr_draw_rectangle(_PAPER, x, y, _SIZE, _COLOR);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -200,7 +202,9 @@ void native_pencil_fill_rectangle(Bridge *bridge)
     UGPoint point = point_from_bridge(bridge);
     UGSize size = size_from_bridge(bridge);
     __UG_PENCIL_CALL(fill_rectangle, point, size, _ugColor) {
-        pntr_draw_rectangle_fill(_PAPER, _POINT, _SIZE, _COLOR);
+        int x = point.x - size.w / 2;
+        int y = point.y - size.h / 2;
+        pntr_draw_rectangle_fill(_PAPER, x, y, _SIZE, _COLOR);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -225,13 +229,28 @@ void native_pencil_fill_circle(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
+#define _EPOLYGON_MAX_SIDE 64
+#define _EPOLYGON_MAX_RADIUS 1024
+pntr_vector __ePolygonPoints[_EPOLYGON_MAX_SIDE];
+void __eGeneartePolygonPoints(UGPoint *point, int *sides, int radius) {
+    *sides = MIN(_EPOLYGON_MAX_SIDE, *sides);
+    radius = MIN(_EPOLYGON_MAX_RADIUS, radius);
+    double angleIncrement = (2 * M_PI) / *sides; // Angle between each vertex
+    for (int i = 0; i < *sides; i++) {
+        double angle = i * angleIncrement; // Current angle
+        __ePolygonPoints[i].x = point->x + radius * cos(angle); // x-coordinate
+        __ePolygonPoints[i].y = point->y + radius * sin(angle); // y-coordinate
+    }
+}
+
 void native_pencil_draw_polygon(Bridge *bridge)
 {
     UGPoint point = point_from_bridge(bridge);
     int sides = Bridge_receiveNumber(bridge);
     double radius = Bridge_receiveNumber(bridge);
     __UG_PENCIL_CALL(draw_polygon, point, sides, radius, _ugRotation, _ugColor, _ugThickness) {
-        //
+        __eGeneartePolygonPoints(&point, &sides, radius);
+        pntr_draw_polygon(_PAPER, &__ePolygonPoints, sides, _COLOR);
     }
     Bridge_returnEmpty(bridge);
 }
@@ -242,7 +261,8 @@ void native_pencil_fill_polygon(Bridge *bridge)
     int sides = Bridge_receiveNumber(bridge);
     double radius = Bridge_receiveNumber(bridge);
     __UG_PENCIL_CALL(fill_polygon, point, sides, radius, _ugRotation, _ugColor) {
-        // 
+        __eGeneartePolygonPoints(&point, &sides, radius);
+        pntr_draw_polygon_fill(_PAPER, &__ePolygonPoints, sides, _COLOR);
     }
     Bridge_returnEmpty(bridge);
 }
