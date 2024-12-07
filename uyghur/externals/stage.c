@@ -51,6 +51,9 @@ void native_stage_show_window(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
+UGPixels __eRenderPixels = NULL;
+UGPixels __eRenderSize = 0;
+
 void native_stage_update_window(Bridge *bridge)
 {
     //
@@ -58,8 +61,8 @@ void native_stage_update_window(Bridge *bridge)
     int w = __ePaper->width;
     int h = __ePaper->height;
     unsigned int size;
-    UGPixels pixels = (UGPixels)pntr_image_to_pixelformat(__ePaper, NULL, PNTR_PIXELFORMAT_RGBA8888);
-    delegate_soft_render(pixels, w, h);
+    pntr4ext_convert_pixels(__ePaper, &__eRenderSize, &__eRenderPixels, PNTR_PIXELFORMAT_RGBA8888);
+    delegate_soft_render(__eRenderPixels, w, h, 4);
     pntr_clear_background(__ePaper, PNTR_BLANK);
     #endif
     // 
@@ -68,6 +71,7 @@ void native_stage_update_window(Bridge *bridge)
     helper_set_proxy_value(ALIAS_stage, ALIAS_stage_is_closeable, value);
     externals_stage_update();
     if (isClose) {
+        pntr4ext_free_pixels(__eRenderPixels);
         pntr_save_image(__ePaper, "pntr_examples_shapes.png");
         replay_CloseAudioDevice();
         externals_stage_end();

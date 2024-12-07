@@ -349,8 +349,30 @@ void deletage_paint_plot(int x, int y, int r, int g, int b, int a) {
     RSGL_drawPointF(__plotPoint, __plotColor);
 }
 
-void delegate_soft_render(UGPixels pixels, int w, int h) {
-    
+u32 __renderTexture = 0;
+RSGL_area __renderArea;
+RSGL_rect __renderRect;
+RSGL_color __renderColor;
+void delegate_soft_render(UGPixels pixels, int w, int h, int channel) {
+    // 
+    __renderArea.w = w;
+    __renderArea.h = h;
+    if (__renderTexture == 0) {
+        __renderColor = RSGL_RGB(255, 255, 255);
+        __renderTexture = RSGL_renderCreateTexture(pixels, __renderArea, channel);
+    } else {
+        RSGL_renderUpdateTexture(__renderTexture, pixels, __renderArea, channel);
+    }
+    // 
+    __renderRect.x = 0;
+    __renderRect.y = 0;
+    __renderRect.w = w;
+    __renderRect.h = h;
+    RSGL_setTexture(__renderTexture);
+    RSGL_rotate(RSGL_POINT3D(0, 0, 0));
+    RSGL_drawRect(__renderRect, __renderColor);
+    // 
+    // RSGL_renderDeleteTexture(*__renderTexture);
 }
 
 ////////////////////////////////////////////////////////// pencil

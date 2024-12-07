@@ -271,7 +271,6 @@ bool delegate_stage_update_program() {
     CHECK_TIGR_WINDOW_B();
     bool closeable = tigrClosed(_tigrWindow);
     // 
-    // tigrClear(_tigrWindow, tigrRGB(0x80, 0x90, 0xa0));
     tigrUpdate(_tigrWindow);
     //
     if (closeable && _tigrWindow != NULL) {
@@ -295,8 +294,33 @@ void deletage_paint_plot(int x, int y, int r, int g, int b, int a) {
     tigrPlot(_tigrWindow, x, y, __plotColor);
 }
 
-void delegate_soft_render(UGPixels pixels, int w, int h) {
-    
+Tigr *__renderTexture = NULL;
+TPixel __renderColor;
+void delegate_soft_render(UGPixels pixels, int w, int h, int channel) {
+    // 
+    if (__renderTexture == NULL) {
+        __renderTexture = tigrBitmap(w, h);
+    } else if (__renderTexture->w != w || __renderTexture->h != h) {
+        tigrResize(__renderTexture, w, h);
+    }
+    // 
+    tigrClear(__renderTexture, tigrRGBA(0x0, 0x0, 0x0, 0x0));
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
+            int index = (y * w + x) * channel; // 4 bytes per pixel (RGBA)
+            // __renderColor = __renderTexture->pix[index];
+            __renderColor.r = pixels[index];     // Red
+            __renderColor.g = pixels[index + 1]; // Green
+            __renderColor.b = pixels[index + 2]; // Blue
+            __renderColor.a = pixels[index + 3]; // Alpha
+            tigrPlot(__renderTexture, x, y, __renderColor);
+        }
+    }
+    //
+    tigrClear(_tigrWindow, tigrRGB(0x33, 0x33, 0x33));
+    tigrBlit(_tigrWindow, __renderTexture, 0, 0, 0, 0, w, h);
+    // 
+    // tigrFree(__renderTexture);
 }
 
 //////////////////////////////////////////////////////////

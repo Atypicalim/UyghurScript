@@ -359,21 +359,29 @@ void deletage_paint_plot(int x, int y, int r, int g, int b, int a) {
     DrawPixelV(__plotPoint, __plotColor);
 }
 
-void delegate_soft_render(UGPixels pixels, int w, int h) {
+Texture2D *__renderTexture = NULL;
+Rectangle __renderRect;
+void delegate_soft_render(UGPixels pixels, int w, int h, int channel) {
     // 
-    int format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
-    int mipmap = 1;
-    Texture2D texture = { 0 };
-    texture.id = rlLoadTexture(pixels, w, h, format, mipmap);
-    texture.width = w;
-    texture.height = h;
-    texture.mipmaps = mipmap;
-    texture.format = format;
+    if (__renderTexture == NULL) {
+        __renderTexture = (Texture2D *)malloc(sizeof(Texture2D));
+        __renderTexture->format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+        __renderTexture->mipmaps = 1;
+        __renderTexture->width = w;
+        __renderTexture->height = h;
+        __renderTexture->id = rlLoadTexture(pixels, w, h, __renderTexture->format, __renderTexture->mipmaps);
+    } else {
+        UpdateTexture(*__renderTexture, pixels);
+    }
     //
-    Rectangle source = (Rectangle){0, 0, w, h};
-    Rectangle dest = (Rectangle){0, 0, w, h};
+    __renderRect.x = 0;
+    __renderRect.y = 0;
+    __renderRect.width = w;
+    __renderRect.height = h;
     Vector2 origin = (Vector2){0, 0};
-    DrawTexturePro(texture, source, dest, origin, 0, (Color){255, 255, 255, 255});
+    DrawTexturePro(*__renderTexture, __renderRect, __renderRect, origin, 0, WHITE);
+    // 
+    // UnloadTexture(__renderTexture);
 }
 
 ////////////////////////////////////////////////////////// pencil
