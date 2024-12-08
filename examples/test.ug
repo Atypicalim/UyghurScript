@@ -18,7 +18,7 @@ nawada @sehne:yepilmaqchi bolmisa
     xizmetchi @qelem:totTereplikSizish bilen 250 250 250 250 ishlitilsun
     xizmetchi @qelem:qeghezSizish bilen 250 425 p 100 100 ishlitilsun
     xizmetchi @qelem:chemberSizish bilen 250 250 70 ishlitilsun
-    xizmetchi @qelem:xetYezish bilen 250 250 "abcde" 2 ishlitilsun
+    xizmetchi @qelem:xetYezish bilen 250 250 "abcde" 12 ishlitilsun
     # 
     xizmetchi @qelem:fontSizish bilen font 36 "SINAQ" 250 100 ishlitilsun
     # 

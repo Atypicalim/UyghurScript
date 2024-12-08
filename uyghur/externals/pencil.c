@@ -267,16 +267,35 @@ void native_pencil_fill_polygon(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
+#define EFONTS_MAX_COUNT 128
+EFont **__eDefaultFonts = NULL;
+
 void native_pencil_print_text(Bridge *bridge)
 {
     UGPoint point = point_from_bridge(bridge);
     CString text = Bridge_receiveString(bridge);
-    double size = Bridge_receiveNumber(bridge);
+    int size = Bridge_receiveNumber(bridge);
     // 
-    int l = pntr_measure_text_ex(__eFont, text, 0).x;
-    int x = point.x - l / 2.0f;
-    int y = point.y;
-    pntr_draw_text(_PAPER, __eFont, text, x, y, _COLOR);
+    int _size = MIN(EFONTS_MAX_COUNT, MAX(1, size));
+    int _index = _size - 1;
+    //
+    if (__eDefaultFonts == NULL) {
+        int arraySize = sizeof(EFont) * EFONTS_MAX_COUNT;
+        __eDefaultFonts = (EFont*)malloc(arraySize);
+        memset(__eDefaultFonts, 0, arraySize);
+    }
+    //
+    if (__eDefaultFonts[_index] == NULL) {
+        float targetScale = size / (PNTR_DEFAULT_FONT_GLYPH_WIDTH * 1.0f);
+        EFont *newFont = pntr_font_scale(__eFont, targetScale, targetScale, PNTR_FILTER_BILINEAR);
+        __eDefaultFonts[_index] = newFont;
+    }
+    // 
+    EFont *f = __eDefaultFonts[_index];
+    pntr_vector l = pntr_measure_text_ex(f, text, 0);
+    int x = point.x - l.x / 2.0f;
+    int y = point.y - l.y / 2.0f;
+    pntr_draw_text(_PAPER, f, text, x, y, _COLOR);
     //
     if (!USTAGE_USE_SOFT && __ugPencilFocus != UG_PENCIL_FOCUS_PAPER) {
         __ePaperDirty = true;

@@ -313,13 +313,15 @@ UGRect rect_from_bridge(Bridge *bridge)
 }
 
 #define EPaper pntr_image*
-#define EColor 
 #define EPaper_new pntr_new_image
 #define EPaper_free pntr_unload_image
+#define EImage pntr_image
+#define EFont pntr_font
+#define EColor pntr_color
 
-pntr_image* __ePaper = NULL;
-pntr_font *__eFont = NULL;
-pntr_color __eColor;
+EImage *__ePaper = NULL;
+EFont *__eFont = NULL;
+EColor __eColor;
 
 bool __ePaperDirty = false;
 
