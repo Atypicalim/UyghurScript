@@ -321,6 +321,7 @@ pntr_image* __ePaper = NULL;
 pntr_font *__eFont = NULL;
 pntr_color __eColor;
 
+bool __ePaperDirty = false;
 
 #define UG_PENCIL_FOCUS_NONE 0
 #define UG_PENCIL_FOCUS_PAPER 1

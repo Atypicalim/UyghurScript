@@ -359,6 +359,8 @@ void deletage_paint_plot(int x, int y, int r, int g, int b, int a) {
     DrawPixelV(__plotPoint, __plotColor);
 }
 
+int rlLoadTexture(UGPixels, int, int, int, int);
+
 Texture2D *__renderTexture = NULL;
 Rectangle __renderRect;
 void delegate_soft_render(UGPixels pixels, int w, int h, int channel) {

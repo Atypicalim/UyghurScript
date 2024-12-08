@@ -47,7 +47,7 @@ UGFont *font_from_bridge(Bridge *bridge)
 
 
 // TODO:wrap tigr as replot
-#if USE_SOFT_PAINT
+#if USTAGE_USE_SOFT
 #define __UG_PENCIL_CALL(name, ...) if (__ugPencilFocus == UG_PENCIL_FOCUS_NONE) { \
     tools_error("invalid state for pencil"); \
 } else if(__ugPencilFocus == UG_PENCIL_FOCUS_STAGE) { \
@@ -273,10 +273,13 @@ void native_pencil_print_text(Bridge *bridge)
     CString text = Bridge_receiveString(bridge);
     double size = Bridge_receiveNumber(bridge);
     // 
-    if (__ugPencilFocus == UG_PENCIL_FOCUS_PAPER) {
-        pntr_draw_text(_PAPER, __eFont, text, _POINT, _COLOR);
-    } else {
-        pntr_draw_text(__ePaper, __eFont, text, _POINT, _COLOR);
+    int l = pntr_measure_text_ex(__eFont, text, 0).x;
+    int x = point.x - l / 2.0f;
+    int y = point.y;
+    pntr_draw_text(_PAPER, __eFont, text, x, y, _COLOR);
+    //
+    if (!USTAGE_USE_SOFT && __ugPencilFocus != UG_PENCIL_FOCUS_PAPER) {
+        __ePaperDirty = true;
     }
     Bridge_returnEmpty(bridge);
 }
@@ -286,11 +289,13 @@ void native_pencil_draw_paper(Bridge *bridge)
     UGPoint point = point_from_bridge(bridge);
     EPaper paper = paper_from_bridge(bridge);
     UGSize size = size_from_bridge(bridge);
-    // 
-    if (__ugPencilFocus == UG_PENCIL_FOCUS_PAPER) {
-        pntr_draw_image(_PAPER, paper, _POINT);
-    } else {
-        pntr_draw_image(__ePaper, paper, _POINT);
+    //
+    int x = point.x - paper->width / 2.0f;
+    int y = point.y - paper->height / 2.0f;
+    pntr_draw_image(_PAPER, paper, x, y);
+    //
+    if (!USTAGE_USE_SOFT && __ugPencilFocus != UG_PENCIL_FOCUS_PAPER) {
+        __ePaperDirty = true;
     }
     Bridge_returnEmpty(bridge);
 }
@@ -353,7 +358,14 @@ void native_pencil_draw_font(Bridge *bridge)
     CString text = Bridge_receiveString(bridge);
     UGPoint point = point_from_bridge(bridge);
     __UG_PENCIL_CALL(draw_font, font, text, size, _ugColor, point) {
-        // font not supported
+        if (USTAGE_USE_SOFT) {
+            pntr_vector s = pntr_measure_text_ex(font->font, text, 0);
+            int x = point.x - s.x / 2.0f;
+            int y = point.y - s.y / 2.0f;;
+            pntr_draw_text(_PAPER, font->font, text, x, y, _COLOR);
+        } else {
+            // font not supported
+        }
     }
     Bridge_returnEmpty(bridge);
 }

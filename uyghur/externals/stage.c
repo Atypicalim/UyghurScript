@@ -54,17 +54,22 @@ void native_stage_show_window(Bridge *bridge)
 UGPixels __eRenderPixels = NULL;
 UGPixels __eRenderSize = 0;
 
-void native_stage_update_window(Bridge *bridge)
-{
-    //
-    #ifdef USE_SOFT_PAINT
+void __soft_render_synchronize() {
     int w = __ePaper->width;
     int h = __ePaper->height;
     unsigned int size;
     pntr4ext_convert_pixels(__ePaper, &__eRenderSize, &__eRenderPixels, PNTR_PIXELFORMAT_RGBA8888);
     delegate_soft_render(__eRenderPixels, w, h, 4);
     pntr_clear_background(__ePaper, PNTR_BLANK);
-    #endif
+}
+
+void native_stage_update_window(Bridge *bridge)
+{
+    //
+    if (USTAGE_USE_SOFT || __ePaperDirty) {
+        __soft_render_synchronize();
+        __ePaperDirty = false;
+    }
     // 
     bool isClose = delegate_stage_update_program();
     Value *value = Value_newBoolean(isClose, NULL);

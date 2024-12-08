@@ -31,21 +31,25 @@
 #include "../../c-xtra-tools/utf8string/utf8string.c"
 
 
-#ifdef BUILDER_USE_RAYSAN
+#ifdef USTAGE_USE_RAYSAN
     #define REPLAY_NO_IMLEMENT
     #define RAYGUI_IMPLEMENTATION
     #include "raylib.h"
     #include "raygui.h"
 #endif
 
-#ifdef BUILDER_USE_RILEY
+#ifdef USTAGE_USE_RILEY
     #define RSGL_IMPLEMENTATION
+    #define RSGL_NO_WIDGETS
     #include "RSGL.h"
 #endif
 
-#ifdef BUILDER_USE_TIGR
-#define USE_SOFT_PAINT true
+#ifdef USTAGE_USE_TIGR
+#define PNTR_ENABLE_UTF8
+#define PNTR_ENABLE_TTF
+#define USTAGE_USE_SOFT true
 #else
+#define USTAGE_USE_SOFT false
 #define TIGR_EXT_NO_DESKTOP
 #endif
 

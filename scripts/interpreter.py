@@ -201,12 +201,12 @@ task.addWarnings(False, [
 ])
 #
 if isUseRaysan:
-    task.addFlags(["-D BUILDER_USE_RAYSAN"])
+    task.addFlags(["-D USTAGE_USE_RAYSAN"])
 elif isUseRiley:
-    task.addFlags(["-D BUILDER_USE_RILEY"])
+    task.addFlags(["-D USTAGE_USE_RILEY"])
 else:
     # task.addFlags(["-D BUILDER_NO_BACKEND"])
-    task.addFlags(["-D BUILDER_USE_TIGR"])
+    task.addFlags(["-D USTAGE_USE_TIGR"])
 
 #
 task.addFlags(["-I ../c-pure-tools/"])

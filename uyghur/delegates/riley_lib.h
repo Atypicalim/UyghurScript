@@ -353,6 +353,7 @@ u32 __renderTexture = 0;
 RSGL_area __renderArea;
 RSGL_rect __renderRect;
 RSGL_color __renderColor;
+RSGL_drawArgs __backupArgs;
 void delegate_soft_render(UGPixels pixels, int w, int h, int channel) {
     // 
     __renderArea.w = w;
@@ -368,9 +369,11 @@ void delegate_soft_render(UGPixels pixels, int w, int h, int channel) {
     __renderRect.y = 0;
     __renderRect.w = w;
     __renderRect.h = h;
+    __backupArgs = RSGL_args;
     RSGL_setTexture(__renderTexture);
     RSGL_rotate(RSGL_POINT3D(0, 0, 0));
     RSGL_drawRect(__renderRect, __renderColor);
+    RSGL_args = __backupArgs;
     // 
     // RSGL_renderDeleteTexture(*__renderTexture);
 }

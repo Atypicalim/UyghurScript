@@ -330,7 +330,9 @@ void *delegate_unload_image(UGImage *img) {
 }
 
 void *delegate_unload_font(UGFont *fnt) {
-    return NULL;
+    pntr_font *_font = fnt->font;
+    if (_font != NULL) {pntr_unload_font(_font);}
+    return _font;
 }
 
 UGImage *delegate_load_image(UGImage *img)
@@ -340,6 +342,7 @@ UGImage *delegate_load_image(UGImage *img)
 
 UGFont *delegate_load_font(UGFont *fnt)
 {
+    fnt->font = pntr_load_font_ttf(fnt->path, fnt->size);
     return fnt;
 }
 
