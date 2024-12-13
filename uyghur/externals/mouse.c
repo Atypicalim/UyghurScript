@@ -65,15 +65,21 @@ int __mouse_get_code_from_value(Value *value) {
     }
 }
 
-int __mouse_get_key_state(int keyCode) {
-    keyCode = delegate_mouse_code_swap(keyCode, true);
-    int state = delegate_get_mouse_state(keyCode);
-    return state;
+int __mouse_get_delegate_button(int keyCode) {
+    int _keyCode = delegate_board_code_swap(keyCode, true);
+    int keyState = delegate_get_board_state(_keyCode);
+    return keyState;
+}
+
+int __mouse_get_key_state(Value *keyCodeOrName) {
+    int keyCode = __mouse_get_code_from_value(keyCodeOrName);
+    int currState = __mouse_get_delegate_button(keyCode);
+    return currState;
 }
 
 int __mouse_get_key_action(Value *keyCodeOrName) {
     int keyCode = __mouse_get_code_from_value(keyCodeOrName);
-    int currState = __mouse_get_key_state(keyCode);
+    int currState = __mouse_get_delegate_button(keyCode);
     return externals_get_button_action(true, keyCode, currState);
 }
 
@@ -87,8 +93,7 @@ void native_mouse_get_key_action(Bridge *bridge)
 void native_mouse_get_key_state(Bridge *bridge)
 {
     Value *keyCodeOrName = Bridge_receiveValue(bridge, UG_TYPE_NON);
-    int keyCode = __mouse_get_code_from_value(keyCodeOrName);
-    int state = __mouse_get_key_state(keyCode);
+    int state = __mouse_get_key_state(keyCodeOrName);
     Bridge_returnNumber(bridge, state);
 }
 
@@ -98,6 +103,14 @@ void native_mouse_is_pressed(Bridge *bridge)
     int action = __mouse_get_key_action(keyCodeOrName);
     bool pressed = action == UG_BUTTON_ACTION_PRESS;
     Bridge_returnBoolean(bridge, pressed);
+}
+
+void native_mouse_is_pressing(Bridge *bridge)
+{
+    Value *keyCodeOrName = Bridge_receiveValue(bridge, UG_TYPE_NON);
+    int state = __mouse_get_key_state(keyCodeOrName);
+    bool down = state == UG_BUTTON_STATE_DOWN;
+    Bridge_returnBoolean(bridge, down);
 }
 
 void native_mouse_is_released(Bridge *bridge)

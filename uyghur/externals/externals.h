@@ -312,44 +312,37 @@ UGRect rect_from_bridge(Bridge *bridge)
     return (UGRect){x, y, w, h};
 }
 
-#define EPaper pntr_image*
-#define EPaper_new pntr_new_image
-#define EPaper_free pntr_unload_image
-#define EImage pntr_image
-#define EFont pntr_font
-#define EColor pntr_color
+#define ECanvas Replot*
+#define EColor RColor
 
-EImage *__ePaper = NULL;
-EFont *__eFont = NULL;
-EColor __eColor;
-
-bool __ePaperDirty = false;
+Replot *__eReplot = NULL;
+RColor __eColor;
 
 #define UG_PENCIL_FOCUS_NONE 0
 #define UG_PENCIL_FOCUS_PAPER 1
 #define UG_PENCIL_FOCUS_STAGE 2
-char __ugPencilFocus = 0;
-void* __ugPencilTarget = NULL;
+char __pencilFocus = 0;
+void* __pencilTarget = NULL;
 
 void pencil_focus_to(int type, void *target) {
-    __ugPencilFocus = type;
-    __ugPencilTarget = target;
+    __pencilFocus = type;
+    __pencilTarget = target;
 }
 
-EPaper paper_from_bridge(Bridge *bridge)
+ECanvas paper_from_bridge(Bridge *bridge)
 {
     Loadable *loadable = Bridge_receiveValue(bridge, UG_TYPE_STF);
-    EPaper painter = loadable->obj;
-    return painter;
+    ECanvas canvas = loadable->obj;
+    return canvas;
 }
 
 void __release_paper(Loadable *loadable) {
     if (loadable->obj) {
-        EPaper painter = loadable->obj;
-        if (painter == __ugPencilTarget) {
+        ECanvas canvas = loadable->obj;
+        if (canvas == __pencilTarget) {
             pencil_focus_to(UG_PENCIL_FOCUS_NONE, NULL);
         }
-        EPaper_free(painter);
+        Replot_free(canvas);
         loadable->obj = NULL;
     }
 }
@@ -362,12 +355,10 @@ int __ugMousePressedOld[__UG_MOUSE_SIZE];
 int __ugMousePressedNew[__UG_MOUSE_SIZE];
 
 void externals_stage_start(int w, int h) {
-    if (__ePaper != NULL) EPaper_free(__ePaper);
-    if (__eFont != NULL) pntr_unload_font(__eFont);
-    __ePaper = pntr_gen_image_color(w, h, PNTR_BLANK);
-    __eFont = pntr_load_font_default();
-    __eColor = PNTR_RAYWHITE;
-    pencil_focus_to(UG_PENCIL_FOCUS_STAGE, __ePaper);
+    if (__eReplot != NULL) Replot_free(__eReplot);
+    __eReplot = Replot_new(w, h);
+    __eColor = (RColor){255, 255, 255, 255};
+    pencil_focus_to(UG_PENCIL_FOCUS_STAGE, __eReplot);
 }
 
 void externals_stage_end() {
@@ -390,6 +381,11 @@ int externals_get_button_action(bool isMouse, int key, int newState) {
         return newState ? UG_BUTTON_ACTION_PRESS : UG_BUTTON_ACTION_RELEASE;
     }
     return UG_BUTTON_ACTION_NONE;
+}
+
+int externals_get_button_state(bool isMouse, int key) {
+    int buttonState = isMouse ? __ugMousePressedOld[key] : __ugBoardPressedOld[key];
+    return buttonState;
 }
 
 #endif

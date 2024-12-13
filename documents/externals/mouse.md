@@ -58,7 +58,7 @@
 > 🔙: Number
 
 > 🛒: 
-* keyCode  `int`
+* keyCodeOrName  `Value`
 
 
 ### 7. get_key_state
@@ -68,7 +68,7 @@
 > 🔙: Number
 
 > 🛒: 
-* keyCode  `int`
+* keyCodeOrName  `Value`
 
 
 ### 8. is_pressed
@@ -78,17 +78,27 @@
 > 🔙: Boolean
 
 > 🛒: 
-* keyCode  `int`
+* keyCodeOrName  `Value`
 
 
-### 9. is_released
+### 9. is_pressing
+
+> 📝:  is_pressing func of mouse module
+
+> 🔙: Boolean
+
+> 🛒: 
+* keyCodeOrName  `Value`
+
+
+### 10. is_released
 
 > 📝:  is_released func of mouse module
 
 > 🔙: Boolean
 
 > 🛒: 
-* keyCode  `int`
+* keyCodeOrName  `Value`
 
 
 ---

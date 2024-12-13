@@ -8,23 +8,27 @@ miqdar x qimmiti 250 bolsun
 
 nawada @sehne:yepilmaqchi bolmisa
     #
-    eger @taxta:besildimu ("f") bolsa
-        buyruq "OK!\n" yezilsun
+    eger @taxta:besilghan ("f") bolsa
+        buyruq "f!\n" yezilsun
+        x = x + 2
     tamamlansun
-    eger @taxta:boshitildimu ("f") bolsa
-        buyruq "NO!\n" yezilsun
+    eger @taxta:besilghan ("s") bolsa
+        buyruq "s!\n" yezilsun
+        x = x - 2
     tamamlansun
     # 
     xizmetchi @qelem:totTereplikSizish bilen 250 250 250 250 ishlitilsun
-    xizmetchi @qelem:qeghezSizish bilen 250 425 p 100 100 ishlitilsun
+    xizmetchi @qelem:qeghezSizish bilen 250 350 p 200 200 ishlitilsun
     xizmetchi @qelem:chemberSizish bilen 250 250 70 ishlitilsun
-    xizmetchi @qelem:xetYezish bilen 250 250 "abcde" 12 ishlitilsun
+    xizmetchi @qelem:xetYezish bilen 250 250 "A" 10 ishlitilsun
     # 
-    xizmetchi @qelem:fontSizish bilen font 36 "SINAQ" 250 100 ishlitilsun
+    xizmetchi @qelem:yultuzToldurush bilen 75 60 5 20 20 ishlitilsun
     # 
-    # x = x + 0.1
-    # yeyilghan 1000 miqdar k bulup
-    #     xizmetchi @qelem:chemberToldurush bilen x 250 70 ishlitilsun
+    # xizmetchi @qelem:fontSizish bilen font 36 "SINAQ" 250 100 ishlitilsun
+    # 
+    # x = x + 1
+    # yeyilghan 1 miqdar k bulup
+        xizmetchi @qelem:chemberToldurush bilen x 60 35 ishlitilsun
     # tamamlansun
     #
     xizmetchi @sehne:yengilash ishlitilsun

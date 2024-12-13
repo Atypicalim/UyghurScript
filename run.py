@@ -40,6 +40,11 @@ downloadGitTo("git@github.com:Atypicalim/replot.git", "../c-replot-library")
 ################################################################
 
 os.chdir(__workingDir)
+if __needUpdate:
+    print("\nupdateing self:")
+    subprocess.run(['git', 'pull'], check=True)
+
+################################################################
 
 from scripts.base import *
 import scripts.bind

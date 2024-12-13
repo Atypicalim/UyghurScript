@@ -785,14 +785,21 @@ ALIAS_button_is_pressed: &__button_is_pressed
   ug: besildimu
   uz: bosildimi
   tr: basıldımı
-  kz: басылдыма
+  kz: басылдыба
+ALIAS_button_is_pressing: &__button_is_pressing
+  en: is_pressing
+  uy: بېسىلغانمۇ
+  ug: besilghan
+  uz: bosilgan
+  tr: basılgan
+  kz: басылган
 ALIAS_button_is_released: &__button_is_released
   en: is_released
   uy: بوشىتىلدىمۇ
   ug: boshitildimu
   uz: boshotildimi
   tr: bırakıldımi
-  kz: босатылдыма
+  kz: босатылдыба
 
 ############################# mouse
 ALIAS_mouse:
@@ -833,6 +840,8 @@ ALIAS_mouse_get_key_state:
   <<: *__button_get_state
 ALIAS_mouse_is_pressed:
   <<: *__button_is_pressed
+ALIAS_mouse_is_pressing:
+  <<: *__button_is_pressing
 ALIAS_mouse_is_released:
   <<: *__button_is_released
 
@@ -850,6 +859,8 @@ ALIAS_board_get_key_state:
   <<: *__button_get_state
 ALIAS_board_is_pressed:
   <<: *__button_is_pressed
+ALIAS_board_is_pressing:
+  <<: *__button_is_pressing
 ALIAS_board_is_released:
   <<: *__button_is_released
 
@@ -871,6 +882,41 @@ ALIAS_paper_copy:
   <<: *__copy
 ALIAS_paper_crop:
   <<: *__crop
+ALIAS_paper_flip:
+  en: invert
+  uy: ئاغدۇرۇش
+  ug: aghdurush
+  uz: agdarish
+  tr: devirmek
+  kz: төңкеру
+ALIAS_paper_invert:
+  en: invert
+  uy: قارشىلاش
+  ug: qarshilash
+  uz: qarshilosh
+  tr: karşılamak
+  kz: қарсыlау
+ALIAS_paper_tint:
+  en: tint
+  uy: بۇياش
+  ug: buyash
+  uz: boyosh
+  tr: boyamak
+  kz: бояу
+ALIAS_paper_fade:
+  en: fade
+  uy: غۇۋالاش
+  ug: ghuwalash
+  uz: shaffoflash
+  tr: şeffaflaş
+  kz: мөлдірлау
+ALIAS_paper_blur:
+  en: blur
+  uy: خىرەلەش
+  ug: xirelesh
+  uz: xiralash
+  tr: bulanıklaş
+  kz: ұлыңғырлау
 
 
 ############################# pencil
@@ -955,6 +1001,36 @@ ALIAS_pencil_fill_circle:
   uz: doira_to'ldirish
   tr: çember_doldurmak
   kz: шеңбер_толтыру
+# draw arc
+ALIAS_pencil_draw_arc:
+  en: draw_arc
+  uy: ياي_سىزىش
+  ug: yaySizish
+  uz: yoy_chizish
+  tr: yay_çizmek
+  kz: доға_сызу
+ALIAS_pencil_fill_arc:
+  en: fill_arc
+  uy: ياي_تولدۇرۇش
+  ug: yayToldurush
+  uz: yoy_to'ldirish
+  tr: yay_doldurmak
+  kz: доға_толтыру
+# draw ring
+ALIAS_pencil_draw_ring:
+  en: draw_ring
+  uy: ئۈزۈك_سىزىش
+  ug: uzukSizish
+  uz: uzuk_chizish
+  tr: yüzük_çizmek
+  kz: жүзік_сызу
+ALIAS_pencil_fill_ring:
+  en: fill_ring
+  uy: ئۈزۈك_تولدۇرۇش
+  ug: uzukToldurush
+  uz: uzuk_to'ldirish
+  tr: yüzük_doldurmak
+  kz: жүзік_толтыру
 # draw polygon
 ALIAS_pencil_draw_polygon:
   en: draw_polygon
@@ -970,6 +1046,21 @@ ALIAS_pencil_fill_polygon:
   uz: ko'pburchak_to'ldirish
   tr: çokgen_doldurmak
   kz: көпбұрыш_толтыру
+# draw star
+ALIAS_pencil_draw_star:
+  en: draw_star
+  uy: يۇلتۇز_سىزىش
+  ug: yultuzSizish
+  uz: yulduz_chizish
+  tr: yıldız_çizmek
+  kz: жұлдыз_сызу
+ALIAS_pencil_fill_star:
+  en: fill_star
+  uy: يۇلتۇز_تولدۇرۇش
+  ug: yultuzToldurush
+  uz: yulduz_to'ldirish
+  tr: yıldız_doldurmak
+  kz: жұлдыз_толтыру
 # text
 ALIAS_pencil_print_text:
   en: print_text

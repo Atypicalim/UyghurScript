@@ -45,8 +45,6 @@
 #endif
 
 #ifdef USTAGE_USE_TIGR
-#define PNTR_ENABLE_UTF8
-#define PNTR_ENABLE_TTF
 #define USTAGE_USE_SOFT true
 #else
 #define USTAGE_USE_SOFT false
@@ -57,9 +55,6 @@
 #undef __ANDROID__
 #define TIGR_EXT_NO_MOBILE
 #include "../../c-xtra-tools/tigr4ext/tigr4ext.h"
-
-#define PNTR_EXT_NO_STB
-#include "../../c-xtra-tools/pntr4ext/pntr4ext.h"
 
 #define REPLAY_WIN_NO_EXTRA
 #include "../../c-replay-library/replay.h"

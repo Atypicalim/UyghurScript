@@ -149,7 +149,7 @@
 > 🛒: 
 * point  `UGPoint`
 * text  `CString`
-* size  `double`
+* size  `int`
 
 
 ### 14. draw_paper
@@ -160,7 +160,7 @@
 
 > 🛒: 
 * point  `UGPoint`
-* paper  `RPaper`
+* canvas  `ECanvas`
 * size  `UGSize`
 
 

@@ -34,7 +34,17 @@
 * keyCodeOrName  `Value`
 
 
-### 4. is_released
+### 4. is_pressing
+
+> 📝:  is_pressing func of board module
+
+> 🔙: Boolean
+
+> 🛒: 
+* keyCodeOrName  `Value`
+
+
+### 5. is_released
 
 > 📝:  is_released func of board module
 

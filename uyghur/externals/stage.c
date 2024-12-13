@@ -51,33 +51,58 @@ void native_stage_show_window(Bridge *bridge)
     Bridge_returnEmpty(bridge);
 }
 
-UGPixels __eRenderPixels = NULL;
-UGPixels __eRenderSize = 0;
-
 void __soft_render_synchronize() {
-    int w = __ePaper->width;
-    int h = __ePaper->height;
+    UGPixels pixels = __eReplot->buffer;
+    int w = __eReplot->w;
+    int h = __eReplot->h;
     unsigned int size;
-    pntr4ext_convert_pixels(__ePaper, &__eRenderSize, &__eRenderPixels, PNTR_PIXELFORMAT_RGBA8888);
-    delegate_soft_render(__eRenderPixels, w, h, 4);
-    pntr_clear_background(__ePaper, PNTR_BLANK);
+    delegate_soft_render(pixels, w, h, 4);
+    Replot_clear(__eReplot, RCOLOR(0, 0, 0, 0));
+}
+
+#define SIZE 10
+#define RATE 10
+long long millis = 0;
+long long array[SIZE];
+int count = 0;
+void __stage_print_fps() {
+    long long current = (long long)(clock() * 1000 / CLOCKS_PER_SEC);
+    long long delay = !millis ? 0 : current - millis;
+    millis = current;
+
+    long long total = 0;
+    for (int i = 0; i < SIZE -1; i++) {
+        long long t = array[i+1];
+        array[i] = t;
+        total = total + t;
+    }
+
+    array[SIZE - 1] = delay;
+    total = total + delay;
+    count = count + 1;
+
+    double average = 1.0f * total / SIZE / 1000;
+    int fps = (int)(1 / average);
+    
+    if (count % RATE == 0) {
+        printf("fps %lld %f %d \n", delay, average, fps);
+    }
 }
 
 void native_stage_update_window(Bridge *bridge)
 {
     //
-    if (USTAGE_USE_SOFT || __ePaperDirty) {
+    if (USTAGE_USE_SOFT) {
         __soft_render_synchronize();
-        __ePaperDirty = false;
     }
     // 
+    // __stage_print_fps();
     bool isClose = delegate_stage_update_program();
     Value *value = Value_newBoolean(isClose, NULL);
     helper_set_proxy_value(ALIAS_stage, ALIAS_stage_is_closeable, value);
     externals_stage_update();
     if (isClose) {
-        pntr4ext_free_pixels(__eRenderPixels);
-        pntr_save_image(__ePaper, "pntr_examples_shapes.png");
+        Replot_write(__eReplot, "replot_stage.png");
         replay_CloseAudioDevice();
         externals_stage_end();
     }

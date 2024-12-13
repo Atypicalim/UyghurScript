@@ -22,7 +22,7 @@
 > 🔙: Value
 
 > 🛒: 
-* paper  `RPaper`
+* canvas  `ECanvas`
 * point  `UGPoint`
 * size  `UGSize`
 
@@ -34,12 +34,68 @@
 > 🔙: Empty
 
 > 🛒: 
-* paper  `RPaper`
+* canvas  `ECanvas`
 * point  `UGPoint`
 * size  `UGSize`
 
 
-### 4. read
+### 4. flip
+
+> 📝:  flip func of paper module
+
+> 🔙: Empty
+
+> 🛒: 
+* canvas  `ECanvas`
+* xFlip  `bool`
+* yFlip  `bool`
+
+
+### 5. invert
+
+> 📝:  invert func of paper module
+
+> 🔙: Empty
+
+> 🛒: 
+* canvas  `ECanvas`
+
+
+### 6. tint
+
+> 📝:  tint func of paper module
+
+> 🔙: Empty
+
+> 🛒: 
+* canvas  `ECanvas`
+* color  `UGColor`
+* intensity  `float`
+
+
+### 7. fade
+
+> 📝:  fade func of paper module
+
+> 🔙: Empty
+
+> 🛒: 
+* canvas  `ECanvas`
+* intensity  `float`
+
+
+### 8. blur
+
+> 📝:  blur func of paper module
+
+> 🔙: Empty
+
+> 🛒: 
+* canvas  `ECanvas`
+* radius  `int`
+
+
+### 9. read
 
 > 📝:  read func of paper module
 
@@ -49,14 +105,14 @@
 * path  `CString`
 
 
-### 5. write
+### 10. write
 
 > 📝:  write func of paper module
 
 > 🔙: Empty
 
 > 🛒: 
-* paper  `RPaper`
+* canvas  `ECanvas`
 * path  `CString`
 
 
