@@ -212,14 +212,6 @@ Texture2D defaultTexture;
 #define STAGE_SET_MAXIMIZE MaximizeWindow();
 #define STAGE_SET_NORMALIZE RestoreWindow();
 
-void delegate_stage_set_fps(int fps) {
-    SetTargetFPS(fps);
-}
-
-int delegate_stage_get_fps() {
-    return GetFPS();
-}
-
 void stage_toggle_fullscreen() {
     ToggleFullscreen();
 }
@@ -291,10 +283,6 @@ int delegate_get_mouse_state(int key) {
 int delegate_get_board_state(int key) {
     if (IsKeyDown(key)) return UG_BUTTON_STATE_DOWN;
     return UG_BUTTON_STATE_UP;
-}
-
-void delegate_stage_save_screenshot(CString path) {
-    TakeScreenshot(path);
 }
 
 void delegate_stage_run_program(int width, int height, CString title, int mode) {

@@ -66,8 +66,8 @@ int __mouse_get_code_from_value(Value *value) {
 }
 
 int __mouse_get_delegate_button(int keyCode) {
-    int _keyCode = delegate_board_code_swap(keyCode, true);
-    int keyState = delegate_get_board_state(_keyCode);
+    int _keyCode = delegate_mouse_code_swap(keyCode, true);
+    int keyState = delegate_get_mouse_state(_keyCode);
     return keyState;
 }
 

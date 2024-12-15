@@ -194,14 +194,6 @@ bool _rileyHasCursor = true;
 #define STAGE_SET_MAXIMIZE RGFW_window_maximize(_rileyWindow)
 #define STAGE_SET_NORMALIZE RGFW_window_restore(_rileyWindow)
 
-void delegate_stage_set_fps(int fps) {
-
-}
-
-int delegate_stage_get_fps() {
-    return 60;
-}
-
 void stage_toggle_fullscreen() {
     CHECK_RILEY_WINDOW_V();
     _rileyWindow->_winArgs ^= RGFW_FULLSCREEN;
@@ -290,9 +282,6 @@ int delegate_get_mouse_state(int key) {
 int delegate_get_board_state(int key) {
     if (RGFW_isPressed(_rileyWindow, key)) return UG_BUTTON_STATE_DOWN;
     return UG_BUTTON_STATE_UP;
-}
-
-void delegate_stage_save_screenshot(CString path) {
 }
 
 void delegate_stage_run_program(int width, int height, CString title, int mode) {

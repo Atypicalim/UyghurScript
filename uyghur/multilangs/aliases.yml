@@ -758,11 +758,11 @@ ALIAS_stage_get_clipboard:
   kz: қою_тақтаны_оқу
 ALIAS_stage_save_screenshot:
   en: save_screenshot
-  uy: ئېكراننى_رەسىمگە_تارتىپ_ساقلاش
-  ug: ikranniResimgeTartipSaqlash
-  uz: ekranni_rasmga_olip_saqlash
-  tr: ekran_görüntüsi_alip_saklamak
-  kz: экранды_суретке_түсіру_сақтау
+  uy: رەسىمگە_ساقلاش
+  ug: resimgeSaqlash
+  uz: rasmga_saqlash
+  tr: görüntüye_saklamak
+  kz: суретке_сақтау
 
 ############################# buttons
 ALIAS_button_get_action: &__button_get_action

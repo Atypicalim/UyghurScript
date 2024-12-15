@@ -180,14 +180,6 @@ bool _tigrHasCursor = true;
 #define STAGE_SET_MAXIMIZE tigrTime()
 #define STAGE_SET_NORMALIZE tigrTime()
 
-void delegate_stage_set_fps(int fps) {
-
-}
-
-int delegate_stage_get_fps() {
-    return 60;
-}
-
 void stage_toggle_fullscreen() {
     CHECK_TIGR_WINDOW_V();
 }
@@ -253,11 +245,6 @@ int delegate_get_mouse_state(int key) {
 int delegate_get_board_state(int key) {
     if (tigrKeyHeld(_tigrWindow, key)) return UG_BUTTON_STATE_DOWN;
     return UG_BUTTON_STATE_UP;
-}
-
-void delegate_stage_save_screenshot(CString path) {
-    CHECK_TIGR_WINDOW_V();
-    tigrSaveImage(path, _tigrWindow);
 }
 
 void delegate_stage_run_program(int width, int height, CString title, int mode) {
