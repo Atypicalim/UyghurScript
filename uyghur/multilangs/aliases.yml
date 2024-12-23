@@ -609,6 +609,50 @@ ALIAS_file_create_directory:
   tr: klasör_oluşturmak
   kz: папка_жасау
 
+############################# cipher
+ALIAS_cipher:
+  en: cipher
+  uy: شىفىر
+  ug: shifir
+  uz: şifre
+  tr: şifre
+  kz: шифр
+ALIAS_cipher_md5:
+  en: md5
+  uy: خەشلەش
+  ug: xeshlesh
+  uz: xeshlash
+  tr: haşlamak
+  kz: хэштеу
+ALIAS_cipher_base64_encode:
+  en: base64_encode
+  uy: تېكىست_كودلاش
+  ug: tekstKodlash
+  uz: matn_kodlash
+  tr: tekst_kodlamak
+  kz: мәтін_кодтау
+ALIAS_cipher_base64_decode:
+  en: base64_decode
+  uy: تېكىست_دېكودلاش
+  ug: tekstDekodlash
+  uz: matn_dekodlash
+  tr: tekst_dekodlamak
+  kz: мәтін_декодтау
+ALIAS_cipher_json_encode:
+  en: json_encode
+  uy: جىسون_كودلاش
+  ug: jsonKodlash
+  uz: json_kodlash
+  tr: json_kodlamak
+  kz: жсон_кодтау
+ALIAS_cipher_json_decode:
+  en: json_decode
+  uy: جىسون_دېكودلاش
+  ug: jsonDekodlash
+  uz: json_dekodlash
+  tr: json_dekodlamak
+  kz: жсон_декодтау
+
 ############################# external #############################
 
 ############################# stage

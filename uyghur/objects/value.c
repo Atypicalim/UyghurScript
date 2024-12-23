@@ -265,7 +265,7 @@ Value *Value_toNumber(Value *this)
     }
     else if (this->type == UG_TYPE_STR)
     {
-        return Value_newNumber(atof(this->string), NULL);
+        return Value_newNumber(tools_string_to_number(this->string), NULL);
     }
     else if (this->type == UG_TYPE_NIL)
     {

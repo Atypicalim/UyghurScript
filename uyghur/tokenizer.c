@@ -158,8 +158,34 @@ int _tokenizer_readNumber(Tokenizer *this, String *str, UTFCHAR *c) {
 
 String *Tokenizer_readNumber(Tokenizer *this) {
     String *str = String_new();
+    bool isZero = Tokenizer_isChar(this, 0, "0");
+    UTFCHAR n = Tokenizer_getchar(this, 1);
+    // hex
+    if (isZero && is_uchar_eq_uchar(n, "x")) {
+        String_appendStr(str, "0x");
+        Tokenizer_skipN(this, 2);
+        UTFCHAR _c = Tokenizer_getchar(this, 0);
+        while (isxdigit(_c[0])) {
+            String_appendStr(str, _c);
+            Tokenizer_skipN(this, 1);
+            _c = Tokenizer_getchar(this, 0);
+        }
+        return str;
+    }
+    // bin
+    if (isZero && is_uchar_eq_uchar(n, "b")) {
+        String_appendStr(str, "0b");
+        Tokenizer_skipN(this, 2);
+        UTFCHAR _c = Tokenizer_getchar(this, 0);
+        while (_c[0] == '0' || _c[0] == '1') {
+            String_appendStr(str, _c);
+            Tokenizer_skipN(this, 1);
+            _c = Tokenizer_getchar(this, 0);
+        }
+        return str;
+    }
+    // 
     UTFCHAR c = Tokenizer_getchar(this, 0);
-    //
     if (is_uchar_eq_uchar(c, SIGN_ADD) || is_uchar_eq_uchar(c, SIGN_SUB)) {
         String_appendStr(str, c);
         Tokenizer_skipN(this, 1);
@@ -172,7 +198,6 @@ String *Tokenizer_readNumber(Tokenizer *this) {
     } else {
         Tokenizer_error(this, LANG_ERR_INVALID_NMBR);
     }
-    //
     bool dotCount = _tokenizer_readNumber(this, str, &c);
     Tokenizer_assert(this, dotCount <= 1, LANG_ERR_INVALID_NMBR);
     return str;

@@ -17,6 +17,18 @@ char *tools_number_to_string(double num)
     return tools_number_is_integer(num) ? tools_format("%i", (int)num) : tools_format("%.15g", (double)num);
 }
 
+double tools_string_to_number(char *str)
+{
+    if (strlen(str) >= 3 && str[0] == '0') {
+        if (str[1] == 'x') {
+            return (double)strtol(str + 2, NULL, 16);
+        } else if (str[1] == 'b') {
+            return (double)strtol(str + 2, NULL, 2);
+        }
+    }
+    return atof(str);
+}
+
 char *tools_boolean_to_string(bool bol)
 {
     return tools_format("%s", bol ? TVALUE_TRUE : TVALUE_FALSE);

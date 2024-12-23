@@ -572,38 +572,40 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
 {
     Stack_RESTE(leaf->tokens);
     Token *action = Stack_NEXT(leaf->tokens);
-    Token *name = Stack_NEXT(leaf->tokens);
+    Token *target = Stack_NEXT(leaf->tokens);
+    Queue *args = action->extra;
+    Queue_RESTE(args);
+    // 
     if (is_eq_string(action->value, TVALUE_CMD_OUTPUT))
     {
-        Value *value = NULL;
-        if (!Token_isString(name) && helper_token_is_values(name, TVAUES_GROUP_UTYPES)) {
-            value = Executer_getValueFromContainer(this, this->globalScope, name);
-        } else {
-            value = Executer_getValueByToken(this, name, true);
-            Executer_assert(this, value != NULL, name, LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND);
+        Token *name = Queue_NEXT(args);
+        while (name) {
+            Value *value = NULL;
+            if (!Token_isString(name) && helper_token_is_values(name, TVAUES_GROUP_UTYPES)) {
+                value = Executer_getValueFromContainer(this, this->globalScope, name);
+            } else {
+                value = Executer_getValueByToken(this, name, true);
+                Executer_assert(this, value != NULL, name, LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND);
+            }
+            char *content = helper_value_to_string(value, "unknown");
+            if (content != NULL) {
+                printf("%s", content);
+                pct_free(content);
+            }
+            if (value != NULL) Machine_releaseObj(value);
+            name = Queue_NEXT(args);
         }
-        if (Value_isListable(value)) {
-            Listable_print(value);
-        } else if (Value_isDictable(value)) {
-            Dictable_print(value);
-        } else if (Value_isHoldable(value)) {
-            Holdable_print(value);
-        } else if (Value_isObjective(value)) {
-            Objective_print(value);
-        } else if (Value_isRunnable(value)) {
-            Runnable_print(value);
-        } else {
-            char *content = Value_toString(value);
-            printf("%s", content);
-            pct_free(content);
-        }
-        if (value != NULL) Machine_releaseObj(value);
     }
     else if (is_eq_string(action->value, TVALUE_CMD_INPUT))
     {
-        char line[1024];
-        scanf(" %[^\n]", line);
-        Executer_setValueByToken(this, name, Value_newString(line, NULL), false);
+        Token *name = Queue_NEXT(args);
+        while (name) {
+            char line[1024];
+            printf(">");
+            scanf(" %[^\n]", line);
+            Executer_setValueByToken(this, name, Value_newString(line, NULL), false);
+            name = Queue_NEXT(args);
+        }
     }
 }
 
@@ -1226,7 +1228,11 @@ Value *Executer_generateContainer(Executer *this, Object *object, Token *token)
             Executer_error(this, NULL, LANG_ERR_EXECUTER_GENERATION_INVALID);
         }
         //
-        block = Stack_NEXT(object);
+        if (isArr) {
+            block = Queue_NEXT(object);
+        } else if (isMap) {
+            block = Stack_NEXT(object);
+        }
     }
     return result;
 }
@@ -1236,7 +1242,7 @@ void Executer_consumeGenerator(Executer *this, Leaf *leaf)
     Stack_RESTE(leaf->tokens);
     Token *body = Stack_NEXT(leaf->tokens);
     Token *target = Stack_NEXT(leaf->tokens);
-    Object *root = (Foliage *)body->value;
+    Object *root = (Object *)body->value;
     //
     // TODO:free r object
     Value *r = Executer_generateContainer(this, root, target);

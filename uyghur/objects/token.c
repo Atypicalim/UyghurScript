@@ -135,7 +135,7 @@ bool Token_isStatic(Token *this)
 char *_Token_toString(char *val, char *tp)
 {
     if (is_eq_string(tp, UG_TTYPE_NUM)) {
-        return tools_number_to_string(atof(val));
+        return tools_number_to_string(tools_string_to_number(val));
     } else {
         return tools_format("%s", val);
     }

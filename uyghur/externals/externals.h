@@ -279,13 +279,23 @@ UGFont *UG_NEW_FONT(char *path, int size) {
 
 UGColor color_from_bridge(Bridge *bridge)
 {
-    CString str = Bridge_receiveString(bridge);
-    int len = strlen(str);
-    if (len != 6 && len != 8) return (UGColor){0, 0, 0, 255};
-    int r = char_to_int(str[0]) * 16 + char_to_int(str[1]);
-    int g = char_to_int(str[2]) * 16 + char_to_int(str[3]);
-    int b = char_to_int(str[4]) * 16 + char_to_int(str[5]);
-    int a = len == 6 ? 255 : char_to_int(str[6]) * 16 + char_to_int(str[7]);
+    Value *color = Bridge_receiveValue(bridge, UG_TYPE_NON);
+    unsigned char r, g, b, a = 255;
+    //
+    if (color->type == UG_TYPE_NUM) {
+        unsigned int num = (unsigned int)color->number;
+        color_hex_to_rgb(num, &r, &g, &b);
+    } else if (color->type == UG_TYPE_STR) {
+        CString str = color->string[0] == '0' && color->string[1] == 'x' ? color->string + 2 : color->string;
+        int len = strlen(str);
+        if (len == 6 || len == 8) {
+            r = char_to_int(str[0]) * 16 + char_to_int(str[1]);
+            g = char_to_int(str[2]) * 16 + char_to_int(str[3]);
+            b = char_to_int(str[4]) * 16 + char_to_int(str[5]);
+            a = len == 6 ? 255 : char_to_int(str[6]) * 16 + char_to_int(str[7]);
+        }
+    }
+    //
     return (UGColor){r, g, b, a};
 }
 

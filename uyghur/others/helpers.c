@@ -167,6 +167,10 @@ bool is_higher_priority_calculation(char *target, char *than)
     return false;
 }
 
+bool is_command_action(char *value) {
+    return value != NULL && (is_eq_string(value, TVALUE_CMD_INPUT) || is_eq_string(value, TVALUE_CMD_OUTPUT));
+}
+
 char *format_token_place(Token *token)
 {
     tools_format(LANG_ERR_TOKEN_PLACE, token->file, token->line, token->column, token->value);
@@ -181,7 +185,7 @@ Value *convert_token_to_value(Token *token)
 {
     if (Token_isEmpty(token)) return Value_newEmpty(token);
     if (Token_isBool(token)) return Value_newBoolean(is_eq_string(token->value, TVALUE_TRUE), token);
-    if (Token_isNumber(token)) return Value_newNumber(atof(token->value), token);
+    if (Token_isNumber(token)) return Value_newNumber(tools_string_to_number(token->value), token);
     if (Token_isString(token)) return Value_newString(token->value, token);
     return NULL;
 }
@@ -470,6 +474,25 @@ Value *helper_get_proxy_value(char *proxyName, char *key) {
 
 char*helper_value_to_string(void *target, CString failure) {
     Value *value = target;
+    // 
+    char *content = NULL;
+    if (value == NULL) {
+        content = tools_format("<null>");
+    } else if (Value_isListable(value)) {
+        content = Listable_toString(value);
+    } else if (Value_isDictable(value)) {
+        content = Dictable_toString(value);
+    } else if (Value_isHoldable(value)) {
+        content = Holdable_toString(value);
+    } else if (Value_isObjective(value)) {
+        content = Objective_toString(value);
+    } else if (Value_isRunnable(value)) {
+        content = Runnable_toString(value);
+    } else {
+        content = Value_toString(value);
+    }
+    if (content != NULL) return content;
+    //
     Token *token = value->token;
     char *desc = token != NULL ? token->value : "?";
     char *name = get_value_name(value->type, failure);

@@ -20,7 +20,8 @@
 #include "utf8.h"
 #include "tinyfiledialogs.h"
 
-#include "../../c-pure-tools/tools.h"
+#define MD5_IMPLEMENTATION
+#include "../../c-pure-tools/test.h"
 
 #define CARGS_IMPLEMENTATION
 #include "../../c-xtra-tools/cargs/cargs.h"

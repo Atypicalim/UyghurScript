@@ -189,22 +189,45 @@ void Parser_consumeAstVariable(Parser *this)
 void Parser_consumeAstCommand(Parser *this)
 {
     Token *target = Parser_checkWord(this, 0, 1, TVALUE_COMMAND);
-    Token *name = Parser_moveToken(this, 1); 
-    Token *action = Parser_checkWord(this, 1, TVALUE_COMMANDS);
-    if (is_eq_string(action->value, TVALUE_CMD_OUTPUT)) {
-        if (
-            !helper_token_is_values(name, TVAUES_GROUP_UTYPES)
-            && !helper_token_is_types(name, TTYPES_GROUP_VALUES)
-            && !helper_token_is_values(name, TVAUES_GROUP_NICKNAME)
-        ) {
-            Parser_error(this, LANG_ERR_INVALID_TYPE);
-        }
-    } else if (is_eq_string(action->value, TVALUE_CMD_INPUT)) {
-        if (!helper_token_is_types(name, TVAUES_GROUP_CHANGEABLE)) {
-            Parser_error(this, LANG_ERR_INVALID_TYPE);
+    Queue *args = Queue_new(false);
+    Token *token = Parser_moveToken(this, 1);
+    while (token != NULL && !is_command_action(token->value)) {
+        Queue_push(args, token);
+        token = Parser_moveToken(this, 1);
+    }
+    Parser_assert(this, token != NULL && is_command_action(token->value), LANG_ERR_PARSER_EXCEPTION);
+    Token *action = token;
+    //
+    if (action->value == TVALUE_CMD_INPUT) {
+        Parser_assert(this, args->size >= 1, LANG_ERR_PARSER_EXCEPTION);
+        Queue_RESTE(args);
+        Token *arg = Queue_NEXT(args);
+        while (args) {
+            if (
+                !helper_token_is_values(arg, TVAUES_GROUP_UTYPES)
+                && !helper_token_is_types(arg, TTYPES_GROUP_VALUES)
+                && !helper_token_is_values(arg, TVAUES_GROUP_NICKNAME)
+            ) {
+                Parser_error(this, LANG_ERR_INVALID_TYPE);
+            }
+            args = Queue_NEXT(args);
         }
     }
-    Parser_pushLeaf(this, UG_ATYPE_CMD, 2, name, action);
+    //
+    if (action->value == TVALUE_CMD_INPUT) {
+        Parser_assert(this, args->size >= 1, LANG_ERR_PARSER_EXCEPTION);
+        Queue_RESTE(args);
+        Token *arg = Queue_NEXT(args);
+        while (args) {
+            if (!helper_token_is_types(arg, TVAUES_GROUP_CHANGEABLE)) {
+                Parser_error(this, LANG_ERR_INVALID_TYPE);
+            }
+            args = Queue_NEXT(args);
+        }
+    }
+    // 
+    action->extra = args;
+    Parser_pushLeaf(this, UG_ATYPE_CMD, 2, target, action);
 }
 
 void Parser_consumeAstConvert(Parser *this)
@@ -528,14 +551,14 @@ void Parser_consumeAstGenerator(Parser *this)
     Block *waitingKey = NULL;
     Object *current = NULL;
     Stack *currents = Stack_new(true);
-    Stack *root = NULL;
+    Object *root = NULL;
     char *lastType = NULL;
     while (true) {
         current = currents->tail != NULL ? currents->tail->data : NULL;
         Token *token = Parser_getToken(this, 1);
         UTFCHAR *value = token->value;
         //
-        void *box = NULL;
+        Object *box = NULL;
         if (Parser_isWord(this, 1, SIGN_OPEN_BIG)) {
             box = Queue_new(true);
             Parser_checkWord(this, 1, 1, SIGN_OPEN_BIG);
@@ -577,7 +600,7 @@ void Parser_consumeAstGenerator(Parser *this)
             Parser_assert(this, currents->size > 0 && can_generate_close(lastType), LANG_ERR_PARSER_INVALID_GENERATOR);
             lastType = token->value;
             //
-            Stack *popped = Stack_pop(currents);
+            Object *popped = Stack_pop(currents);
             if (currents->size == 0) {
                 root = popped;
                 break;
