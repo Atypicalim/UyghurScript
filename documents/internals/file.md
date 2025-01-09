@@ -57,9 +57,9 @@
 * path  `CString`
 
 
-### 6. exist
+### 6. is_exist
 
-> 📝:  exist func of file module
+> 📝:  is_exist func of file module
 
 > 🔙: Boolean
 

@@ -116,7 +116,57 @@
 * radius  `double`
 
 
-### 11. draw_polygon
+### 11. draw_arc
+
+> 📝:  draw_arc func of pencil module
+
+> 🔙: Empty
+
+> 🛒: 
+* point  `UGPoint`
+* radius  `double`
+* fromAngle  `double`
+* toAngle  `double`
+
+
+### 12. fill_arc
+
+> 📝:  fill_arc func of pencil module
+
+> 🔙: Empty
+
+> 🛒: 
+* point  `UGPoint`
+* radius  `double`
+* fromAngle  `double`
+* toAngle  `double`
+
+
+### 13. draw_ring
+
+> 📝:  draw_ring func of pencil module
+
+> 🔙: Empty
+
+> 🛒: 
+* point  `UGPoint`
+* radius  `double`
+* thickness  `double`
+
+
+### 14. fill_ring
+
+> 📝:  fill_ring func of pencil module
+
+> 🔙: Empty
+
+> 🛒: 
+* point  `UGPoint`
+* radius  `double`
+* thickness  `double`
+
+
+### 15. draw_polygon
 
 > 📝:  draw_polygon func of pencil module
 
@@ -128,7 +178,7 @@
 * radius  `double`
 
 
-### 12. fill_polygon
+### 16. fill_polygon
 
 > 📝:  fill_polygon func of pencil module
 
@@ -140,7 +190,33 @@
 * radius  `double`
 
 
-### 13. print_text
+### 17. draw_star
+
+> 📝:  draw_star func of pencil module
+
+> 🔙: Empty
+
+> 🛒: 
+* point  `UGPoint`
+* sides  `double`
+* radius1  `double`
+* radius2  `double`
+
+
+### 18. fill_star
+
+> 📝:  fill_star func of pencil module
+
+> 🔙: Empty
+
+> 🛒: 
+* point  `UGPoint`
+* sides  `double`
+* radius1  `double`
+* radius2  `double`
+
+
+### 19. print_text
 
 > 📝:  print_text func of pencil module
 
@@ -152,7 +228,7 @@
 * size  `int`
 
 
-### 14. draw_paper
+### 20. draw_paper
 
 > 📝:  draw_paper func of pencil module
 
@@ -164,7 +240,7 @@
 * size  `UGSize`
 
 
-### 15. load_image
+### 21. load_image
 
 > 📝:  load_image func of pencil module
 
@@ -174,7 +250,7 @@
 * path  `CString`
 
 
-### 16. load_font
+### 22. load_font
 
 > 📝:  load_font func of pencil module
 
@@ -184,7 +260,7 @@
 * path  `CString`
 
 
-### 17. draw_font
+### 23. draw_font
 
 > 📝:  draw_font func of pencil module
 
@@ -197,7 +273,7 @@
 * point  `UGPoint`
 
 
-### 18. draw_image
+### 24. draw_image
 
 > 📝:  draw_image func of pencil module
 

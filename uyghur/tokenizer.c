@@ -27,19 +27,24 @@ Tokenizer *Tokenizer_new(Uyghur *uyghur)
 
 Token *Tokenizer_parseLetter(Tokenizer *this, String *letter, bool isGetName)
 {
-    // letters 
-    String *_letter = Hashmap_get(this->uyghur->lettersMap, String_get(letter));
-    String *_temp = _letter != NULL ? _letter : letter;
-    String *_word = Hashmap_get(this->uyghur->wordsMap, String_get(_temp));
-    if (_word == NULL) {
-        Token *token = Token_new(UG_TTYPE_NAM, String_get(_temp));
-        token->extra = String_get(letter);
+    // 
+    CString _letter =  String_get(letter);
+    String *trans = NULL;
+    if (trans == NULL) trans = Hashmap_get(this->uyghur->lettersMap, _letter);
+    if (trans == NULL) trans = Hashmap_get(this->uyghur->aliasesMap, _letter);
+    if (trans != NULL) _letter = String_get(trans);
+    // name 
+    String *word = Hashmap_get(this->uyghur->wordsMap, _letter);
+    if (word == NULL) {
+        Token *token = Token_new(UG_TTYPE_NAM, _letter);
+        token->extra = "extra...";
         return token;
     }
     // word
-    char *_type = String_equal(_temp, _word) ? UG_TTYPE_WRD : String_get(_word);
-    Token *token = Token_new(_type, String_get(_temp));
-    token->extra = String_get(letter);
+    CString _word = String_get(word);
+    char *_type = is_eq_string(_letter, _word) ? UG_TTYPE_WRD : _word;
+    Token *token = Token_new(_type, _letter);
+    token->extra = "extra...";
     return token;
 }
 
@@ -110,11 +115,6 @@ void Token_addToken(Tokenizer *this, Token *token) {
         token->last = this->tail;
         this->tail = token;
     }
-}
-
-void Tokenizer_addLetter(Tokenizer *this, String *value) {
-    Token *token = Tokenizer_parseLetter(this, value, true);
-    Token_addToken(this, token);
 }
 
 String *Tokenizer_readLetter(Tokenizer *this) {
@@ -383,8 +383,17 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             // scoped key
             Tokenizer_assert(this, is_eq_strings(typ, TTYPES_GROUP_KEYS), LANG_ERR_INVALID_TYPE);
             Tokenizer_assert(this, scopeObject != NULL, NULL);
-            Token *_parsed = Tokenizer_parseLetter(this, scopeObject, false);
-            Token *token = Token_key(typ, String_get(txt), _parsed->value);
+            //
+            CString _keyText = String_get(txt);
+            if (is_eq_string(typ, UG_TTYPE_STR)) {
+                String *trans = Hashmap_get(this->uyghur->aliasesMap, _keyText);
+                if (trans != NULL) {
+                    _keyText = String_get(trans);
+                }
+            }
+            //
+            Token *_parsedScope = Tokenizer_parseLetter(this, scopeObject, false);
+            Token *token = Token_key(typ, _keyText, _parsedScope->value);
             scopeObject = NULL;
             // insert token
             Token_addToken(this, token);
@@ -416,13 +425,15 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         if (is_letter_begin(currChar, Tokenizer_getchar(this, 1)))
         {
             String *ltr = Tokenizer_readLetter(this);
-            Tokenizer_addLetter(this, ltr);
+            Token *tkn = Tokenizer_parseLetter(this, ltr, true);
+            Token_addToken(this, tkn);
             continue; 
         }
         // equaling
         if (is_equaling(currChar))
         {
-            Tokenizer_addLetter(this, String_format("%s", TVALUE_EQUALING));
+            Token *tkn = Token_new(UG_TTYPE_WRD, TVALUE_EQUALING);
+            Token_addToken(this, tkn);
             UTFCHAR c = Tokenizer_getValidChar(this, 1);
             Tokenizer_skipN(this, 1);
             if (is_uchar_eq_uchar(c, SIGN_OPEN_MIDDLE) || is_uchar_eq_uchar(c, SIGN_OPEN_BIG)) {
@@ -452,7 +463,8 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             consumeGenerator = true;
         }
         if (consumeGenerator) {
-            Tokenizer_addLetter(this, String_format("%s", currChar));
+            Token *tkn = Token_new(UG_TTYPE_WRD, currChar);
+            Token_addToken(this, tkn);
             Tokenizer_skipN(this, 1);
             continue;
         }
@@ -467,7 +479,8 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                 && !is_uchar_eq_uchar(lastC, SIGN_EQ)
                 && !is_uchar_eq_uchar(lastC, SIGN_OPEN_SMALL)
             ) {
-                Tokenizer_addLetter(this, String_format("%s", currChar));
+                Token *tkn = Token_new(UG_TTYPE_CLC, currChar);
+                Token_addToken(this, tkn);
                 Tokenizer_skipN(this, 1);
                 continue;
             }
@@ -475,21 +488,24 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         // open
         if (is_uchar_eq_uchar(currChar, SIGN_OPEN_SMALL))
         {
-            Tokenizer_addLetter(this, String_format("%s", TVALUE_OPEN));
+            Token *tkn = Token_new(UG_TTYPE_WRD, TVALUE_OPEN);
+            Token_addToken(this, tkn);
             Tokenizer_skipN(this, 1);
             continue;
         }
         // close
         if (is_uchar_eq_uchar(currChar, SIGN_CLOSE_SMALL))
         {
-            Tokenizer_addLetter(this, String_format("%s", TVALUE_CLOSE));
+            Token *tkn = Token_new(UG_TTYPE_WRD, TVALUE_CLOSE);
+            Token_addToken(this, tkn);
             Tokenizer_skipN(this, 1);
             continue;
         }
         // calculation
         if (is_calculation_logicals(currChar))
         {
-            Tokenizer_addLetter(this, String_format("%s", currChar));
+            Token *tkn = Token_new(UG_TTYPE_CLC, currChar);
+            Token_addToken(this, tkn);
             Tokenizer_skipN(this, 1);
             continue;
         }

@@ -18,6 +18,7 @@
 void Uyghur_init(Uyghur *this)
 {
     this->lettersMap = Hashmap_new(false);
+    this->aliasesMap = Hashmap_new(false);
     this->wordsMap = Hashmap_new(false);
     this->language = NULL;
 }
@@ -47,19 +48,19 @@ Uyghur *Uyghur_instance()
 
 Leaf *Uyghur_processCode(Uyghur *this, char *path, char *code)
 {
-    log_warn("uyghur.tokenize");
+    log_debug("uyghur.tokenize");
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
-    log_warn("uyghur.parse");
+    log_debug("uyghur.parse");
     Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
     return headLeaf;
 }
 
 Value *_Uyghur_runCode(Uyghur *this, char *path, char *code)
 {
-    log_warn("uyghur.execute");
+    log_debug("uyghur.execute");
     Leaf *tree = Uyghur_processCode(this, path, code);
     Value *result = Executer_executeCode(this->executer, tree);
-    log_warn("uyghur.runned!");
+    log_debug("uyghur.runned!");
     return result;
 }
 
@@ -67,10 +68,10 @@ Value *_Uyghur_runScript(Uyghur *this, char *path, char *code) {
     tools_assert(code != NULL, "%s:[%s]", LANG_ERR_NO_INPUT_FILE, path);
     if (path == NULL) path = UG_SCRIPT_NAME;
     //
-    log_warn("uyghur.run: %s", path);
+    log_debug("uyghur.run: %s", path);
     CString lang = helper_parse_language(path);
     tools_assert(lang != NULL, "invalid lang for path:[%s]", path);
-    log_warn("uyghur.lang: %s", lang);
+    log_debug("uyghur.lang: %s", lang);
     helper_add_languages(this, lang);
     if (!UG_IS_DEVELOP) {
         helper_set_languages(this, lang);
@@ -174,13 +175,18 @@ void Uyghur_free(Uyghur *this)
         Object_release(this->lettersMap);
         this->lettersMap = NULL;
     }
+    if (this->aliasesMap != NULL)
+    {
+        Object_release(this->aliasesMap);
+        this->aliasesMap = NULL;
+    }
     if (this->wordsMap != NULL)
     {
         Object_release(this->wordsMap);
         this->wordsMap = NULL;
     }
     //
-    log_warn("uyghur.freed!");
+    log_debug("uyghur.freed!");
     free(this);
 }
 

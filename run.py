@@ -12,6 +12,13 @@ __workingDir = os.path.dirname(os.path.abspath(__file__))
 
 ################################################################
 
+try:
+    import yaml
+except ModuleNotFoundError:
+    os.system("pip3 install PyYAML")
+
+################################################################
+
 def downloadGitTo(url, path):
     print("\ndownload:", url)
     if os.path.isdir(path):

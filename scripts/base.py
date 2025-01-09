@@ -117,6 +117,15 @@ langsArrLanguages, namesArrLanguages, mapLang2NameLanguages, mapName2LangLanguag
 langsArrAliases, namesArrAliases, mapLang2NameAliases, mapName2LangAliases = readLanguages("ALIASES")
 langsArrConfigs, namesArrConfigs, mapLang2NameConfigs, mapName2LangConfigs = readLanguages("CONFIGS")
 
+letterNamesMap = {}
+aliasNamesMap = {}
+for k in namesArrLetters:
+    assert k not in letterNamesMap
+    letterNamesMap[k] = True
+for k in namesArrAliases:
+    assert k not in aliasNamesMap
+    aliasNamesMap[k] = True
+
 grammars = readYaml(f"./others/grammars.yml")
 snippets = readYaml(f"./others/snippets.yml")
 features = readYaml(f"./others/features.yml")

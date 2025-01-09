@@ -292,6 +292,7 @@ typedef struct _Executer {
 typedef struct _Uyghur {
     bool running;
     Hashmap *lettersMap;
+    Hashmap *aliasesMap;
     Hashmap *wordsMap;
     CString language;
     Tokenizer *tokenizer;

@@ -23,8 +23,7 @@ void native_{module}_{func}(Bridge *bridge) {{
     {rslt}
 }}'''
 
-tplBindRegisterModule = '''    Bridge_bindNativeExt(bridge, "ALIAS_{module}_{func}", native_{module}_{func}, "{file}", {line});'''
-tplBindRegisterGlobal = '''    Bridge_bindNativeExt(bridge, "ALIAS_{func}", native_{func}, "{file}", {line});'''
+tplBindRegister = '''    Bridge_bindNativeExt(bridge, "ALIAS_{alias}", native_{func}, "{file}", {line});'''
 
 tplBindDescriptionless = ''''''
 
@@ -76,8 +75,7 @@ def _tryGenerateAutoBind(module, functions: list[BindInfo]):
         )
         _functions = _function if _functions == "" else _functions + "\n\n" + _function
         #
-        TEMPLATE = tplBindRegisterGlobal if _isToGlobal(module) else tplBindRegisterModule
-        _register = TEMPLATE.format(module=module, func=func, file=function.file, line=function.line)
+        _register = _tryGenerateBindCode(module, function)
         _registers = _register if _registers == "" else _registers + "\n" + _register 
     # 
     return _functions, _registers
@@ -85,12 +83,21 @@ def _tryGenerateAutoBind(module, functions: list[BindInfo]):
 def _tryGenerateManualBind(module, functions: list[BindInfo]):
     _registers = ""
     for function in functions:
-        func = function.func
-        TEMPLATE = tplBindRegisterGlobal if _isToGlobal(module) else tplBindRegisterModule
-        _register = TEMPLATE.format(module=module, func=func, file=function.file, line=function.line)
+        _register = _tryGenerateBindCode(module, function)
         _registers = _register if _registers == "" else _registers + "\n" + _register 
     #
     return _registers
+
+def _tryGenerateBindCode(module, function):
+    func = function.func
+    alias = function.func
+    if not _isToGlobal(module):
+        func = module + "_" + func
+        if "ALIAS_" + alias not in aliasNamesMap:
+            alias = module + "_" + alias
+        pass
+    __code = tplBindRegister.format(module=module, alias=alias, func=func, file=function.file, line=function.line)
+    return __code
 
 ################################################################
 

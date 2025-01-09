@@ -21,6 +21,7 @@
 - [time](internals/time.md)
 - [system](internals/system.md)
 - [file](internals/file.md)
+- [cipher](internals/cipher.md)
 
 ### 3. Externals
 

@@ -390,19 +390,20 @@ void helper_set_languages(Uyghur *uyghur, char *tp) {
         return;
     }
     uyghur->language = tp;
-    log_warn("helper.laguages:");
+    log_debug("helper.laguage:%s", tp);
     int size = languages_get_size(tp);
     PAIR_LANGUAGES* pairs = languages_get_conf(tp);
     for (size_t i = 0; i < size; i++)
     {
         PAIR_LANGUAGES pair = pairs[i];
-        log_debug("helper.lang %s", pair.val);
         *pair.key = pair.val;
+        // log_debug("helper.lang %s", pair.val);
     }
 }
 
 void helper_add_languages(Uyghur *uyghur, char *tp) {
     Hashmap *lettersMap = uyghur->lettersMap;
+    Hashmap *aliasesMap = uyghur->aliasesMap;
     Hashmap *wordsMap = uyghur->wordsMap;
     // letters
     size_t aSize = sizeof(UG_LETTERS_MAP) / sizeof(UG_LETTERS_MAP[0]);
@@ -411,7 +412,7 @@ void helper_add_languages(Uyghur *uyghur, char *tp) {
         char *val = (char *)UG_LETTERS_MAP[i].val;
         Hashmap_set(lettersMap, key, String_format(val));
     }
-    // hashmap
+    // words
     size_t wSize = sizeof(UG_WORDS_MAP) / sizeof(UG_WORDS_MAP[0]);
     for (size_t i = 0; i < wSize; i++) {
         char *key = (char *)UG_WORDS_MAP[i].key;
@@ -420,42 +421,34 @@ void helper_add_languages(Uyghur *uyghur, char *tp) {
         Hashmap_set(wordsMap, key, String_format(val));
     }
     // 
-    log_warn("helper.letters:");
     int sizeLetters = letters_get_size(tp);
     PAIR_LETTERS* pairLetters = letters_get_conf(tp);
+    log_debug("helper.letters:%i", sizeLetters);
     for (size_t i = 0; i < sizeLetters; i++)
     {
         PAIR_LETTERS pair = pairLetters[i];
-        log_debug("helper.lang %s %s", pair.key, pair.val);
         Hashmap_set(lettersMap, pair.val, String_format(pair.key));
+        // log_debug("helper.letter %s %s", pair.key, pair.val);
     }
+    // 
+    int sizeAliases = aliases_get_size_by_lang(tp);
+    PAIR_ALIASES* pairAliases = aliases_get_conf_by_lang(tp);
+    log_debug("helper.aliases:%i", sizeAliases);
+    for (size_t i = 0; i < sizeAliases; i++)
+    {
+        PAIR_ALIASES pair = pairAliases[i];
+        Hashmap_set(aliasesMap, pair.val, String_format(pair.key));
+        // log_debug("helper.alias %s %s", pair.key, pair.val);
+    }
+
 }
 
 void helper_set_aliased_key(Value *container, char *_key, Value *value) {
-    // log_warn("helper.set.aliased: %s", _key);
-    // 
     Dictable_setLocation(container, _key, value);
-    // 
-    int size = aliases_get_size_by_name(_key);
-    const PAIR_ALIASES* pairs = aliases_get_conf_by_name(_key);
-    for (size_t i = 0; i < size; i++)
-    {
-        PAIR_ALIASES pair = pairs[i];
-        Dictable_setLocation(container, pair.val, value);
-    }
 }
 
 Value *helper_get_aliased_key(Value *container, char *_key) {
-    // log_warn("helper.get.aliased: %s", _key);
-    int size = aliases_get_size_by_name(_key);
-    const PAIR_ALIASES* pairs = aliases_get_conf_by_name(_key);
-    for (size_t i = 0; i < size; i++)
-    {
-        PAIR_ALIASES pair = pairs[i];
-        Value *result = Dictable_getLocation(container, pair.val);
-        if (result!= NULL) return result;
-    }
-    return NULL;
+    return Dictable_getLocation(container, _key);;
 }
 
 void *helper_set_proxy_value(char *proxyName, char *key, Value *value) {

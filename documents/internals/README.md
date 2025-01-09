@@ -8,3 +8,4 @@
 - [time](time.md)
 - [system](system.md)
 - [file](file.md)
+- [cipher](cipher.md)

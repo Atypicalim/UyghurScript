@@ -45,7 +45,7 @@ void native_file_remove(Bridge *bridge)
     Bridge_returnNumber(bridge, r);
 }
 
-void native_file_exist(Bridge *bridge)
+void native_file_is_exist(Bridge *bridge)
 {
     CString path = Bridge_receiveString(bridge);
     bool r = file_exist(path);

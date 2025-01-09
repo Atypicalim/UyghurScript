@@ -23,9 +23,9 @@
 > 🛒:  none
 
 
-### 3. show_window
+### 3. show
 
-> 📝:  show_window func of stage module
+> 📝:  show func of stage module
 
 > 🔙: Empty
 
@@ -36,9 +36,9 @@
 * mode  `int`
 
 
-### 4. update_window
+### 4. update
 
-> 📝:  update_window func of stage module
+> 📝:  update func of stage module
 
 > 🔙: Empty
 

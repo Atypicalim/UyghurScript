@@ -82,7 +82,7 @@ void native_stage_get_fps(Bridge *bridge)
     Bridge_returnNumber(bridge, fps);
 }
 
-void native_stage_show_window(Bridge *bridge)
+void native_stage_show(Bridge *bridge)
 {
     int w = Bridge_receiveNumber(bridge);
     int h = Bridge_receiveNumber(bridge);
@@ -99,7 +99,7 @@ void native_stage_show_window(Bridge *bridge)
 
 CString __saveStagePath = NULL;
 
-void native_stage_update_window(Bridge *bridge)
+void native_stage_update(Bridge *bridge)
 {
     // print fps
     int fps = externals_check_fps();
@@ -124,7 +124,7 @@ void native_stage_update_window(Bridge *bridge)
     // update stage
     bool isClose = delegate_stage_update_program();
     Value *value = Value_newBoolean(isClose, NULL);
-    helper_set_proxy_value(ALIAS_stage, ALIAS_stage_is_closeable, value);
+    helper_set_proxy_value(ALIAS_stage, ALIAS_is_closeable, value);
     externals_stage_update();
     Replot_clear(__eReplot, RCOLOR(11, 11, 11, 255));
     if (isClose) {
