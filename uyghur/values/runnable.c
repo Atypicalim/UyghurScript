@@ -45,13 +45,12 @@ bool Runnable_isNative(Runnable *this)
 
 char *Runnable_toString(Runnable *this)
 {
-    return helper_value_to_string(this, "runnable");
+    return helper_value_to_string(this, "runnable", (char *)this->extra);
 }
 
 void Runnable_print(Runnable *this)
 {
     printf("%s\n", Runnable_toString(this));
-    // printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Runnable"), this, this->obj);
 }
 
 #endif

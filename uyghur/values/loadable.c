@@ -34,13 +34,12 @@ bool Loadable_isStuf(Loadable *this)
 
 char *Loadable_toString(Loadable *this)
 {
-    return helper_value_to_string_ext(this, "loadable", (char *)this->extra);
+    return helper_value_to_string(this, "loadable", (char *)this->extra);
 }
 
 void Loadable_print(Loadable *this)
 {
     printf("%s\n", Loadable_toString(this));
-    // printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Loadable"), this, this->obj);
 }
 
 #endif

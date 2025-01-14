@@ -221,9 +221,9 @@ char *Value_toString(Value *this)
     } if (this->type == UG_TYPE_STR) {
         return strdup(this->string);
     } if (is_type_listable(this->type)) {
-        return Holdable_toString(this);
+        return Listable_toString(this);
     } if (is_type_dictable(this->type)) {
-        return Holdable_toString(this);
+        return Dictable_toString(this);
     } if (is_type_holdable(this->type)) {
         return Holdable_toString(this);
     } if (is_type_objective(this->type)) {

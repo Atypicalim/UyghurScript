@@ -34,13 +34,12 @@ bool Waitable_isTask(Waitable *this)
 
 char *Waitable_toString(Waitable *this)
 {
-    return helper_value_to_string_ext(this, "waitable", (char *)this->extra);
+    return helper_value_to_string(this, "waitable", (char *)this->extra);
 }
 
 void Waitable_print(Waitable *this)
 {
     printf("%s\n", Waitable_toString(this));
-    // printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Waitable"), this, this->obj);
 }
 
 #endif

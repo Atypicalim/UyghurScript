@@ -54,13 +54,6 @@ UTF8String *TEMPORARY_UTF8String = NULL;
 
 // 
 
-CString helper_translate_letter(char *);
-CString helper_translate_alias(char *);
-CString helper_translate_something(char *);
-CString helper_value_to_string(CPointer, CString);
-CString helper_value_to_string_ext(CPointer, CString, CString);
-// 
-
 #include "../../build/languages.h"
 #include "../../build/letters.h"
 #include "../../build/aliases.h"
@@ -293,6 +286,7 @@ typedef struct _Uyghur {
     bool running;
     Hashmap *lettersMap;
     Hashmap *aliasesMap;
+    Hashmap *langsMap;
     Hashmap *wordsMap;
     CString language;
     Tokenizer *tokenizer;
@@ -372,6 +366,14 @@ void Debug_popTrace(Debug *, Token *);
 void Debug_writeTrace(Debug *);
 void Debug_error(Uyghur *);
 void Debug_assert(Uyghur *);
+
+////////////////////////////////////////////////////////////////////////////
+
+CString helper_translate_letter(char *);
+CString helper_translate_alias(char *);
+CString helper_translate_something(char *);
+CString helper_value_to_string(CPointer, CString, CString);
+CString helper_value_as_string(CPointer, CString);
 
 ////////////////////////////////////////////////////////////////////////////
 

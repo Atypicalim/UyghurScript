@@ -303,35 +303,6 @@ bool is_type_waitable(char tp) {
     return tp == UG_TYPE_TSK;
 }
 
-char* get_value_name(char tp, char* def) {
-    char *name = NULL;
-    switch (tp) {
-        case UG_TYPE_NUM: name = TVALUE_NUM; break;
-        case UG_TYPE_STR: name = TVALUE_STR; break;
-        case UG_TYPE_LST: name = TVALUE_LST; break;
-        case UG_TYPE_DCT: name = TVALUE_DCT; break;
-        //
-        case UG_TYPE_KND: name = TVALUE_KIND;  break;
-        case UG_TYPE_PXY: name = TVALUE_PROXY;  break;
-        case UG_TYPE_SCP: name = TVALUE_SCOPE;  break;
-        case UG_TYPE_MDL: name = TVALUE_MODULE;  break;
-        //
-        case UG_TYPE_CTR: name = TVALUE_CREATOR;  break;
-        case UG_TYPE_ATR: name = TVALUE_ASSISTER;  break;
-        case UG_TYPE_OBJ: name = TVALUE_OBJECT;  break;
-        //
-        case UG_TYPE_NTV: name = TVALUE_NATIVE;  break;
-        case UG_TYPE_WKR: name = TVALUE_WORKER;  break;
-        //
-        case UG_TYPE_STF: name = TVALUE_STUF;  break;
-        case UG_TYPE_TSK: name = TVALUE_TASK;  break;
-        //
-        default: name = def;
-    }
-    char *_name = helper_translate_something(name);
-    return _name;
-}
-
 // 
 
 char *b2s(bool value)

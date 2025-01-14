@@ -122,25 +122,6 @@
 
 # define TVALUE_COMMANDS 2, TVALUE_CMD_OUTPUT, TVALUE_CMD_INPUT
 
-const UG_PAIRS UG_LETTERS_MAP[] = {
-    // 
-    {"qushulghan", TVALUE_SIGN_ADD},
-    {"elinghan", TVALUE_SIGN_SUB},
-    {"kupeytilgen", TVALUE_SIGN_MUL},
-    {"bulungen", TVALUE_SIGN_DIV},
-    // 
-    {"kichik", TVALUE_SIGN_LESS},
-    {"chong", TVALUE_SIGN_MORE},
-    {"teng", TVALUE_SIGN_EQUAL},
-    // 
-    {"ekische", TVALUE_SIGN_NOT},
-    {"hemde", TVALUE_SIGN_AND},
-    {"yaki", TVALUE_SIGN_ORR},
-    // 
-    {"ikrangha", TVALUE_COMMAND},
-    {"ikrandin", TVALUE_COMMAND},
-};
-
 const UG_PAIRS UG_WORDS_MAP[] = {
     {TVALUE_VARIABLE, 0},
     {TVALUE_VALUE, 0},

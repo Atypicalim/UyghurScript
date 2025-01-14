@@ -404,14 +404,8 @@ void helper_set_languages(Uyghur *uyghur, char *tp) {
 void helper_add_languages(Uyghur *uyghur, char *tp) {
     Hashmap *lettersMap = uyghur->lettersMap;
     Hashmap *aliasesMap = uyghur->aliasesMap;
+    Hashmap *langsMap = uyghur->langsMap;
     Hashmap *wordsMap = uyghur->wordsMap;
-    // letters
-    size_t aSize = sizeof(UG_LETTERS_MAP) / sizeof(UG_LETTERS_MAP[0]);
-    for (size_t i = 0; i < aSize; i++) {
-        char *key = (char *)UG_LETTERS_MAP[i].key;
-        char *val = (char *)UG_LETTERS_MAP[i].val;
-        Hashmap_set(lettersMap, key, String_format(val));
-    }
     // words
     size_t wSize = sizeof(UG_WORDS_MAP) / sizeof(UG_WORDS_MAP[0]);
     for (size_t i = 0; i < wSize; i++) {
@@ -420,35 +414,89 @@ void helper_add_languages(Uyghur *uyghur, char *tp) {
         if (val == NULL) val = key;
         Hashmap_set(wordsMap, key, String_format(val));
     }
-    // 
+    // letters
     int sizeLetters = letters_get_size(tp);
     PAIR_LETTERS* pairLetters = letters_get_conf(tp);
     log_debug("helper.letters:%i", sizeLetters);
-    for (size_t i = 0; i < sizeLetters; i++)
-    {
+    for (size_t i = 0; i < sizeLetters; i++) {
         PAIR_LETTERS pair = pairLetters[i];
         Hashmap_set(lettersMap, pair.val, String_format(pair.key));
-        // log_debug("helper.letter %s %s", pair.key, pair.val);
     }
-    // 
+    // aliases
     int sizeAliases = aliases_get_size_by_lang(tp);
     PAIR_ALIASES* pairAliases = aliases_get_conf_by_lang(tp);
     log_debug("helper.aliases:%i", sizeAliases);
-    for (size_t i = 0; i < sizeAliases; i++)
-    {
+    for (size_t i = 0; i < sizeAliases; i++) {
         PAIR_ALIASES pair = pairAliases[i];
         Hashmap_set(aliasesMap, pair.val, String_format(pair.key));
-        // log_debug("helper.alias %s %s", pair.key, pair.val);
     }
+    // langs
+    int sizeLangs = UG_LANGUAGE_COUNT;
+    for (size_t i = 0; i < sizeLangs; i++) {
+        char *typeLang = UG_LANGUAGE_ARRAY[i];
+        int sizeLetters = letters_get_size(typeLang);
+        PAIR_LETTERS* pairLetters = letters_get_conf(typeLang);
+        for (size_t i = 0; i < sizeLetters; i++) {
+            PAIR_LETTERS pair = pairLetters[i];
+            Hashmap_set(langsMap, pair.val, typeLang);
+        }
+        int sizeAliases = aliases_get_size_by_lang(typeLang);
+        PAIR_ALIASES* pairAliases = aliases_get_conf_by_lang(typeLang);
+        for (size_t i = 0; i < sizeAliases; i++) {
+            PAIR_ALIASES pair = pairAliases[i];
+            Hashmap_set(langsMap, pair.val, typeLang);
+        }
+    }
+    //
+}
 
+void helper_set_lettered_key(Value *container, char *_key, Value *value) {
+    // log_warn("helper.set.lettered: %s", _key);
+    // 
+    int size = letters_get_size_by_name(_key);
+    const PAIR_LETTERS* pairs = letters_get_conf_by_name(_key);
+    for (size_t i = 0; i < size; i++)
+    {
+        PAIR_LETTERS pair = pairs[i];
+        Dictable_setLocation(container, pair.val, value);
+    }
+}
+
+Value *helper_get_lettered_key(Value *container, char *_key) {
+    // log_warn("helper.get.lettered: %s", _key);
+    int size = letters_get_size_by_name(_key);
+    const PAIR_LETTERS* pairs = letters_get_conf_by_name(_key);
+    for (size_t i = 0; i < size; i++)
+    {
+        PAIR_LETTERS pair = pairs[i];
+        Value *result = Dictable_getLocation(container, pair.val);
+        if (result!= NULL) return result;
+    }
+    return NULL;
 }
 
 void helper_set_aliased_key(Value *container, char *_key, Value *value) {
-    Dictable_setLocation(container, _key, value);
+    // log_warn("helper.set.aliased: %s", _key);
+    int size = aliases_get_size_by_name(_key);
+    const PAIR_ALIASES* pairs = aliases_get_conf_by_name(_key);
+    for (size_t i = 0; i < size; i++)
+    {
+        PAIR_ALIASES pair = pairs[i];
+        Dictable_setLocation(container, pair.val, value);
+    }
 }
 
 Value *helper_get_aliased_key(Value *container, char *_key) {
-    return Dictable_getLocation(container, _key);;
+    // log_warn("helper.get.aliased: %s", _key);
+    int size = aliases_get_size_by_name(_key);
+    const PAIR_ALIASES* pairs = aliases_get_conf_by_name(_key);
+    for (size_t i = 0; i < size; i++)
+    {
+        PAIR_ALIASES pair = pairs[i];
+        Value *result = Dictable_getLocation(container, pair.val);
+        if (result!= NULL) return result;
+    }
+    return NULL;
 }
 
 void *helper_set_proxy_value(char *proxyName, char *key, Value *value) {
@@ -465,47 +513,62 @@ Value *helper_get_proxy_value(char *proxyName, char *key) {
     return helper_get_aliased_key(box, key);
 }
 
-char*helper_value_to_string(void *target, CString failure) {
-    Value *value = target;
-    // 
-    char *content = NULL;
-    if (value == NULL) {
-        content = tools_format("<null>");
-    } else if (Value_isListable(value)) {
-        content = Listable_toString(value);
-    } else if (Value_isDictable(value)) {
-        content = Dictable_toString(value);
-    } else if (Value_isHoldable(value)) {
-        content = Holdable_toString(value);
-    } else if (Value_isObjective(value)) {
-        content = Objective_toString(value);
-    } else if (Value_isRunnable(value)) {
-        content = Runnable_toString(value);
-    } else {
-        content = Value_toString(value);
+char* helper_get_value_name(char tp, char* def) {
+    char *name = NULL;
+    switch (tp) {
+        case UG_TYPE_NUM: name = TVALUE_NUM; break;
+        case UG_TYPE_STR: name = TVALUE_STR; break;
+        case UG_TYPE_LST: name = TVALUE_LST; break;
+        case UG_TYPE_DCT: name = TVALUE_DCT; break;
+        //
+        case UG_TYPE_KND: name = TVALUE_KIND;  break;
+        case UG_TYPE_PXY: name = TVALUE_PROXY;  break;
+        case UG_TYPE_SCP: name = TVALUE_SCOPE;  break;
+        case UG_TYPE_MDL: name = TVALUE_MODULE;  break;
+        //
+        case UG_TYPE_CTR: name = TVALUE_CREATOR;  break;
+        case UG_TYPE_ATR: name = TVALUE_ASSISTER;  break;
+        case UG_TYPE_OBJ: name = TVALUE_OBJECT;  break;
+        //
+        case UG_TYPE_NTV: name = TVALUE_NATIVE;  break;
+        case UG_TYPE_WKR: name = TVALUE_WORKER;  break;
+        //
+        case UG_TYPE_STF: name = TVALUE_STUF;  break;
+        case UG_TYPE_TSK: name = TVALUE_TASK;  break;
+        //
+        default: name = def;
     }
-    if (content != NULL) return content;
-    //
+    char *_name = helper_translate_something(name);
+    return _name;
+}
+
+char* helper_value_to_string(CPointer target, CString failure, CString extra) {
+    if (!target) {
+        return tools_format("<null>");
+    }
+    Value *value = target;
     Token *token = value->token;
     char *desc = token != NULL ? token->value : "?";
-    char *name = get_value_name(value->type, failure);
+    char *name = helper_get_value_name(value->type, failure);
     if (token != NULL && token->line > 0) {
-        return tools_format("<%s %p %s %s:%d>", name, value, desc, token->file, token->line);
+        if (extra) {
+            return tools_format("<%s:%p %s %s:%d %s>", name, value, desc, token->file, token->line, extra);
+        } else {
+            return tools_format("<%s:%p %s %s:%d>", name, value, desc, token->file, token->line);
+        }
     } else {
-        return tools_format("<%s %p %s>", name, value, desc);
+        if (extra) {
+            return tools_format("<%s:%p %s %s>", name, value, desc, extra);
+        } else {
+            return tools_format("<%s:%p %s>", name, value, desc);
+        }
     }
 }
 
-char*helper_value_to_string_ext(void *target, CString failure, CString extra) {
+char*helper_value_as_string(void *target, CString failure) {
     Value *value = target;
-    Token *token = value->token;
-    char *desc = token != NULL ? token->value : "?";
-    char *name = get_value_name(value->type, failure);
-    if (token != NULL && token->line > 0) {
-        return tools_format("<%s %p %s %s:%d %s>", name, value, desc, token->file, token->line, extra);
-    } else {
-        return tools_format("<%s %p %s:%s>", name, value, desc, extra);
-    }
+    char *content = value == NULL ? tools_format("<null>") : Value_toString(value);
+    return content != NULL ? content : helper_value_to_string(value, failure, NULL);
 }
 
 #endif

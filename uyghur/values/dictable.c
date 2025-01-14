@@ -10,7 +10,6 @@
 Dictable *_Dictable_new(char tp, Token *token, void *extra)
 {
     Dictable *dictable = Machine_newCacheableValue(tp, false);
-    // log_debug("new-%s: %p %p", get_value_name(tp, "dictable"), dictable, dictable->obj);
     dictable->token = token;
     dictable->extra = extra;
     return dictable;
@@ -80,15 +79,12 @@ int Dictable_getCount(Dictable *this) {
 
 char *Dictable_toString(Dictable *this)
 {
-    return helper_value_to_string(this, "dictable");
+    return helper_value_to_string(this, "dictable", (char *)this->extra);
 }
 
 void Dictable_print(Dictable *this)
 {
     printf("%s\n", Dictable_toString(this));
-    // printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Dictable"), this, this->map);
-    // _hashmap_print_with_callback(this->map, "|", _container_key_print_callback);
-    // printf("[Dictable]\n");
 }
 
 

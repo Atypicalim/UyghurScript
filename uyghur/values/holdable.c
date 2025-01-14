@@ -75,22 +75,12 @@ bool Holdable_isKindOf(Holdable *this, Value *other) {
 
 char *Holdable_toString(Holdable *this)
 {
-    char *desc = "?";
-    if (Holdable_isKind(this) || Holdable_isProxy(this) || Holdable_isScope(this)) {
-        desc = helper_translate_something(this->extra);
-    } else if (Holdable_isModule(this)) {
-        desc = this->extra;
-    }
-    char *name = get_value_name(this->type, "holdable");
-    return tools_format("<%s %p %s>", name, this, desc);
+    return helper_value_to_string(this, "holdable", (char *)this->extra);
 }
 
 void Holdable_print(Holdable *this)
 {
     printf("%s\n", Holdable_toString(this));
-    // printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Holdable"), this, this->map);
-    // _hashmap_print_with_callback(this->map, "|", _container_key_print_callback);
-    // printf("[Holdable]\n");
 }
 
 

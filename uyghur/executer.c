@@ -169,6 +169,10 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
         } else if (is_eq_string(token->value, TVALUE_GLOBAL)) {
             *rValue = this->globalScope;
             return;
+        } else if (helper_token_is_values(token, TVAUES_GROUP_UTYPES)) {
+            if (!*rValue) *rValue = Machine_readKind(this->machine, token->value);
+            if (!*rValue) *rValue = Machine_readProxy(this->machine, token->value);
+            return;
         }
     }
     // keys
@@ -339,7 +343,10 @@ char *Executer_genLocationOfToken(Executer *this, Token *token) {
     }
     ug_location.value = NULL;
     tools_assert(token != NULL, "invalid token for get location");
-    if (Token_isKeyOfString(token) || Token_isString(token) || Token_isName(token)) {
+    if (Token_isWord(token)) {
+        ug_location.value = token->value;
+        ug_location.freeable = false;
+    } else if (Token_isKeyOfString(token) || Token_isString(token) || Token_isName(token)) {
         ug_location.value = token->value;
         ug_location.freeable = false;
     } else if (Token_isKeyOfName(token)) {
@@ -388,9 +395,6 @@ void Executer_setValueToContainer(Executer *this, Value *container, Token *token
 Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
 {
     Value *value = convert_token_to_value(token);
-    if (value != NULL) return value;
-    //
-    value = Machine_readKind(this->machine, token->value);
     if (value != NULL) return value;
     //
     Executer_findValueByToken(this, token, &INVALID_CTN, &value);
@@ -580,14 +584,9 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
     {
         Token *name = Queue_NEXT(args);
         while (name) {
-            Value *value = NULL;
-            if (!Token_isString(name) && helper_token_is_values(name, TVAUES_GROUP_UTYPES)) {
-                value = Executer_getValueFromContainer(this, this->globalScope, name);
-            } else {
-                value = Executer_getValueByToken(this, name, true);
-                Executer_assert(this, value != NULL, name, LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND);
-            }
-            char *content = helper_value_to_string(value, "unknown");
+            Value *value = Executer_getValueByToken(this, name, true);
+            Executer_assert(this, value != NULL, name, LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND);
+            char *content = helper_value_as_string(value, "unknown");
             if (content != NULL) {
                 printf("%s", content);
                 pct_free(content);
@@ -786,6 +785,14 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
     }
 }
 
+void _Executer_runSpread(Executer *this, Leaf *leaf, Token *iter1, Token *iter2, Value *value1, Value *value2) {
+    Executer_pushScope(this, TVALUE_SPREAD);
+    Executer_setValueByToken(this, iter1, value1, true);
+    Executer_setValueByToken(this, iter2, value2, true);
+    Executer_consumeTree(this, leaf);
+    Executer_popScope(this);
+}
+
 void Executer_consumeSpread(Executer *this, Leaf *leaf)
 {
     //
@@ -819,64 +826,64 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
         int num = (int)value->number;
         for (size_t i = 0; i < num; i++)
         {
-            Executer_pushScope(this, TVALUE_SPREAD);
             current1 = Value_newNumber(i, iter1);
-            Executer_setValueByToken(this, iter1, current1, true);
             current2 = Value_newNumber(i + 1, iter2);
-            Executer_setValueByToken(this, iter2, current2, true);
-            Executer_consumeTree(this, leaf);
-            Executer_popScope(this);
+            _Executer_runSpread(this, leaf, iter1, iter2, current1, current2);
             if (this->errorMsg != NULL) break;
         }
     } else if (Value_isString(value)) {
         UTF8Iter iterator;
         utf8iter_init(&iterator, value->string);
         while (utf8iter_next(&iterator)) {
-            Executer_pushScope(this, TVALUE_SPREAD);
             current1 = Value_newNumber(iterator.position, iter1);
-            Executer_setValueByToken(this, iter1, current1, true);
             current2 = Value_newString(utf8iter_getchar(&iterator), iter2);
-            Executer_setValueByToken(this, iter2, current2, true);
-            Executer_consumeTree(this, leaf);
-            Executer_popScope(this);
+            _Executer_runSpread(this, leaf, iter1, iter2, current1, current2);
             if (this->errorMsg != NULL) break;
         }
     } else if (Value_isListable(value)) {
         for (int i = 0; i < value->arr->length; i++) {
             Value *val = Array_get(value->arr, i);
-            //
-            Executer_pushScope(this, TVALUE_SPREAD);
             current1 = Value_newNumber(i, iter1);
-            Executer_setValueByToken(this, iter1, current1, true);
             current2 = val;
-            Executer_setValueByToken(this, iter2, current2, true);
-            Executer_consumeTree(this, leaf);
-            Executer_popScope(this);
+            _Executer_runSpread(this, leaf, iter1, iter2, current1, current2);
             if (this->errorMsg != NULL) break;
         }
-    } else if (Value_isDictable(value) || Value_isHoldable(value) || Value_isObjective(value)) {
+    } else if (Holdable_isProxy(value)) {
         Value *box = value;
         Hashmap *map = box->map;
         Hashkey *ptr;
-        for (int i = 0; i < HASHMAP_DEFAULT_CAPACITY; ++i) {
-            ptr = map->bucket[i];
-            while (ptr != NULL) {
-                CString _key = String_get(ptr->key);
-                Value *val = ptr->value;
-                //
-                Executer_pushScope(this, TVALUE_SPREAD);
-                current1 = Value_newString(_key, iter1);
-                Executer_setValueByToken(this, iter1, current1, true);
+        int sizeAliases = aliases_get_size_by_lang(this->uyghur->language);
+        PAIR_ALIASES* pairAliases = aliases_get_conf_by_lang(this->uyghur->language);
+        for (size_t i = 0; i < sizeAliases; i++)
+        {
+            PAIR_ALIASES pair = pairAliases[i];
+            Value *val = Hashmap_get(map, pair.val);
+            if (val) {
+                current1 = Value_newString(pair.val, iter1);
                 current2 = val;
-                Executer_setValueByToken(this, iter2, current2, true);
-                Executer_consumeTree(this, leaf);
-                Executer_popScope(this);
-                if (this->errorMsg != NULL) break;
-                // 
-                ptr = ptr->next;
+                _Executer_runSpread(this, leaf, iter1, iter2, current1, current2);
             }
             if (this->errorMsg != NULL) break;
-        }
+        } 
+    } else if (value == (Value *)this->globalScope) {
+        HASHMAP_FOREACH_START(value->map) {
+            CString _key = String_get($ptr->key);
+            current1 = Value_newString(_key, iter1);
+            current2 = $ptr->value;
+            CString _lang = Hashmap_get(this->uyghur->langsMap, _key);
+            if (!_lang || is_eq_string(_lang, this->uyghur->language)) {
+                _Executer_runSpread(this, leaf, iter1, iter2, current1, current2);
+            }
+            if (this->errorMsg != NULL) break;
+        } HASHMAP_FOREACH_END;
+    } else if (Value_isDictable(value) || Value_isHoldable(value) || Value_isObjective(value)) {
+        HASHMAP_FOREACH_START(value->map) {
+            CString _key = String_get($ptr->key);
+            current1 = Value_newString(_key, iter1);
+            current2 = $ptr->value;
+            _Executer_runSpread(this, leaf, iter1, iter2, current1, current2);
+            if (this->errorMsg != NULL) break;
+        } HASHMAP_FOREACH_END;
     } else {
         Executer_error(this, target, LANG_ERR_EXECUTER_INVALID_SPREAD);
     }

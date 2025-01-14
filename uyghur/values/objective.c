@@ -67,15 +67,12 @@ bool Objective_isInstanceOf(Objective *this, Value *other) {
 
 char *Objective_toString(Objective *this)
 {
-    return helper_value_to_string(this, "objective");
+    return helper_value_to_string(this, "objective", (char *)this->extra);
 }
 
 void Objective_print(Objective *this)
 {
     printf("%s\n", Objective_toString(this));
-    // printf("[V:%s -> %p %p]\n", get_value_name(this->type, "Objective"), this, this->map);
-    // _hashmap_print_with_callback(this->map, "|", _container_key_print_callback);
-    // printf("[Objective]\n");
 }
 
 #endif

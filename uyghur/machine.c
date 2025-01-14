@@ -50,7 +50,7 @@ Holdable *Machine_getProxyOrKindByType(Machine *this, char tp) {
 Holdable *_Machine_writeKind(Machine *this, char *name) {
     Holdable *holdable = Holdable_newKind(name);
     Machine_retainObj(holdable);
-    helper_set_aliased_key(this->globals, name, holdable);
+    helper_set_lettered_key(this->globals, name, holdable);
     log_debug("kind: %s %p", name, holdable);
     return holdable;
 }
@@ -58,7 +58,7 @@ Holdable *_Machine_writeKind(Machine *this, char *name) {
 Holdable *_Machine_writeProxy(Machine *this, char *name) {
     Holdable *holdable = Holdable_newProxy(name);
     Machine_retainObj(holdable);
-    helper_set_aliased_key(this->globals, name, holdable);
+    helper_set_lettered_key(this->globals, name, holdable);
     log_debug("proxy: %s %p", name, holdable);
     return holdable;
 }
@@ -161,7 +161,7 @@ Value *Machine_newNormalValue(bool freeze, char typ) {
     value->proxy = NULL;
     value->linka = NULL;
     value->extra = NULL;
-    // log_debug("new=%s: %p", get_value_name(typ, "value"), value);
+    // log_debug("new=%s: %p", helper_get_value_name(typ, "value"), value);
     return value;
 }
 
