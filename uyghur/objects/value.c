@@ -158,12 +158,12 @@ void Value_print(Value *this)
     }
     else if (this->type == UG_TYPE_NIL)
     {
-        printf("<V:Empty p:%p>\n", TVALUE_NIL, this);
+        printf("<V:Empty p:%p>\n", LETTER_NIL, this);
     }
     else if (this->type == UG_TYPE_BOL)
     {
         bool value = this->boolean;
-        printf("<V:Boolean => v:%s p:%p>\n", value ? TVALUE_TRUE : TVALUE_FALSE, this);
+        printf("<V:Boolean => v:%s p:%p>\n", value ? LETTER_TRUE : LETTER_FALSE, this);
     }
     else if (this->type == UG_TYPE_NUM)
     {
@@ -213,7 +213,7 @@ void Value_print(Value *this)
 char *Value_toString(Value *this)
 {
     if (this == NULL || this->type == UG_TYPE_NIL) {
-        return tools_format("%s", TVALUE_NIL);
+        return tools_format("%s", LETTER_NIL);
     } if (this->type == UG_TYPE_BOL) {
         return tools_boolean_to_string(this->boolean);
     } if (this->type == UG_TYPE_NUM) {
@@ -246,7 +246,7 @@ Value *Value_toBoolean(Value *this)
     } else if (this->type == UG_TYPE_NUM) {
         return Value_newBoolean(this->number > 0, NULL);
     } else if (this->type == UG_TYPE_STR) {
-        return Value_newBoolean(is_eq_string(this->string, TVALUE_TRUE), NULL);
+        return Value_newBoolean(is_eq_string(this->string, LETTER_TRUE), NULL);
     } else if (this->type == UG_TYPE_BOL) {
         Machine_retainObj(this);
         return this;

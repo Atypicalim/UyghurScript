@@ -31,7 +31,7 @@ double tools_string_to_number(char *str)
 
 char *tools_boolean_to_string(bool bol)
 {
-    return tools_format("%s", bol ? TVALUE_TRUE : TVALUE_FALSE);
+    return tools_format("%s", bol ? LETTER_TRUE : LETTER_FALSE);
 }
 
 bool is_eq_string(char *this, char* other)
@@ -233,11 +233,11 @@ bool is_border_close(UTFCHAR c) {
 }
 
 bool can_generate_open(char *last) {
-    return last == NULL || is_eq_string(last, TVALUE_COLON) || is_eq_string(last, TVALUE_COMMA);
+    return last == NULL || is_eq_string(last, SIGN_COLON) || is_eq_string(last, SIGN_COMMA);
 }
 
 bool can_generate_close(char *last) {
-    return last == NULL || !is_eq_string(last, TVALUE_COLON);
+    return last == NULL || !is_eq_string(last, SIGN_COLON);
 }
 
 bool is_equaling(UTFCHAR c)

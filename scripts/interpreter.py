@@ -14,19 +14,29 @@ DST_SCRIPT = DST_ALIAS + "." + SCRIPT_EXT
 
 ################################################################
 
-def formatVariables(template, names):
+def _simpifyDefineName(name):
+    if not name.startswith("ALIAS_") and not name.startswith("LETTER_") and not name.startswith("LANG_"):
+        return name
+    parts = name.split("_")
+    assert len(parts) > 1, 'invalid name for variable:' + name
+    _name = '_'.join(parts[1:]).lower()
+    return _name
+
+def formatVariables(template, names, simplify):
     variables = []
     for name in names:
-        variable = template.format(name)
+        _name = _simpifyDefineName(name) if simplify else name
+        variable = template.format(name, _name)
         variables.append(variable)
     return "\n".join(variables)
 
-def formatBodies(template, name, mapLang2Name):
+def formatBodies(template, name, mapLang2Name, simplify):
     bodies = []
     for lang, infos in mapLang2Name.items():
         lines = []
         for alias, value in infos.items():
-            line = template.format(alias, value)
+            _alias = _simpifyDefineName(alias) if simplify else alias
+            line = template.format(_alias, value)
             lines.append(line)
         _length = len(lines)
         _lines = "\n    ".join(lines)
@@ -39,7 +49,7 @@ def formatBodies(template, name, mapLang2Name):
     _bodies = "\n".join(bodies)
     return _bodies
 
-def formatFooters(template, name, mapName2Lang):
+def formatFooters(template, name, mapName2Lang, simplify):
     footers = []
     for alias, infos in mapName2Lang.items():
         lines = []
@@ -65,8 +75,9 @@ def formatFilters(name, mapping):
         txtYamlNameSize = tmplYamlNameSize.format(name, key) 
         txtYamlNameConf = tmplYamlNameConf.format(name, key) 
         #
-        filterSize = tplYamlFilter.format(key, txtYamlNameSize)
-        filterConf = tplYamlFilter.format(key, txtYamlNameConf)
+        _checkment = _simpifyDefineName(key)
+        filterSize = tplYamlFilter.format(_checkment, txtYamlNameSize)
+        filterConf = tplYamlFilter.format(_checkment, txtYamlNameConf)
         filterSizes.append(filterSize)
         filterConfs.append(filterConf)
     _filterSizes = "\n".join(filterSizes)
@@ -95,13 +106,13 @@ def _configsMacro(code, command, argument = None):
 
 ############################################################################### multilang
 
-def _Yaml2Template(name, varTpl, lineTpl):
+def _Yaml2Template(name, varTpl, lineTpl, simplify):
     _name = name.lower()
     _, namesArr, mapLang2Name, mapName2Lang = readLanguages(name)
     #
-    variables = formatVariables(varTpl, namesArr)
-    bodies = formatBodies(lineTpl, name, mapLang2Name)
-    footers = formatFooters(tplYamlLineNormal, name, mapName2Lang)
+    variables = formatVariables(varTpl, namesArr, True)
+    bodies = formatBodies(lineTpl, name, mapLang2Name, simplify)
+    footers = formatFooters(tplYamlLineNormal, name, mapName2Lang, True)
     [filterSizeByLang, filterConfByLang] = formatFilters(name, mapLang2Name)
     [filterSizeByName, filterConfByName] = formatFilters(name, mapName2Lang)
     #
@@ -132,10 +143,10 @@ def _Yaml2Template(name, varTpl, lineTpl):
     bldr.start()
     pass
 
-_Yaml2Template("LANGUAGES", tplYamlDeclare, tplYamlLineReference)
-_Yaml2Template("LETTERS", tplYamlDefine, tplYamlLineNormal)
-_Yaml2Template("ALIASES", tplYamlDefine, tplYamlLineNormal)
-_Yaml2Template("CONFIGS", tplYamlDefine, tplYamlLineNormal)
+_Yaml2Template("LANGUAGES", tplYamlDeclare, tplYamlLineReference, False)
+_Yaml2Template("LETTERS", tplYamlDefine, tplYamlLineNormal, True)
+_Yaml2Template("ALIASES", tplYamlDefine, tplYamlLineNormal, True)
+_Yaml2Template("CONFIGS", tplYamlDefine, tplYamlLineNormal, True)
 
 ############################################################################### script
 

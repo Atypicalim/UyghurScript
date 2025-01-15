@@ -64,32 +64,32 @@ Holdable *_Machine_writeProxy(Machine *this, char *name) {
 }
 
 void Machine_initKinds(Machine *this) {
-    this->kindLgc = _Machine_writeKind(this, TVALUE_BOL);
-    this->kindNum = _Machine_writeKind(this, TVALUE_NUM);
-    this->kindStr = _Machine_writeKind(this, TVALUE_STR);
-    this->kindList = _Machine_writeKind(this, TVALUE_LST);
-    this->kindDict = _Machine_writeKind(this, TVALUE_DCT);
+    this->kindLgc = _Machine_writeKind(this, LETTER_BOL);
+    this->kindNum = _Machine_writeKind(this, LETTER_NUM);
+    this->kindStr = _Machine_writeKind(this, LETTER_STR);
+    this->kindList = _Machine_writeKind(this, LETTER_LST);
+    this->kindDict = _Machine_writeKind(this, LETTER_DCT);
 }
 
 void Machine_initProxies(Machine *this) {
-    this->proxStuf = _Machine_writeProxy(this, TVALUE_STUF);
-    this->proxTask = _Machine_writeProxy(this, TVALUE_TASK);
+    this->proxStuf = _Machine_writeProxy(this, LETTER_STUF);
+    this->proxTask = _Machine_writeProxy(this, LETTER_TASK);
 }
 
 Holdable *Machine_readKind(Machine *this, char *name) {
     if (name == NULL) return NULL;
-    if (is_eq_string(name, TVALUE_BOL)) return this->kindLgc;
-    if (is_eq_string(name, TVALUE_NUM)) return this->kindNum;
-    if (is_eq_string(name, TVALUE_STR)) return this->kindStr;
-    if (is_eq_string(name, TVALUE_LST)) return this->kindList;
-    if (is_eq_string(name, TVALUE_DCT)) return this->kindDict;
+    if (is_eq_string(name, LETTER_BOL)) return this->kindLgc;
+    if (is_eq_string(name, LETTER_NUM)) return this->kindNum;
+    if (is_eq_string(name, LETTER_STR)) return this->kindStr;
+    if (is_eq_string(name, LETTER_LST)) return this->kindList;
+    if (is_eq_string(name, LETTER_DCT)) return this->kindDict;
     return NULL;
 }
 
 Holdable *Machine_readProxy(Machine *this, char *name) {
     if (name == NULL) return NULL;
-    if (is_eq_string(name, TVALUE_STUF)) return this->proxStuf;
-    if (is_eq_string(name, TVALUE_TASK)) return this->proxTask;
+    if (is_eq_string(name, LETTER_STUF)) return this->proxStuf;
+    if (is_eq_string(name, LETTER_TASK)) return this->proxTask;
     return NULL;
 }
 

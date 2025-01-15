@@ -1,6 +1,6 @@
 
 hello:
-  prefix: TVALUE_HELLO
+  prefix: LETTER_HELLO
   message:
     en: "make hello sentence"
     uy: "سالام جۈملىسى ياساش"
@@ -10,7 +10,7 @@ hello:
     kz: "сәлем сөйлемі жасау"
 
 variable:
-  prefix: TVALUE_VARIABLE
+  prefix: LETTER_VARIABLE
   message:
     en: "make variable sentence"
     uy: "مىقدار جۈملىسى ياساش"
@@ -20,7 +20,7 @@ variable:
     kz: "айнымалы сөйлемі жасау"
 
 read:
-  prefix: TVALUE_CMD_INPUT
+  prefix: LETTER_CMD_INPUT
   message:
     en: "make read sentence"
     uy: "ئوقۇش جۈملىسى ياساش"
@@ -30,7 +30,7 @@ read:
     kz: "оқу сөйлемі жасау"
 
 write:
-  prefix: TVALUE_CMD_OUTPUT
+  prefix: LETTER_CMD_OUTPUT
   message:
     en: "make write sentence"
     uy: "يېزىلش جۈملىسى ياساش"
@@ -56,7 +56,7 @@ iterate:
     kz: "есептеу сөйлемі жасау"
 
 value:
-  prefix: TVALUE_VALUE
+  prefix: LETTER_VALUE
   message:
     en: "make value sentence"
     uy: "قىممىەت جۈملىسى ياساش"
@@ -66,7 +66,7 @@ value:
     kz: "қиммет сөйлемі жасау"
 
 exception:
-  prefix: TVALUE_EXCEPTION
+  prefix: LETTER_EXCEPTION
   message:
     en: "make exception sentence"
     uy: "خاتالىق جۈملىسى ياساش"
@@ -76,7 +76,7 @@ exception:
     kz: "қателік сөйлемі жасау"
 
 worker:
-  prefix: TVALUE_WORKER
+  prefix: LETTER_WORKER
   message:
     en: "make worker sentence"
     uy: "خىزمەتچى جۈملىسى ياساش"
@@ -86,7 +86,7 @@ worker:
     kz: "қызметші сөйлемі жасау"
 
 creator:
-  prefix: TVALUE_CREATOR
+  prefix: LETTER_CREATOR
   message:
     en: "make creator sentence"
     uy: "ياسىغۇچى جۈملىسى ياساش"
@@ -96,7 +96,7 @@ creator:
     kz: "жасаушы сөйлемі жасау"
 
 assister:
-  prefix: TVALUE_ASSISTER
+  prefix: LETTER_ASSISTER
   message:
     en: "make assister sentence"
     uy: "ياردەمچى جۈملىسى ياساش"
@@ -106,7 +106,7 @@ assister:
     kz: "жәрдемшы сөйлемі жасау"
 
 apply_worker:
-  prefix: TVALUE_WORKER
+  prefix: LETTER_WORKER
   message:
     en: "apply worker sentence"
     uy: "خىزمەتچى جۈملىسى ئىشلىتىش"
@@ -116,7 +116,7 @@ apply_worker:
     kz: "қызметші сөйлемі қолдану"
 
 apply_creator:
-  prefix: TVALUE_CREATOR
+  prefix: LETTER_CREATOR
   message:
     en: "apply creator sentence"
     uy: "ياسىغۇچى جۈملىسى ئىشلىتىش"
@@ -126,7 +126,7 @@ apply_creator:
     kz: "жасаушы сөйлемі қолдану"
 
 apply_assister:
-  prefix: TVALUE_ASSISTER
+  prefix: LETTER_ASSISTER
   message:
     en: "apply assister sentence"
     uy: "ياردەمچى جۈملىسى ئىشلىتىش"
@@ -136,7 +136,7 @@ apply_assister:
     kz: "жәрдемшы сөйлемі қолдану"
 
 if:
-  prefix: TVALUE_IF
+  prefix: LETTER_IF
   message:
     en: "make if sentence"
     uy: "ئەگەر جۈملىسى ياساش"
@@ -146,7 +146,7 @@ if:
     kz: "егер сөйлемі жасау"
 
 while:
-  prefix: TVALUE_WHILE
+  prefix: LETTER_WHILE
   message:
     en: "make while sentence"
     uy: "ناۋادا جۈملىسى ياساش"
@@ -155,7 +155,7 @@ while:
     tr: "böyleyse cümlesi yapmak"
     kz: "солайда сөйлемі жасау"
 spread:
-  prefix: TVALUE_SPREAD
+  prefix: LETTER_SPREAD
   message:
     en: "make spread sentence"
     uy: "يېيىش جۈملىسى ياساش"

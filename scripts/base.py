@@ -53,8 +53,8 @@ tools.files.mk_folder(DIR_SNIPPET_COLOR)
 ###############################################################################
 
 # c conf
-tplYamlDeclare = """char* {0} = \"{0}\";"""
-tplYamlDefine = """#define {0} \"{0}\""""
+tplYamlDeclare = """char* {0} = \"{1}\";"""
+tplYamlDefine = """#define {0} \"{1}\""""
 #
 tplYamlLineReference = """{{&{0}, "{1}"}},"""
 tplYamlLineNormal = """{{"{0}", "{1}"}},"""
@@ -62,7 +62,7 @@ tplYamlLineNormal = """{{"{0}", "{1}"}},"""
 tmplYamlNameSize = "YAML_SIZE_{0}_{1}"
 tmplYamlNameConf = "YAML_CONF_{0}_{1}"
 # 
-tplYamlFilter = """    if (pct_cstr_ends_with(tp, "{0}") == 0) {{return {1};}}"""
+tplYamlFilter = """    if (pct_cstr_equals_with(tp, "{0}")) {{return {1};}}"""
 #
 tplYamlConfig = """#define {0} {2}
 static const PAIR_{3} {1}[{0}] = {{

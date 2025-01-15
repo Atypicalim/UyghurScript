@@ -1,6 +1,6 @@
 
 #
-TVALUE_HELLO:
+LETTER_HELLO:
   en: hello
   uy: سالام
   ug: salam
@@ -9,7 +9,7 @@ TVALUE_HELLO:
   kz: сәлем
 
 #
-TVALUE_KIND:
+LETTER_KIND:
   en: type
   uy: تىپ
   ug: tip
@@ -17,42 +17,42 @@ TVALUE_KIND:
   tr: tür
   kz: түр
 #
-TVALUE_NIL:
+LETTER_NIL:
   en: empty
   uy: قۇرۇق
   ug: quruq
   uz: bo'sh
   tr: boş
   kz: бос
-TVALUE_BOL:
+LETTER_BOL:
   en: logic
   uy: لوگىكا
   ug: logika
   uz: mantiq
   tr: mantık
   kz: логика
-TVALUE_NUM:
+LETTER_NUM:
   en: num
   uy: سان
   ug: san
   uz: son
   tr: sayı
   kz: сан
-TVALUE_STR:
+LETTER_STR:
   en: str
   uy: خەت
   ug: xet
   uz: xat
   tr: dize
   kz: хат
-TVALUE_LST:
+LETTER_LST:
   en: list
   uy: تەرتىپ
   ug: tertip
   uz: tartib
   tr: tertip
   kz: тертіп
-TVALUE_DCT:
+LETTER_DCT:
   en: dict
   uy: ساندۇق
   ug: sanduq
@@ -61,21 +61,21 @@ TVALUE_DCT:
   kz: сандық
 
 #
-TVALUE_WHILE:
+LETTER_WHILE:
   en: while
   uy: ناۋادا
   ug: nawada
   uz: shundayda
   tr: böyleyse
   kz: солайда
-TVALUE_SPREAD:
+LETTER_SPREAD:
   en: speaded
   uy: يېيىلغان
   ug: yeyilghan
   uz: yoyilgan
   tr: yayılan
   kz: жайылған
-TVALUE_BECOME:
+LETTER_BECOME:
   en: become
   uy: بۇلۇپ
   ug: bulup
@@ -84,35 +84,35 @@ TVALUE_BECOME:
   kz: болу
 
 # 
-TVALUE_IF:
+LETTER_IF:
   en: if
   uy: ئەگەر
   ug: eger
   uz: agar
   tr: eğer
   kz: егер
-TVALUE_IF_ELSE:
+LETTER_ELIF:
   en: elif
   uy: ئەگەردە
   ug: egerde
   uz: egerda
   tr: eğerde
   kz: егерде
-TVALUE_THEN:
+LETTER_THEN:
   en: then
   uy: بولسا
   ug: bolsa
   uz: bo'lsa
   tr: olsa
   kz: болса
-TVALUE_ELSE:
+LETTER_ELSE:
   en: else
   uy: بولمىسا
   ug: bolmisa
   uz: bo'lmasa
   tr: olmasa
   kz: болмаса
-TVALUE_CODE_END:
+LETTER_END:
   en: finish
   uy: تاماملانسۇن
   ug: tamamlansun
@@ -121,21 +121,21 @@ TVALUE_CODE_END:
   kz: аяқталсын
 
 #
-TVALUE_TRUE:
+LETTER_TRUE:
   en: right
   uy: راست
   ug: rast
   uz: rost
   tr: doğru
   kz: рас
-TVALUE_FALSE:
+LETTER_FALSE:
   en: wrong
   uy: يالغان
   ug: yalghan
   uz: yolg'on
   tr: yanlış
   kz: жалған
-TVALUE_OPPOSITE:
+LETTER_OPPOSITE:
   en: opposite
   uy: ئەكىسچە
   ug: ekische
@@ -144,21 +144,21 @@ TVALUE_OPPOSITE:
   kz: қарсы
 
 # 
-TVALUE_COMMAND:
+LETTER_COMMAND:
   en: command
   uy: بۇيرۇق
   ug: buyruq
   uz: buyruq
   tr: buyruk
   kz: бұйрық
-TVALUE_CMD_OUTPUT:
+LETTER_CMD_OUTPUT:
   en: write
   uy: يېزىلسۇن
   ug: yezilsun
   uz: yozilsin
   tr: yaz
   kz: жазу
-TVALUE_CMD_INPUT:
+LETTER_CMD_INPUT:
   en: read
   uy: ئوقۇلسۇن
   ug: oqulsun
@@ -166,21 +166,21 @@ TVALUE_CMD_INPUT:
   tr: oku
   kz: оқу
 #
-TVALUE_VARIABLE:
+LETTER_VARIABLE:
   en: variable
   uy: مىقدار
   ug: miqdar
   uz: o'zgaruvch
   tr: değişken
   kz: айнымалы
-TVALUE_VALUE:
+LETTER_VALUE:
   en: value
   uy: قىممىتى
   ug: qimmiti
   uz: qiymati
   tr: kıymeti
   kz: қимметі
-TVALUE_MADE:
+LETTER_MADE:
   en: made
   uy: بولسۇن
   ug: bolsun
@@ -189,21 +189,21 @@ TVALUE_MADE:
   kz: болсын
 
 # 
-TVALUE_EXCEPTION:
+LETTER_EXCEPTION:
   en: exception
   uy: خاتالىق
   ug: xataliq
   uz: xatolik
   tr: hatalık
   kz: қателік
-TVALUE_TESTING:
+LETTER_TESTING:
   en: testing
   uy: سىناق
   ug: sinaq
   uz: sinov
   tr: sınav
   kz: сынақ
-TVALUE_TESTED:
+LETTER_TESTED:
   en: tested
   uy: سىنالسۇن
   ug: sinalsun
@@ -212,14 +212,14 @@ TVALUE_TESTED:
   kz: сыналсын
 
 # 
-TVALUE_NATIVE:
+LETTER_NATIVE:
   en: native
   uy: ئەمگەكچى
   ug: emgekchi
   uz: yumushchi
   tr: emekçi
   kz: жұмысшы
-TVALUE_WORKER:
+LETTER_WORKER:
   en: worker
   uy: خىزمەتچى
   ug: xizmetchi
@@ -227,21 +227,21 @@ TVALUE_WORKER:
   tr: hizmetçi
   kz: қызметші
 #
-TVALUE_CREATOR:
+LETTER_CREATOR:
   en: creator
   uy: ياسىغۇچى
   ug: yasighuchi
   uz: yasag'uchi
   tr: oluşturucu
   kz: жасаушы
-TVALUE_ASSISTER:
+LETTER_ASSISTER:
   en: assister
   uy: ياردەمچى
   ug: yardemchi
   uz: yordamchi
   tr: yardımcı
   kz: жәрдемшы
-TVALUE_OBJECT:
+LETTER_OBJECT:
   en: object
   uy: ئوبېكىت
   ug: obekit
@@ -249,28 +249,28 @@ TVALUE_OBJECT:
   tr: obekit
   kz: объект
 #
-TVALUE_STUF:
+LETTER_STUF:
   en: stuf
   uy: ئەشيا
   ug: eshya
   uz: ashyo
   tr: eşya
   kz: ресурс
-TVALUE_TASK:
+LETTER_TASK:
   en: task
   uy: ۋەزىپە
   ug: vezipe
   uz: vazifa
   tr: vazife
   kz: вәзипа
-TVALUE_EXT:
+LETTER_EXT:
   en: extend
   uy: قوشۇمچە
   ug: qoshumche
   uz: qo'shimcha
   tr: katılma
   kz: қосымша
-TVALUE_COMON:
+LETTER_COMON:
   en: common
   uy: ئورتاق
   ug: ortaq
@@ -278,7 +278,7 @@ TVALUE_COMON:
   tr: ortak
   kz: ортақ
 #
-TVALUE_CONTENT:
+LETTER_CONTENT:
   en: content
   uy: مەزمۇنى
   ug: mezmuni
@@ -286,14 +286,14 @@ TVALUE_CONTENT:
   tr: içeriği
   kz: мазмұны
 #
-TVALUE_WITH:
+LETTER_WITH:
   en: with
   uy: بىلەن
   ug: bilen
   uz: bilan
   tr: ile
   kz: бірге
-TVALUE_APPLY:
+LETTER_APPLY:
   en: applied
   uy: ئىشلىتىلسۇن
   ug: ishlitilsun
@@ -301,14 +301,14 @@ TVALUE_APPLY:
   tr: kullanılsın
   kz: қолданылсын
   # 
-TVALUE_RESULT:
+LETTER_RESULT:
   en: result
   uy: نەتىجە
   ug: netije
   uz: natija
   tr: netice
   kz: нәтиже
-TVALUE_RETURNED:
+LETTER_RETURNED:
   en: returned
   uy: قايتۇرۇلسۇن
   ug: qayturulsun
@@ -316,14 +316,14 @@ TVALUE_RETURNED:
   tr: geriverılsın
   kz: қайтарылсын
 # 
-TVALUE_FURTHER:
+LETTER_FURTHER:
   en: and
   uy: ۋە
   ug: we
   uz: va
   tr: ve
   kz: бен
-TVALUE_RECIEVED:
+LETTER_RECIEVED:
   en: received
   uy: ئېلىنسۇن
   ug: elinsun
@@ -332,35 +332,35 @@ TVALUE_RECIEVED:
   kz: алынсын
 
 #
-TVALUE_THIS:
+LETTER_THIS:
   en: this
   uy: بۇ
   ug: bu
   uz: bu
   tr: bu
   kz: бұ
-TVALUE_PROXY:
+LETTER_PROXY:
   en: proxy
   uy: ۋەكىل
   ug: vekil
   uz: vakil
   tr: vekil
   kz: түр
-TVALUE_SCOPE:
+LETTER_SCOPE:
   en: scope
   uy: مۇھىت
   ug: muhit
   uz: muhit
   tr: çevre
   kz: орта
-TVALUE_MODULE:
+LETTER_MODULE:
   en: module
   uy: بۆلەك
   ug: bolek
   uz: bo'lak
   tr: bölge
   kz: бөлек
-TVALUE_GLOBAL:
+LETTER_GLOBAL:
   en: global
   uy: دۇنيا
   ug: dunya

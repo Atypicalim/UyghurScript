@@ -347,7 +347,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             // get key
             String *key = NULL;
             char *typ = NULL;
-            if (is_uchar_eq_uchar(openChar, TVALUE_DOT)) {
+            if (is_uchar_eq_uchar(openChar, SIGN_DOT)) {
                 if (is_digit(c)) {
                     key = Tokenizer_readNumKey(this);
                     typ = UG_TTYPE_NUM;
@@ -355,7 +355,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
                     key = Tokenizer_readStrKey(this);
                     typ = UG_TTYPE_STR;
                 }
-            } else if (is_uchar_eq_uchar(openChar, TVALUE_COLON)) {
+            } else if (is_uchar_eq_uchar(openChar, SIGN_COLON)) {
                 if (is_digit(c)) {
                     key = Tokenizer_readNumKey(this);
                     typ = UG_TTYPE_NUM;
@@ -421,7 +421,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         // equaling
         if (is_equaling(currChar))
         {
-            Token *tkn = Token_new(UG_TTYPE_WRD, TVALUE_EQUALING);
+            Token *tkn = Token_new(UG_TTYPE_WRD, SIGN_EQUAL);
             Tokenizer_addToken(this, tkn);
             UTFCHAR c = Tokenizer_getValidChar(this, 1);
             Tokenizer_skipN(this, 1);
@@ -448,7 +448,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             numArrGenerator--;
             consumeGenerator = true;
         }
-        if (isGenerator && (is_uchar_eq_uchar(currChar, TVALUE_COLON) || is_uchar_eq_uchar(currChar, TVALUE_COMMA))) {
+        if (isGenerator && (is_uchar_eq_uchar(currChar, SIGN_COLON) || is_uchar_eq_uchar(currChar, SIGN_COMMA))) {
             consumeGenerator = true;
         }
         if (consumeGenerator) {
@@ -465,7 +465,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             if (
                 !is_calculation_char(lastC)
                 && !is_calculation_char(nextC)
-                && !is_uchar_eq_uchar(lastC, SIGN_EQ)
+                && !is_uchar_eq_uchar(lastC, SIGN_EQUAL)
                 && !is_uchar_eq_uchar(lastC, SIGN_OPEN_SMALL)
             ) {
                 Token *tkn = Token_new(UG_TTYPE_CLC, currChar);
@@ -477,7 +477,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         // open
         if (is_uchar_eq_uchar(currChar, SIGN_OPEN_SMALL))
         {
-            Token *tkn = Token_new(UG_TTYPE_WRD, TVALUE_OPEN);
+            Token *tkn = Token_new(UG_TTYPE_WRD, SIGN_OPEN);
             Tokenizer_addToken(this, tkn);
             Tokenizer_skipN(this, 1);
             continue;
@@ -485,7 +485,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         // close
         if (is_uchar_eq_uchar(currChar, SIGN_CLOSE_SMALL))
         {
-            Token *tkn = Token_new(UG_TTYPE_WRD, TVALUE_CLOSE);
+            Token *tkn = Token_new(UG_TTYPE_WRD, SIGN_CLOSE);
             Tokenizer_addToken(this, tkn);
             Tokenizer_skipN(this, 1);
             continue;

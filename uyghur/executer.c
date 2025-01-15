@@ -160,13 +160,13 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
     }
     // word
     if (Token_isWord(token)) {
-        if (is_eq_string(token->value, TVALUE_THIS)) {
+        if (is_eq_string(token->value, LETTER_THIS)) {
             *rValue = Machine_getCurrentSelf(this->machine);
             return;
-        } else if (is_eq_string(token->value, TVALUE_MODULE)) {
+        } else if (is_eq_string(token->value, LETTER_MODULE)) {
             *rValue = Machine_getCurrentModule(this->machine);
             return;
-        } else if (is_eq_string(token->value, TVALUE_GLOBAL)) {
+        } else if (is_eq_string(token->value, LETTER_GLOBAL)) {
             *rValue = this->globalScope;
             return;
         } else if (helper_token_is_values(token, TVAUES_GROUP_UTYPES)) {
@@ -178,15 +178,15 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
     // keys
     Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_INVALID_KEY);
     Token *extra = (Token *)token->extra;
-    if (is_eq_string(extra->value, SCOPE_ALIAS_GLB) || is_eq_string(extra->value, TVALUE_GLOBAL)) {
+    if (is_eq_string(extra->value, SCOPE_ALIAS_GLB) || is_eq_string(extra->value, LETTER_GLOBAL)) {
         *rContainer = this->globalScope;
         Executer_assert(this, *rContainer != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
         Executer_assert(this, Holdable_isScope(*rContainer), token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
-    } else if (is_eq_string(extra->value, SCOPE_ALIAS_MDL) || is_eq_string(extra->value, TVALUE_MODULE)) {
+    } else if (is_eq_string(extra->value, SCOPE_ALIAS_MDL) || is_eq_string(extra->value, LETTER_MODULE)) {
         *rContainer = Machine_getCurrentModule(this->machine);
         Executer_assert(this, *rContainer != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
         Executer_assert(this, Holdable_isModule(*rContainer), token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
-    } else if (is_eq_string(extra->value, SCOPE_ALIAS_SLF) || is_eq_string(extra->value, TVALUE_THIS)) {
+    } else if (is_eq_string(extra->value, SCOPE_ALIAS_SLF) || is_eq_string(extra->value, LETTER_THIS)) {
         *rContainer = Machine_getCurrentSelf(this->machine);
         Executer_assert(this, *rContainer != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
         if (!Objective_isCtr(*rContainer) && !Objective_isObj(*rContainer)) {
@@ -420,12 +420,12 @@ void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool 
 
 double Executer_calculateNumbers(Executer *this, double left, char *sign, double right, Token *token)
 {
-    if (is_eq_string(sign, TVALUE_SIGN_ADD)) return left + right;
-    if (is_eq_string(sign, TVALUE_SIGN_SUB)) return left - right;
-    if (is_eq_string(sign, TVALUE_SIGN_POW)) return pow(left, right);
-    if (is_eq_string(sign, TVALUE_SIGN_PER)) return fmod(left, right);
-    if (is_eq_string(sign, TVALUE_SIGN_MUL)) return left * right;
-    if (is_eq_string(sign, TVALUE_SIGN_DIV)) {
+    if (is_eq_string(sign, SIGN_ADD)) return left + right;
+    if (is_eq_string(sign, SIGN_SUB)) return left - right;
+    if (is_eq_string(sign, SIGN_POW)) return pow(left, right);
+    if (is_eq_string(sign, SIGN_PER)) return fmod(left, right);
+    if (is_eq_string(sign, SIGN_MUL)) return left * right;
+    if (is_eq_string(sign, SIGN_DIV)) {
         Executer_assert(this, right != 0, token, LANG_ERR_EXECUTER_INVALID_DEVIDE);
         return left / right;
     }
@@ -433,25 +433,25 @@ double Executer_calculateNumbers(Executer *this, double left, char *sign, double
     int rInt = (int)right;
     bool isInt = lInt == left && rInt == right;
     Executer_assert(this, isInt, token, LANG_ERR_CANNOT_BE_FLOAT);
-    if (is_eq_string(sign, TVALUE_SIGN_NOT)) return lInt ^ rInt;
-    if (is_eq_string(sign, TVALUE_SIGN_AND)) return lInt & rInt;
-    if (is_eq_string(sign, TVALUE_SIGN_ORR)) return lInt | rInt;
+    if (is_eq_string(sign, SIGN_NOT)) return lInt ^ rInt;
+    if (is_eq_string(sign, SIGN_AND)) return lInt & rInt;
+    if (is_eq_string(sign, SIGN_ORR)) return lInt | rInt;
     Executer_error(this, token, LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN);
     return 0;
 }
 
 bool Executer_calculateBooleans(Executer *this, bool left, char *sign, bool right, Token *token)
 {
-    if (is_eq_string(sign, TVALUE_SIGN_NOT)) return left != right;
-    if (is_eq_string(sign, TVALUE_SIGN_AND)) return left && right;
-    if (is_eq_string(sign, TVALUE_SIGN_ORR)) return left || right;
+    if (is_eq_string(sign, SIGN_NOT)) return left != right;
+    if (is_eq_string(sign, SIGN_AND)) return left && right;
+    if (is_eq_string(sign, SIGN_ORR)) return left || right;
     Executer_error(this, token, LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN);
     return NULL;
 }
 
 CString Executer_calculateStrings(Executer *this, CString left, char *sign, CString right, Token *token)
 {
-    if (is_eq_string(sign, TVALUE_SIGN_LNK)) {
+    if (is_eq_string(sign, SIGN_LNK)) {
         return tools_format("%s%s", left, right);
     }
     Executer_error(this, token, LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN);
@@ -469,16 +469,16 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
     int compCode = Value_compareTo(left, right);
     int sameType = compCode != CODE_FAIL;
     if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_ALL)) {
-        if (is_eq_string(sign, TVALUE_SIGN_EQUAL)) {
+        if (is_eq_string(sign, SIGN_QUEST)) {
             bool r = sameType && compCode == CODE_NONE;
             result = Value_newBoolean(r, token);
-        } else if (sameType && is_eq_string(sign, TVALUE_SIGN_MORE)) {
+        } else if (sameType && is_eq_string(sign, SIGN_MORE)) {
             bool r = compCode == CODE_TRUE;
             result = Value_newBoolean(r, token);
-        } else if (sameType && is_eq_string(sign, TVALUE_SIGN_LESS)) {
+        } else if (sameType && is_eq_string(sign, SIGN_LESS)) {
             bool r = compCode == CODE_FALSE;
             result = Value_newBoolean(r, token);
-        } else if (is_eq_string(sign, TVALUE_SIGN_CHK)) {
+        } else if (is_eq_string(sign, SIGN_CHK)) {
             if (is_type_objective(rType)) {
                 bool r = Objective_isInstanceOf(left, right);
                 result = Value_newBoolean(r, token);
@@ -517,7 +517,7 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
         bool bRightNum = rType == UG_TYPE_NUM;
         bool hasStr = bLeftStr || bRightStr;
         bool hasNum = bLeftNum || bRightNum;
-        if (hasStr && hasNum && is_eq_string(sign, TVALUE_SIGN_RPT)) {
+        if (hasStr && hasNum && is_eq_string(sign, SIGN_RPT)) {
             if (bLeftStr) {
                 String *r = String_set(TEMPORARY_String, left->string);
                 String_repeat(r, right->number);
@@ -546,19 +546,19 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
     if (Token_isEmpty(token)) {
         new = Value_newEmpty(token);
         new->fixed = false;
-    } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_BOL)) {
+    } else if (Token_isWord(token) && is_eq_string(token->value, LETTER_BOL)) {
         new = Value_newBoolean(false, token);
         new->fixed = true;
-    } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_NUM)) {
+    } else if (Token_isWord(token) && is_eq_string(token->value, LETTER_NUM)) {
         new = Value_newNumber(0, token);
         new->fixed = true;
-    } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_STR)) {
+    } else if (Token_isWord(token) && is_eq_string(token->value, LETTER_STR)) {
         new = Value_newString("", token);
         new->fixed = true;
-    } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_LST)) {
+    } else if (Token_isWord(token) && is_eq_string(token->value, LETTER_LST)) {
         new = Listable_newLst(name);
         new->fixed = true;
-    } else if (Token_isWord(token) && is_eq_string(token->value, TVALUE_DCT)) {
+    } else if (Token_isWord(token) && is_eq_string(token->value, LETTER_DCT)) {
         new = Dictable_newDct(name);
         new->fixed = true;
     } else {
@@ -580,7 +580,7 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
     Queue *args = action->extra;
     Queue_RESTE(args);
     // 
-    if (is_eq_string(action->value, TVALUE_CMD_OUTPUT))
+    if (is_eq_string(action->value, LETTER_CMD_OUTPUT))
     {
         Token *name = Queue_NEXT(args);
         while (name) {
@@ -595,7 +595,7 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
             name = Queue_NEXT(args);
         }
     }
-    else if (is_eq_string(action->value, TVALUE_CMD_INPUT))
+    else if (is_eq_string(action->value, LETTER_CMD_INPUT))
     {
         Token *name = Queue_NEXT(args);
         while (name) {
@@ -619,12 +619,12 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
     //
     if (is_eq_string(action->type, UG_TTYPE_WRD))
     {
-        if (is_eq_string(act, TVALUE_NIL))
+        if (is_eq_string(act, LETTER_NIL))
         {
             // TODO free object
             r = Value_newEmpty(NULL);
         }
-        else if (is_eq_string(act, TVALUE_OPPOSITE))
+        else if (is_eq_string(act, LETTER_OPPOSITE))
         {
             if (value->type == UG_TYPE_NUM)
             {
@@ -632,7 +632,7 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
             }
             else if (value->type == UG_TYPE_STR)
             {
-                r = Value_newBoolean(!is_eq_string(value->string, TVALUE_TRUE), NULL);
+                r = Value_newBoolean(!is_eq_string(value->string, LETTER_TRUE), NULL);
             }
             else if (value->type == UG_TYPE_NIL)
             {
@@ -647,21 +647,21 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
                 r = Value_newBoolean(false, NULL);
             }
         }
-        else if (is_eq_string(act, TVALUE_NUM))
+        else if (is_eq_string(act, LETTER_NUM))
         {
             r = Value_toNumber(value);
         }
-        else if (is_eq_string(act, TVALUE_STR))
+        else if (is_eq_string(act, LETTER_STR))
         {
             char *content = Value_toString(value);
             r = Value_newString(content, NULL);
             pct_free(content);
         }
-        else if (is_eq_string(act, TVALUE_BOL))
+        else if (is_eq_string(act, LETTER_BOL))
         {
             r = Value_toBoolean(value);
         }
-        else if (is_eq_string(act, TVALUE_WORKER) || is_eq_string(act, TVALUE_CREATOR) || is_eq_string(act, TVALUE_ASSISTER))
+        else if (is_eq_string(act, LETTER_WORKER) || is_eq_string(act, LETTER_CREATOR) || is_eq_string(act, LETTER_ASSISTER))
         {
             char *funcName = value->string;
             Token *funcToken = Token_name(funcName);
@@ -713,7 +713,7 @@ bool Executer_checkJudge(Executer *this, Leaf *leaf)
         resultV = Executer_calculateValues(this, firstV, clcltn, secondV);
     }
     // 
-    bool shouldOk = is_eq_string(judge->value, TVALUE_THEN);
+    bool shouldOk = is_eq_string(judge->value, LETTER_THEN);
     bool isOk = Value_isTrue(resultV);
     // 
     if (firstV != NULL) Machine_releaseObj(firstV);
@@ -733,7 +733,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     tools_assert(ifNode->type == UG_ATYPE_IF_F, LANG_ERR_EXECUTER_INVALID_IF);
     if (!isFinish && Executer_checkJudge(this, ifNode))
     {
-        Executer_pushScope(this, TVALUE_IF);
+        Executer_pushScope(this, LETTER_IF);
         Executer_consumeTree(this, ifNode);
         Executer_popScope(this);
         isFinish = true;
@@ -744,7 +744,7 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     {
         if (!isFinish && Executer_checkJudge(this, ifNode))
         {
-            Executer_pushScope(this, TVALUE_IF_ELSE);
+            Executer_pushScope(this, LETTER_ELIF);
             Executer_consumeTree(this, ifNode);
             Executer_popScope(this);
             isFinish = true;
@@ -757,10 +757,10 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     {
         Stack_RESTE(ifNode->tokens);
         Token *token = Stack_NEXT(ifNode->tokens);
-        tools_assert(is_eq_string(token->value, TVALUE_ELSE), LANG_ERR_EXECUTER_INVALID_IF);
+        tools_assert(is_eq_string(token->value, LETTER_ELSE), LANG_ERR_EXECUTER_INVALID_IF);
         if (!isFinish)
         {
-            Executer_pushScope(this, TVALUE_ELSE);
+            Executer_pushScope(this, LETTER_ELSE);
             Executer_consumeTree(this, ifNode);
             Executer_popScope(this);
             isFinish = true;
@@ -778,7 +778,7 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
 {
     while (Executer_checkJudge(this, leaf))
     {
-        Executer_pushScope(this, TVALUE_WHILE);
+        Executer_pushScope(this, LETTER_WHILE);
         Executer_consumeTree(this, leaf);
         Executer_popScope(this);
         if (this->errorMsg != NULL) break;
@@ -786,7 +786,7 @@ void Executer_consumeWhile(Executer *this, Leaf *leaf)
 }
 
 void _Executer_runSpread(Executer *this, Leaf *leaf, Token *iter1, Token *iter2, Value *value1, Value *value2) {
-    Executer_pushScope(this, TVALUE_SPREAD);
+    Executer_pushScope(this, LETTER_SPREAD);
     Executer_setValueByToken(this, iter1, value1, true);
     Executer_setValueByToken(this, iter2, value2, true);
     Executer_consumeTree(this, leaf);
@@ -804,17 +804,17 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
     Value *value = NULL;
     if (!Token_isWord(target)) {
         value = Executer_getValueByToken(this, target, true);
-    } else if (is_eq_string(target->value, TVALUE_THIS)) {
+    } else if (is_eq_string(target->value, LETTER_THIS)) {
         value = Machine_getCurrentSelf(this->machine);
-    } else if (is_eq_string(target->value, TVALUE_MODULE)) {
+    } else if (is_eq_string(target->value, LETTER_MODULE)) {
         value = Machine_getCurrentModule(this->machine);
-    } else if (is_eq_string(target->value, TVALUE_GLOBAL)) {
+    } else if (is_eq_string(target->value, LETTER_GLOBAL)) {
         value = this->globalScope;
     } else if (
-        is_eq_string(target->value, TVALUE_NUM)
-        || is_eq_string(target->value, TVALUE_STR)
-        || is_eq_string(target->value, TVALUE_LST)
-        || is_eq_string(target->value, TVALUE_DCT)
+        is_eq_string(target->value, LETTER_NUM)
+        || is_eq_string(target->value, LETTER_STR)
+        || is_eq_string(target->value, LETTER_LST)
+        || is_eq_string(target->value, LETTER_DCT)
     ) {
         value = Dictable_getLocation(this->globalScope, target->extra);
         if (value != NULL) Machine_retainObj(value);
@@ -898,7 +898,7 @@ void Executer_consumeException(Executer *this, Leaf *leaf)
     Token *name = Stack_NEXT(leaf->tokens);
     this->isCatch = true;
     // 
-    Executer_pushScope(this, TVALUE_EXCEPTION);
+    Executer_pushScope(this, LETTER_EXCEPTION);
     Executer_consumeTree(this, leaf);
     Executer_popScope(this);
     // 
@@ -1017,7 +1017,7 @@ Value *Executer_applyWorker(Executer *this, Token *token, Value *workerValue, Va
         self = container;
     }
     //
-    Value *r = Executer_executeFunctions(this, workerValue, self, TVALUE_WORKER);
+    Value *r = Executer_executeFunctions(this, workerValue, self, LETTER_WORKER);
     if (r == NULL) r = Value_newEmpty(NULL);
     return r;
 }
@@ -1031,7 +1031,7 @@ Value *Executer_applyCreator(Executer *this, Token *token, Value *creatorValue, 
     Queue_push(parents, creatorValue);
     Objective *self = Objective_newObj(NULL, parents);
     //
-    Value *r = Executer_executeFunctions(this, func, self, TVALUE_CREATOR);
+    Value *r = Executer_executeFunctions(this, func, self, LETTER_CREATOR);
     if (r == NULL) r = self;
     return r;
 }
@@ -1046,7 +1046,7 @@ Value *Executer_applyAssister(Executer *this, Token *token, Value *assisterValue
     Queue *parent = self->extra;
     Queue_push(parent, assisterValue);
     //
-    Value *r = Executer_executeFunctions(this, func, self, TVALUE_ASSISTER);
+    Value *r = Executer_executeFunctions(this, func, self, LETTER_ASSISTER);
     if (r == NULL) r = self;
     return r;
 }

@@ -168,7 +168,7 @@ bool is_higher_priority_calculation(char *target, char *than)
 }
 
 bool is_command_action(char *value) {
-    return value != NULL && (is_eq_string(value, TVALUE_CMD_INPUT) || is_eq_string(value, TVALUE_CMD_OUTPUT));
+    return value != NULL && (is_eq_string(value, LETTER_CMD_INPUT) || is_eq_string(value, LETTER_CMD_OUTPUT));
 }
 
 char *format_token_place(Token *token)
@@ -184,7 +184,7 @@ char *format_some_place(Token *token)
 Value *convert_token_to_value(Token *token)
 {
     if (Token_isEmpty(token)) return Value_newEmpty(token);
-    if (Token_isBool(token)) return Value_newBoolean(is_eq_string(token->value, TVALUE_TRUE), token);
+    if (Token_isBool(token)) return Value_newBoolean(is_eq_string(token->value, LETTER_TRUE), token);
     if (Token_isNumber(token)) return Value_newNumber(tools_string_to_number(token->value), token);
     if (Token_isString(token)) return Value_newString(token->value, token);
     return NULL;
@@ -367,7 +367,7 @@ CString helper_parse_language(char *path) {
     for (size_t i = 0; i < size; i++)
     {
         char *tp = UG_LANGUAGE_ARRAY[i];
-        if (pct_cstr_ends_with(path, tp) == 0) {
+        if (pct_cstr_ends_with(path, tp)) {
             return tp;
         }
     }
@@ -378,7 +378,7 @@ char *helper_filter_multilang_by_key(char *key, int size, PAIR_CONFIGS *multilan
     for (size_t i = 0; i < size; i++)
     {
         PAIR_CONFIGS pair = multilangs[i];
-        if (pct_cstr_ends_with(key, pair.key) == 0) {
+        if (pct_cstr_ends_with(key, pair.key)) {
             return pair.val;
         }
     }
@@ -516,25 +516,25 @@ Value *helper_get_proxy_value(char *proxyName, char *key) {
 char* helper_get_value_name(char tp, char* def) {
     char *name = NULL;
     switch (tp) {
-        case UG_TYPE_NUM: name = TVALUE_NUM; break;
-        case UG_TYPE_STR: name = TVALUE_STR; break;
-        case UG_TYPE_LST: name = TVALUE_LST; break;
-        case UG_TYPE_DCT: name = TVALUE_DCT; break;
+        case UG_TYPE_NUM: name = LETTER_NUM; break;
+        case UG_TYPE_STR: name = LETTER_STR; break;
+        case UG_TYPE_LST: name = LETTER_LST; break;
+        case UG_TYPE_DCT: name = LETTER_DCT; break;
         //
-        case UG_TYPE_KND: name = TVALUE_KIND;  break;
-        case UG_TYPE_PXY: name = TVALUE_PROXY;  break;
-        case UG_TYPE_SCP: name = TVALUE_SCOPE;  break;
-        case UG_TYPE_MDL: name = TVALUE_MODULE;  break;
+        case UG_TYPE_KND: name = LETTER_KIND;  break;
+        case UG_TYPE_PXY: name = LETTER_PROXY;  break;
+        case UG_TYPE_SCP: name = LETTER_SCOPE;  break;
+        case UG_TYPE_MDL: name = LETTER_MODULE;  break;
         //
-        case UG_TYPE_CTR: name = TVALUE_CREATOR;  break;
-        case UG_TYPE_ATR: name = TVALUE_ASSISTER;  break;
-        case UG_TYPE_OBJ: name = TVALUE_OBJECT;  break;
+        case UG_TYPE_CTR: name = LETTER_CREATOR;  break;
+        case UG_TYPE_ATR: name = LETTER_ASSISTER;  break;
+        case UG_TYPE_OBJ: name = LETTER_OBJECT;  break;
         //
-        case UG_TYPE_NTV: name = TVALUE_NATIVE;  break;
-        case UG_TYPE_WKR: name = TVALUE_WORKER;  break;
+        case UG_TYPE_NTV: name = LETTER_NATIVE;  break;
+        case UG_TYPE_WKR: name = LETTER_WORKER;  break;
         //
-        case UG_TYPE_STF: name = TVALUE_STUF;  break;
-        case UG_TYPE_TSK: name = TVALUE_TASK;  break;
+        case UG_TYPE_STF: name = LETTER_STUF;  break;
+        case UG_TYPE_TSK: name = LETTER_TASK;  break;
         //
         default: name = def;
     }

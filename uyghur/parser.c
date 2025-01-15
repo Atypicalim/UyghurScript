@@ -175,20 +175,20 @@ Token *Parser_checkWord(Parser *this, int indent, int num, char *s, ...)
 // TODO:relace calculation word
 void Parser_consumeAstVariable(Parser *this)
 {
-    Parser_checkWord(this, 0, 1, TVALUE_VARIABLE);
+    Parser_checkWord(this, 0, 1, LETTER_VARIABLE);
     Token *name = Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
-    Parser_checkWord(this, 1, 1, TVALUE_VALUE);
+    Parser_checkWord(this, 1, 1, LETTER_VALUE);
     Token *token = Parser_moveToken(this, 1); 
     if (!helper_token_is_values(token, TVAUES_GROUP_UTYPES) && !helper_token_is_types(token, TTYPES_GROUP_VALUES)) {
         Parser_error(this, LANG_ERR_INVALID_TYPE);
     }
-    Parser_checkWord(this, 1, 1, TVALUE_MADE);
+    Parser_checkWord(this, 1, 1, LETTER_MADE);
     Parser_pushLeaf(this, UG_ATYPE_VAR, 2, name, token);
 }
 
 void Parser_consumeAstCommand(Parser *this)
 {
-    Token *target = Parser_checkWord(this, 0, 1, TVALUE_COMMAND);
+    Token *target = Parser_checkWord(this, 0, 1, LETTER_COMMAND);
     Queue *args = Queue_new(false);
     Token *token = Parser_moveToken(this, 1);
     while (token != NULL && !is_command_action(token->value)) {
@@ -198,7 +198,7 @@ void Parser_consumeAstCommand(Parser *this)
     Parser_assert(this, token != NULL && is_command_action(token->value), LANG_ERR_PARSER_EXCEPTION);
     Token *action = token;
     //
-    if (action->value == TVALUE_CMD_INPUT) {
+    if (action->value == LETTER_CMD_INPUT) {
         Parser_assert(this, args->size >= 1, LANG_ERR_PARSER_EXCEPTION);
         Queue_RESTE(args);
         Token *arg = Queue_NEXT(args);
@@ -214,7 +214,7 @@ void Parser_consumeAstCommand(Parser *this)
         }
     }
     //
-    if (action->value == TVALUE_CMD_INPUT) {
+    if (action->value == LETTER_CMD_INPUT) {
         Parser_assert(this, args->size >= 1, LANG_ERR_PARSER_EXCEPTION);
         Queue_RESTE(args);
         Token *arg = Queue_NEXT(args);
@@ -233,9 +233,9 @@ void Parser_consumeAstCommand(Parser *this)
 void Parser_consumeAstConvert(Parser *this)
 {
     Token *target = Parser_checkType(this, 0, TVAUES_GROUP_CHANGEABLE);
-    Parser_checkWord(this, 1, 1, TVALUE_VALUE);
+    Parser_checkWord(this, 1, 1, LETTER_VALUE);
     // single
-    if (Parser_isWord(this, 2, TVALUE_MADE))
+    if (Parser_isWord(this, 2, LETTER_MADE))
     {
         Token *source = NULL;
         if (Parser_isType(this, 1, UG_TTYPE_WRD))
@@ -246,7 +246,7 @@ void Parser_consumeAstConvert(Parser *this)
         {
             source = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
         }
-        Parser_checkWord(this, 1, 1, TVALUE_MADE);
+        Parser_checkWord(this, 1, 1, LETTER_MADE);
         Parser_pushLeaf(this, UG_ATYPE_CVT, 2, target, source);
         return;
     }
@@ -254,7 +254,7 @@ void Parser_consumeAstConvert(Parser *this)
 }
 
 bool _parser_isToApply(Parser *this) {
-    return Parser_isTypes(this, 1, TVAUES_GROUP_CHANGEABLE) && Parser_isWord(this, 2, TVALUE_OPEN);
+    return Parser_isTypes(this, 1, TVAUES_GROUP_CHANGEABLE) && Parser_isWord(this, 2, SIGN_OPEN);
 }
 
 Leaf *_parser_consumeAstApply(Parser *this, Token *startToken, Token *endToken) {
@@ -272,11 +272,11 @@ Leaf *_parser_consumeAstApply(Parser *this, Token *startToken, Token *endToken) 
     Parser_checkWord(this, 1, 1, endToken);
     // result
     Token *result = Token_empty();
-    if (Parser_isValue(this, 1, TVALUE_FURTHER))
+    if (Parser_isValue(this, 1, LETTER_FURTHER))
     {
-        Parser_checkValue(this, 1, 1, TVALUE_FURTHER);
+        Parser_checkValue(this, 1, 1, LETTER_FURTHER);
         result = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
-        Parser_checkWord(this, 1, 1, TVALUE_RECIEVED);
+        Parser_checkWord(this, 1, 1, LETTER_RECIEVED);
     }
     Stack_push(leaf->tokens, result);
     // name
@@ -289,7 +289,7 @@ void Parser_consumeAstJudge(Parser *this, char aType)
     Object *first = NULL;
     //
     if (_parser_isToApply(this)) {
-        first = _parser_consumeAstApply(this, TVALUE_OPEN, TVALUE_CLOSE);
+        first = _parser_consumeAstApply(this, SIGN_OPEN, SIGN_CLOSE);
     } else {
         first = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
     }
@@ -298,16 +298,16 @@ void Parser_consumeAstJudge(Parser *this, char aType)
         Token *clcltn = Parser_checkType(this, 1, 1, UG_TTYPE_CLC);
         Object *second = NULL;
         if (_parser_isToApply(this)) {
-            second = _parser_consumeAstApply(this, TVALUE_OPEN, TVALUE_CLOSE);
+            second = _parser_consumeAstApply(this, SIGN_OPEN, SIGN_CLOSE);
         } else if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
             second = Parser_checkValue(this, 1, TVAUES_GROUP_UTYPES);
         } else {
             second = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
         }
-        Token *action = Parser_checkWord(this, 1, 2, TVALUE_THEN, TVALUE_ELSE);
+        Token *action = Parser_checkWord(this, 1, 2, LETTER_THEN, LETTER_ELSE);
         Parser_pushLeaf(this, aType, 4, second, clcltn, first, action);
     } else {
-        Token *action = Parser_checkWord(this, 1, 2, TVALUE_THEN, TVALUE_ELSE);
+        Token *action = Parser_checkWord(this, 1, 2, LETTER_THEN, LETTER_ELSE);
         Parser_pushLeaf(this, aType, 2, first, action);
     }
 }
@@ -318,7 +318,7 @@ void Parser_consumeAstIfFirst(Parser *this)
     Parser_pushLeaf(this, UG_ATYPE_IF, 0, NULL);
     Parser_openBranch(this);
     // open UG_ATYPE_IF_F
-    Parser_checkWord(this, 0, 1, TVALUE_IF);
+    Parser_checkWord(this, 0, 1, LETTER_IF);
     Parser_consumeAstJudge(this, UG_ATYPE_IF_F);
     Parser_openBranch(this);
 }
@@ -331,7 +331,7 @@ void Parser_consumeAstIfMiddle(Parser *this)
     Parser_assert(this, curType == UG_ATYPE_IF_F || curType == UG_ATYPE_IF_M, LANG_ERR_PARSER_INVALID_IF);
     Parser_closeBranch(this);
     //  open UG_ATYPE_IF_M
-    Parser_checkWord(this, 0, 1, TVALUE_IF_ELSE);
+    Parser_checkWord(this, 0, 1, LETTER_ELIF);
     Parser_consumeAstJudge(this, UG_ATYPE_IF_M);
     Parser_openBranch(this);
 }
@@ -343,7 +343,7 @@ void Parser_consumeAstIfLast(Parser *this)
     Parser_assert(this, curType == UG_ATYPE_IF_F || curType == UG_ATYPE_IF_M, LANG_ERR_PARSER_INVALID_IF);
     Parser_closeBranch(this);
     // open UG_ATYPE_IF_L
-    Token *token = Parser_checkWord(this, 0, 1, TVALUE_ELSE);
+    Token *token = Parser_checkWord(this, 0, 1, LETTER_ELSE);
     Parser_pushLeaf(this, UG_ATYPE_IF_L, 1, token);
     Parser_openBranch(this);
 }
@@ -361,46 +361,46 @@ void Parser_consumeAstEnd(Parser *this)
         Parser_closeBranch(this);
     }
     // close ast code
-    Parser_checkWord(this, 0, 1, TVALUE_CODE_END);
+    Parser_checkWord(this, 0, 1, LETTER_END);
     Parser_pushLeaf(this, UG_ATYPE_END, 0, NULL);
     Parser_closeBranch(this);
 }
 
 void Parser_consumeAstWhile(Parser *this)
 {
-    Parser_checkWord(this, 0, 1, TVALUE_WHILE);
+    Parser_checkWord(this, 0, 1, LETTER_WHILE);
     Parser_consumeAstJudge(this, UG_ATYPE_WHL);
     Parser_openBranch(this);
 }
 
 void Parser_consumeAstSpread(Parser *this)
 {
-    Parser_checkWord(this, 0, 1, TVALUE_SPREAD);
+    Parser_checkWord(this, 0, 1, LETTER_SPREAD);
     Token *target = Parser_checkType(this, 1, TVAUES_GROUP_ITERABLE);
-    Parser_checkWord(this, 1, 1, TVALUE_VARIABLE);
+    Parser_checkWord(this, 1, 1, LETTER_VARIABLE);
 
     Token *iter1 = Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
-    Token *iter2 = Parser_isWord(this, 1, TVALUE_BECOME) ? Token_variable() : Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
+    Token *iter2 = Parser_isWord(this, 1, LETTER_BECOME) ? Token_variable() : Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
     //
-    Parser_checkWord(this, 1, 1, TVALUE_BECOME);
+    Parser_checkWord(this, 1, 1, LETTER_BECOME);
     Parser_pushLeaf(this, UG_ATYPE_SPR, 3, iter2, iter1, target);
     Parser_openBranch(this);
 }
 
 void Parser_consumeAstException(Parser *this)
 {
-    Parser_checkWord(this, 0, 1, TVALUE_EXCEPTION);
+    Parser_checkWord(this, 0, 1, LETTER_EXCEPTION);
     Token *name = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
-    Parser_checkWord(this, 1, 1, TVALUE_BECOME);
+    Parser_checkWord(this, 1, 1, LETTER_BECOME);
     Parser_pushLeaf(this, UG_ATYPE_EXC, 1, name);
     Parser_openBranch(this);
 }
 
 void Parser_consumeAstResult(Parser *this)
 {
-    Parser_checkWord(this, 0, 1, TVALUE_RESULT);
+    Parser_checkWord(this, 0, 1, LETTER_RESULT);
     Token *name = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
-    Parser_checkWord(this, 1, 1, TVALUE_RETURNED);
+    Parser_checkWord(this, 1, 1, LETTER_RETURNED);
     Parser_pushLeaf(this, UG_ATYPE_RSLT, 1, name);
 }
 
@@ -413,19 +413,19 @@ void _Parser_continueAstAppliable(Parser *this, char appliableType, Token *name)
     Leaf *leaf = Leaf_new(appliableType);
     Leaf *code = Leaf_new(UG_ATYPE_CODE);
     // args
-    if (Parser_isValue(this, 1, TVALUE_VARIABLE))
+    if (Parser_isValue(this, 1, LETTER_VARIABLE))
     {
-        Parser_checkValue(this, 1, 1, TVALUE_VARIABLE);
+        Parser_checkValue(this, 1, 1, LETTER_VARIABLE);
         Token *variable = Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
         while (variable != NULL)
         {
             Stack_push(code->tokens, variable);
-            variable = Parser_isValue(this, 1, TVALUE_CONTENT) ? NULL : Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
+            variable = Parser_isValue(this, 1, LETTER_CONTENT) ? NULL : Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
         }
     }
     Stack_reverse(code->tokens);
     // finish
-    Parser_checkValue(this, 1, 1, TVALUE_CONTENT);
+    Parser_checkValue(this, 1, 1, LETTER_CONTENT);
     Stack_push(leaf->tokens, name);
     Stack_push(code->tokens, name);
     Leaf_pushLeaf(this->leaf, leaf);
@@ -436,41 +436,41 @@ void _Parser_continueAstAppliable(Parser *this, char appliableType, Token *name)
 
 void Parser_consumeAstWorker(Parser *this)
 {
-    Parser_checkWord(this, 0, 1, TVALUE_WORKER);
+    Parser_checkWord(this, 0, 1, LETTER_WORKER);
     Token *name = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
     _Parser_continueAstAppliable(this, UG_ATYPE_WRKR, name);
 }
 
 void Parser_consumeAstCreator(Parser *this)
 {
-    Parser_checkWord(this, 0, 1, TVALUE_CREATOR);
+    Parser_checkWord(this, 0, 1, LETTER_CREATOR);
     Token *name = Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
     _Parser_continueAstAppliable(this, UG_ATYPE_CRTR, name);
 }
 
 void Parser_consumeAstAssister(Parser *this)
 {
-    Parser_checkWord(this, 0, 1, TVALUE_ASSISTER);
+    Parser_checkWord(this, 0, 1, LETTER_ASSISTER);
     Token *name = Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
     _Parser_continueAstAppliable(this, UG_ATYPE_ASTR, name);
 }
 
 void Parser_consumeAstApply(Parser *this)
 {
-    bool isWorker = Parser_isWord(this, 0, TVALUE_WORKER);
-    bool isCrator = Parser_isWord(this, 0, TVALUE_CREATOR);
-    bool isAssister = Parser_isWord(this, 0, TVALUE_ASSISTER);
+    bool isWorker = Parser_isWord(this, 0, LETTER_WORKER);
+    bool isCrator = Parser_isWord(this, 0, LETTER_CREATOR);
+    bool isAssister = Parser_isWord(this, 0, LETTER_ASSISTER);
     Parser_assert(this, isWorker || isCrator || isAssister, LANG_ERR_PARSER_INVALID_VARIABLE);
     Parser_checkType(this, 0, 1, UG_TTYPE_WRD);
     //
-    Leaf *leaf = _parser_consumeAstApply(this, TVALUE_WITH, TVALUE_APPLY);
+    Leaf *leaf = _parser_consumeAstApply(this, LETTER_WITH, LETTER_APPLY);
     Leaf_pushLeaf(this->leaf, leaf);
 }
 
 void Parser_consumeAstCalculator(Parser *this)
 {
     Token *target = Parser_checkType(this, 0, TVAUES_GROUP_CHANGEABLE);
-    Parser_checkWord(this, 1, 1, TVALUE_EQUALING);
+    Parser_checkWord(this, 1, 1, SIGN_EQUAL);
     Token *tempT = NULL;
     Foliage *tempF = NULL;
     Foliage *current = NULL;
@@ -480,7 +480,7 @@ void Parser_consumeAstCalculator(Parser *this)
     while (true) {
         current = (Foliage*)currents->tail->data;
         if (Parser_isTypes(this, 1, TTYPES_GROUP_VALUES) || Parser_isValues(this, 1, TVAUES_GROUP_UTYPES)) {
-            if (lastType == NULL || is_eq_string(lastType, TVALUE_OPEN)) {
+            if (lastType == NULL || is_eq_string(lastType, SIGN_OPEN)) {
                 tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
                 tempF = Foliage_new(tempT);
                 current->left = tempF;
@@ -498,7 +498,7 @@ void Parser_consumeAstCalculator(Parser *this)
             lastType = tempT->type;
             continue;
         } else if (lastType != NULL && Parser_isType(this, 1, UG_TTYPE_CLC)) {
-            Parser_assert(this, is_eq_string(lastType, TVALUE_CLOSE) || is_eq_strings(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
+            Parser_assert(this, is_eq_string(lastType, SIGN_CLOSE) || is_eq_strings(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
             tempT = Parser_checkType(this, 1, 1, UG_TTYPE_CLC);
             if (current->data != NULL) {
                 tempF = Foliage_new(tempT);
@@ -515,39 +515,39 @@ void Parser_consumeAstCalculator(Parser *this)
             current->data = tempT;
             lastType = tempT->value;
             continue;
-        } else if (Parser_isWord(this, 1, TVALUE_OPEN)) {
-            if (lastType == NULL || is_eq_string(lastType, TVALUE_OPEN)) {
-                Parser_checkWord(this, 1, 1, TVALUE_OPEN);
+        } else if (Parser_isWord(this, 1, SIGN_OPEN)) {
+            if (lastType == NULL || is_eq_string(lastType, SIGN_OPEN)) {
+                Parser_checkWord(this, 1, 1, SIGN_OPEN);
                 tempF = Foliage_new(NULL);
                 current->left = tempF;
             } else if (is_calculation_str(lastType)) {
-                Parser_checkWord(this, 1, 1, TVALUE_OPEN);
+                Parser_checkWord(this, 1, 1, SIGN_OPEN);
                 tempF = Foliage_new(NULL);
                 current->right = tempF;
             } else {
                 break;
             }
             Stack_push(currents, tempF);
-            lastType = TVALUE_OPEN;
+            lastType = SIGN_OPEN;
             continue;
-        } else if (Parser_isWord(this, 1, TVALUE_CLOSE)) {
-            Parser_assert(this, is_eq_string(lastType, TVALUE_CLOSE) || is_eq_strings(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
-            Parser_checkWord(this, 1, 1, TVALUE_CLOSE);
+        } else if (Parser_isWord(this, 1, SIGN_CLOSE)) {
+            Parser_assert(this, is_eq_string(lastType, SIGN_CLOSE) || is_eq_strings(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
+            Parser_checkWord(this, 1, 1, SIGN_CLOSE);
             Stack_pop(currents);
-            lastType = TVALUE_CLOSE;
+            lastType = SIGN_CLOSE;
             continue;
         }
         break;
     }
     current = (Foliage*)currents->head->data;
-    Token *body = Token_new(TVALUE_EQUALING, current);
+    Token *body = Token_new(SIGN_EQUAL, current);
     Parser_pushLeaf(this, UG_ATYPE_CLC, 2, target, body);
 }
 
 void Parser_consumeAstGenerator(Parser *this)
 {
     Token *target = Parser_checkType(this, 0, TVAUES_GROUP_CHANGEABLE);
-    Parser_checkWord(this, 1, 1, TVALUE_EQUALING);
+    Parser_checkWord(this, 1, 1, SIGN_EQUAL);
     Block *waitingKey = NULL;
     Object *current = NULL;
     Stack *currents = Stack_new(true);
@@ -608,15 +608,15 @@ void Parser_consumeAstGenerator(Parser *this)
             continue;
         }
         //
-        if (Parser_isWord(this, 2, TVALUE_COLON)) {
+        if (Parser_isWord(this, 2, SIGN_COLON)) {
             Token *key = Parser_checkType(this, 1, 1, UG_TTYPE_NAM);
             waitingKey = key;
-            Parser_checkWord(this, 1, 1, TVALUE_COLON);
-            lastType = TVALUE_COLON;
+            Parser_checkWord(this, 1, 1, SIGN_COLON);
+            lastType = SIGN_COLON;
             continue;
-        } else if (Parser_isWord(this, 1, TVALUE_COMMA)) {
-            Parser_checkWord(this, 1, 1, TVALUE_COMMA);
-            lastType = TVALUE_COMMA;
+        } else if (Parser_isWord(this, 1, SIGN_COMMA)) {
+            Parser_checkWord(this, 1, 1, SIGN_COMMA);
+            lastType = SIGN_COMMA;
             continue; 
         } else if (Parser_isTypes(this, 1, TTYPES_GROUP_VALUES)) {
             Token *val = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
@@ -633,7 +633,7 @@ void Parser_consumeAstGenerator(Parser *this)
                 waitingKey = NULL;
             }
             //
-            lastType = SIGN_EQ;
+            lastType = SIGN_EQUAL;
             continue; 
         }
         break;
@@ -641,7 +641,7 @@ void Parser_consumeAstGenerator(Parser *this)
     Parser_assert(this, is_eq_strings(lastType, 2, SIGN_CLOSE_BIG, SIGN_CLOSE_MIDDLE), LANG_ERR_PARSER_INVALID_GENERATOR);
     Parser_assert(this, currents->size == 0, LANG_ERR_PARSER_INVALID_GENERATOR);
     Parser_assert(this, root != NULL, LANG_ERR_PARSER_INVALID_GENERATOR);
-    Token *body = Token_new(TVALUE_EQUALING, root);
+    Token *body = Token_new(SIGN_EQUAL, root);
     Parser_pushLeaf(this, UG_ATYPE_GNR, 2, target, body);  
 }
 
@@ -652,95 +652,95 @@ void Parser_consumeToken(Parser *this, Token *token)
     char *v = token->value;
     log_debug("parser.next: %s | %s", t, v);
     // VARIABLE
-    if (is_eq_string(t, UG_TTYPE_WRD) && is_eq_string(v, TVALUE_VARIABLE))
+    if (is_eq_string(t, UG_TTYPE_WRD) && is_eq_string(v, LETTER_VARIABLE))
     {
         Parser_consumeAstVariable(this);
         return;
     }
     // END
-    if (is_eq_string(v, TVALUE_CODE_END))
+    if (is_eq_string(v, LETTER_END))
     {
         Parser_consumeAstEnd(this);
         return;
     }
     // RESULT
-    if (is_eq_string(v, TVALUE_RESULT))
+    if (is_eq_string(v, LETTER_RESULT))
     {
         Parser_consumeAstResult(this);
         return;
     }
     // WORKER
-    if (is_eq_string(v, TVALUE_WORKER)) {
-        if (Parser_isValue(this, 2, TVALUE_VARIABLE) || Parser_isValue(this, 2, TVALUE_CONTENT)) {
+    if (is_eq_string(v, LETTER_WORKER)) {
+        if (Parser_isValue(this, 2, LETTER_VARIABLE) || Parser_isValue(this, 2, LETTER_CONTENT)) {
             Parser_consumeAstWorker(this);
             return;
         }
     }
     // WORKER
-    if (is_eq_string(v, TVALUE_CREATOR)) {
-        if (Parser_isValue(this, 2, TVALUE_VARIABLE) || Parser_isValue(this, 2, TVALUE_CONTENT)) {
+    if (is_eq_string(v, LETTER_CREATOR)) {
+        if (Parser_isValue(this, 2, LETTER_VARIABLE) || Parser_isValue(this, 2, LETTER_CONTENT)) {
             Parser_consumeAstCreator(this);
             return;
         }
     }
     // ASSISTER
-    if (is_eq_string(v, TVALUE_ASSISTER)) {
-        if (Parser_isValue(this, 2, TVALUE_VARIABLE) || Parser_isValue(this, 2, TVALUE_CONTENT)) {
+    if (is_eq_string(v, LETTER_ASSISTER)) {
+        if (Parser_isValue(this, 2, LETTER_VARIABLE) || Parser_isValue(this, 2, LETTER_CONTENT)) {
             Parser_consumeAstAssister(this);
             return;
         }
     }
     // APPLY
-    if ((is_eq_string(v, TVALUE_WORKER) || is_eq_string(v, TVALUE_CREATOR) || is_eq_string(v, TVALUE_ASSISTER))) {
-        if (Parser_isValue(this, 2, TVALUE_WITH) || Parser_isValue(this, 2, TVALUE_APPLY)) {
+    if ((is_eq_string(v, LETTER_WORKER) || is_eq_string(v, LETTER_CREATOR) || is_eq_string(v, LETTER_ASSISTER))) {
+        if (Parser_isValue(this, 2, LETTER_WITH) || Parser_isValue(this, 2, LETTER_APPLY)) {
             Parser_consumeAstApply(this);
             return;
         }
     }
     // IF_FIRST
-    if (is_eq_string(v, TVALUE_IF))
+    if (is_eq_string(v, LETTER_IF))
     {
         Parser_consumeAstIfFirst(this);
         return;
     }
     // IF_MIDDLE
-    if (is_eq_string(v, TVALUE_IF_ELSE))
+    if (is_eq_string(v, LETTER_ELIF))
     {
         Parser_consumeAstIfMiddle(this);
         return;
     }
     // IF_LAST
-    if (is_eq_string(v, TVALUE_ELSE))
+    if (is_eq_string(v, LETTER_ELSE))
     {
         Parser_consumeAstIfLast(this);
         return;
     }
     // WHILE
-    if (is_eq_string(v, TVALUE_WHILE))
+    if (is_eq_string(v, LETTER_WHILE))
     {
         Parser_consumeAstWhile(this);
         return;
     }
     // SPREAD
-    if (is_eq_string(v, TVALUE_SPREAD))
+    if (is_eq_string(v, LETTER_SPREAD))
     {
         Parser_consumeAstSpread(this);
         return;
     }
     // exception
-    if (is_eq_string(v, TVALUE_EXCEPTION))
+    if (is_eq_string(v, LETTER_EXCEPTION))
     {
         Parser_consumeAstException(this);
         return;
     }
     // EXPRESSION
-    if ((is_eq_string(t, UG_TTYPE_NAM) || is_eq_string(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_VALUE))
+    if ((is_eq_string(t, UG_TTYPE_NAM) || is_eq_string(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, LETTER_VALUE))
     {
         Parser_consumeAstConvert(this);
         return;
     }
     // calculate
-    if ((is_eq_string(t, UG_TTYPE_NAM) || is_eq_string(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, TVALUE_EQUALING))
+    if ((is_eq_string(t, UG_TTYPE_NAM) || is_eq_string(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, SIGN_EQUAL))
     {
         if (Parser_isWord(this, 2, SIGN_OPEN_BIG)) {
             Parser_consumeAstGenerator(this);
@@ -752,7 +752,7 @@ void Parser_consumeToken(Parser *this, Token *token)
         return;
     }
     // command
-    if (is_eq_string(t, UG_TTYPE_WRD) && is_eq_string(v, TVALUE_COMMAND))
+    if (is_eq_string(t, UG_TTYPE_WRD) && is_eq_string(v, LETTER_COMMAND))
     {
         Parser_consumeAstCommand(this);
         return;

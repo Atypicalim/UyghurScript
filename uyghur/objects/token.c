@@ -32,14 +32,14 @@ void Token_bindInfo(Token *this, const char *file, int line, int column)
 Token *Token_empty()
 {
     if (Token_EMPTY == NULL) {
-        Token_EMPTY = Token_new(UG_TTYPE_NIL, TVALUE_NIL);
+        Token_EMPTY = Token_new(UG_TTYPE_NIL, LETTER_NIL);
     }
     return Token_EMPTY;
 }
 
 Token *Token_getTemporary() {
     if (Token_TEMPORARY == NULL) {
-        Token_TEMPORARY = Token_new(UG_TTYPE_NIL, TVALUE_NIL);
+        Token_TEMPORARY = Token_new(UG_TTYPE_NIL, LETTER_NIL);
     }
     return Token_TEMPORARY;
 }

@@ -23,7 +23,7 @@ void native_{module}_{func}(Bridge *bridge) {{
     {rslt}
 }}'''
 
-tplBindRegister = '''    Bridge_bindNativeExt(bridge, "ALIAS_{alias}", native_{func}, "{file}", {line});'''
+tplBindRegister = '''    Bridge_bindNativeExt(bridge, "{alias}", native_{func}, "{file}", {line});'''
 
 tplBindDescriptionless = ''''''
 
