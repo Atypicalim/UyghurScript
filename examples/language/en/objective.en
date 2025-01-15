@@ -1,23 +1,23 @@
 
 # an assister with one argument
 assister X variable x content
-    @-:x = x
+    @-.x = x
 finish
 
 # assister func
-worker @X:test content
+worker @X.test content
     command "X.test...\n" write
 finish
 
 # a creator with one arguments
 creator Y variable y content
     creator X with "arg xxx ...\n" applied 
-    @-:y = y
+    @-.y = y
 finish
 
 # creator func
-worker @Y:test content
-    worker @X:test applied
+worker @Y.test content
+    worker @X.test applied
     command "Y.test...\n" write
 finish
 
@@ -25,11 +25,11 @@ finish
 creator Y with "arg yyy ...\n" applied and r received
 
 # print the object val received
-command @r:x write # arg xxx ...
-command @r:y write # arg yyy ...
+command @r.x write # arg xxx ...
+command @r.y write # arg yyy ...
 
 # call creator func which calling assister func inside
-worker @r:test applied
+worker @r.test applied
 # X.test...
 # Y.test...
 

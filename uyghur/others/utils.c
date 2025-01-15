@@ -3,9 +3,9 @@
 #ifndef H_UTILS
 #define H_UTILS
 
-char *system_get_name()
+void test_func()
 {
-    return PLATFORM_NAME;
+    
 }
 
 #endif

@@ -1,23 +1,23 @@
 
 # an yardımcı ile one argument
 yardımcı X değişken x içeriği
-    @-:x = x
+    @-.x = x
 tamamlansin
 
 # yardımcı func
-hizmetçi @X:test içeriği
+hizmetçi @X.test içeriği
     buyruk "X.test...\n" yaz
 tamamlansin
 
 # a oluşturucu ile one arguments
 oluşturucu Y değişken y içeriği
     oluşturucu X ile "arg xxx ...\n" kullanılsın 
-    @-:y = y
+    @-.y = y
 tamamlansin
 
 # oluşturucu func
-hizmetçi @Y:test içeriği
-    hizmetçi @X:test kullanılsın
+hizmetçi @Y.test içeriği
+    hizmetçi @X.test kullanılsın
     buyruk "Y.test...\n" yaz
 tamamlansin
 
@@ -25,11 +25,11 @@ tamamlansin
 oluşturucu Y ile "arg yyy ...\n" kullanılsın ve r alısın
 
 # print the obekit val alısın
-buyruk @r:x yaz # arg xxx ...
-buyruk @r:y yaz # arg yyy ...
+buyruk @r.x yaz # arg xxx ...
+buyruk @r.y yaz # arg yyy ...
 
 # call oluşturucu func which calling yardımcı func inside
-hizmetçi @r:test kullanılsın
+hizmetçi @r.test kullanılsın
 # X.test...
 # Y.test...
 

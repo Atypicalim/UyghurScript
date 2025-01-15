@@ -32,7 +32,7 @@ miqdar buTengmu qimmiti quruq bolsun
 
 miqdar sinaqQimmet qimmiti quruq bolsun
 
-xizmetchi @qelem:fontEkirish bilen "../resources/ukij.ttf" 36 ishlitilsun we font elinsun
+xizmetchi @qelem.fontEkirish bilen "../resources/ukij.ttf" 36 ishlitilsun we font elinsun
 
 # get sign
 xizmetchi belgilerniElish miqdar x mezmuni
@@ -70,7 +70,7 @@ xizmetchi belgilerniElish miqdar x mezmuni
     egerde x ? 15 bolsa
         r qimmiti "=" bolsun
     bolmisa
-        xizmetchi @xet:formatlash bilen "%f" x ishlitilsun we r elinsun # string_format bug
+        xizmetchi @xet.formatlash bilen "%f" x ishlitilsun we r elinsun # string_format bug
     tamamlansun
     netije r qayturulsun
 tamamlansun
@@ -175,8 +175,8 @@ tamamlansun
 # draw button
 xizmetchi kunupkaSizish miqdar id mezmuni
     # 2d point
-    xizmetchi @san:qalduqniHisablash bilen id 5 ishlitilsun we kordinatX elinsun
-    xizmetchi @san:bulunminiHisablash bilen id 5 ishlitilsun we kordinatY elinsun
+    xizmetchi @san.qalduqniHisablash bilen id 5 ishlitilsun we kordinatX elinsun
+    xizmetchi @san.bulunminiHisablash bilen id 5 ishlitilsun we kordinatY elinsun
     eger kordinatX ? 0 bolsa
         kordinatX qimmiti 5 bolsun
         kordinatY = kordinatY - 1
@@ -190,15 +190,15 @@ xizmetchi kunupkaSizish miqdar id mezmuni
     kunupkaOrniY = kunupkaOrniY + 15
     xizmetchi belgilerniElish bilen id ishlitilsun we kunupkaXeti elinsun
     # button
-    xizmetchi @zapchas:kunupkaKorsitish bilen kunupkaOrniX kunupkaOrniY 100 50 kunupkaXeti ishlitilsun we rr elinsun
+    xizmetchi @zapchas.kunupkaKorsitish bilen kunupkaOrniX kunupkaOrniY 100 50 kunupkaXeti ishlitilsun we rr elinsun
     eger rr bolsa
         xizmetchi kunupkaQauturmisi bilen id ishlitilsun
     tamamlansun
 
 tamamlansun
 
-xizmetchi @sehne:korsitish bilen 515 225 "Xisabliguch" -1 ishlitilsun
-nawada @sehne:yepilmaqchi bolmisa
+xizmetchi @sehne.korsitish bilen 515 225 "Xisabliguch" -1 ishlitilsun
+nawada @sehne.yepilmaqchi bolmisa
     #
     # buttons
     kunupkaNumuri qimmiti 1 bolsun
@@ -209,26 +209,26 @@ nawada @sehne:yepilmaqchi bolmisa
         tekshuruldighanQimmet = kunupkaNumuri < kunupkaSani
     tamamlansun
     # screen
-    xizmetchi @qelem:xaslashturush bilen "555555" ishlitilsun
-    xizmetchi @qelem:totTereplikToldurush bilen 7 5 500 55 ishlitilsun
-    xizmetchi @qelem:xaslashturush bilen "333333" ishlitilsun
-    xizmetchi @qelem:totTereplikToldurush bilen 12 10 333 45 ishlitilsun
-    xizmetchi @qelem:xaslashturush bilen "88888833" ishlitilsun
-    xizmetchi @qelem:totTereplikToldurush bilen 350 20 70 35 ishlitilsun
+    xizmetchi @qelem.xaslashturush bilen "555555" ishlitilsun
+    xizmetchi @qelem.totTereplikToldurush bilen 7 5 500 55 ishlitilsun
+    xizmetchi @qelem.xaslashturush bilen "333333" ishlitilsun
+    xizmetchi @qelem.totTereplikToldurush bilen 12 10 333 45 ishlitilsun
+    xizmetchi @qelem.xaslashturush bilen "88888833" ishlitilsun
+    xizmetchi @qelem.totTereplikToldurush bilen 350 20 70 35 ishlitilsun
     # # clear
-    xizmetchi @zapchas:kunupkaKorsitish bilen 425 10 75 45 "Tazilash" ishlitilsun we rr elinsun
+    xizmetchi @zapchas.kunupkaKorsitish bilen 425 10 75 45 "Tazilash" ishlitilsun we rr elinsun
     eger rr bolsa
         xizmetchi tazilashQayturmisi ishlitilsun
     tamamlansun
     # input
     xizmetchi belgilerniElish bilen herketQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @qelem:fontSizish bilen font 36 sinaqXet 377 21 ishlitilsun
+    xizmetchi @qelem.fontSizish bilen font 36 sinaqXet 377 21 ishlitilsun
     # result
-    xizmetchi @xet:formatlash bilen "%f" netijeQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @qelem:fontSizish bilen font 24 sinaqXet 25 15 ishlitilsun
+    xizmetchi @xet.formatlash bilen "%f" netijeQimmet ishlitilsun we sinaqXet elinsun
+    xizmetchi @qelem.fontSizish bilen font 24 sinaqXet 25 15 ishlitilsun
     # action
-    xizmetchi @xet:formatlash bilen "%f" hazirqiQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @qelem:fontSizish bilen font 16 sinaqXet 25 38 ishlitilsun
+    xizmetchi @xet.formatlash bilen "%f" hazirqiQimmet ishlitilsun we sinaqXet elinsun
+    xizmetchi @qelem.fontSizish bilen font 16 sinaqXet 25 38 ishlitilsun
     #
-    xizmetchi @sehne:yengilash ishlitilsun
+    xizmetchi @sehne.yengilash ishlitilsun
 tamamlansun

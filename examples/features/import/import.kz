@@ -4,7 +4,7 @@
 
 # main.xx
 қызметші ekirish бірге "../other.xx" қолданылсын бен m алынсын
-бұйрық @m:x жазу
+бұйрық @m.x жазу
 
 # run the program
 `.uyghur.exe ./main.xx`

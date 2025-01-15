@@ -1,6 +1,6 @@
 
-yoyilgan "abc..." o'zgaruvch i v bo'lib
-    buyruq i yozilsin
+yoyilgan "abc..." o'zgaruvch k v bo'lib
+    buyruq k yozilsin
     buyruq "\t" yozilsin
     buyruq v yozilsin
     buyruq "\n" yozilsin

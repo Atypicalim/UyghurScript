@@ -4,7 +4,7 @@
 
 # main.xx
 خىزمەتچى ekirish بىلەن "../other.xx" ئىشلىتىلسۇن ۋە m ئېلىنسۇن
-بۇيرۇق @m:x يېزىلسۇن
+بۇيرۇق @m.x يېزىلسۇن
 
 # run the program
 `.uyghur.exe ./main.xx`

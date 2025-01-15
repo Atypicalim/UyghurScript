@@ -1,23 +1,23 @@
 
 # an yardemchi bilen one argument
 yardemchi X miqdar x mezmuni
-    @-:x = x
+    @-.x = x
 tamamlansun
 
 # yardemchi func
-xizmetchi @X:test mezmuni
+xizmetchi @X.test mezmuni
     buyruq "X.test...\n" yezilsun
 tamamlansun
 
 # a yasighuchi bilen one arguments
 yasighuchi Y miqdar y mezmuni
     yasighuchi X bilen "arg xxx ...\n" ishlitilsun 
-    @-:y = y
+    @-.y = y
 tamamlansun
 
 # yasighuchi func
-xizmetchi @Y:test mezmuni
-    xizmetchi @X:test ishlitilsun
+xizmetchi @Y.test mezmuni
+    xizmetchi @X.test ishlitilsun
     buyruq "Y.test...\n" yezilsun
 tamamlansun
 
@@ -25,11 +25,11 @@ tamamlansun
 yasighuchi Y bilen "arg yyy ...\n" ishlitilsun we r elinsun
 
 # print the obekit val elinsun
-buyruq @r:x yezilsun # arg xxx ...
-buyruq @r:y yezilsun # arg yyy ...
+buyruq @r.x yezilsun # arg xxx ...
+buyruq @r.y yezilsun # arg yyy ...
 
 # call yasighuchi func which calling yardemchi func inside
-xizmetchi @r:test ishlitilsun
+xizmetchi @r.test ishlitilsun
 # X.test...
 # Y.test...
 

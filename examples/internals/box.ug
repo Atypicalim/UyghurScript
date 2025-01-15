@@ -2,8 +2,8 @@
 miqdar s qimmiti sanduq bolsun
 miqdar k qimmiti "key" bolsun
 
-@s:abc = "str..."
-@s:123 = 456
+@s.abc = "str..."
+@s.123 = 456
 @s{k} = "val..."
 
 buyruq s yezilsun

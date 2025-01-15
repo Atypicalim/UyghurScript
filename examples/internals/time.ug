@@ -5,10 +5,10 @@ miqdar hazirqiWaqit qimmiti quruq bolsun
 miqdar hazirqiChisla qimmiti quruq bolsun
 
 # get time
-xizmetchi @waqit:sikuntElish ishlitilsun we hazirqiWaqit elinsun
+xizmetchi @waqit.sikuntElish ishlitilsun we hazirqiWaqit elinsun
 
 # convert to date
-xizmetchi @waqit:sikuntniAylandurush bilen hazirqiWaqit "%Y-%m-%d %H:%M:%S" ishlitilsun we hazirqiChisla elinsun
+xizmetchi @waqit.sikuntniAylandurush bilen hazirqiWaqit "%Y-%m-%d %H:%M:%S" ishlitilsun we hazirqiChisla elinsun
 
 # print to cosole
 buyruq hazirqiChisla yezilsun

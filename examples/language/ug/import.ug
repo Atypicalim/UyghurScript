@@ -4,7 +4,7 @@ miqdar x qimmiti "other..." bolsun
 
 # main.xx
 xizmetchi ekirish bilen "../other.xx" ishlitilsun we m elinsun
-buyruq @m:x yezilsun
+buyruq @m.x yezilsun
 
 # run the program
 `.uyghur.exe ./main.xx`

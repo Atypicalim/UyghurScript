@@ -6,8 +6,8 @@ miqdar t1 qimmiti quruq bolsun
 miqdar t2 qimmiti quruq bolsun
 miqdar d qimmiti 0.1 bolsun
 
-xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
-nawada @sehne:yepilmaqchi bolmisa
+xizmetchi @sehne.korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
+nawada @sehne.yepilmaqchi bolmisa
     #    t1 = x > 400
     t2 = x < 100
     eger t1 bolsa
@@ -17,7 +17,7 @@ nawada @sehne:yepilmaqchi bolmisa
     tamamlansun
     x = x + d
     y = y + d
-    xizmetchi @qelem:chemberSizish bilen x y 100 ishlitilsun
+    xizmetchi @qelem.chemberSizish bilen x y 100 ishlitilsun
     #
-    xizmetchi @sehne:yengilash ishlitilsun
+    xizmetchi @sehne.yengilash ishlitilsun
 tamamlansun

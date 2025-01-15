@@ -49,7 +49,7 @@ char *try_read_win_script(CString name) {
 }
 
 char *try_read_merged_script(CString name) {
-    #ifdef IS_WINDOWS
+    #if IS_WINDOWS
         return try_read_win_script(name);
     #endif
     return NULL;
@@ -72,7 +72,7 @@ void run_interact_cmd(CString name) {
 }
 
 void run_package_cmd(CString name, args_t args, CString path) {
-    #ifdef IS_WINDOWS
+    #if IS_WINDOWS
         log_debug("packaging...");
         try_merge_win_program(name, path);
         log_debug("packaged!");

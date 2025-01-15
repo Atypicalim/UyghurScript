@@ -5,12 +5,12 @@ miqdar t qimmiti quruq bolsun
 miqdar o qimmiti 0 bolsun
 
 
-xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
+xizmetchi @sehne.korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
 
-xizmetchi @qelem:fontEkirish bilen "../resources/ukij.ttf" 36 ishlitilsun we font elinsun
-xizmetchi @qelem:fontOlchesh bilen font 36 "SINAQ" ishlitilsun we w elinsun
+xizmetchi @qelem.fontEkirish bilen "../resources/ukij.ttf" 36 ishlitilsun we font elinsun
+xizmetchi @qelem.fontOlchesh bilen font 36 "SINAQ" ishlitilsun we w elinsun
 
-nawada @sehne:yepilmaqchi bolmisa
+nawada @sehne.yepilmaqchi bolmisa
     #
     t = s > 2
     eger t bolsa
@@ -21,7 +21,7 @@ nawada @sehne:yepilmaqchi bolmisa
     #
     o = w / 2
     o = 250 - o
-    xizmetchi @qelem:fontSizish bilen font 36 "SINAQ" o 50 ishlitilsun
+    xizmetchi @qelem.fontSizish bilen font 36 "SINAQ" o 50 ishlitilsun
     #
-    xizmetchi @sehne:yengilash ishlitilsun
+    xizmetchi @sehne.yengilash ishlitilsun
 tamamlansun

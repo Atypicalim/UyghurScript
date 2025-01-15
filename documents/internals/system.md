@@ -13,7 +13,16 @@
 > 🛒:  none
 
 
-### 2. exit_program
+### 2. get_type
+
+> 📝:  get_type func of system module
+
+> 🔙: String
+
+> 🛒:  none
+
+
+### 3. exit_program
 
 > 📝:  exit_program func of system module
 
@@ -23,7 +32,7 @@
 * code  `int`
 
 
-### 3. execute_command
+### 4. execute_command
 
 > 📝:  execute_command func of system module
 
@@ -33,7 +42,7 @@
 * command  `CString`
 
 
-### 4. set_env
+### 5. set_env
 
 > 📝:  set_env func of system module
 
@@ -44,7 +53,7 @@
 * value  `CString`
 
 
-### 5. get_env
+### 6. get_env
 
 > 📝:  get_env func of system module
 

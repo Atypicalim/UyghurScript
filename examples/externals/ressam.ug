@@ -4,33 +4,33 @@ miqdar YESHIL qimmiti "00ff00" bolsun
 miqdar KOK qimmiti "0000ff" bolsun
 miqdar QARA qimmiti "000000" bolsun
 
-xizmetchi @sehne:korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
-nawada @sehne:yepilmaqchi bolmisa
+xizmetchi @sehne.korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
+nawada @sehne.yepilmaqchi bolmisa
     #
-    xizmetchi @qelem:xaslashturush bilen "555555" 0 ishlitilsun
-    xizmetchi @qelem:totTereplikToldurush bilen 250 250 500 500 ishlitilsun
-    xizmetchi @qelem:xaslashturush bilen "333333" 45 ishlitilsun
-    xizmetchi @qelem:totTereplikToldurush bilen 250 250 500 500 ishlitilsun
-    xizmetchi @qelem:xaslashturush bilen "44444433" 45 ishlitilsun
-    xizmetchi @qelem:totTereplikToldurush bilen 250 250 485 485 ishlitilsun
+    xizmetchi @qelem.xaslashturush bilen "555555" 0 ishlitilsun
+    xizmetchi @qelem.totTereplikToldurush bilen 250 250 500 500 ishlitilsun
+    xizmetchi @qelem.xaslashturush bilen "333333" 45 ishlitilsun
+    xizmetchi @qelem.totTereplikToldurush bilen 250 250 500 500 ishlitilsun
+    xizmetchi @qelem.xaslashturush bilen "44444433" 45 ishlitilsun
+    xizmetchi @qelem.totTereplikToldurush bilen 250 250 485 485 ishlitilsun
 
-    xizmetchi @qelem:xaslashturush bilen QIZIL 0 ishlitilsun
-    xizmetchi @qelem:nuqtaSizish bilen 10 10 ishlitilsun
-    xizmetchi @qelem:nuqtaSizish bilen 490 10 ishlitilsun
+    xizmetchi @qelem.xaslashturush bilen QIZIL 0 ishlitilsun
+    xizmetchi @qelem.nuqtaSizish bilen 10 10 ishlitilsun
+    xizmetchi @qelem.nuqtaSizish bilen 490 10 ishlitilsun
 
-    xizmetchi @qelem:xaslashturush bilen KOK ishlitilsun
+    xizmetchi @qelem.xaslashturush bilen KOK ishlitilsun
     # a line no anchor point
-    xizmetchi @qelem:siziqSizish bilen 20 10 480 10 ishlitilsun
+    xizmetchi @qelem.siziqSizish bilen 20 10 480 10 ishlitilsun
     # a curve with one anchor
-    xizmetchi @qelem:siziqSizish bilen 400 50 400 450 550 250 ishlitilsun
+    xizmetchi @qelem.siziqSizish bilen 400 50 400 450 550 250 ishlitilsun
 
-    xizmetchi @qelem:xaslashturush bilen YESHIL ishlitilsun
-    xizmetchi @qelem:chemberToldurush bilen 75 250 70 50 ishlitilsun
+    xizmetchi @qelem.xaslashturush bilen YESHIL ishlitilsun
+    xizmetchi @qelem.chemberToldurush bilen 75 250 70 50 ishlitilsun
 
-    xizmetchi @qelem:xaslashturush bilen QIZIL ishlitilsun
-    xizmetchi @qelem:uchTereplikToldurush bilen 100 175 400 175 250 10 ishlitilsun
-    xizmetchi @qelem:xaslashturush bilen KOK ishlitilsun
-    xizmetchi @qelem:kopTereplikToldurush bilen 250 420 8 75 ishlitilsun
+    xizmetchi @qelem.xaslashturush bilen QIZIL ishlitilsun
+    xizmetchi @qelem.uchTereplikToldurush bilen 100 175 400 175 250 10 ishlitilsun
+    xizmetchi @qelem.xaslashturush bilen KOK ishlitilsun
+    xizmetchi @qelem.kopTereplikToldurush bilen 250 420 8 75 ishlitilsun
     #
-    xizmetchi @sehne:yengilash ishlitilsun
+    xizmetchi @sehne.yengilash ishlitilsun
 tamamlansun

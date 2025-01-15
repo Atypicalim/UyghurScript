@@ -125,8 +125,6 @@ ALIAS_remove:
   tr: silmek
   kz: жою
 
-############################# global
-# information
 ALIAS_get_language:
   en: get_language
   uy: تىل_ئېلىش
@@ -136,11 +134,42 @@ ALIAS_get_language:
   kz: тіл_алу
 ALIAS_get_name:
   en: get_name
-  uy: ئىسىم_ئېلىش
-  ug: isimElish
-  uz: ism_olish
-  tr: isim_almak
-  kz: есім_алу
+  uy: ئىسمىنى_ئېلىش
+  ug: isminiElish
+  uz: nomini_olish
+  tr: adını_almak
+  kz: атын_алу
+ALIAS_get_type:
+  en: get_type
+  uy: تۈرىنى_ئېلىش
+  ug: turiniElish
+  uz: turini_olish
+  tr: türünü_almak
+  kz: түрін_алу
+ALIAS_get_place:
+  en: get_place
+  uy: ئورنىنى_ئېلىش
+  ug: orniniElish
+  uz: joyini_olish
+  tr: yerini_almak
+  kz: орнын_алу
+ALIAS_set_position:
+  en: set_position
+  uy: ئورنىنى_بېكىتىش
+  ug: orniniBikitish
+  uz: pozitsiyasi_o'rnatish
+  tr: pozisyonu_ayarlamak
+  kz: позициясы_орнату
+ALIAS_get_position:
+  en: get_position
+  uy: ئورنىنى_ئېلىش
+  ug: orniniElish
+  uz: pozitsiyani_olish
+  tr: pozisyonu_almak
+  kz: позициясы_алу
+
+############################# global
+# global
 # console
 # trace
 ALIAS_trace:
@@ -427,22 +456,6 @@ ALIAS_dict_count:
 
 ############################# stuf
 
-ALIAS_stuf_place:
-  en: get_place
-  uy: ئورنىنى_ئېلىش
-  ug: ornini_elish
-  uz: joyini_olish
-  tr: yerini_almak
-  kz: орнын_алу
-ALIAS_stuf_type:
-  en: get_type
-  uy: تۈرىنى_ئېلىش
-  ug: turini_elish
-  uz: turini_olish
-  tr: türünü_almak
-  kz: түрін_алу
-
-
 ############################# task
 
 ############################# time
@@ -518,13 +531,6 @@ ALIAS_system:
   uz: dastur
   tr: sistem
   kz: жүйе
-ALIAS_get_name:
-  en: get_name
-  uy: ئىسمىنى_ئېلىش
-  ug: isminiElish
-  uz: nomini_olish
-  tr: adını_almak
-  kz: атын_алу
 ALIAS_exit_program:
   en: exit_program
   uy: پروگراممىدىن_چېكىنىش
@@ -736,20 +742,6 @@ ALIAS_set_icon:
   uz: belgi_o'rnatish
   tr: simge_ayarlamak
   kz: белгі_орнату
-ALIAS_set_position:
-  en: set_position
-  uy: ئورنىنى_بېكىتىش
-  ug: orniniBikitish
-  uz: pozitsiyasi_o'rnatish
-  tr: pozisyonu_ayarlamak
-  kz: позициясы_орнату
-ALIAS_get_position:
-  en: get_position
-  uy: ئورنىنى_ئېلىش
-  ug: orniniElish
-  uz: pozitsiyani_olish
-  tr: pozisyonu_almak
-  kz: позициясы_алу
 ALIAS_set_size:
   en: set_size
   uy: چوڭلىقىنى_بېكىتىش
@@ -838,13 +830,6 @@ ALIAS_set_cursor:
   uz: belgisini_o'rnatish
   tr: imlecini_ayarla
   kz: курсорын_орнату
-ALIAS_get_position:
-  en: get_position
-  uy: ئورنىنى_ئېلىش
-  ug: orniniElish
-  uz: pozitsiyasini_olish
-  tr: pozisyonu_almak
-  kz: позициясын_алу
 ALIAS_get_wheel:
   en: get_wheel
   uy: ئايلانمىنى_ئېلىش
@@ -1149,20 +1134,6 @@ ALIAS_get_length:
   uz: uzunligini_olish
   tr: uzunluğunu_almak
   kz: ұзындығы_алу
-ALIAS_get_position:
-  en: get_position
-  uy: ئورنىنى_ئېلىش
-  ug: orniniElish
-  uz: pozitsiyani_olish
-  tr: pozisyonu_almak
-  kz: позициясы_алу
-ALIAS_set_position:
-  en: set_position
-  uy: ئورنىنى_بېكىتىش
-  ug: orniniBikitish
-  uz: pozitsiyasi_o'rnatish
-  tr: pozisyonu_ayarlamak
-  kz: позициясы_орнату
 
 ############################# sound
 ALIAS_sound:

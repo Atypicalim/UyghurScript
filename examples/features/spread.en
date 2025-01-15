@@ -1,6 +1,6 @@
 
-speaded "abc..." variable i v become
-    command i write
+speaded "abc..." variable k v become
+    command k write
     command "\t" write
     command v write
     command "\n" write

@@ -19,10 +19,10 @@ speaded  variable k v become
     command v write
     command "\n" write
 finish
-worker @sanduq:dewriylesh with s func applied
+worker @sanduq.dewriylesh with s func applied
 
 # get language
-worker @*:isimElish applied and n received
+worker @*.isminiElish applied and n received
 
 # concat string
 m = n + " salam!\n"

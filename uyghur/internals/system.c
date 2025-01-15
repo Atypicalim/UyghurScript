@@ -4,7 +4,14 @@
 
 void native_system_get_name(Bridge *bridge)
 {
-    Bridge_returnString(bridge, system_get_name());
+    CString value = tools_get_env(IS_WINDOWS ? "USERNAME" : "USER");
+    Bridge_returnString(bridge, value);
+}
+
+void native_system_get_type(Bridge *bridge)
+{
+    CString value = PLATFORM_NAME;
+    Bridge_returnString(bridge, value);
 }
 
 void native_system_exit_program(Bridge *bridge)

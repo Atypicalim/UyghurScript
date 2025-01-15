@@ -22,16 +22,17 @@ def _simpifyDefineName(name):
     _name = '_'.join(parts[1:]).lower()
     return _name
 
-def formatVariables(template, names, simplify):
+def formatVariables(template, names):
     variables = []
     for name in names:
-        _name = _simpifyDefineName(name) if simplify else name
+        _name = _simpifyDefineName(name)
         variable = template.format(name, _name)
         variables.append(variable)
     return "\n".join(variables)
 
-def formatBodies(template, name, mapLang2Name, simplify):
+def formatBodies(template, name, mapLang2Name):
     bodies = []
+    simplify = template != tplYamlLineReference
     for lang, infos in mapLang2Name.items():
         lines = []
         for alias, value in infos.items():
@@ -49,7 +50,7 @@ def formatBodies(template, name, mapLang2Name, simplify):
     _bodies = "\n".join(bodies)
     return _bodies
 
-def formatFooters(template, name, mapName2Lang, simplify):
+def formatFooters(template, name, mapName2Lang):
     footers = []
     for alias, infos in mapName2Lang.items():
         lines = []
@@ -106,13 +107,13 @@ def _configsMacro(code, command, argument = None):
 
 ############################################################################### multilang
 
-def _Yaml2Template(name, varTpl, lineTpl, simplify):
+def _Yaml2Template(name, varTpl, lineTpl):
     _name = name.lower()
     _, namesArr, mapLang2Name, mapName2Lang = readLanguages(name)
     #
-    variables = formatVariables(varTpl, namesArr, True)
-    bodies = formatBodies(lineTpl, name, mapLang2Name, simplify)
-    footers = formatFooters(tplYamlLineNormal, name, mapName2Lang, True)
+    variables = formatVariables(varTpl, namesArr)
+    bodies = formatBodies(lineTpl, name, mapLang2Name)
+    footers = formatFooters(tplYamlLineNormal, name, mapName2Lang)
     [filterSizeByLang, filterConfByLang] = formatFilters(name, mapLang2Name)
     [filterSizeByName, filterConfByName] = formatFilters(name, mapName2Lang)
     #
@@ -143,10 +144,10 @@ def _Yaml2Template(name, varTpl, lineTpl, simplify):
     bldr.start()
     pass
 
-_Yaml2Template("LANGUAGES", tplYamlDeclare, tplYamlLineReference, False)
-_Yaml2Template("LETTERS", tplYamlDefine, tplYamlLineNormal, True)
-_Yaml2Template("ALIASES", tplYamlDefine, tplYamlLineNormal, True)
-_Yaml2Template("CONFIGS", tplYamlDefine, tplYamlLineNormal, True)
+_Yaml2Template("LANGUAGES", tplYamlDeclare, tplYamlLineReference)
+_Yaml2Template("LETTERS", tplYamlDefine, tplYamlLineNormal)
+_Yaml2Template("ALIASES", tplYamlDefine, tplYamlLineNormal)
+_Yaml2Template("CONFIGS", tplYamlDefine, tplYamlLineNormal)
 
 ############################################################################### script
 

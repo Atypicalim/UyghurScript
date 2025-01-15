@@ -160,8 +160,8 @@ finish
 * [spread](examples/features/spread)
 
 ```powershell
-speaded "abc..." variable i v become
-    command i write
+speaded "abc..." variable k v become
+    command k write
     command "\t" write
     command v write
     command "\n" write
@@ -257,9 +257,9 @@ t = [11, 22, "abc"]
 s = {a: "aa", b: "bb", c: 123}
 
 # put a num key
-@t:1 = 456
+@t.1 = 456
 # put a str key
-@s:k = "abc"
+@s.k = "abc"
 # put a var key
 @s{v} = val
 
@@ -274,23 +274,23 @@ b = t ! list
 ```powershell
 # an assister with one argument
 assister X variable x content
-    @-:x = x
+    @-.x = x
 finish
 
 # assister func
-worker @X:test content
+worker @X.test content
     command "X.test...\n" write
 finish
 
 # a creator with one arguments
 creator Y variable y content
     creator X with "arg xxx ...\n" applied 
-    @-:y = y
+    @-.y = y
 finish
 
 # creator func
-worker @Y:test content
-    worker @X:test applied
+worker @Y.test content
+    worker @X.test applied
     command "Y.test...\n" write
 finish
 
@@ -298,11 +298,11 @@ finish
 creator Y with "arg yyy ...\n" applied and r received
 
 # print the object val received
-command @r:x write # arg xxx ...
-command @r:y write # arg yyy ...
+command @r.x write # arg xxx ...
+command @r.y write # arg yyy ...
 
 # call creator func which calling assister func inside
-worker @r:test applied
+worker @r.test applied
 # X.test...
 # Y.test...
 
@@ -321,7 +321,7 @@ variable x value "other..." made
 
 # main.xx
 worker ekirish with "../other.xx" applied and m received
-command @m:x write
+command @m.x write
 
 # run the program
 `.uyghur.exe ./main.xx`

@@ -4,7 +4,7 @@ variable x value "other..." made
 
 # main.xx
 worker ekirish with "../other.xx" applied and m received
-command @m:x write
+command @m.x write
 
 # run the program
 `.uyghur.exe ./main.xx`
