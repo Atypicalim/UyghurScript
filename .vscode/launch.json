@@ -13,6 +13,30 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "Update",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/run.py",
+            "console": "integratedTerminal",
+            "args": ["--update"]
+        },
+        {
+            "name": "Generate",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/run.py",
+            "console": "integratedTerminal",
+            "args": ["--generate"]
+        },
+        {
+            "name": "Release",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/run.py",
+            "console": "integratedTerminal",
+            "args": ["./examples/help.ug"]
+        },
+        {
             "name": "Extension",
             "type": "extensionHost",
             "request": "launch",

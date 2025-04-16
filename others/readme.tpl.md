@@ -6,7 +6,7 @@
 
 > 
 
-* read [documents](./documents/) for move informations
+* read [documents](./documents/) for more informations
 
 
 * run `./release/uyghur.exe` to get help content

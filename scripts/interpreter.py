@@ -3,8 +3,13 @@ from scripts.base import *
 
 ################################################################
 
-# SCRIPT_PATH = "./examples/help.ug"
 SCRIPT_PATH = "./examples/test.ug"
+
+__arg1 = sys.argv[1] if len(sys.argv) > 1 else ""
+for k in langsArrLetters:
+    if __arg1.endswith(k):
+        SCRIPT_PATH = __arg1
+
 # SCRIPT_PATH = "./examples/externals/yuguresh.ug"
 # SCRIPT_PATH = "./examples/features/objective.ug"
 

@@ -6,8 +6,8 @@ import subprocess
 ################################################################
 
 __arg1 = sys.argv[1] if len(sys.argv) > 1 else ""
-__arg2 = sys.argv[2] if len(sys.argv) > 2 else ""
 __needUpdate = __arg1 == "--update" or __arg1 == "-u"
+__needGenerate = __arg1 == "--generate" or __arg1 == "-g"
 __workingDir = os.path.dirname(os.path.abspath(__file__))
 
 ################################################################
@@ -50,14 +50,18 @@ os.chdir(__workingDir)
 if __needUpdate:
     print("\nupdateing self:")
     subprocess.run(['git', 'pull'], check=True)
+    print("updated!\n")
+    sys.exit(0)
 
 ################################################################
 
 from scripts.base import *
 import scripts.bind
-# import scripts.converter
-# import scripts.converting
-# import scripts.extension
-# import scripts.readme
-# import scripts.document
-import scripts.interpreter
+if __needGenerate:
+    import scripts.converter
+    import scripts.converting
+    import scripts.extension
+    import scripts.readme
+    import scripts.document
+else:
+    import scripts.interpreter
