@@ -1,14 +1,15 @@
 
 from scripts.base import *
+from run import Run
 
 ################################################################
 
-SCRIPT_PATH = "./examples/test.ug"
+SCRIPT_PATH = None
 
-__arg1 = sys.argv[1] if len(sys.argv) > 1 else ""
-for k in langsArrLetters:
-    if __arg1.endswith(k):
-        SCRIPT_PATH = __arg1
+if Run.isRelease:
+    SCRIPT_PATH = readArgScriptPath(2, "./examples/help.ug")
+else:
+    SCRIPT_PATH = readArgScriptPath(1, "./examples/test.ug")
 
 # SCRIPT_PATH = "./examples/externals/yuguresh.ug"
 # SCRIPT_PATH = "./examples/features/objective.ug"
@@ -162,6 +163,8 @@ tools.files.delete(DST_SCRIPT)
 def _onMacro(code, command, argument = None):
     if command == "PROJECT_REPO":
         return code.format(PROJECT_REPO)
+    elif command == "PROJECT_NAME":
+        return code.format(PROJECT_NAME)
     pass
 bldr = builder.code()
 bldr.setName("SCRIPT")

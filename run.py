@@ -6,9 +6,17 @@ import subprocess
 ################################################################
 
 __arg1 = sys.argv[1] if len(sys.argv) > 1 else ""
-__needUpdate = __arg1 == "--update" or __arg1 == "-u"
-__needGenerate = __arg1 == "--generate" or __arg1 == "-g"
+__arg2 = sys.argv[2] if len(sys.argv) > 2 else ""
 __workingDir = os.path.dirname(os.path.abspath(__file__))
+
+class Run:
+    pass
+Run.workingDir = __workingDir
+Run.arg1 = __arg1
+Run.arg2 = __arg2
+Run.needUpdate = __arg1 == "--update" or __arg1 == "-u"
+Run.needGenerate = __arg1 == "--generate" or __arg1 == "-g"
+Run.isRelease = __arg1 == "--release" or __arg1 == "-r"
 
 ################################################################
 
@@ -22,7 +30,7 @@ except ModuleNotFoundError:
 def downloadGitTo(url, path):
     print("\ndownload:", url)
     if os.path.isdir(path):
-        if  __needUpdate:
+        if Run.needUpdate:
             os.chdir(path)
             subprocess.run(['git', 'pull'], check=True)
         else:
@@ -47,7 +55,7 @@ downloadGitTo("git@github.com:Atypicalim/replot.git", "../c-replot-library")
 ################################################################
 
 os.chdir(__workingDir)
-if __needUpdate:
+if Run.needUpdate:
     print("\nupdateing self:")
     subprocess.run(['git', 'pull'], check=True)
     print("updated!\n")
@@ -57,7 +65,7 @@ if __needUpdate:
 
 from scripts.base import *
 import scripts.bind
-if __needGenerate:
+if Run.needGenerate:
     import scripts.converter
     import scripts.converting
     import scripts.extension

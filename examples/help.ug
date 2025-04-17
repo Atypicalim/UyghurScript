@@ -1,4 +1,8 @@
 # yardem 
-buyruq "👋\n" yezilsun
+buyruq "\n" yezilsun
+buyruq "👋 Welcome!\n" yezilsun
+buyruq "🪪 {} \n" yezilsun # [M[ PROJECT_NAME ]M]
 buyruq "😼 {} \n" yezilsun # [M[ PROJECT_REPO ]M]
-buyruq "👀\n" yezilsun
+buyruq "🚨 run -h command for help\n" yezilsun
+buyruq "👀 enjoy it\n" yezilsun
+buyruq "\n" yezilsun

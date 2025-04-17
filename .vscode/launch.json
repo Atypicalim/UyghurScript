@@ -10,7 +10,8 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/run.py",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            // "args": ["./examples/test.ug"]
         },
         {
             "name": "Update",
@@ -34,7 +35,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/run.py",
             "console": "integratedTerminal",
-            "args": ["./examples/help.ug"]
+            "args": ["--release"]
         },
         {
             "name": "Extension",

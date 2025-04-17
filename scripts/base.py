@@ -171,6 +171,13 @@ def tryForEachLine(module, fromPath, func):
         func(lineIndex, _lines)
     pass
 
+def readArgScriptPath(index, default):
+    arg = sys.argv[index] if len(sys.argv) > index else ""
+    for k in langsArrLetters:
+        if arg.endswith(k):
+            return arg
+    return default
+
 ###############################################################################
 
 # bind
