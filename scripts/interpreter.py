@@ -177,7 +177,7 @@ bldr.start()
 
 ############################################################################### task
 
-isUseRaysan = True
+isUseRaysan = False
 isUseRiley = False
 ugStageLib = None
 if isUseRaysan:
@@ -220,11 +220,18 @@ task.addWarnings(False, [
     "incompatible-pointer-types"
 ])
 #
+
 if isUseRaysan:
     task.addFlags(["-D USTAGE_USE_RAYSAN"])
-elif isUseRiley:
+else:
+    task.addFlags(["-D USTAGE_NONE_RAYSAN"])
+
+if isUseRiley:
     task.addFlags(["-D USTAGE_USE_RILEY"])
 else:
+    task.addFlags(["-D USTAGE_NONE_RILEY"])
+
+if not isUseRaysan and not isUseRiley:
     # task.addFlags(["-D BUILDER_NO_BACKEND"])
     task.addFlags(["-D USTAGE_USE_TIGR"])
 

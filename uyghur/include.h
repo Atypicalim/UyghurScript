@@ -31,18 +31,16 @@
 #include "../../c-xtra-tools/utf8string/utf8string.h"
 #include "../../c-xtra-tools/utf8string/utf8string.c"
 
-
-#ifdef USTAGE_USE_RAYSAN
+#ifndef USTAGE_NONE_RAYSAN
     #define REPLAY_NO_IMLEMENT
     #define RAYGUI_IMPLEMENTATION
-    #include "raylib.h"
-    #include "raygui.h"
+    #include "../../my-build-tools/build/c_libs/raylib/raylib-4.0.0_win64_mingw-w64/include/raylib.h"
+    #include "../../my-build-tools/build/c_libs/raylib/raylib-4.0.0_win64_mingw-w64/include/raygui.h"
 #endif
 
-#ifdef USTAGE_USE_RILEY
-    #define RSGL_IMPLEMENTATION
-    #define RSGL_NO_WIDGETS
-    #include "RSGL.h"
+#ifndef USTAGE_NONE_RILEY
+    #define RILEY_EXT_NO_WIDGETS
+    #include "../../c-xtra-tools/riley4ext/riley4ext.h"
 #endif
 
 #ifdef USTAGE_USE_TIGR
