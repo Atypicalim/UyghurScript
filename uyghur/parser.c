@@ -287,29 +287,30 @@ Leaf *_parser_consumeAstApply(Parser *this, Token *startToken, Token *endToken) 
 void Parser_consumeAstJudge(Parser *this, char aType)
 {
     Object *first = NULL;
-    //
+    Object *second = NULL;
+    // first
     if (_parser_isToApply(this)) {
         first = _parser_consumeAstApply(this, SIGN_OPEN, SIGN_CLOSE);
     } else {
         first = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
     }
-    // 
-    if (Parser_isType(this, 1, UG_TTYPE_CLC)) {
-        Token *clcltn = Parser_checkType(this, 1, 1, UG_TTYPE_CLC);
-        Object *second = NULL;
-        if (_parser_isToApply(this)) {
-            second = _parser_consumeAstApply(this, SIGN_OPEN, SIGN_CLOSE);
-        } else if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
-            second = Parser_checkValue(this, 1, TVAUES_GROUP_UTYPES);
-        } else {
-            second = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
-        }
-        Token *action = Parser_checkWord(this, 1, 2, LETTER_THEN, LETTER_ELSE);
-        Parser_pushLeaf(this, aType, 4, second, clcltn, first, action);
-    } else {
+    // single
+    if (!Parser_isType(this, 1, UG_TTYPE_CLC)) {
         Token *action = Parser_checkWord(this, 1, 2, LETTER_THEN, LETTER_ELSE);
         Parser_pushLeaf(this, aType, 2, first, action);
+        return;
     }
+    // double
+    Token *clcltn = Parser_checkType(this, 1, 1, UG_TTYPE_CLC);
+    if (_parser_isToApply(this)) {
+        second = _parser_consumeAstApply(this, SIGN_OPEN, SIGN_CLOSE);
+    } else if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
+        second = Parser_checkValue(this, 1, TVAUES_GROUP_UTYPES);
+    } else {
+        second = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+    }
+    Token *action = Parser_checkWord(this, 1, 2, LETTER_THEN, LETTER_ELSE);
+    Parser_pushLeaf(this, aType, 4, second, clcltn, first, action);
 }
 
 void Parser_consumeAstIfFirst(Parser *this)
@@ -676,7 +677,7 @@ void Parser_consumeToken(Parser *this, Token *token)
             return;
         }
     }
-    // WORKER
+    // CREATOR
     if (is_eq_string(v, LETTER_CREATOR)) {
         if (Parser_isValue(this, 2, LETTER_VARIABLE) || Parser_isValue(this, 2, LETTER_CONTENT)) {
             Parser_consumeAstCreator(this);
@@ -733,29 +734,32 @@ void Parser_consumeToken(Parser *this, Token *token)
         Parser_consumeAstException(this);
         return;
     }
-    // EXPRESSION
-    if ((is_eq_string(t, UG_TTYPE_NAM) || is_eq_string(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, LETTER_VALUE))
-    {
-        Parser_consumeAstConvert(this);
-        return;
-    }
-    // calculate
-    if ((is_eq_string(t, UG_TTYPE_NAM) || is_eq_string(t, UG_TTYPE_KEY)) && Parser_isWord(this, 1, SIGN_EQUAL))
-    {
-        if (Parser_isWord(this, 2, SIGN_OPEN_BIG)) {
-            Parser_consumeAstGenerator(this);
-        } else if (Parser_isWord(this, 2, SIGN_OPEN_MIDDLE)) {
-            Parser_consumeAstGenerator(this);
-        } else {
-            Parser_consumeAstCalculator(this);
-        }
-        return;
-    }
     // command
     if (is_eq_string(t, UG_TTYPE_WRD) && is_eq_string(v, LETTER_COMMAND))
     {
         Parser_consumeAstCommand(this);
         return;
+    }
+    // others
+    if ((is_eq_string(t, UG_TTYPE_NAM) || is_eq_string(t, UG_TTYPE_KEY)))
+    {
+        if (Parser_isWord(this, 1, LETTER_VALUE)) {
+            // convert type
+            Parser_consumeAstConvert(this);
+            return;
+        } else if (Parser_isWord(this, 1, SIGN_EQUAL)) {
+            if (Parser_isWord(this, 2, SIGN_OPEN_BIG)) {
+                // generator object
+                Parser_consumeAstGenerator(this);
+            } else if (Parser_isWord(this, 2, SIGN_OPEN_MIDDLE)) {
+                // generator array
+                Parser_consumeAstGenerator(this);
+            } else {
+                // calcualte mathiamtic
+                Parser_consumeAstCalculator(this);
+            }
+            return;
+        } 
     }
     //
     log_error("parser.error: %s | %s", t, v);
