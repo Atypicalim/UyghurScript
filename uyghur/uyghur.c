@@ -7,6 +7,7 @@
 
 #include "tokenizer.c"
 #include "parser.c"
+#include "compiler.c"
 #include "machine.c"
 #include "executer.c"
 #include "debug.c"
@@ -32,6 +33,7 @@ Uyghur *Uyghur_instance()
     __uyghur = uyghur;
     uyghur->tokenizer = Tokenizer_new(uyghur);
     uyghur->parser = Parser_new(uyghur);
+    uyghur->compiler = Compiler_new(uyghur);
     uyghur->machine = Machine_new(uyghur);
     uyghur->debug = Debug_new(uyghur);
     uyghur->bridge = Bridge_new(uyghur);
@@ -47,7 +49,18 @@ Uyghur *Uyghur_instance()
     return __uyghur;
 }
 
-Leaf *Uyghur_processCode(Uyghur *this, char *path, char *code)
+Leaf *_Uyghur_processLang(Uyghur *this, char *path)
+{
+    CString lang = helper_parse_language(path);
+    tools_assert(lang != NULL, "invalid lang for path:[%s]", path);
+    log_debug("uyghur.lang: %s", lang);
+    helper_add_languages(this, lang);
+    if (!UG_IS_DEVELOP) {
+        helper_set_languages(this, lang);
+    }
+}
+
+Leaf *_Uyghur_processCode(Uyghur *this, char *path, char *code)
 {
     log_debug("uyghur.tokenize");
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
@@ -56,60 +69,48 @@ Leaf *Uyghur_processCode(Uyghur *this, char *path, char *code)
     return headLeaf;
 }
 
-Value *_Uyghur_runCode(Uyghur *this, char *path, char *code)
-{
-    log_debug("uyghur.execute");
-    Leaf *tree = Uyghur_processCode(this, path, code);
-    Value *result = Executer_executeCode(this->executer, tree);
-    log_debug("uyghur.runned!");
-    return result;
-}
-
-Value *_Uyghur_runScript(Uyghur *this, char *path, char *code) {
+Value *_Uyghur_runCode(Uyghur *this, char *path, char *code) {
     tools_assert(code != NULL, "%s:[%s]", LANG_ERR_NO_INPUT_FILE, path);
     if (path == NULL) path = UG_SCRIPT_NAME;
-    //
     log_debug("uyghur.run: %s", path);
-    CString lang = helper_parse_language(path);
-    tools_assert(lang != NULL, "invalid lang for path:[%s]", path);
-    log_debug("uyghur.lang: %s", lang);
-    helper_add_languages(this, lang);
-    if (!UG_IS_DEVELOP) {
-        helper_set_languages(this, lang);
-    }
-    //
-    Leaf *tree = Uyghur_processCode(this, path, code);
+    _Uyghur_processLang(this, path);
+    Leaf *tree = _Uyghur_processCode(this, path, code);
     Value *script = Executer_executeScript(this->executer, path, tree);
     return script;
 }
 
 Value *Uyghur_runScript(Uyghur *this, char *code) {
-    Value *script = _Uyghur_runScript(this, NULL, code);
+    Value *script = _Uyghur_runCode(this, NULL, code);
     Executer_endExecute(this->executer);
     return script;
 }
 
-Value *_Uyghur_runPath(Uyghur *this, char *path) {
-    bool exist = file_exist(path);
-    tools_assert(exist, "%s:[%s]", LANG_ERR_NO_INPUT_FILE, path);
-    char *code = file_read(path);
-    Value *holder = _Uyghur_runScript(this, path, code);
-    pct_free(code);
-    return holder;
-}
-
 Value *Uyghur_runModule(Uyghur *this, char *path)
 {
-    Value *module = _Uyghur_runPath(this, path);
+    char *code = helper_read_code_file(path);
+    Value *module = _Uyghur_runCode(this, path, code);
     Executer_returnModule(this->executer);
+    pct_free(code);
     return module;
 }
 
 Value *Uyghur_runProgram(Uyghur *this, char *path)
 {
-    Value *program = _Uyghur_runPath(this, path);
+    char *code = helper_read_code_file(path);
+    Value *program = _Uyghur_runCode(this, path, code);
     Executer_endExecute(this->executer);
+    pct_free(code);
     return program;
+}
+
+void Uyghur_runCompile(Uyghur *this, char *path)
+{
+    log_debug("path:%s", path);
+    _Uyghur_processLang(this, path);
+    char *code = helper_read_code_file(path);
+    Leaf *tree = _Uyghur_processCode(this, path, code);
+    Compiler_compileCode(this->compiler, tree);
+    pct_free(code);
 }
 
 void Uyghur_runRepl(Uyghur *this)
@@ -133,9 +134,9 @@ void Uyghur_runRepl(Uyghur *this)
             if (is_eq_string(text, tp)) lang = tp;
         }
     }
-    CString *path = tools_format("*.%s", lang);
     CString *code = "";
-    Value *script = _Uyghur_runScript(this, path, code);
+    CString *path = tools_format("*.%s", lang);
+    _Uyghur_processLang(this, path);
     //
     log_info("> please end with [;] in single line:", lang);
     String *text = String_new();
@@ -153,7 +154,11 @@ void Uyghur_runRepl(Uyghur *this)
         } else if (String_length(text) <= 0) {
             break;
         } else {
-            _Uyghur_runCode(this, path, String_get(text));
+            log_debug("uyghur.execute");
+            char *code = String_get(text);
+            Leaf *tree = _Uyghur_processCode(this, path, code);
+            Value *result = Executer_executeCode(this->executer, tree);
+            log_debug("uyghur.runned!");
             String_clear(text);
             line = 0;
         }
@@ -168,6 +173,7 @@ void Uyghur_free(Uyghur *this)
     //
     Machine_free(this->machine);
     Executer_free(this->executer);
+    Compiler_free(this->compiler);
     Parser_free(this->parser);
     Tokenizer_free(this->tokenizer);
     // 

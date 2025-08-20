@@ -87,6 +87,12 @@ void run_execute_cmd(CString name, args_t args, CString path) {
     Uyghur_free(uyghur);
 }
 
+void run_compile_cmd(CString name, args_t args, CString path) {
+    Uyghur *uyghur = Uyghur_instance();
+    Uyghur_runCompile(uyghur, path);
+    Uyghur_free(uyghur);
+}
+
 // 
 
 int main(int argc, char *argv[])
@@ -108,11 +114,13 @@ int main(int argc, char *argv[])
     bool interact = NULL;
     char *package = NULL;
     char *execute = NULL;
+    char *compile = NULL;
 	flag_bool("h", "help",     "show this help",        &help);
 	flag_bool("v", "version",  "print program version", &version);
 	flag_bool("i", "interact", "interact given script", &interact);
 	flag_cstr("p", "package",  "package given script",  &package);
 	flag_cstr("e", "execute",  "execute given script",  &execute);
+	flag_cstr("c", "compile",  "compile given script",  &compile);
     // 
 	int err = args_parse_flags(&args, NULL, NULL);
 	if (err != ARG_OK) {
@@ -133,6 +141,9 @@ int main(int argc, char *argv[])
 		return EXIT_SUCCESS;
 	} else if (execute) {
         run_execute_cmd(name, args, execute);
+		return EXIT_SUCCESS;
+	} else if (compile) {
+        run_compile_cmd(name, args, compile);
 		return EXIT_SUCCESS;
     }
     // script

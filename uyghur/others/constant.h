@@ -58,6 +58,7 @@
 // object type
 #define PCT_OBJ_TOKEN 't'
 #define PCT_OBJ_LEAF 'l'
+#define PCT_OBJ_DRAFT 'd'
 #define PCT_OBJ_VALUE '$'
 
 
@@ -139,6 +140,7 @@ const UG_PAIRS UG_WORDS_MAP[] = {
     //
     {LETTER_EXCEPTION, 0},
     // 
+    {LETTER_CALLMENT, 0},
     {LETTER_WORKER, 0},
     {LETTER_CREATOR, 0},
     {LETTER_ASSISTER, 0},

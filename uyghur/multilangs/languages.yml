@@ -160,13 +160,6 @@ LANG_ERR_PARSER_INVALID_VARIABLE:
   uz: "Kutilayotgan qiymat noto'g'ri"
   tr: "istenen kıymet geçersiz"
   kz: "күтілген қиммет жарамсыз"
-LANG_ERR_PARSER_INVALID_IF:
-  en: "found invalid if"
-  uy: "ئەگەر جۈملىسى ئىناۋەتسىز"
-  ug: "eger jumlisi inawetsiz"
-  uz: "agar bayonoti noto'g'ri"
-  tr: "eğer cümlesi geçersiz"
-  kz: "егер сөйлем жарамсыз"
 LANG_ERR_PARSER_INVALID_CALCULATOR:
   en: "found invalid calculator"
   uy: "ھېسابلاش مەشغۇلاتى ئىناۋەتسىز"
@@ -181,6 +174,73 @@ LANG_ERR_PARSER_INVALID_GENERATOR:
   uz: "hosillash operatsiyasi yaroqsiz"
   tr: "yapmak işlemi geçersiz"
   kz: "жасау операциясы жарамсыз"
+
+#common
+LANG_ERR_GRAMMAR_INVALID_IF:
+  en: "found invalid if"
+  uy: "ئەگەر جۈملىسى ئىناۋەتسىز"
+  ug: "eger jumlisi inawetsiz"
+  uz: "agar bayonot noto'g'ri"
+  tr: "eğer cümlesi geçersiz"
+  kz: "егер сөйлем жарамсыз"
+LANG_ERR_GRAMMAR_INVALID_SPREAD:
+  en: "found invalid spread target"
+  uy: "تەكرار نىشانى ئىناۋەتسىز"
+  ug: "tekrar nishani inawetsiz"
+  uz: "takror nishoni yaroqsiz"
+  tr: "tekrar nişani geçersiz"
+  kz: "текрар нысаны жарамсыз"
+LANG_ERR_GRAMMAR_INVALID_GENERATION:
+  en: "found invalid generation"
+  uy: "ھاسىللاش مەشغۇلاتى ئىناۋەتسىز"
+  ug: "hasillash meshghulati inawetsiz"
+  uz: "hosillash operatsiyasi yaroqsiz"
+  tr: "yapmak işlemi geçersiz"
+  kz: "жасау операциясы жарамсыз"
+LANG_ERR_SOME_CALCULATION_INVALID:
+  en: "found invalid calculation"
+  uy: "ھېسابلاش مەشغۇلاتى ئىناۋەتسىز"
+  ug: "hisablash meshghulati inawetsiz"
+  uz: "hisoblash operatsiyasi yaroqsiz"
+  tr: "hesaplama işlemi geçersiz"
+  kz: "есептеу операциясы жарамсыз"
+LANG_ERR_SOME_RUNNABLE_INVALID:
+  en: "target runnable not valid"
+  uy: "نىشانلانغان يۈگۈرگۈچى ئىناۋەتسىز"
+  ug: "nishanlanghan yugurguchi inawetsiz"
+  uz: "Maqsadli yuguruvchi Yaroqsiz"
+  tr: "nişan koşucu geçersiz"
+  kz: "мақсат жүгіруші жарамсыз"
+LANG_ERR_GRAMMAR_INVALID_KEY:
+  en: "found invalid key"
+  uy: "ئىناۋەتسىز ئاچقۇچ ئۇچرىتىلدى"
+  ug: "inawetsiz achquch uchritildi"
+  uz: "Yaroqsiz kalit topildi"
+  tr: "geçersiz anahtar bulundu"
+  kz: "жарамсыз кілт табылды"
+LANG_ERR_GRAMMAR_INVALID_NAME:
+  en: "found invalid name"
+  uy: "ئىناۋەتسىز نام ئۇچرىتىلدى"
+  ug: "inawetsiz nam uchritildi"
+  uz: "Yaroqsiz nom topildi"
+  tr: "geçersiz nam bulundu"
+  kz: "жарамсыз ат табылды"
+
+# compiler
+LANG_ERR_COMPILER_NOT_IMPLEMENTED:
+  en: "compiler not implemented"
+  uy: "ئايلاندۇرۇش مەشغۇلاتى قوللانمىدى"
+  ug: "aylandurush meshghulati qollanmidi"
+  uz: "Aylantirish amaliyoti qo'llanilmadi"
+  tr: "derleme işlemi gerçekleştirilemedi"
+  kz: "аудару жаттығу қолданылмады"
+LANG_ERR_COMPILER_EXCEPTION:
+  en: "occured compiler exception"
+  uy: "ئايلاندۇرۇش خاتالىقى كۈرۈلدى"
+  ug: "aylandurush xataliqi kuruldi"
+  uz: "Aylantirish xatosi yuz berdi"
+  tr: "derleme hatasi oluştu"
+  kz: "аудару қатесі болды"
 
 # executer
 LANG_ERR_EXECUTER_EXCEPTION:
@@ -211,20 +271,6 @@ LANG_ERR_EXECUTER_INVALID_STATE:
   uz: "Yaroqsiz ijro rejimi"
   tr: "çalıştırma durumu geçersiz"
   kz: "орындау күйі жарамсыз"
-LANG_ERR_EXECUTER_INVALID_KEY:
-  en: "found invalid key"
-  uy: "ئىناۋەتسىز ئاچقۇچ ئۇچرىتىلدى"
-  ug: "inawetsiz achquch uchritildi"
-  uz: "Yaroqsiz kalit topildi"
-  tr: "geçersiz anahtar bulundu"
-  kz: "жарамсыз кілт табылды"
-LANG_ERR_EXECUTER_INVALID_NAME:
-  en: "found invalid name"
-  uy: "ئىناۋەتسىز نام ئۇچرىتىلدى"
-  ug: "inawetsiz nam uchritildi"
-  uz: "Yaroqsiz nom topildi"
-  tr: "geçersiz nam bulundu"
-  kz: "жарамсыз ат табылды"
 LANG_ERR_EXECUTER_INVALID_VARIABLE:
   en: "found invalid variable"
   uy: "ئىناۋەتسىز مىقدار ئۇچرىتىلدى"
@@ -240,13 +286,6 @@ LANG_ERR_EXECUTER_INVALID_BOX:
   tr: "geçersiz sandık bulundu"
   kz: "жарамсыз сандық табылды"
 # calculate
-LANG_ERR_EXECUTER_CALCULATION_INVALID:
-  en: "found invalid calculation"
-  uy: "ھېسابلاش مەشغۇلاتى ئىناۋەتسىز"
-  ug: "hisablash meshghulati inawetsiz"
-  uz: "hisoblash operatsiyasi yaroqsiz"
-  tr: "hesaplama işlemi geçersiz"
-  kz: "есептеу операциясы жарамсыз"
 LANG_ERR_EXECUTER_CALCULATION_INVALID_SIGN:
   en: "found invalid calculation sign"
   uy: "ھېسابلاش بەلگىسى ئىناۋەتسىز"
@@ -261,21 +300,6 @@ LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS:
   uz: "Yaroqsiz hisoblash qiymatlari"
   tr: "hesaplama değişkenleri geçersiz"
   kz: "есептеу айнымалылары жарамсыз"
-# generate
-LANG_ERR_EXECUTER_GENERATION_INVALID:
-  en: "found invalid generation"
-  uy: "ھاسىللاش مەشغۇلاتى ئىناۋەتسىز"
-  ug: "hasillash meshghulati inawetsiz"
-  uz: "hosillash operatsiyasi yaroqsiz"
-  tr: "yapmak işlemi geçersiz"
-  kz: "жасау операциясы жарамсыз"
-LANG_ERR_EXECUTER_GENERATION_INVALID_KEY:
-  en: "found invalid generation key"
-  uy: "ھاسىللاش ئاچقۇچى ئىناۋەتسىز"
-  ug: "hasillash achquchi inawetsiz"
-  uz: "Yaroqsiz hosillash Kaliti"
-  tr: "yapmak anahtari geçersiz"
-  kz: "жасау кілты жарамсыз"
 #
 LANG_ERR_EXECUTER_INVALID_DEVIDE:
   en: "devider can not be zero"
@@ -284,21 +308,6 @@ LANG_ERR_EXECUTER_INVALID_DEVIDE:
   uz: "Bo'luvchi son nol bo'lolmaydu"
   tr: "bölen sayı sıfır olamaz"
   kz: "бөлетін сан нөл болалмады"
-LANG_ERR_EXECUTER_INVALID_SPREAD:
-  en: "found invalid spread target"
-  uy: "تەكرار نىشانى ئىناۋەتسىز"
-  ug: "tekrar nishani inawetsiz"
-  uz: "takror nishoni yaroqsiz"
-  tr: "tekrar nişani geçersiz"
-  kz: "текрар нысаны жарамсыз"
-#
-LANG_ERR_EXECUTER_INVALID_IF:
-  en: "found invalid if"
-  uy: "ئەگەر جۈملىسى ئىناۋەتسىز"
-  ug: "eger jumlisi inawetsiz"
-  uz: "agar bayonot noto'g'ri"
-  tr: "eğer cümlesi geçersiz"
-  kz: "егер сөйлем жарамсыз"
 # 
 LANG_ERR_EXECUTER_VARIABLE_ALREADY_DEFINED:
   en: "variable already defined"
@@ -350,13 +359,6 @@ LANG_ERR_EXECUTER_RUNNABLE_NOT_FOUND:
   uz: "Maqsadli yuguruvchi topilmadi"
   tr: "nişan koşucu bulunamadı"
   kz: "мақсат жүгіруші табылмады"
-LANG_ERR_EXECUTER_RUNNABLE_NOT_VALID:
-  en: "target runnable not valid"
-  uy: "نىشانلانغان يۈگۈرگۈچى ئىناۋەتسىز"
-  ug: "nishanlanghan yugurguchi inawetsiz"
-  uz: "Maqsadli yuguruvchi Yaroqsiz"
-  tr: "nişan koşucu geçersiz"
-  kz: "мақсат жүгіруші жарамсыз"
 LANG_ERR_EXECUTER_APPLY_NOT_VALID:
   en: "apply action not valid"
   uy: "ئىشلىتىش مەشغۇلاتى ئىناۋەتسىز"

@@ -12,7 +12,7 @@
 
 bool isTest = false;
 
-#define UG_IS_DEVELOP false
+#define UG_IS_DEVELOP true
 #define MAX_STACK_SIZE 1000
 #define MAX_TRACE_SIZE 5
 
@@ -107,6 +107,14 @@ typedef struct _Leaf {
     Stack *tokens; // tokens of this ast leaf (params of expression, statement or func)
     Queue *leafs; // programs of this ast leaf (sub code block of statement or func)
 } Leaf;
+
+// draft
+
+typedef struct _Draft {
+    struct _Object;
+    char type;
+    String *text;
+} Draft;
 
 // value
 
@@ -237,6 +245,7 @@ void Runtime_assert(bool, char *);
 
 #include "../objects/token.c"
 #include "../objects/leaf.c"
+#include "../objects/draft.c"
 
 typedef void (*WORKER)(Leaf *);
 typedef void (*NATIVE)(Bridge *);
@@ -268,6 +277,14 @@ typedef struct _Parser
     Leaf *leaf;
 } Parser;
 
+typedef struct _Compiler {
+    Uyghur *uyghur;
+    Draft *draft;
+    bool isReturn;
+    bool isCatch;
+    char *errorMsg;
+} Compiler;
+
 typedef struct _Executer {
     Uyghur *uyghur;
     Machine *machine;
@@ -291,6 +308,7 @@ typedef struct _Uyghur {
     CString language;
     Tokenizer *tokenizer;
     Parser *parser;
+    Compiler *compiler;
     Executer *executer;
     Machine *machine;
     Debug *debug;

@@ -167,6 +167,10 @@ bool is_higher_priority_calculation(char *target, char *than)
     return false;
 }
 
+bool is_apply_action(char *v) {
+    return is_eq_string(v, LETTER_CALLMENT) || is_eq_string(v, LETTER_WORKER) || is_eq_string(v, LETTER_CREATOR) || is_eq_string(v, LETTER_ASSISTER);
+}
+
 bool is_command_action(char *value) {
     return value != NULL && (is_eq_string(value, LETTER_CMD_INPUT) || is_eq_string(value, LETTER_CMD_OUTPUT));
 }
@@ -311,6 +315,7 @@ void Object_initByType(char type, void *object)
 void Object_freeByType(char type, void *object)
 {
     if (type == PCT_OBJ_VALUE) return Value_free(object);
+    if (type == PCT_OBJ_DRAFT) return Draft_free(object);
     if (type == PCT_OBJ_TOKEN) return Token_free(object);
     if (type == PCT_OBJ_LEAF) return Leaf_free(object);
     pct_object_free(object);
@@ -319,9 +324,19 @@ void Object_freeByType(char type, void *object)
 void Object_printByType(char type, void *object)
 {
     if (type == PCT_OBJ_VALUE) return Value_print(object);
+    if (type == PCT_OBJ_DRAFT) return Draft_print(object);
     if (type == PCT_OBJ_TOKEN) return Token_print(object);
     if (type == PCT_OBJ_LEAF) return Leaf_print(object);
     pct_object_print(object);
+}
+
+CString helper_read_code_file(CString path)
+{
+    bool exist = file_exist(path);
+    tools_assert(exist, "%s:[%s]", LANG_ERR_NO_INPUT_FILE, path);
+    char *code = file_read(path);
+    tools_assert(code != NULL, "%s:[%s]", LANG_ERR_NO_INPUT_FILE, path);
+    return code;
 }
 
 CString _helper_translate_letter(char *letter, char *def) {

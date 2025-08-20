@@ -105,6 +105,16 @@ assister:
     tr: "yardımcı cümlesi yapmak"
     kz: "жәрдемшы сөйлемі жасау"
 
+callment:
+  prefix: LETTER_CALLMENT
+  message:
+    en: "make callment sentence"
+    uy: "چاقىرما جۈملىسى ياساش"
+    ug: "chaqirma jumlisi yasash"
+    uz: chaqirmo bayonoti tuzish
+    tr: "çağırma cümlesi yapmak"
+    kz: "шақырма сөйлемі жасау"
+
 apply_worker:
   prefix: LETTER_WORKER
   message:

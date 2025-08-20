@@ -226,6 +226,13 @@ LETTER_WORKER:
   uz: xizmatchi
   tr: hizmetçi
   kz: қызметші
+LETTER_CALLMENT:
+  en: callment
+  uy: چاقىرما
+  ug: chaqirma
+  uz: chaqirmo
+  tr: çağırma
+  kz: шақырма
 #
 LETTER_CREATOR:
   en: creator

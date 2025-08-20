@@ -176,7 +176,7 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
         }
     }
     // keys
-    Executer_assert(this, Token_isKey(token), token, LANG_ERR_EXECUTER_INVALID_KEY);
+    Executer_assert(this, Token_isKey(token), token, LANG_ERR_GRAMMAR_INVALID_KEY);
     Token *extra = (Token *)token->extra;
     if (is_eq_string(extra->value, SCOPE_ALIAS_GLB) || is_eq_string(extra->value, LETTER_GLOBAL)) {
         *rContainer = this->globalScope;
@@ -220,18 +220,18 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
         } else if (Value_isString(value)) {
             key = value->string;
         } else {
-            Executer_error(this, token, LANG_ERR_EXECUTER_INVALID_KEY);
+            Executer_error(this, token, LANG_ERR_GRAMMAR_INVALID_KEY);
         }
     }
     // num
     if (Value_isNumber(*rContainer) || *rContainer == (Value *)this->machine->kindNum) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
+        Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
         *rValue = Dictable_getLocation(this->machine->kindNum, key);
         return;
     }
     // str
     if (Value_isString(*rContainer) || *rContainer == (Value *)this->machine->kindStr) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
+        Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
         *rValue = Dictable_getLocation(this->machine->kindStr, key);
         return;
     }
@@ -256,30 +256,30 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
         }
     }
     if (further ||  *rContainer == (Value *)this->machine->kindList) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
+        Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
         *rValue = Dictable_getLocation(this->machine->kindList, key);
         return;
     }
     // dict
     if (Value_isDictable(*rContainer)) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
+        Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
         *rValue = Dictable_getLocation(*rContainer, key);
         further = *rValue == NULL;
     }
     if (further || *rContainer == (Value *)this->machine->kindDict) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
+        Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
         *rValue = Dictable_getLocation(this->machine->kindDict, key);
         return;
     }
     // holdable
     if (Value_isHoldable(*rContainer)) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
+        Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
         *rValue = Dictable_getLocation(*rContainer, key);
         return;
     }
     // objective
     if (Value_isObjective(*rContainer)) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
+        Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
         *rValue = Dictable_getLocation(*rContainer, key);
         if (*rValue == NULL && Objective_isObj(*rContainer)) {
             Queue *parents = (*rContainer)->extra;
@@ -305,8 +305,8 @@ Value *Executer_searchValueOfNameKey(Executer *this, Token *token, bool checkVal
     Executer_findValueByLocation(this, token->value, &holdable, &value);
     // Executer_findValueByToken(this, _token, &holdable, &value);
     //
-    if (checkValue) Executer_assert(this, value!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
-    if (checkHolder) Executer_assert(this, holdable!= NULL, token, LANG_ERR_EXECUTER_INVALID_KEY);
+    if (checkValue) Executer_assert(this, value!= NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
+    if (checkHolder) Executer_assert(this, holdable!= NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
     return value;
 }
 
@@ -661,7 +661,7 @@ void Executer_consumeConvert(Executer *this, Leaf *leaf)
         {
             r = Value_toBoolean(value);
         }
-        else if (is_eq_string(act, LETTER_WORKER) || is_eq_string(act, LETTER_CREATOR) || is_eq_string(act, LETTER_ASSISTER))
+        else if (is_apply_action(act))
         {
             char *funcName = value->string;
             Token *funcToken = Token_name(funcName);
@@ -729,8 +729,8 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
     Queue_RESTE(leaf->leafs);
     // if
     Leaf *ifNode = Queue_NEXT(leaf->leafs);
-    tools_assert(ifNode != NULL, LANG_ERR_EXECUTER_INVALID_IF);
-    tools_assert(ifNode->type == UG_ATYPE_IF_F, LANG_ERR_EXECUTER_INVALID_IF);
+    tools_assert(ifNode != NULL, LANG_ERR_GRAMMAR_INVALID_IF);
+    tools_assert(ifNode->type == UG_ATYPE_IF_F, LANG_ERR_GRAMMAR_INVALID_IF);
     if (!isFinish && Executer_checkJudge(this, ifNode))
     {
         Executer_pushScope(this, LETTER_IF);
@@ -750,14 +750,14 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
             isFinish = true;
         }
         ifNode = Queue_NEXT(leaf->leafs);
-        tools_assert(ifNode != NULL, LANG_ERR_EXECUTER_INVALID_IF);
+        tools_assert(ifNode != NULL, LANG_ERR_GRAMMAR_INVALID_IF);
     }
     // else
     if (ifNode && ifNode->type == UG_ATYPE_IF_L)
     {
         Stack_RESTE(ifNode->tokens);
         Token *token = Stack_NEXT(ifNode->tokens);
-        tools_assert(is_eq_string(token->value, LETTER_ELSE), LANG_ERR_EXECUTER_INVALID_IF);
+        tools_assert(is_eq_string(token->value, LETTER_ELSE), LANG_ERR_GRAMMAR_INVALID_IF);
         if (!isFinish)
         {
             Executer_pushScope(this, LETTER_ELSE);
@@ -766,12 +766,12 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
             isFinish = true;
         }
         ifNode = Queue_NEXT(leaf->leafs);
-        tools_assert(ifNode != NULL, LANG_ERR_EXECUTER_INVALID_IF);
+        tools_assert(ifNode != NULL, LANG_ERR_GRAMMAR_INVALID_IF);
     }
     // end
-    tools_assert(ifNode && ifNode->type == UG_ATYPE_END, LANG_ERR_EXECUTER_INVALID_IF);
+    tools_assert(ifNode && ifNode->type == UG_ATYPE_END, LANG_ERR_GRAMMAR_INVALID_IF);
     Leaf *nullValue = Queue_NEXT(leaf->leafs);
-    tools_assert(nullValue == NULL, LANG_ERR_EXECUTER_INVALID_IF);
+    tools_assert(nullValue == NULL, LANG_ERR_GRAMMAR_INVALID_IF);
 }
 
 void Executer_consumeWhile(Executer *this, Leaf *leaf)
@@ -885,7 +885,7 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
             if (this->errorMsg != NULL) break;
         } HASHMAP_FOREACH_END;
     } else {
-        Executer_error(this, target, LANG_ERR_EXECUTER_INVALID_SPREAD);
+        Executer_error(this, target, LANG_ERR_GRAMMAR_INVALID_SPREAD);
     }
     //
     if (value != NULL) Machine_releaseObj(value);
@@ -933,7 +933,7 @@ void _Executer_parseAppliable(Executer *this, Leaf *leaf, char type, Token **fun
     } else if (type == UG_TYPE_ATR && Holdable_isModule(place)) {
         return;
     }
-    Executer_assert(this, Token_isName(*func), *func, LANG_ERR_EXECUTER_INVALID_NAME);
+    Executer_assert(this, Token_isName(*func), *func, LANG_ERR_GRAMMAR_INVALID_NAME);
 }
 
 void Executer_consumeWorker(Executer *this, Leaf *leaf)
@@ -1126,7 +1126,7 @@ Value *Executer_consumeApply(Executer *this, Leaf *leaf)
     } else if (runnableValue->type == UG_TYPE_NTV) {
         r = Executer_applyNative(this, runnableName, runnableValue, runnableContainer);
     } else {
-        Executer_error(this, runnableName, "LANG_ERR_EXECUTER_RUNNABLE_NOT_VALID");
+        Executer_error(this, runnableName, LANG_ERR_SOME_RUNNABLE_INVALID);
     }
     Debug_popTrace(this->uyghur->debug, NULL);
     // return result
@@ -1187,7 +1187,7 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
     // TODO:free r object
     Value *r = Executer_calculateBTree(this, root);
     // 
-    Executer_assert(this, r != NULL, target, LANG_ERR_EXECUTER_CALCULATION_INVALID);
+    Executer_assert(this, r != NULL, target, LANG_ERR_SOME_CALCULATION_INVALID);
     Executer_setValueByToken(this, target, r, false);
 }
 
@@ -1212,7 +1212,7 @@ Value *Executer_generateContainer(Executer *this, Object *object, Token *token)
         Token *key = block->next;
         Object *val = block->data;
         bool noKey = key == NULL;
-        Executer_assert(this, isArr == noKey, NULL, LANG_ERR_EXECUTER_GENERATION_INVALID_KEY);
+        Executer_assert(this, isArr == noKey, NULL, LANG_ERR_GRAMMAR_INVALID_KEY);
         //
         Value *value = NULL;
         if (val->objType == PCT_OBJ_QUEUE) {
@@ -1232,7 +1232,7 @@ Value *Executer_generateContainer(Executer *this, Object *object, Token *token)
             Executer_assert(this, location != NULL, key, "generating invalid location to dict");
             Dictable_setLocation(result, location, value);
         } else {
-            Executer_error(this, NULL, LANG_ERR_EXECUTER_GENERATION_INVALID);
+            Executer_error(this, NULL, LANG_ERR_GRAMMAR_INVALID_GENERATION);
         }
         //
         if (isArr) {
@@ -1254,7 +1254,7 @@ void Executer_consumeGenerator(Executer *this, Leaf *leaf)
     // TODO:free r object
     Value *r = Executer_generateContainer(this, root, target);
     //
-    Executer_assert(this, r != NULL, target, LANG_ERR_EXECUTER_GENERATION_INVALID);
+    Executer_assert(this, r != NULL, target, LANG_ERR_GRAMMAR_INVALID_GENERATION);
     Executer_setValueByToken(this, target, r, false);
 }
 

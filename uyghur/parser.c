@@ -329,7 +329,7 @@ void Parser_consumeAstIfMiddle(Parser *this)
     // close UG_ATYPE_IF_F or UG_ATYPE_IF_M
     Token *token = this->token;
     char curType = this->leaf->type;
-    Parser_assert(this, curType == UG_ATYPE_IF_F || curType == UG_ATYPE_IF_M, LANG_ERR_PARSER_INVALID_IF);
+    Parser_assert(this, curType == UG_ATYPE_IF_F || curType == UG_ATYPE_IF_M, LANG_ERR_GRAMMAR_INVALID_IF);
     Parser_closeBranch(this);
     //  open UG_ATYPE_IF_M
     Parser_checkWord(this, 0, 1, LETTER_ELIF);
@@ -341,7 +341,7 @@ void Parser_consumeAstIfLast(Parser *this)
 {
     // close UG_ATYPE_IF_F or UG_ATYPE_IF_M
     char curType = this->leaf->type;
-    Parser_assert(this, curType == UG_ATYPE_IF_F || curType == UG_ATYPE_IF_M, LANG_ERR_PARSER_INVALID_IF);
+    Parser_assert(this, curType == UG_ATYPE_IF_F || curType == UG_ATYPE_IF_M, LANG_ERR_GRAMMAR_INVALID_IF);
     Parser_closeBranch(this);
     // open UG_ATYPE_IF_L
     Token *token = Parser_checkWord(this, 0, 1, LETTER_ELSE);
@@ -458,10 +458,11 @@ void Parser_consumeAstAssister(Parser *this)
 
 void Parser_consumeAstApply(Parser *this)
 {
+    bool isCallment = Parser_isWord(this, 0, LETTER_CALLMENT);
     bool isWorker = Parser_isWord(this, 0, LETTER_WORKER);
     bool isCrator = Parser_isWord(this, 0, LETTER_CREATOR);
     bool isAssister = Parser_isWord(this, 0, LETTER_ASSISTER);
-    Parser_assert(this, isWorker || isCrator || isAssister, LANG_ERR_PARSER_INVALID_VARIABLE);
+    Parser_assert(this, isCallment || isWorker || isCrator || isAssister, LANG_ERR_PARSER_INVALID_VARIABLE);
     Parser_checkType(this, 0, 1, UG_TTYPE_WRD);
     //
     Leaf *leaf = _parser_consumeAstApply(this, LETTER_WITH, LETTER_APPLY);
@@ -692,7 +693,7 @@ void Parser_consumeToken(Parser *this, Token *token)
         }
     }
     // APPLY
-    if ((is_eq_string(v, LETTER_WORKER) || is_eq_string(v, LETTER_CREATOR) || is_eq_string(v, LETTER_ASSISTER))) {
+    if (is_apply_action(v)) {
         if (Parser_isValue(this, 2, LETTER_WITH) || Parser_isValue(this, 2, LETTER_APPLY)) {
             Parser_consumeAstApply(this);
             return;
