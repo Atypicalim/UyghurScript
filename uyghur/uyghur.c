@@ -94,7 +94,7 @@ Value *Uyghur_runModule(Uyghur *this, char *path)
     return module;
 }
 
-Value *Uyghur_runProgram(Uyghur *this, char *path)
+Value *Uyghur_runProgram(Uyghur *this, char *path, args_t args)
 {
     char *code = helper_read_code_file(path);
     Value *program = _Uyghur_runCode(this, path, code);
@@ -103,13 +103,13 @@ Value *Uyghur_runProgram(Uyghur *this, char *path)
     return program;
 }
 
-void Uyghur_runCompile(Uyghur *this, char *path)
+void Uyghur_runCompile(Uyghur *this, char *path, CString dialect)
 {
     log_debug("path:%s", path);
     _Uyghur_processLang(this, path);
     char *code = helper_read_code_file(path);
     Leaf *tree = _Uyghur_processCode(this, path, code);
-    Compiler_compileCode(this->compiler, tree);
+    Compiler_compileCode(this->compiler, tree, dialect);
     pct_free(code);
 }
 

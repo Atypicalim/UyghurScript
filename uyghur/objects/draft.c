@@ -33,9 +33,15 @@ void Draft_pushString(Draft *this, CString text)
     String_append(this->text, text);
 }
 
+void Draft_pushLine(Draft *this, CString text)
+{
+    String_append(this->text, text);
+    String_append(this->text, "\n");
+}
+
 void Draft_pushDraft(Draft *this, Draft *that)
 {
-    Draft_pushString(this, Draft_getString(that));
+    String_append(this->text, Draft_getString(that));
 }
 
 void Draft_free(Draft *this)

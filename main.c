@@ -83,13 +83,13 @@ void run_package_cmd(CString name, args_t args, CString path) {
 
 void run_execute_cmd(CString name, args_t args, CString path) {
     Uyghur *uyghur = Uyghur_instance();
-    Uyghur_runProgram(uyghur, path);
+    Uyghur_runProgram(uyghur, path, args);
     Uyghur_free(uyghur);
 }
 
 void run_compile_cmd(CString name, args_t args, CString path) {
     Uyghur *uyghur = Uyghur_instance();
-    Uyghur_runCompile(uyghur, path);
+    Uyghur_runCompile(uyghur, path, "js");
     Uyghur_free(uyghur);
 }
 
@@ -153,8 +153,8 @@ int main(int argc, char *argv[])
     }
     // program
     Uyghur *uyghur = Uyghur_instance();
-    if (argc == 1) Uyghur_runScript(uyghur, script);
-    if (argc >= 2) Uyghur_runProgram(uyghur, (char *)argv[1]);
+    if (argc <= 1) Uyghur_runScript(uyghur, script);
+    if (argc >= 2) Uyghur_runProgram(uyghur, (char *)argv[1], args);
     Uyghur_free(uyghur);
     //
     //

@@ -35,6 +35,7 @@ typedef const char* UTFCHAR;
 typedef const char* CName;
 typedef char* CString;
 typedef void* CPointer;
+typedef void *(*CFunction)(void *);
 
 typedef struct {
     const char* key;
@@ -280,6 +281,10 @@ typedef struct _Parser
 typedef struct _Compiler {
     Uyghur *uyghur;
     Draft *draft;
+    CString dialect;
+    int deepth;
+    Queue *passQueue;
+    Hashmap *generatorsMap;
     bool isReturn;
     bool isCatch;
     char *errorMsg;
@@ -317,7 +322,8 @@ typedef struct _Uyghur {
 
 Uyghur *__uyghur = NULL;
 Value *Uyghur_runModule(Uyghur *, char *);
-Value *Uyghur_runProgram(Uyghur *, char *);
+Value *Uyghur_runProgram(Uyghur *, char *, args_t);
+void Uyghur_runCompile(Uyghur *, char *, CString);
 
 struct Machine {
     Uyghur *uyghur;
@@ -367,10 +373,6 @@ void *Bridge_return(Bridge *);
 void Bridge_call(Bridge *, char *);
 void Bridge_run(Bridge *, Value *);
 
-// push alias -> func to bridge
-#define BRIDGE_BIND_NATIVE(name) \
-    Bridge_bindNative(bridge, ALIAS_ ## name, native_ ## name);
-
 ////////////////////////////////////////////////////////////////////////////
 
 struct Debug
@@ -386,6 +388,14 @@ void Debug_error(Uyghur *);
 void Debug_assert(Uyghur *);
 
 ////////////////////////////////////////////////////////////////////////////
+
+// push alias -> func to bridge
+#define BRIDGE_BIND_NATIVE(name) \
+    Bridge_bindNative(bridge, ALIAS_ ## name, native_ ## name);
+
+// push alias -> func to comopiler
+#define COMPILER_BIND_GENERATE(name) \
+    Compiler_bindGenerate(compiler, #name, name);
 
 CString helper_translate_letter(char *);
 CString helper_translate_alias(char *);
