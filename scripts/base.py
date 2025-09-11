@@ -22,6 +22,8 @@ EXTENSION_VERSION = "1.0.12"
 EXAMPLE_LANG = 'en'
 SUPPORT_LANG = set()
 
+class Run:
+    pass
 
 ###############################################################################
 

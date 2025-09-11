@@ -1,6 +1,5 @@
 
 from scripts.base import *
-from run import Run
 
 ################################################################
 
@@ -239,4 +238,5 @@ if not isUseRaysan and not isUseRiley:
 task.addFlags(["-I ../c-pure-tools/"])
 task.addFlags(["-I ../c-extra-tools/"])
 task.start()
-task.run()
+
+Run.runTarget = task

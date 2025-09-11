@@ -7,16 +7,15 @@ import subprocess
 
 __arg1 = sys.argv[1] if len(sys.argv) > 1 else ""
 __arg2 = sys.argv[2] if len(sys.argv) > 2 else ""
+RunCmd = __arg1
+RunExt = __arg2
 __workingDir = os.path.dirname(os.path.abspath(__file__))
 
-class Run:
-    pass
-Run.workingDir = __workingDir
-Run.arg1 = __arg1
-Run.arg2 = __arg2
-Run.needUpdate = __arg1 == "--update" or __arg1 == "-u"
-Run.needGenerate = __arg1 == "--generate" or __arg1 == "-g"
-Run.isRelease = __arg1 == "--release" or __arg1 == "-r"
+RunNeedUpdate = RunCmd == "--update" or RunCmd == "-u"
+RunNeedGenerate = RunCmd == "--generate" or RunCmd == "-g"
+RunNeedCompile = RunCmd == "--compile" or RunCmd == "-c"
+RunNeedExecute = RunCmd == "--execute" or RunCmd == "-e"
+RunNeedRelease = RunCmd == "--release" or RunCmd == "-r"
 
 ################################################################
 
@@ -30,7 +29,7 @@ except ModuleNotFoundError:
 def downloadGitTo(url, path):
     print("\ndownload:", url)
     if os.path.isdir(path):
-        if Run.needUpdate:
+        if RunNeedUpdate:
             os.chdir(path)
             subprocess.run(['git', 'pull'], check=True)
         else:
@@ -55,7 +54,7 @@ downloadGitTo("git@github.com:Atypicalim/replot.git", "../c-replot-library")
 ################################################################
 
 os.chdir(__workingDir)
-if Run.needUpdate:
+if RunNeedUpdate:
     print("\nupdateing self:")
     subprocess.run(['git', 'pull'], check=True)
     print("updated!\n")
@@ -65,11 +64,47 @@ if Run.needUpdate:
 
 from scripts.base import *
 import scripts.bind
-if Run.needGenerate:
+
+Run.workingDir = __workingDir
+Run.runTarget = None
+Run.arg1 = __arg1
+Run.arg2 = __arg2
+Run.isRelease = RunNeedRelease
+
+################################################################
+
+if RunNeedGenerate:
     import scripts.converter
     import scripts.converting
     import scripts.extension
     import scripts.readme
     import scripts.document
+    print("generated!\n")
+    sys.exit(0)
+
+################################################################
+
+import scripts.interpreter
+
+################################################################
+
+task = Run.runTarget
+dir, name, runnable = task.getRunnable()
+
+runPath = RunExt if RunExt != "" else "./examples/test.ug"
+runCmd = None
+if RunNeedCompile:
+    runCmd = "-c"
+    pass
+elif RunNeedExecute:
+    runCmd = "-e"
+    pass
+
+if runCmd != None:
+    isOk, output = tools.tools_execute(f"{runnable} {runCmd} {runPath}")
+    print(output)
 else:
-    import scripts.interpreter
+    isOk, extra = tools.tools_spawn(runnable, [], cwd=dir)
+    print(f"RUNNED:{isOk}", "" if isOk else extra)
+
+################################################################
