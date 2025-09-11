@@ -52,6 +52,8 @@ CString receive_token_2_js(Compiler *compiler) {
         value = convert_number_2_js(token);
     } else if (Token_isString(token)) {
         value = tools_format("\"%s\"", escape_cstring(token->value));
+    } else {
+        value = token->value;
     }
     return value;
 }
@@ -67,38 +69,56 @@ CString receive_args_2_js(Compiler *compiler) {
     return String_get(params);
 }
 
+CString receive_judge_2_js(Compiler *compiler) {
+    Token *judge = Compiler_popPass(compiler);
+    CString first = receive_token_2_js(compiler);
+    CString clcltn = receive_token_2_js(compiler);
+    CString second = receive_token_2_js(compiler);
+    bool shouldOk = is_eq_string(judge->value, LETTER_THEN);
+    if (shouldOk) {
+        return tools_format(!second ? "%s" : "%s %s %s", first, clcltn, second);
+    } else {
+        return tools_format(!second ? "!%s" : "!(%s %s %s)", first, clcltn, second);
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 CString generate_js_variable(Compiler *compiler) {
     CString name = receive_token_2_js(compiler);
     CString token = receive_token_2_js(compiler);
-    return tools_format("var %s = %s;", name, token);
+    return tools_format("var %s = %s", name, token);
 }
 
 CString generate_js_command(Compiler *compiler) {
     CString action = receive_token_2_js(compiler);
     CString args = receive_args_2_js(compiler);
     if (is_eq_string(action, LETTER_CMD_OUTPUT)) {
-        return tools_format("console.log(%s);", args);
+        return tools_format("console.log(%s)", args);
     } else if (is_eq_string(action, LETTER_CMD_INPUT)) {
-        return tools_format("var %s = prompt();", args);
+        return tools_format("var %s = prompt()", args);
     }
 }
 
 CString generate_js_if(Compiler *compiler) {
-    return "if() {}";
+    CString judge = receive_judge_2_js(compiler);
+    return tools_format("if(%s)", judge);
 }
 
 CString generate_js_spread(Compiler *compiler) {
-    return "for (const key in xyz) {}";
+    CString target = receive_token_2_js(compiler);
+    CString iter1 = receive_token_2_js(compiler);
+    CString iter2 = receive_token_2_js(compiler);
+    return tools_format("for(const %s in %s)", iter1, iter2, target);
 }
 
 CString generate_js_while(Compiler *compiler) {
-    return "while() {}";
+    CString judge = receive_judge_2_js(compiler);
+    return tools_format("while(%s)", judge);
 }
 
 CString generate_js_calculate(Compiler *compiler) {
-    return "xyz = 1 * a;";
+    return "xyz = 1 * a";
 }
 
 CString generate_js_define_appliable(Compiler *compiler) {
@@ -110,11 +130,19 @@ CString generate_js_apply(Compiler *compiler) {
     CString result = receive_token_2_js(compiler);
     CString args = receive_args_2_js(compiler);
     if (!result || is_eq_string(result, "null")) {
-        return tools_format("%s(%s);", name, args);
+        return tools_format("%s(%s)", name, args);
     } else {
-        return tools_format("var %s = %s(%s);", result, name, args);
+        return tools_format("var %s = %s(%s)", result, name, args);
     }
     
+}
+
+CString generate_js_then(Compiler *compiler) {
+    return "{";
+}
+
+CString generate_js_end(Compiler *compiler) {
+    return "}";
 }
 
 void generator_js_register(Compiler *compiler) 
@@ -127,4 +155,6 @@ void generator_js_register(Compiler *compiler)
     COMPILER_BIND_GENERATE(generate_js_calculate);
     COMPILER_BIND_GENERATE(generate_js_define_appliable);
     COMPILER_BIND_GENERATE(generate_js_apply);
+    COMPILER_BIND_GENERATE(generate_js_then);
+    COMPILER_BIND_GENERATE(generate_js_end);
 }

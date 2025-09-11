@@ -19,7 +19,7 @@ Draft *Draft_new(char type)
 void Draft_print(Draft *this)
 {
     printf("[(DRAFT_START) => address:%d type:%c]\n", this, this->type);
-    printf("[%s]\n", String_get(this->text));
+    printf("%s", String_get(this->text));
     printf("[(DRAFT_END) => address:%d]\n", this);
 }
 
@@ -31,6 +31,12 @@ CString Draft_getString(Draft *this)
 void Draft_pushString(Draft *this, CString text)
 {
     String_append(this->text, text);
+}
+
+void Draft_pushWord(Draft *this, CString text)
+{
+    String_append(this->text, text);
+    String_append(this->text, " ");
 }
 
 void Draft_pushLine(Draft *this, CString text)
