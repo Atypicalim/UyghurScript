@@ -43,6 +43,10 @@
     #include "../../c-xtra-tools/riley4ext/riley4ext.h"
 #endif
 
+#if !defined(USTAGE_USE_RAYSAN) && !defined(USTAGE_USE_RILEY) && !defined(USTAGE_USE_TIGR)
+#define UG_NO_STAGE
+#endif
+
 #if defined(UG_NO_STAGE) || defined(USTAGE_USE_TIGR)
 #define USTAGE_USE_SOFT true
 #else
