@@ -176,8 +176,12 @@ bldr.start()
 
 ############################################################################### task
 
-isUseRaysan = False
-isUseRiley = False
+isUseInternals = True
+isUseExternals = True
+
+isUseRaysan = isUseExternals and False
+isUseRiley = isUseExternals and False
+
 ugStageLib = None
 if isUseRaysan:
     ugStageLib = "raylib"
@@ -230,9 +234,14 @@ if isUseRiley:
 else:
     task.addFlags(["-D USTAGE_NONE_RILEY"])
 
-if not isUseRaysan and not isUseRiley:
+if isUseExternals and not isUseRaysan and not isUseRiley:
     task.addFlags(["-D USTAGE_USE_TIGR"])
     pass
+
+if not isUseInternals:
+    task.addFlags(["-D UG_NO_INTERNALS"])
+if not isUseExternals:
+    task.addFlags(["-D UG_NO_EXTERNALS"])
 
 #
 task.addFlags(["-I ../c-pure-tools/"])

@@ -19,7 +19,7 @@
 
 //////////////////////////////////////////////////////////
 
-#ifdef USTAGE_USE_SOFT
+#if USTAGE_USE_SOFT
 
 void *delegate_unload_image(UGImage *img) {
     return NULL;
