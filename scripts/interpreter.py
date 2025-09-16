@@ -181,6 +181,7 @@ isUseExternals = True
 
 isUseRaysan = isUseExternals and False
 isUseRiley = isUseExternals and False
+isUseTigr = isUseExternals and not isUseRaysan and not isUseRiley
 
 ugStageLib = None
 if isUseRaysan:
@@ -224,24 +225,12 @@ task.addWarnings(False, [
 ])
 #
 
-if isUseRaysan:
-    task.addFlags(["-D USTAGE_USE_RAYSAN"])
-else:
-    task.addFlags(["-D USTAGE_NONE_RAYSAN"])
+task.addFlags(["-D USTAGE_USE_RAYSAN" if isUseRaysan else "-D USTAGE_NONE_RAYSAN"])
+task.addFlags(["-D USTAGE_USE_RILEY" if isUseRiley else "-D USTAGE_NONE_RILEY"])
+task.addFlags(["-D USTAGE_USE_TIGR" if isUseTigr else "-D USTAGE_NONE_TIGR"])
 
-if isUseRiley:
-    task.addFlags(["-D USTAGE_USE_RILEY"])
-else:
-    task.addFlags(["-D USTAGE_NONE_RILEY"])
-
-if isUseExternals and not isUseRaysan and not isUseRiley:
-    task.addFlags(["-D USTAGE_USE_TIGR"])
-    pass
-
-if not isUseInternals:
-    task.addFlags(["-D UG_NO_INTERNALS"])
-if not isUseExternals:
-    task.addFlags(["-D UG_NO_EXTERNALS"])
+task.addFlags(["-D UG_USE_INTERNALS" if isUseInternals else "-D UG_NO_INTERNALS"])
+task.addFlags(["-D UG_USE_EXTERNALS" if isUseExternals else "-D UG_NO_EXTERNALS"])
 
 #
 task.addFlags(["-I ../c-pure-tools/"])

@@ -54,15 +54,18 @@
 #define TIGR_EXT_NO_DESKTOP
 #endif
 
+#ifndef USTAGE_NONE_TIGR
 #undef __IOS__
 #undef __ANDROID__
 #define TIGR_EXT_NO_MOBILE
 #include "../../c-xtra-tools/tigr4ext/tigr4ext.h"
+#endif
 
+#ifndef UG_NO_EXTERNALS
 #define REPLAY_WIN_NO_EXTRA
 #include "../../c-replay-library/replay.h"
-
 #define REPLOT_WIN_NO_EXTRA
 #include "../../c-replot-library/replot.h"
+#endif
 
 #endif
