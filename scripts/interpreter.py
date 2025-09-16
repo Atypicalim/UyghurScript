@@ -231,7 +231,7 @@ else:
     task.addFlags(["-D USTAGE_NONE_RILEY"])
 
 if not isUseRaysan and not isUseRiley:
-    # task.addFlags(["-D BUILDER_NO_BACKEND"])
+    # task.addFlags(["-D UG_NO_STAGE"])
     task.addFlags(["-D USTAGE_USE_TIGR"])
 
 #

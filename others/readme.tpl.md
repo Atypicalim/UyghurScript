@@ -53,8 +53,9 @@ Bridge_register(bridge, "boxName"); // NULL
 * call script function from c (giving one argument and receiving result)
 ```c++
 Bridge_startFunc(bridge);
-Bridge_pushValue(bridge, Value_newNumber(123));
-Bridge_pushValue(bridge, Value_newString(""));
+Bridge_pushNumber(bridge, 123);
+Bridge_pushBoolean(bridge, true);
+Bridge_pushString(bridge, "abc...");
 Bridge_call(bridge, "funcName");
 char resultType = Bridge_topType(bridge);
 void *resultValue = Bridge_receiveValue(bridge);
@@ -64,9 +65,13 @@ void *resultValue = Bridge_receiveValue(bridge);
 ```c++
 void testFunc(Bridge *bridge)
 {
-    int a = Bridge_receiveNumber(bridge);
-    char *b = Bridge_receiveString(bridge);
+    char resultType = Bridge_topType(bridge);
+    bool b = Bridge_receiveBoolean(bridge);
+    int n = Bridge_receiveNumber(bridge);
+    char *s = Bridge_receiveString(bridge);
     Bridge_returnBoolean(bridge, false);
+    Value *v = Value_newEmpty(NULL);
+    Bridge_returnValue(this, v);
 }
 Bridge_startBox(bridge);
 Bridge_bindNative(bridge, "testFunc", testFunc);

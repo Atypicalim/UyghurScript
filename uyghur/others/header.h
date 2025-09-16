@@ -16,6 +16,9 @@ bool isTest = false;
 #define MAX_STACK_SIZE 1000
 #define MAX_TRACE_SIZE 5
 
+// #define UG_NO_EXTERNALS
+// #define UG_NO_INTERNALS
+
 #define IS_GC_SWEEPING true
 #define IS_GC_COUNTING !IS_GC_SWEEPING
 #define IS_GC_LINK_LISTABLE_ARR true
