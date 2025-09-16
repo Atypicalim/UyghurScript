@@ -298,24 +298,4 @@ void delegate_soft_render(UGPixels pixels, int w, int h, int channel) {
 
 //////////////////////////////////////////////////////////
 
-void *delegate_unload_image(UGImage *img) {
-    return NULL;
-}
-
-void *delegate_unload_font(UGFont *fnt) {
-    return NULL;
-}
-
-UGImage *delegate_load_image(UGImage *img)
-{
-    return img;
-}
-
-UGFont *delegate_load_font(UGFont *fnt)
-{
-    return fnt;
-}
-
-//////////////////////////////////////////////////////////
-
 #endif

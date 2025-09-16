@@ -43,7 +43,7 @@
     #include "../../c-xtra-tools/riley4ext/riley4ext.h"
 #endif
 
-#ifdef USTAGE_USE_TIGR
+#if defined(UG_NO_STAGE) || defined(USTAGE_USE_TIGR)
 #define USTAGE_USE_SOFT true
 #else
 #define USTAGE_USE_SOFT false
