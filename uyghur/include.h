@@ -17,8 +17,8 @@
 #include <limits.h>
 #include <setjmp.h>
 
-#include "utf8.h"
-#include "tinyfiledialogs.h"
+#include "../my-build-tools/build/c_libs/utf8/utf8.h"
+#include "../my-build-tools/build/c_libs/tinyfiledialogs/tinyfiledialogs.h"
 
 #define MD5_IMPLEMENTATION
 #include "../../c-pure-tools/test.h"
@@ -30,6 +30,14 @@
 #include "../../c-xtra-tools/utf8iter/utf8iter.c"
 #include "../../c-xtra-tools/utf8string/utf8string.h"
 #include "../../c-xtra-tools/utf8string/utf8string.c"
+
+
+// #define USTAGE_NONE_RAYSAN
+// #define USTAGE_NONE_RILEY
+// #define USTAGE_NONE_TIGR
+// #define UG_NO_INTERNALS
+// #define UG_NO_EXTERNALS
+
 
 #ifndef USTAGE_NONE_RAYSAN
     #define REPLAY_NO_IMLEMENT

@@ -2,8 +2,10 @@
 
 #include "others/header.h"
 
-void Compiler_bindGenerate(Compiler *, CName, CFunction);
 CPointer Compiler_popPass(Compiler *);
+void Compiler_bindGenerate(Compiler *, CName, CGenerator);
+void Compiler_callGenerateNewLine(Compiler *, CName, bool);
+void Compiler_callGenerateSameLine(Compiler *, CName, bool);
 
 #include "generators/generate_js.c"
 #include "generators/generate_go.c"
@@ -69,7 +71,7 @@ void Compiler_popScope(Compiler *this)
     Draft_pushLine(this->draft, "");
 }
 
-void Compiler_bindGenerate(Compiler *this, CName name, CFunction func) {
+void Compiler_bindGenerate(Compiler *this, CName name, CGenerator func) {
     Hashmap_set(this->generatorsMap, name, func);
 }
 

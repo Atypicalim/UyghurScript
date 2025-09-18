@@ -1,6 +1,6 @@
 // implementation
 
-#include "incbin.h"
+#include "../my-build-tools/build/c_libs/incbin/incbin.h"
 #include "uyghur/include.h"
 #include "uyghur/uyghur.c"
 
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
     log_set_color(true);
     log_set_quiet(false);
     // locale
-    popen("chcp 65001", "r");
+    system_execute("chcp 65001");
     setlocale(LC_ALL, "en_US.utf8");
     // args
 	args_t args = new_args(argc, argv);

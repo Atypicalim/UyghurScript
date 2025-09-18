@@ -379,8 +379,8 @@ void _machine_mark_value(Value *value) {
     }
 }
 
-void _machine_mark_arrkey(int key, Value *val, void *other) {
-    _machine_mark_value(val);
+void _machine_mark_arrkey(int key, void *val, void *other) {
+    _machine_mark_value((Value *)val);
 }
 
 void _machine_mark_listable(Listable *listable) {
@@ -458,8 +458,8 @@ void _machine_mark_vstack(void *ptr, void *other) {
     _machine_mark_value(ptr);
 }
 
-void _machine_mark_timer(Value *value) {
-    _machine_mark_value(value);
+void _machine_mark_timer(void *value) {
+    _machine_mark_value((Value *)value);
 }
 
 void Machine_mark(Machine *this)
@@ -597,9 +597,9 @@ void Machine_testGC() {
             Holdable_newScope("test", NULL);
         }
         Machine_runGC(this);
-        sleep(1);
+        system_sleep(1000);
     }
     log_warn("\n\n\n---------------------END!!!");
-    sleep(10);
+    system_sleep(10 * 1000);
     
 }

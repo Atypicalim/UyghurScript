@@ -3,8 +3,8 @@
 #include "../others/header.h"
 #endif
 
-void generate_go_variable(Compiler *compiler) {
-    
+CString generate_go_variable(Compiler *compiler) {
+    return "";
 }
 
 void generator_go_register(Compiler *compiler) 

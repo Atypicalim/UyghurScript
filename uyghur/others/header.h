@@ -35,7 +35,6 @@ typedef const char* UTFCHAR;
 typedef const char* CName;
 typedef char* CString;
 typedef void* CPointer;
-typedef void *(*CFunction)(void *);
 
 typedef struct {
     const char* key;
@@ -386,6 +385,11 @@ void Debug_popTrace(Debug *, Token *);
 void Debug_writeTrace(Debug *);
 void Debug_error(Uyghur *);
 void Debug_assert(Uyghur *);
+
+////////////////////////////////////////////////////////////////////////////
+
+typedef void *(*CFunction)(void *);
+typedef CString (*CGenerator)(Compiler *);
 
 ////////////////////////////////////////////////////////////////////////////
 

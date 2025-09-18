@@ -35,7 +35,7 @@ int externals_check_fps() {
     }
     // 
     // float extra = (float)MAX(0, MIN(1, _etargetDelay - delay));
-    // sleep_milliseconds(extra * 1000);
+    // system_sleep(extra * 1000);
     //
     return _eFpsNum;
 }

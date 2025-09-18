@@ -44,7 +44,9 @@ Value *Dictable_getLocation(Dictable *this, char *key)
 }
 
 
-bool _hashmap_set_check_dictable(Value *old, Value *new) {
+bool _hashmap_set_check_dictable(void *_old, void *_new) {
+    Value *old = (Value *)_old;
+    Value *new = (Value *)_new;
     if (!old || old->type == UG_TYPE_NIL) return true;
     if (!new || new->type == UG_TYPE_NIL) return true;
     if (old->fixed && old->type != new->type) {

@@ -13,8 +13,8 @@
 #include "debug.c"
 #include "bridge.c"
 
-#include "internals/header.h"
-#include "externals/header.h"
+// #include "internals/header.h"
+// #include "externals/header.h"
 
 void Uyghur_init(Uyghur *this)
 {
@@ -39,8 +39,8 @@ Uyghur *Uyghur_instance()
     uyghur->bridge = Bridge_new(uyghur);
     uyghur->executer = Executer_new(uyghur);
     //
-    register_internal_libraries(uyghur->bridge);
-    register_external_libraries(uyghur->bridge);
+    // register_internal_libraries(uyghur->bridge);
+    // register_external_libraries(uyghur->bridge);
     //
     uyghur->machine->sweeping = IS_GC_SWEEPING;
     uyghur->machine->freezing = false;
