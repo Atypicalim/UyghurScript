@@ -10,7 +10,7 @@ xizmetchi @qelem.resimEkirish bilen "../resources/rose.png" 0 0 -1 -1 ishlitilsu
 nawada @sehne.yepilmaqchi bolmisa
     #
     rotation = rotation + 0.05
-    xizmetchi @qelem.resimSizish bilen img 250 250 ishlitilsun
+    xizmetchi @qelem.resimSizish bilen 250 250 img ishlitilsun
     #
     xizmetchi @sehne.yengilash ishlitilsun
 tamamlansun

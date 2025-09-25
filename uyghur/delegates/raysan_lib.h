@@ -323,7 +323,7 @@ bool delegate_stage_update_program() {
 
 //////////////////////////////////////////////////////////
 
-#define _COLOR (Color){color.r, color.g, color.b, color.a}
+#define _COLOR (Color){gPenColor.r, gPenColor.g, gPenColor.b, gPenColor.a}
 #define _VECTOR (Vector2){vector.x, vector.y}
 #define _CENTER (Vector2){center.x, center.y}
 #define _ANCHOR (Vector2){anchor.x, anchor.y}
@@ -380,20 +380,20 @@ void delegate_pencil_customize(UGColor color, int rotation) {
 
 }
 
-void delegate_pencil_draw_pixel(UGPoint point, UGColor color) {
+void delegate_pencil_draw_pixel(UGPoint point) {
     DrawPixelV(_POINT, _COLOR);
 }
 
-void delegate_pencil_draw_line(UGPoint point1, UGPoint point2, int thickness, UGColor color) {
-    DrawLineEx(_POINT1, _POINT2, thickness, _COLOR);
+void delegate_pencil_draw_line(UGPoint point1, UGPoint point2) {
+    DrawLineEx(_POINT1, _POINT2, gPenThickness, _COLOR);
 }
 
-void delegate_pencil_draw_triangle(UGPoint point1, UGPoint point2, UGPoint point3, UGColor color, double thickness)
+void delegate_pencil_draw_triangle(UGPoint point1, UGPoint point2, UGPoint point3)
 {
     DrawTriangleLines(_POINT1, _POINT2, _POINT3, _COLOR);
 }
 
-void delegate_pencil_fill_triangle(UGPoint point1, UGPoint point2, UGPoint point3, UGColor color)
+void delegate_pencil_fill_triangle(UGPoint point1, UGPoint point2, UGPoint point3)
 {
     int t1 = point1.y / point1.x;
     int t2 = point2.y / point2.x;
@@ -404,37 +404,37 @@ void delegate_pencil_fill_triangle(UGPoint point1, UGPoint point2, UGPoint point
     DrawTriangle(_POINT1, _POINT2, _POINT3, _COLOR); // have to be counter-clock-wise.
 }
 
-void delegate_pencil_draw_rectangle(UGPoint point, UGSize size, UGColor color, double thickness)
+void delegate_pencil_draw_rectangle(UGPoint point, UGSize size)
 {
     Rectangle _rect = (Rectangle){point.x - size.w / 2, point.y - size.h / 2, size.w, size.h};
-    DrawRectangleLinesEx(_rect, thickness, _COLOR);
+    DrawRectangleLinesEx(_rect, gPenThickness, _COLOR);
 }
 
-void delegate_pencil_fill_rectangle(UGPoint point, UGSize size, UGColor color)
+void delegate_pencil_fill_rectangle(UGPoint point, UGSize size)
 {
     Rectangle _rect = (Rectangle){point.x - size.w / 2, point.y - size.h / 2, size.w, size.h};
     Vector2 _anchor = (Vector2){0.5, 0.5};
     DrawRectanglePro(_rect, _anchor, 0, _COLOR);
 }
 
-void delegate_pencil_draw_circle(UGPoint point, int radius, UGColor color, double thickness)
+void delegate_pencil_draw_circle(UGPoint point, int radius)
 {
     DrawEllipseLines(point.x, point.y, radius, radius, _COLOR);
 }
 
-void delegate_pencil_fill_circle(UGPoint point, int radius, UGColor color)
+void delegate_pencil_fill_circle(UGPoint point, int radius)
 {
     DrawEllipse(point.x, point.y, radius, radius, _COLOR);
 }
 
-void delegate_pencil_draw_polygon(UGPoint center, int sides, double radius, double rotation, UGColor color, double thickness)
+void delegate_pencil_draw_polygon(UGPoint center, int sides, double radius)
 {
-    DrawPolyLinesEx(_CENTER, sides, radius, rotation, thickness, _COLOR);
+    DrawPolyLinesEx(_CENTER, sides, radius, gPenRotation, gPenThickness, _COLOR);
 }
 
-void delegate_pencil_fill_polygon(UGPoint center, int sides, double radius, double rotation, UGColor color)
+void delegate_pencil_fill_polygon(UGPoint center, int sides, double radius)
 {
-    DrawPoly(_CENTER, sides, radius, rotation, _COLOR);
+    DrawPoly(_CENTER, sides, radius, gPenRotation, _COLOR);
 }
 
 //////////////////////////////////////////////////////////
@@ -485,7 +485,7 @@ UGFont *delegate_load_font(UGFont *fnt)
 
 //////////////////////////////////////////////////////////
 
-void delegate_pencil_draw_image(UGImage *image, int x, int y, float anchorX, float anchorY, UGColor color, float rotation, float scale) {
+void delegate_pencil_draw_image(UGPoint point, UGImage *image, float anchorX, float anchorY, float scale) {
 
     Texture *tex = image->txtr;
     Texture texture = tex[0];
@@ -493,14 +493,14 @@ void delegate_pencil_draw_image(UGImage *image, int x, int y, float anchorX, flo
     Rectangle source = (Rectangle){0, 0, image->w, image->h};
     float destW = texture.width * scale;
     float destH = texture.height * scale;
-    float destX = x - destW / 2;
-    float destY = y - destH / 2;
+    float destX = point.x - destW * anchorY;
+    float destY = point.y - destH * anchorY;
     Rectangle dest = (Rectangle){destX, destY, destW, destH};
     Vector2 origin = (Vector2){0, 0};
-    DrawTexturePro(texture, source, dest, origin, rotation, _COLOR);
+    DrawTexturePro(texture, source, dest, origin, gPenRotation, _COLOR);
 }
 
-void delegate_pencil_draw_font(UGFont *font, char *text, int size, UGColor color, UGPoint point) {
+void delegate_pencil_draw_font(UGPoint point, UGFont *font, char *text, int size) {
     Font *fnt = font->font;
     Font _fnt = fnt[0];
     Vector2 space = MeasureTextEx(_fnt, text, size, 0);

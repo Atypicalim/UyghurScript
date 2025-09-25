@@ -21,7 +21,7 @@ nawada @sehne.yepilmaqchi bolmisa
     #
     o = w / 2
     o = 250 - o
-    xizmetchi @qelem.fontSizish bilen font 36 "SINAQ" o 50 ishlitilsun
+    xizmetchi @qelem.fontSizish bilen o 50 font 36 "SINAQ" ishlitilsun
     #
     xizmetchi @sehne.yengilash ishlitilsun
 tamamlansun

@@ -125,9 +125,9 @@ nawada @sehne.yepilmaqchi bolmisa
     xizmetchi @qelem.chemberToldurush bilen merkezX merkezY teglikRadiusi teglikRadiusi ishlitilsun
     # xet yezish
     xizmetchi @qelem.xaslashturush bilen "eeeeee" ishlitilsun
-    xizmetchi @qelem.fontSizish bilen font 36 tema 35 20 ishlitilsun
+    xizmetchi @qelem.fontSizish bilen 35 20 font 36 tema ishlitilsun
     xizmetchi @waqit.sikuntniAylandurush bilen hazirqiWaqit "%Y-%m-%d %H:%M:%S" ishlitilsun we chisla elinsun
-    xizmetchi @qelem.fontSizish bilen font 36 chisla 115 450 ishlitilsun
+    xizmetchi @qelem.fontSizish bilen 115 450 font 36 chisla ishlitilsun
     # istirilka hisablash
     xizmetchi istirilkaHisablash bilen hazirqiWaqit ishlitilsun
     # istirilka sizish

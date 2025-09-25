@@ -328,15 +328,21 @@ UGRect rect_from_bridge(Bridge *bridge)
 Replot *__eReplot = NULL;
 RColor __eColor;
 
+UGColor gPenColor = (UGColor){200, 255, 200, 255};
+int gPenRotation = 0;
+float gPenScale = 1.0f;
+int gPenThickness = 1;
+
 #define UG_PENCIL_FOCUS_NONE 0
 #define UG_PENCIL_FOCUS_PAPER 1
 #define UG_PENCIL_FOCUS_STAGE 2
-char __pencilFocus = 0;
-void* __pencilTarget = NULL;
+
+char gPenFocus = 0;
+void* gPenTarget = NULL;
 
 void pencil_focus_to(int type, void *target) {
-    __pencilFocus = type;
-    __pencilTarget = target;
+    gPenFocus = type;
+    gPenTarget = target;
 }
 
 ECanvas paper_from_bridge(Bridge *bridge)
@@ -349,7 +355,7 @@ ECanvas paper_from_bridge(Bridge *bridge)
 void __release_paper(Loadable *loadable) {
     if (loadable->obj) {
         ECanvas canvas = loadable->obj;
-        if (canvas == __pencilTarget) {
+        if (canvas == gPenTarget) {
             pencil_focus_to(UG_PENCIL_FOCUS_NONE, NULL);
         }
         Replot_free(canvas);

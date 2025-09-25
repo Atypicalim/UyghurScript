@@ -222,13 +222,13 @@ nawada @sehne.yepilmaqchi bolmisa
     tamamlansun
     # input
     xizmetchi belgilerniElish bilen herketQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @qelem.fontSizish bilen font 36 sinaqXet 377 21 ishlitilsun
+    xizmetchi @qelem.fontSizish bilen 377 21 font 36 sinaqXet ishlitilsun
     # result
     xizmetchi @xet.formatlash bilen "%f" netijeQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @qelem.fontSizish bilen font 24 sinaqXet 25 15 ishlitilsun
+    xizmetchi @qelem.fontSizish bilen 25 15 font 24 sinaqXet ishlitilsun
     # action
     xizmetchi @xet.formatlash bilen "%f" hazirqiQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @qelem.fontSizish bilen font 16 sinaqXet 25 38 ishlitilsun
+    xizmetchi @qelem.fontSizish bilen 25 38 font 16 sinaqXet ishlitilsun
     #
     xizmetchi @sehne.yengilash ishlitilsun
 tamamlansun

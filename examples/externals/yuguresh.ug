@@ -18,8 +18,8 @@ xizmetchi @qelem.fontEkirish bilen "../resources/ukij.ttf" 36 ishlitilsun we fon
 
 nawada @sehne.yepilmaqchi bolmisa
     #
-    xizmetchi @qelem.resimSizish bilen img 100 300 ishlitilsun
-    xizmetchi @qelem.fontSizish bilen font 36 text 250 50 ishlitilsun
+    xizmetchi @qelem.resimSizish bilen 100 300 img ishlitilsun
+    xizmetchi @qelem.fontSizish bilen 250 50 font 36 text ishlitilsun
     #
     xizmetchi @sehne.yengilash ishlitilsun
 tamamlansun

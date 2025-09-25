@@ -3,6 +3,8 @@
 #ifndef UG_DELEGATE_HEADER
 #define UG_DELEGATE_HEADER
 
+#include "./delegates.h"
+
 //////////////////////////////////////////////////////////
 
 #ifdef USTAGE_USE_RAYSAN

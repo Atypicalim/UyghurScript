@@ -23,6 +23,8 @@
 > 🛒: 
 * color  `UGColor`
 * rotation  `int`
+* scale  `float`
+* thickness  `int`
 
 
 ### 3. draw_pixel
@@ -267,10 +269,10 @@
 > 🔙: Empty
 
 > 🛒: 
+* point  `UGPoint`
 * font  `UGFont`
 * size  `float`
 * text  `CString`
-* point  `UGPoint`
 
 
 ### 24. draw_image
@@ -280,9 +282,9 @@
 > 🔙: Empty
 
 > 🛒: 
-* image  `UGImage`
 * point  `UGPoint`
-* size  `UGSize`
+* image  `UGImage`
+* scale  `double`
 
 
 ---
