@@ -475,7 +475,7 @@ UGFont *delegate_load_font(UGFont *fnt)
     for (int i = 0; i < 1024; i++) codepoints[0 + i] = 0 + i; // latin
     for (int i = 0; i < 1024; i++) codepoints[1024 + i] = 0x0400 + i; // cyrillic
     for (int i = 0; i < 1024; i++) codepoints[2048 + i] = 0xfb00 + i; // arabic
-    Font font = LoadFontEx(fnt->path, fnt->size, codepoints, 1024 * 3);
+    Font font = LoadFontEx(fnt->path, 24, codepoints, 1024 * 3);
     //
     Font *_font = (Font *)malloc(sizeof(Font));
     _font[0] = font;
@@ -485,7 +485,7 @@ UGFont *delegate_load_font(UGFont *fnt)
 
 //////////////////////////////////////////////////////////
 
-void delegate_pencil_draw_image(UGPoint point, UGImage *image, float anchorX, float anchorY, float scale) {
+void delegate_pencil_draw_image(UGPoint point, UGImage *image, UGColor color, float anchorX, float anchorY, float scale) {
 
     Texture *tex = image->txtr;
     Texture texture = tex[0];
@@ -497,16 +497,16 @@ void delegate_pencil_draw_image(UGPoint point, UGImage *image, float anchorX, fl
     float destY = point.y - destH * anchorY;
     Rectangle dest = (Rectangle){destX, destY, destW, destH};
     Vector2 origin = (Vector2){0, 0};
-    DrawTexturePro(texture, source, dest, origin, gPenRotation, _COLOR);
+    DrawTexturePro(texture, source, dest, origin, gPenRotation, (Color){color.r, color.g, color.b, color.a});
 }
 
-void delegate_pencil_draw_font(UGPoint point, UGFont *font, char *text, int size) {
+void delegate_pencil_draw_font(UGPoint point, UGFont *font, UGColor color, char *text, int size) {
     Font *fnt = font->font;
     Font _fnt = fnt[0];
     Vector2 space = MeasureTextEx(_fnt, text, size, 0);
     point.x = point.x - space.x / 2;
     point.y = point.y - space.y / 2;
-    DrawTextEx(_fnt, text, _POINT, size, 0, _COLOR);
+    DrawTextEx(_fnt, text, _POINT, size, 0, (Color){color.r, color.g, color.b, color.a});
 }
 
 //////////////////////////////////////////////////////////

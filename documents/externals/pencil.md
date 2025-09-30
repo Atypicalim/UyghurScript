@@ -250,6 +250,8 @@
 
 > 🛒: 
 * path  `CString`
+* point  `UGPoint`
+* size  `UGSize`
 
 
 ### 22. load_font
@@ -273,6 +275,7 @@
 * font  `UGFont`
 * size  `float`
 * text  `CString`
+* color  `UGColor`
 
 
 ### 24. draw_image
@@ -285,6 +288,7 @@
 * point  `UGPoint`
 * image  `UGImage`
 * scale  `double`
+* color  `UGColor`
 
 
 ---

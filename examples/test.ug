@@ -9,7 +9,7 @@ xizmetchi @qeghez.oqush bilen "../resources/rose.png" ishlitilsun we p elinsun
 chaqirma @sehne.korsitish bilen -1 -1 "Yuguresh" -1 ishlitilsun
 
 xizmetchi @qelem.resimEkirish bilen "../resources/rose.png" 0 0 -1 -1 ishlitilsun we img elinsun
-xizmetchi @qelem.fontEkirish bilen "../resources/ukij.ttf" 36 ishlitilsun we font elinsun
+xizmetchi @qelem.fontEkirish bilen "../resources/ukij.ttf" ishlitilsun we font elinsun
 
 miqdar x qimmiti 250 bolsun
 

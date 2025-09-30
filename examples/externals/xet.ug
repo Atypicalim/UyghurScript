@@ -7,7 +7,7 @@ miqdar o qimmiti 0 bolsun
 
 xizmetchi @sehne.korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
 
-xizmetchi @qelem.fontEkirish bilen "../resources/ukij.ttf" 36 ishlitilsun we font elinsun
+xizmetchi @qelem.fontEkirish bilen "../resources/ukij.ttf" ishlitilsun we font elinsun
 xizmetchi @qelem.fontOlchesh bilen font 36 "SINAQ" ishlitilsun we w elinsun
 
 nawada @sehne.yepilmaqchi bolmisa

@@ -392,12 +392,14 @@ void _pencil_release_font(Loadable *loadable) {
 void native_pencil_load_image(Bridge *bridge)
 {
     CString path = Bridge_receiveString(bridge);
-    bool needArea = Bridge_nextType(bridge) == UG_TYPE_NUM;
-    double x = needArea ? Bridge_receiveNumber(bridge) : 0;
-    double y = needArea ? Bridge_receiveNumber(bridge) : 0;
-    double w = needArea ? Bridge_receiveNumber(bridge) : -1;
-    double h = needArea ? Bridge_receiveNumber(bridge) : -1;
-    UGImage *image = UG_NEW_IMAGE(path);
+    UGImage *image;
+    if (Bridge_nextType(bridge) == UG_TYPE_NUM) {
+        UGPoint point = point_from_bridge(bridge);
+        UGSize size = size_from_bridge(bridge);
+        image = UG_NEW_IMAGE(path, point.x, point.y, size.w, size.h);
+    } else {
+        image = UG_NEW_IMAGE(path, 0, 0, -1, -1);
+    }
     delegate_load_image(image);
     Loadable *loadable = Loadable_newStuf(image, ALIAS_texture, path, _pencil_release_image);
     Bridge_returnValue(bridge, loadable);
@@ -406,9 +408,7 @@ void native_pencil_load_image(Bridge *bridge)
 void native_pencil_load_font(Bridge *bridge)
 {
     CString path = Bridge_receiveString(bridge);
-    bool needSize = Bridge_nextType(bridge) == UG_TYPE_NUM;
-    double size = needSize ? Bridge_receiveNumber(bridge) : 48;
-    UGFont *font = UG_NEW_FONT(path, size);
+    UGFont *font = UG_NEW_FONT(path);
     delegate_load_font(font);
     Loadable *loadable = Loadable_newStuf(font, ALIAS_texture, path, _pencil_release_font);
     Bridge_returnValue(bridge, loadable);
@@ -422,7 +422,9 @@ void native_pencil_draw_font(Bridge *bridge)
     UGFont *font = font_from_bridge(bridge);
     float size = Bridge_receiveNumber(bridge);
     CString text = Bridge_receiveString(bridge);
-    __UG_PENCIL_CALL(draw_font, point, font, text, size) {
+    UGColor color = color_from_bridge(bridge);
+    //
+    __UG_PENCIL_CALL(draw_font, point, font, color, text, size) {
         // font not supported
     }
     __pencil_apply_styles();
@@ -436,9 +438,11 @@ void native_pencil_draw_image(Bridge *bridge)
     UGPoint point = point_from_bridge(bridge);
     UGImage *image = image_from_bridge(bridge);
     double scale = Bridge_receiveNumberWithDefault(bridge, gPenScale);
+    UGColor color = color_from_bridge(bridge);
+    //
     float xAnchor = 0.5f;
     float yAnchor = 0.5f;
-    __UG_PENCIL_CALL(draw_image, point, image, xAnchor, yAnchor, scale) {
+    __UG_PENCIL_CALL(draw_image, point, image, color, xAnchor, yAnchor, scale) {
         int w = image->w * scale;
         int h = image->h * scale;
         int x = point.x - (xAnchor - 0.5) * w;

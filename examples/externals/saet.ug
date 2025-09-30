@@ -39,7 +39,7 @@ miqdar minutRadiusi qimmiti 135 bolsun
 miqdar sikunitRadiusi qimmiti 175 bolsun
 miqdar hazirqiRadius qimmiti quruq bolsun
 
-xizmetchi @qelem.fontEkirish bilen "../resources/ukij.ttf" 36 ishlitilsun we font elinsun
+xizmetchi @qelem.fontEkirish bilen "../resources/ukij.ttf" ishlitilsun we font elinsun
 
 # miqdardin bulung hisablash
 xizmetchi bulungHisablash miqdar hazirqi umumiy mezmuni

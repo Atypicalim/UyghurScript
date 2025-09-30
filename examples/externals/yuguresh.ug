@@ -14,7 +14,7 @@ miqdar text qimmiti "Bir Ikki Bir, Bir Ikki Bir ..." bolsun
 xizmetchi @sehne.korsitish bilen -1 -1 "Yuguresh" -1 ishlitilsun
 
 xizmetchi @qelem.resimEkirish bilen "../resources/run.png" 0 0 200 260 ishlitilsun we img elinsun
-xizmetchi @qelem.fontEkirish bilen "../resources/ukij.ttf" 36 ishlitilsun we font elinsun
+xizmetchi @qelem.fontEkirish bilen "../resources/ukij.ttf" ishlitilsun we font elinsun
 
 nawada @sehne.yepilmaqchi bolmisa
     #

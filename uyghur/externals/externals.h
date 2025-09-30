@@ -248,29 +248,54 @@ typedef struct UGImage {
 
 typedef struct UGFont {
     char *path;
-    int size;
     void *font;
 } UGFont;
 
 
-UGImage *UG_NEW_IMAGE(char *path) {
-    UGImage *img = (UGImage *)malloc(sizeof(UGImage));
-    int _w;
-    int _h;
+UGImage *UG_NEW_IMAGE(char *path, int x0, int y0, int w0, int h0) {
+    //
+    int w1;
+    int h1;
     int _c;
-    img->pxls = rimage_read(path, &_w, &_h, &_c);
+    RTexture _texture = rimage_read(path, &w1, &h1, &_c);
+    //
+    if (x0 < 0) x0 = 0;
+    if (y0 < 0) y0 = 0;
+    if (w0 <= 0) w0 = w1;
+    if (h0 <= 0) h0 = h1;
+    //
+    int x2 = MIN(MAX(0, x0), w1 - 1);
+    int y2 = MIN(MAX(0, y0), h1 - 1);
+    int w2 = MIN(MAX(1, w0), w1 - x2);
+    int h2 = MIN(MAX(1, h0), h1 - y2);
+    //
+    int size = w2*h2*_c*sizeof(RByte);
+    RTexture texture = (RTexture)malloc(size);
+    for (int y = 0; y < h2; y++) {
+        for (int x = 0; x < w2; x++) {
+	        size_t index1 = ((y2 + y) * w1) + (x2 + x);
+	        size_t index2 = ((0 + y) * w2) + (0 + x);
+            size_t indent1 = index1 * _c;
+            size_t indent2 = index2 * _c;
+            RPIXEL_COPY_TO(texture, indent2, _texture, indent1);
+        }
+    }
+    //
+    UGImage *img = (UGImage *)malloc(sizeof(UGImage));
+    img->pxls = texture;
     img->path = strdup(path);
     img->txtr = NULL;
-    img->w = _w;
-    img->h = _h;
+    img->w = w2;
+    img->h = h2;
     img->c = _c;
+    //
+    rimage_free(&_texture);
     return img;
 }
 
-UGFont *UG_NEW_FONT(char *path, int size) {
+UGFont *UG_NEW_FONT(char *path) {
     UGFont *fnt = (UGFont *)malloc(sizeof(UGFont));
     fnt->path = strdup(path);
-    fnt->size = size;
     fnt->font = NULL;
     return fnt;
 }
@@ -280,7 +305,10 @@ UGFont *UG_NEW_FONT(char *path, int size) {
 UGColor color_from_bridge(Bridge *bridge)
 {
     Value *color = Bridge_receiveValue(bridge, UG_TYPE_NON);
-    unsigned char r, g, b, a = 255;
+    unsigned char r = 255; 
+    unsigned char g = 255; 
+    unsigned char b = 255; 
+    unsigned char a = 255;
     //
     if (color->type == UG_TYPE_NUM) {
         unsigned int num = (unsigned int)color->number;

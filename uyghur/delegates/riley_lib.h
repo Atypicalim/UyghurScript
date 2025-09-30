@@ -468,7 +468,7 @@ UGFont *delegate_load_font(UGFont *fnt)
 
 //////////////////////////////////////////////////////////
 
-void delegate_pencil_draw_image(UGPoint point, UGImage *image, float anchorX, float anchorY, float scale) {
+void delegate_pencil_draw_image(UGPoint point, UGImage *image, UGColor color, float anchorX, float anchorY, float scale) {
     u32 *tex = image->txtr;
     u32 _texture = tex[0];
     // 
@@ -480,12 +480,12 @@ void delegate_pencil_draw_image(UGPoint point, UGImage *image, float anchorX, fl
     RSGL_rect _rect = (RSGL_rect){xPos, yPos, wVal, hVal};
     RSGL_rotate(RSGL_POINT3D(0, 0, gPenRotation));
     RSGL_setTexture(_texture);
-    RSGL_drawRect(_rect, RSGL_RGB(255, 255, 255));
+    RSGL_drawRect(_rect, RSGL_RGBA(color.r, color.g, color.b, color.a));
     RSGL_setTexture(NULL);
     RSGL_rotate(RSGL_POINT3D(0, 0, 0));
 }
 
-void delegate_pencil_draw_font(UGPoint point, UGFont *font, char *text, int size) {
+void delegate_pencil_draw_font(UGPoint point, UGFont *font, UGColor color, char *text, int size) {
     int *fnt = font->font;
     // 
     int count = strlen(text);
@@ -494,7 +494,7 @@ void delegate_pencil_draw_font(UGPoint point, UGFont *font, char *text, int size
     // 
     RSGL_circle _circle = (RSGL_circle) {point.x, point.y, size};
     RSGL_setFont(*fnt);
-    RSGL_drawText(text, _circle, _COLOR);
+    RSGL_drawText(text, _circle, RSGL_RGBA(color.r, color.g, color.b, color.a));
 }
 
 //////////////////////////////////////////////////////////
