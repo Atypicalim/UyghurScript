@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
     char *compile = NULL;
 	flag_bool("h", "help",     "show this help",        &help);
 	flag_bool("v", "version",  "print program version", &version);
-	flag_bool("i", "interact", "interact given script", &interact);
+	flag_bool("i", "interact", "run interact mode", &interact);
 	flag_cstr("p", "package",  "package given script",  &package);
 	flag_cstr("e", "execute",  "execute given script",  &execute);
 	flag_cstr("c", "compile",  "compile given script",  &compile);

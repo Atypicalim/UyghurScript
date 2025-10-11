@@ -86,7 +86,7 @@ if RunNeedGenerate:
 ################################################################
 
 SCRIPT_PATH = "./examples/help.ug"
-SCRIPT_PATH = "./examples/test.ug"
+# SCRIPT_PATH = "./examples/test.ug"
 # SCRIPT_PATH = "./examples/features/objective.en"
 # SCRIPT_PATH = "./examples/internals/number.ug"
 # SCRIPT_PATH = "./examples/externals/yuguresh.ug"
@@ -98,6 +98,8 @@ import scripts.interpreter
 
 task = Run.runTarget
 dir, name, runnable = task.getRunnable()
+if Run.isRelease:
+    tools.files.copy(runnable, "release/" + name)
 
 runPath = RunExt if RunExt != "" else Run.scriptPath
 runCmd = None
