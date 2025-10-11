@@ -2,17 +2,17 @@
 
 miqdar tag qimmiti quruq bolsun
 
-xizmetchi @sehne.korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
+iltimas @sehne.korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
 
-xizmetchi @muzika.yuklesh bilen "../resources/bahar.mp3" ishlitilsun we tag elinsun
-xizmetchi @muzika.quyush bilen tag ishlitilsun
-xizmetchi @muzika.yuqiriliqiniBikitish bilen tag 1 ishlitilsun
-xizmetchi @muzika.orniniBikitish bilen tag 25 ishlitilsun
+iltimas @muzika.yuklesh bilen "../resources/bahar.mp3" ishlitilsun we tag elinsun
+iltimas @muzika.quyush bilen tag ishlitilsun
+iltimas @muzika.yuqiriliqiniBikitish bilen tag 1 ishlitilsun
+iltimas @muzika.orniniBikitish bilen tag 25 ishlitilsun
 
 nawada @sehne.yepilmaqchi bolmisa
     #
-    xizmetchi @muzika.yengilash bilen tag ishlitilsun
+    iltimas @muzika.yengilash bilen tag ishlitilsun
     #
-    xizmetchi @sehne.yengilash ishlitilsun
+    iltimas @sehne.yengilash ishlitilsun
 tamamlansun
 

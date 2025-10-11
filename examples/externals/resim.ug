@@ -3,14 +3,14 @@
 miqdar rotation qimmiti 0 bolsun
 miqdar r qimmiti quruq bolsun
 
-xizmetchi @sehne.korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
+iltimas @sehne.korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
 
-xizmetchi @qelem.resimEkirish bilen "../resources/rose.png" 0 0 -1 -1 ishlitilsun we img elinsun
+iltimas @qelem.resimEkirish bilen "../resources/rose.png" 0 0 -1 -1 ishlitilsun we img elinsun
 
 nawada @sehne.yepilmaqchi bolmisa
     #
     rotation = rotation + 0.05
-    xizmetchi @qelem.resimSizish bilen 250 250 img ishlitilsun
+    iltimas @qelem.resimSizish bilen 250 250 img ishlitilsun
     #
-    xizmetchi @sehne.yengilash ishlitilsun
+    iltimas @sehne.yengilash ishlitilsun
 tamamlansun

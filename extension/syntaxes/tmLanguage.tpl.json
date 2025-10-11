@@ -10,8 +10,12 @@
         "expression": {
             "patterns": [
                 {
-                    "name": "entity.name.function",
+                    "name": "support.function",
                     "match": "\\b({})\\b" // [M[ GRAMMAR_TYPES ]M]
+                },
+                {
+                    "name": "constant.numeric.integer.myscript",
+                    "match": "\\b({})\\b" // [M[ GRAMMAR_VALUES ]M]
                 },
                 {
                     "name": "support.function",
@@ -26,8 +30,8 @@
                     "match": "\\b({})\\b" // [M[ GRAMMAR_BLOCKS ]M]
                 },
                 {
-                    "name": "keyword",
-                    "match": "\\b({})\\b" // [M[ GRAMMAR_EVENTS ]M]
+                    "name": "entity.name.function",
+                    "match": "\\b({})\\b" // [M[ GRAMMAR_OPERATE ]M]
                 },
                 {
                     "name": "comment",

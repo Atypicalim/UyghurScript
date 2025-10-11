@@ -3,16 +3,7 @@ from scripts.base import *
 
 ################################################################
 
-SCRIPT_PATH = None
-
-if Run.isRelease:
-    SCRIPT_PATH = readArgScriptPath(2, "./examples/help.ug")
-else:
-    SCRIPT_PATH = readArgScriptPath(1, "./examples/test.ug")
-
-# SCRIPT_PATH = "./examples/externals/yuguresh.ug"
-# SCRIPT_PATH = "./examples/features/objective.ug"
-
+SCRIPT_PATH = Run.scriptPath if Run.scriptPath != None else "./examples/help.ug"
 SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
 DST_ALIAS = DIR_BUILD + "uyghur"
 DST_SCRIPT = DST_ALIAS + "." + SCRIPT_EXT
@@ -231,6 +222,8 @@ task.addFlags(["-D USTAGE_USE_TIGR" if isUseTigr else "-D USTAGE_NONE_TIGR"])
 
 task.addFlags(["-D UG_USE_INTERNALS" if isUseInternals else "-D UG_NO_INTERNALS"])
 task.addFlags(["-D UG_USE_EXTERNALS" if isUseExternals else "-D UG_NO_EXTERNALS"])
+
+task.addFlags(["-D UG_BUILD_RELEASE" if Run.isRelease else "-D UG_BUILD_DEVELOP"])
 
 #
 task.addFlags(["-I ../c-pure-tools/"])

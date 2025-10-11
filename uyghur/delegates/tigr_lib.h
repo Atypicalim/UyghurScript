@@ -248,6 +248,9 @@ int delegate_get_board_state(int key) {
 }
 
 void delegate_stage_run_program(int width, int height, CString title, int mode) {
+    #if UG_IS_DEVELOP
+    #define TIGR_DEBUG
+    #endif
     if (mode < 0) mode = TIGR_AUTO;
     _tigrWindow = tigrWindow(width, height, title, mode);
     // __tigr_on_mouve_button_event

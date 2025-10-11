@@ -99,8 +99,8 @@ int main(int argc, char *argv[])
 {
     INCTXT(Script, UG_SCRIPT_PATH);
     // log
-    log_set_file("./test.log");
-    log_set_level(0);
+    log_set_file(UG_IS_RELEASE ? NULL : "./test.log");
+    log_set_level(UG_IS_RELEASE ? PCT_LOG_WARN : 0);
     log_set_color(true);
     log_set_quiet(false);
     // locale

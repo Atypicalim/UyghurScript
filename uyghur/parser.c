@@ -458,11 +458,11 @@ void Parser_consumeAstAssister(Parser *this)
 
 void Parser_consumeAstApply(Parser *this)
 {
-    bool isCallment = Parser_isWord(this, 0, LETTER_CALLMENT);
+    bool isAppeal = Parser_isWord(this, 0, LETTER_APPEAL);
     bool isWorker = Parser_isWord(this, 0, LETTER_WORKER);
     bool isCrator = Parser_isWord(this, 0, LETTER_CREATOR);
     bool isAssister = Parser_isWord(this, 0, LETTER_ASSISTER);
-    Parser_assert(this, isCallment || isWorker || isCrator || isAssister, LANG_ERR_PARSER_INVALID_VARIABLE);
+    Parser_assert(this, isAppeal || isWorker || isCrator || isAssister, LANG_ERR_PARSER_INVALID_VARIABLE);
     Parser_checkType(this, 0, 1, UG_TTYPE_WRD);
     //
     Leaf *leaf = _parser_consumeAstApply(this, LETTER_WITH, LETTER_APPLY);

@@ -128,7 +128,7 @@ void native_stage_update(Bridge *bridge)
     externals_stage_update();
     Replot_clear(__eReplot, RCOLOR(11, 11, 11, 255));
     if (isClose) {
-        Replot_write(__eReplot, "replot_stage.png");
+        // Replot_write(__eReplot, "replot_stage.png");
         replay_CloseAudioDevice();
         externals_stage_end();
     }

@@ -140,7 +140,7 @@ const UG_PAIRS UG_WORDS_MAP[] = {
     //
     {LETTER_EXCEPTION, 0},
     // 
-    {LETTER_CALLMENT, 0},
+    {LETTER_APPEAL, 0},
     {LETTER_WORKER, 0},
     {LETTER_CREATOR, 0},
     {LETTER_ASSISTER, 0},

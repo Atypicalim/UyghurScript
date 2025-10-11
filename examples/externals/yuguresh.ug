@@ -11,15 +11,15 @@ miqdar n qimmiti 1 bolsun
 miqdar m qimmiti 1 bolsun
 miqdar text qimmiti "Bir Ikki Bir, Bir Ikki Bir ..." bolsun
 
-xizmetchi @sehne.korsitish bilen -1 -1 "Yuguresh" -1 ishlitilsun
+iltimas @sehne.korsitish bilen -1 -1 "Yuguresh" -1 ishlitilsun
 
-xizmetchi @qelem.resimEkirish bilen "../resources/run.png" 0 0 200 260 ishlitilsun we img elinsun
-xizmetchi @qelem.fontEkirish bilen "../resources/ukij.ttf" ishlitilsun we font elinsun
+iltimas @qelem.resimEkirish bilen "../resources/run.png" 0 0 200 260 ishlitilsun we img elinsun
+iltimas @qelem.fontEkirish bilen "../resources/ukij.ttf" ishlitilsun we font elinsun
 
 nawada @sehne.yepilmaqchi bolmisa
     #
-    xizmetchi @qelem.resimSizish bilen 100 300 img ishlitilsun
-    xizmetchi @qelem.fontSizish bilen 250 50 font 36 text ishlitilsun
+    iltimas @qelem.resimSizish bilen 100 300 img ishlitilsun
+    iltimas @qelem.fontSizish bilen 250 50 font 36 text ishlitilsun
     #
-    xizmetchi @sehne.yengilash ishlitilsun
+    iltimas @sehne.yengilash ishlitilsun
 tamamlansun

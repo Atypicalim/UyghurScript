@@ -12,7 +12,14 @@
 
 bool isTest = false;
 
+#ifdef UG_BUILD_RELEASE
+#define UG_IS_RELEASE true
+#define UG_IS_DEVELOP false
+#else
+#define UG_IS_RELEASE false
 #define UG_IS_DEVELOP true
+#endif
+
 #define MAX_STACK_SIZE 1000
 #define MAX_TRACE_SIZE 5
 

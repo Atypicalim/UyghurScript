@@ -2,15 +2,15 @@
 
 miqdar tag qimmiti quruq bolsun
 
-xizmetchi @sehne.korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
+iltimas @sehne.korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
 
-xizmetchi @awaz.yuklesh bilen "../resources/road.wav" ishlitilsun we tag elinsun
-xizmetchi @awaz.quyush bilen tag ishlitilsun
-xizmetchi @awaz.yuklesh bilen "../resources/door.wav" ishlitilsun we tag elinsun
-xizmetchi @awaz.quyush bilen tag ishlitilsun
+iltimas @awaz.yuklesh bilen "../resources/road.wav" ishlitilsun we tag elinsun
+iltimas @awaz.quyush bilen tag ishlitilsun
+iltimas @awaz.yuklesh bilen "../resources/door.wav" ishlitilsun we tag elinsun
+iltimas @awaz.quyush bilen tag ishlitilsun
 
 nawada @sehne.yepilmaqchi bolmisa
     #
     #
-    xizmetchi @sehne.yengilash ishlitilsun
+    iltimas @sehne.yengilash ishlitilsun
 tamamlansun

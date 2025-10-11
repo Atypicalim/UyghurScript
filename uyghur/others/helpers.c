@@ -168,7 +168,7 @@ bool is_higher_priority_calculation(char *target, char *than)
 }
 
 bool is_apply_action(char *v) {
-    return is_eq_string(v, LETTER_CALLMENT) || is_eq_string(v, LETTER_WORKER) || is_eq_string(v, LETTER_CREATOR) || is_eq_string(v, LETTER_ASSISTER);
+    return is_eq_string(v, LETTER_APPEAL) || is_eq_string(v, LETTER_WORKER) || is_eq_string(v, LETTER_CREATOR) || is_eq_string(v, LETTER_ASSISTER);
 }
 
 bool is_command_action(char *value) {

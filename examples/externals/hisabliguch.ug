@@ -32,7 +32,7 @@ miqdar buTengmu qimmiti quruq bolsun
 
 miqdar sinaqQimmet qimmiti quruq bolsun
 
-xizmetchi @qelem.fontEkirish bilen "../resources/ukij.ttf" ishlitilsun we font elinsun
+iltimas @qelem.fontEkirish bilen "../resources/ukij.ttf" ishlitilsun we font elinsun
 
 # get sign
 xizmetchi belgilerniElish miqdar x mezmuni
@@ -70,7 +70,7 @@ xizmetchi belgilerniElish miqdar x mezmuni
     egerde x ? 15 bolsa
         r qimmiti "=" bolsun
     bolmisa
-        xizmetchi @xet.formatlash bilen "%f" x ishlitilsun we r elinsun # string_format bug
+        iltimas @xet.formatlash bilen "%f" x ishlitilsun we r elinsun # string_format bug
     tamamlansun
     netije r qayturulsun
 tamamlansun
@@ -160,13 +160,13 @@ xizmetchi kunupkaQauturmisi miqdar id mezmuni
     tamamlansun
     # input action
     eger buHerketmu bolsa
-        xizmetchi netijiniHisablash ishlitilsun
+        iltimas netijiniHisablash ishlitilsun
         hazirqiQimmet qimmiti 0 bolsun
         herketQimmet qimmiti id bolsun
     tamamlansun
     # equal button
     eger buTengmu bolsa
-        xizmetchi netijiniHisablash ishlitilsun
+        iltimas netijiniHisablash ishlitilsun
         hazirqiQimmet qimmiti 0 bolsun
         herketQimmet qimmiti quruq bolsun
     tamamlansun
@@ -175,8 +175,8 @@ tamamlansun
 # draw button
 xizmetchi kunupkaSizish miqdar id mezmuni
     # 2d point
-    xizmetchi @san.qalduqniHisablash bilen id 5 ishlitilsun we kordinatX elinsun
-    xizmetchi @san.bulunminiHisablash bilen id 5 ishlitilsun we kordinatY elinsun
+    iltimas @san.qalduqniHisablash bilen id 5 ishlitilsun we kordinatX elinsun
+    iltimas @san.bulunminiHisablash bilen id 5 ishlitilsun we kordinatY elinsun
     eger kordinatX ? 0 bolsa
         kordinatX qimmiti 5 bolsun
         kordinatY = kordinatY - 1
@@ -188,47 +188,47 @@ xizmetchi kunupkaSizish miqdar id mezmuni
     kunupkaOrniY = 51 * kordinatY
     kunupkaOrniX = kunupkaOrniX + 5
     kunupkaOrniY = kunupkaOrniY + 15
-    xizmetchi belgilerniElish bilen id ishlitilsun we kunupkaXeti elinsun
+    iltimas belgilerniElish bilen id ishlitilsun we kunupkaXeti elinsun
     # button
-    xizmetchi @zapchas.kunupkaKorsitish bilen kunupkaOrniX kunupkaOrniY 100 50 kunupkaXeti ishlitilsun we rr elinsun
+    iltimas @zapchas.kunupkaKorsitish bilen kunupkaOrniX kunupkaOrniY 100 50 kunupkaXeti ishlitilsun we rr elinsun
     eger rr bolsa
-        xizmetchi kunupkaQauturmisi bilen id ishlitilsun
+        iltimas kunupkaQauturmisi bilen id ishlitilsun
     tamamlansun
 
 tamamlansun
 
-xizmetchi @sehne.korsitish bilen 515 225 "Xisabliguch" -1 ishlitilsun
+iltimas @sehne.korsitish bilen 515 225 "Xisabliguch" -1 ishlitilsun
 nawada @sehne.yepilmaqchi bolmisa
     #
     # buttons
     kunupkaNumuri qimmiti 1 bolsun
     tekshuruldighanQimmet = kunupkaNumuri < kunupkaSani
     nawada tekshuruldighanQimmet bolsa
-        xizmetchi kunupkaSizish bilen kunupkaNumuri ishlitilsun
+        iltimas kunupkaSizish bilen kunupkaNumuri ishlitilsun
         kunupkaNumuri = kunupkaNumuri + 1
         tekshuruldighanQimmet = kunupkaNumuri < kunupkaSani
     tamamlansun
     # screen
-    xizmetchi @qelem.xaslashturush bilen "555555" ishlitilsun
-    xizmetchi @qelem.totTereplikToldurush bilen 7 5 500 55 ishlitilsun
-    xizmetchi @qelem.xaslashturush bilen "333333" ishlitilsun
-    xizmetchi @qelem.totTereplikToldurush bilen 12 10 333 45 ishlitilsun
-    xizmetchi @qelem.xaslashturush bilen "88888833" ishlitilsun
-    xizmetchi @qelem.totTereplikToldurush bilen 350 20 70 35 ishlitilsun
+    iltimas @qelem.xaslashturush bilen "555555" ishlitilsun
+    iltimas @qelem.totTereplikToldurush bilen 7 5 500 55 ishlitilsun
+    iltimas @qelem.xaslashturush bilen "333333" ishlitilsun
+    iltimas @qelem.totTereplikToldurush bilen 12 10 333 45 ishlitilsun
+    iltimas @qelem.xaslashturush bilen "88888833" ishlitilsun
+    iltimas @qelem.totTereplikToldurush bilen 350 20 70 35 ishlitilsun
     # # clear
-    xizmetchi @zapchas.kunupkaKorsitish bilen 425 10 75 45 "Tazilash" ishlitilsun we rr elinsun
+    iltimas @zapchas.kunupkaKorsitish bilen 425 10 75 45 "Tazilash" ishlitilsun we rr elinsun
     eger rr bolsa
-        xizmetchi tazilashQayturmisi ishlitilsun
+        iltimas tazilashQayturmisi ishlitilsun
     tamamlansun
     # input
-    xizmetchi belgilerniElish bilen herketQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @qelem.fontSizish bilen 377 21 font 36 sinaqXet ishlitilsun
+    iltimas belgilerniElish bilen herketQimmet ishlitilsun we sinaqXet elinsun
+    iltimas @qelem.fontSizish bilen 377 21 font 36 sinaqXet ishlitilsun
     # result
-    xizmetchi @xet.formatlash bilen "%f" netijeQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @qelem.fontSizish bilen 25 15 font 24 sinaqXet ishlitilsun
+    iltimas @xet.formatlash bilen "%f" netijeQimmet ishlitilsun we sinaqXet elinsun
+    iltimas @qelem.fontSizish bilen 25 15 font 24 sinaqXet ishlitilsun
     # action
-    xizmetchi @xet.formatlash bilen "%f" hazirqiQimmet ishlitilsun we sinaqXet elinsun
-    xizmetchi @qelem.fontSizish bilen 25 38 font 16 sinaqXet ishlitilsun
+    iltimas @xet.formatlash bilen "%f" hazirqiQimmet ishlitilsun we sinaqXet elinsun
+    iltimas @qelem.fontSizish bilen 25 38 font 16 sinaqXet ishlitilsun
     #
-    xizmetchi @sehne.yengilash ishlitilsun
+    iltimas @sehne.yengilash ishlitilsun
 tamamlansun

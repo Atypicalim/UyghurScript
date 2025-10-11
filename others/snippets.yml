@@ -105,15 +105,15 @@ assister:
     tr: "yardımcı cümlesi yapmak"
     kz: "жәрдемшы сөйлемі жасау"
 
-callment:
-  prefix: LETTER_CALLMENT
+appeal:
+  prefix: LETTER_APPEAL
   message:
-    en: "make callment sentence"
-    uy: "چاقىرما جۈملىسى ياساش"
-    ug: "chaqirma jumlisi yasash"
-    uz: chaqirmo bayonoti tuzish
-    tr: "çağırma cümlesi yapmak"
-    kz: "шақырма сөйлемі жасау"
+    en: "make appeal sentence"
+    uy: "ئىلتىماس جۈملىسى ياساش"
+    ug: "iltimas jumlisi yasash"
+    uz: Iltimos bayonoti tuzish
+    tr: "iltimas cümlesi yapmak"
+    kz: "илтимас сөйлемі жасау"
 
 apply_worker:
   prefix: LETTER_WORKER

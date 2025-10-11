@@ -595,10 +595,7 @@ void *Compiler_compileCode(Compiler *this, Leaf *tree, CString dialect) {
 
 void Compiler_free(Compiler *this)
 {
-    // 
-    Draft_print(this->draft);
     Draft_free(this->draft);
-    // 
     Compiler_reset(this);
     free(this);
 }

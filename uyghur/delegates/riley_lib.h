@@ -285,6 +285,9 @@ int delegate_get_board_state(int key) {
 }
 
 void delegate_stage_run_program(int width, int height, CString title, int mode) {
+    #if UG_IS_DEVELOP
+    #define RGFW_DEBUG
+    #endif
     if (mode < 0) mode = RGFW_CENTER;
     _rileyWindow = RGFW_createWindow(title, (RSGL_rect){500, 500, width, height}, mode);
 	RSGL_init(RSGL_AREA(_rileyWindow->r.w, _rileyWindow->r.h), RGFW_getProcAddress);

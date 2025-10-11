@@ -39,7 +39,7 @@ miqdar minutRadiusi qimmiti 135 bolsun
 miqdar sikunitRadiusi qimmiti 175 bolsun
 miqdar hazirqiRadius qimmiti quruq bolsun
 
-xizmetchi @qelem.fontEkirish bilen "../resources/ukij.ttf" ishlitilsun we font elinsun
+iltimas @qelem.fontEkirish bilen "../resources/ukij.ttf" ishlitilsun we font elinsun
 
 # miqdardin bulung hisablash
 xizmetchi bulungHisablash miqdar hazirqi umumiy mezmuni
@@ -64,10 +64,10 @@ miqdar x qimmiti quruq bolsun
 miqdar y qimmiti quruq bolsun
 xizmetchi istirilkaSizish miqdar istirilka bulung mezmuni
     # Pythagoras qanuniyiti
-    xizmetchi @san.radianghaAylandurush bilen bulung ishlitilsun we a elinsun
-    xizmetchi @san.radianghaAylandurush bilen bulung ishlitilsun we b elinsun
-    xizmetchi @san.sinosHisablash bilen a ishlitilsun we a elinsun
-    xizmetchi @san.kosinosHisablash bilen b ishlitilsun we b elinsun
+    iltimas @san.radianghaAylandurush bilen bulung ishlitilsun we a elinsun
+    iltimas @san.radianghaAylandurush bilen bulung ishlitilsun we b elinsun
+    iltimas @san.sinosHisablash bilen a ishlitilsun we a elinsun
+    iltimas @san.kosinosHisablash bilen b ishlitilsun we b elinsun
     # 
     eger istirilka ? SAET bolsa
         hazirqiRadius qimmiti saetRadiusi bolsun
@@ -84,15 +84,15 @@ xizmetchi istirilkaSizish miqdar istirilka bulung mezmuni
     x = merkezX + x
     y = merkezY - y
     # 
-    xizmetchi @qelem.xaslashturush bilen "eeeeee" 0 5 ishlitilsun
-    xizmetchi @qelem.siziqSizish bilen merkezX merkezY x y ishlitilsun
+    iltimas @qelem.xaslashturush bilen "eeeeee" 0 5 ishlitilsun
+    iltimas @qelem.siziqSizish bilen merkezX merkezY x y ishlitilsun
 tamamlansun
 
 xizmetchi istirilkaHisablash miqdar hazirqiWaqit mezmuni
     # waqitni aylandurush
-    xizmetchi @waqit.sikuntniAylandurush bilen hazirqiWaqit "%H" ishlitilsun we saet elinsun
-    xizmetchi @waqit.sikuntniAylandurush bilen hazirqiWaqit "%M" ishlitilsun we minut elinsun
-    xizmetchi @waqit.sikuntniAylandurush bilen hazirqiWaqit "%S" ishlitilsun we sikunit elinsun
+    iltimas @waqit.sikuntniAylandurush bilen hazirqiWaqit "%H" ishlitilsun we saet elinsun
+    iltimas @waqit.sikuntniAylandurush bilen hazirqiWaqit "%M" ishlitilsun we minut elinsun
+    iltimas @waqit.sikuntniAylandurush bilen hazirqiWaqit "%S" ishlitilsun we sikunit elinsun
     saet qimmiti san bolsun
     minut qimmiti san bolsun
     sikunit qimmiti san bolsun
@@ -102,42 +102,42 @@ xizmetchi istirilkaHisablash miqdar hazirqiWaqit mezmuni
         saet = saet - 12
     tamamlansun
     # gradusqa aylandurush
-    xizmetchi bulungHisablash bilen saet 12 ishlitilsun we saetGradusi elinsun
-    xizmetchi bulungHisablash bilen minut 60 ishlitilsun we minutGradusi elinsun
-    xizmetchi bulungHisablash bilen sikunit 60 ishlitilsun we sikunitGradusi elinsun
+    iltimas bulungHisablash bilen saet 12 ishlitilsun we saetGradusi elinsun
+    iltimas bulungHisablash bilen minut 60 ishlitilsun we minutGradusi elinsun
+    iltimas bulungHisablash bilen sikunit 60 ishlitilsun we sikunitGradusi elinsun
     # artuqini hisablash
-    xizmetchi artuqcheHisablash bilen minutGradusi 30 ishlitilsun we saetArtuqche elinsun
-    xizmetchi artuqcheHisablash bilen sikunitGradusi 5 ishlitilsun we minutArtuqche elinsun
+    iltimas artuqcheHisablash bilen minutGradusi 30 ishlitilsun we saetArtuqche elinsun
+    iltimas artuqcheHisablash bilen sikunitGradusi 5 ishlitilsun we minutArtuqche elinsun
     saetGradusi = saetGradusi + saetArtuqche
     minutGradusi = minutGradusi + minutArtuqche
 tamamlansun
 
-xizmetchi @sehne.korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
+iltimas @sehne.korsitish bilen -1 -1 "sinaq" -1 ishlitilsun
 nawada @sehne.yepilmaqchi bolmisa
     #
-    xizmetchi @waqit.sikuntElish ishlitilsun we hazirqiWaqit elinsun
+    iltimas @waqit.sikuntElish ishlitilsun we hazirqiWaqit elinsun
     # teglik sizish
-    xizmetchi @qelem.xaslashturush bilen "101010" ishlitilsun
-    xizmetchi @qelem.totTereplikToldurush bilen 0 0 ikranKengliki ikranIgizliki ishlitilsun
-    xizmetchi @qelem.xaslashturush bilen "303030" ishlitilsun
-    xizmetchi @qelem.totTereplikToldurush bilen 5 5 490 590 ishlitilsun
-    xizmetchi @qelem.xaslashturush bilen "101010" ishlitilsun
-    xizmetchi @qelem.chemberToldurush bilen merkezX merkezY teglikRadiusi teglikRadiusi ishlitilsun
+    iltimas @qelem.xaslashturush bilen "101010" ishlitilsun
+    iltimas @qelem.totTereplikToldurush bilen 0 0 ikranKengliki ikranIgizliki ishlitilsun
+    iltimas @qelem.xaslashturush bilen "303030" ishlitilsun
+    iltimas @qelem.totTereplikToldurush bilen 5 5 490 590 ishlitilsun
+    iltimas @qelem.xaslashturush bilen "101010" ishlitilsun
+    iltimas @qelem.chemberToldurush bilen merkezX merkezY teglikRadiusi teglikRadiusi ishlitilsun
     # xet yezish
-    xizmetchi @qelem.xaslashturush bilen "eeeeee" ishlitilsun
-    xizmetchi @qelem.fontSizish bilen 35 20 font 36 tema ishlitilsun
-    xizmetchi @waqit.sikuntniAylandurush bilen hazirqiWaqit "%Y-%m-%d %H:%M:%S" ishlitilsun we chisla elinsun
-    xizmetchi @qelem.fontSizish bilen 115 450 font 36 chisla ishlitilsun
+    iltimas @qelem.xaslashturush bilen "eeeeee" ishlitilsun
+    iltimas @qelem.fontSizish bilen 35 20 font 36 tema ishlitilsun
+    iltimas @waqit.sikuntniAylandurush bilen hazirqiWaqit "%Y-%m-%d %H:%M:%S" ishlitilsun we chisla elinsun
+    iltimas @qelem.fontSizish bilen 115 450 font 36 chisla ishlitilsun
     # istirilka hisablash
-    xizmetchi istirilkaHisablash bilen hazirqiWaqit ishlitilsun
+    iltimas istirilkaHisablash bilen hazirqiWaqit ishlitilsun
     # istirilka sizish
-    xizmetchi istirilkaSizish bilen SAET saetGradusi ishlitilsun
-    xizmetchi istirilkaSizish bilen MINUT minutGradusi ishlitilsun
-    xizmetchi istirilkaSizish bilen SIKUNIT sikunitGradusi ishlitilsun
+    iltimas istirilkaSizish bilen SAET saetGradusi ishlitilsun
+    iltimas istirilkaSizish bilen MINUT minutGradusi ishlitilsun
+    iltimas istirilkaSizish bilen SIKUNIT sikunitGradusi ishlitilsun
     # mekez sizish
-    xizmetchi @qelem.xaslashturush bilen "303030" ishlitilsun
-    xizmetchi @qelem.chemberToldurush bilen merkezX merkezY 10 ishlitilsun
+    iltimas @qelem.xaslashturush bilen "303030" ishlitilsun
+    iltimas @qelem.chemberToldurush bilen merkezX merkezY 10 ishlitilsun
     #
-    xizmetchi @sehne.yengilash ishlitilsun
+    iltimas @sehne.yengilash ishlitilsun
 tamamlansun
 

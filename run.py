@@ -66,6 +66,7 @@ from scripts.base import *
 import scripts.bind
 
 Run.workingDir = __workingDir
+Run.scriptPath = None
 Run.runTarget = None
 Run.arg1 = __arg1
 Run.arg2 = __arg2
@@ -84,6 +85,13 @@ if RunNeedGenerate:
 
 ################################################################
 
+SCRIPT_PATH = "./examples/help.ug"
+SCRIPT_PATH = "./examples/test.ug"
+# SCRIPT_PATH = "./examples/features/objective.en"
+# SCRIPT_PATH = "./examples/internals/number.ug"
+# SCRIPT_PATH = "./examples/externals/yuguresh.ug"
+Run.scriptPath = RunExt if RunExt != "" else SCRIPT_PATH
+
 import scripts.interpreter
 
 ################################################################
@@ -91,7 +99,7 @@ import scripts.interpreter
 task = Run.runTarget
 dir, name, runnable = task.getRunnable()
 
-runPath = RunExt if RunExt != "" else "./examples/test.ug"
+runPath = RunExt if RunExt != "" else Run.scriptPath
 runCmd = None
 if RunNeedCompile:
     runCmd = "-c"
