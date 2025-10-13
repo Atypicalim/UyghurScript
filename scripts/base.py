@@ -20,7 +20,7 @@ PROJECT_REPO ="https://github.com/Atypicalim/UyghurScript"
 VERSION_CODE = 0.13
 EXTENSION_VERSION = "1.0.13"
 EXAMPLE_LANG = 'en'
-SUPPORT_LANG = set()
+SUPPORT_LANG = []
 
 class Run:
     pass
@@ -132,10 +132,9 @@ grammars = readYaml(f"./others/grammars.yml")
 snippets = readYaml(f"./others/snippets.yml")
 features = readYaml(f"./others/features.yml")
 
-langArray = []
 for lang in langsArrConfigs:
     print("language:", lang)
-    SUPPORT_LANG.add(lang)
+    SUPPORT_LANG.append(lang)
 
 langNames = mapName2LangConfigs['LANG_LANGUAGE_FULLNAME']
 langTrans = mapName2LangConfigs['LANG_LANGUAGE_TRANSLATION']

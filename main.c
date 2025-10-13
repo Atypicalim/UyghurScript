@@ -89,7 +89,7 @@ void run_execute_cmd(CString name, args_t args, CString path) {
 
 void run_compile_cmd(CString name, args_t args, CString path) {
     Uyghur *uyghur = Uyghur_instance();
-    Uyghur_runCompile(uyghur, path, "js");
+    Uyghur_runCompile(uyghur, path, "en");
     Uyghur_free(uyghur);
 }
 

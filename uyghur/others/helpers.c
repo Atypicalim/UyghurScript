@@ -339,8 +339,7 @@ CString helper_read_code_file(CString path)
     return code;
 }
 
-CString _helper_translate_letter(char *letter, char *def) {
-    char *lang = __uyghur->language;
+CString _helper_translate_letter(char *letter, char *lang, char *def) {
     int size = letters_get_size_by_name(letter);
     const PAIR_LETTERS* pairs = letters_get_conf_by_name(letter);
     for (size_t i = 0; i < size; i++) {
@@ -350,12 +349,11 @@ CString _helper_translate_letter(char *letter, char *def) {
     return def;
 }
 
-CString helper_translate_letter(char *letter) {
-    return _helper_translate_letter(letter, letter);
+CString helper_translate_letter(char *letter, char *lang) {
+    return _helper_translate_letter(letter, lang, NULL);
 }
 
-CString _helper_translate_alias(char *alias, char *def) {
-    char *lang = __uyghur->language;
+CString _helper_translate_alias(char *alias, char *lang, char *def) {
     int size = aliases_get_size_by_name(alias);
     const PAIR_ALIASES* pairs = aliases_get_conf_by_name(alias);
     for (size_t i = 0; i < size; i++) {
@@ -365,14 +363,15 @@ CString _helper_translate_alias(char *alias, char *def) {
     return def;
 }
 
-CString helper_translate_alias(char *alias) {
-    return _helper_translate_alias(alias, alias);
+CString helper_translate_alias(char *alias, char *lang) {
+    return _helper_translate_alias(alias, lang, NULL);
 }
 
 CString helper_translate_something(char *something) {
     char *_something = NULL;
-    if (_something == NULL) _something = _helper_translate_letter(something, NULL);
-    if (_something == NULL) _something = _helper_translate_alias(something, NULL);
+    char *lang = __uyghur->language;
+    if (_something == NULL) _something = _helper_translate_letter(something, lang, NULL);
+    if (_something == NULL) _something = _helper_translate_alias(something, lang, NULL);
     if (_something == NULL) _something = something;
     return _something;
 }

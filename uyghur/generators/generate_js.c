@@ -84,13 +84,13 @@ CString receive_judge_2_js(Compiler *compiler) {
 
 //////////////////////////////////////////////////////////////////////////////
 
-CString generate_js_variable(Compiler *compiler) {
+CString js_generate_variable(Compiler *compiler) {
     CString name = receive_token_2_js(compiler);
     CString token = receive_token_2_js(compiler);
     return tools_format("var %s = %s", name, token);
 }
 
-CString generate_js_command(Compiler *compiler) {
+CString js_generate_command(Compiler *compiler) {
     CString action = receive_token_2_js(compiler);
     CString args = receive_args_2_js(compiler);
     if (is_eq_string(action, LETTER_CMD_OUTPUT)) {
@@ -100,32 +100,36 @@ CString generate_js_command(Compiler *compiler) {
     }
 }
 
-CString generate_js_if(Compiler *compiler) {
+CString js_generate_if(Compiler *compiler) {
     CString judge = receive_judge_2_js(compiler);
     return tools_format("if(%s)", judge);
 }
 
-CString generate_js_spread(Compiler *compiler) {
+CString js_generate_spread(Compiler *compiler) {
     CString target = receive_token_2_js(compiler);
     CString iter1 = receive_token_2_js(compiler);
     CString iter2 = receive_token_2_js(compiler);
     return tools_format("for(const %s in %s)", iter1, iter2, target);
 }
 
-CString generate_js_while(Compiler *compiler) {
+CString js_generate_while(Compiler *compiler) {
     CString judge = receive_judge_2_js(compiler);
     return tools_format("while(%s)", judge);
 }
 
-CString generate_js_calculate(Compiler *compiler) {
+CString js_generate_calculate(Compiler *compiler) {
     return "xyz = 1 * a";
 }
 
-CString generate_js_define_appliable(Compiler *compiler) {
+CString js_generate_appliable(Compiler *compiler) {
     return "fun xyz() {}";
 }
 
-CString generate_js_apply(Compiler *compiler) {
+CString js_generate_result(Compiler *compiler) {
+    return "return null";
+}
+
+CString js_generate_apply(Compiler *compiler) {
     CString name = receive_token_2_js(compiler);
     CString result = receive_token_2_js(compiler);
     CString args = receive_args_2_js(compiler);
@@ -137,24 +141,25 @@ CString generate_js_apply(Compiler *compiler) {
     
 }
 
-CString generate_js_then(Compiler *compiler) {
+CString js_generate_then(Compiler *compiler) {
     return "{";
 }
 
-CString generate_js_end(Compiler *compiler) {
+CString js_generate_end(Compiler *compiler) {
     return "}";
 }
 
 void generator_js_register(Compiler *compiler) 
 {
-    COMPILER_BIND_GENERATE(generate_js_variable);
-    COMPILER_BIND_GENERATE(generate_js_command);
-    COMPILER_BIND_GENERATE(generate_js_if);
-    COMPILER_BIND_GENERATE(generate_js_spread);
-    COMPILER_BIND_GENERATE(generate_js_while);
-    COMPILER_BIND_GENERATE(generate_js_calculate);
-    COMPILER_BIND_GENERATE(generate_js_define_appliable);
-    COMPILER_BIND_GENERATE(generate_js_apply);
-    COMPILER_BIND_GENERATE(generate_js_then);
-    COMPILER_BIND_GENERATE(generate_js_end);
+    COMPILER_BIND_GENERATE(js_generate_variable);
+    COMPILER_BIND_GENERATE(js_generate_command);
+    COMPILER_BIND_GENERATE(js_generate_if);
+    COMPILER_BIND_GENERATE(js_generate_spread);
+    COMPILER_BIND_GENERATE(js_generate_while);
+    COMPILER_BIND_GENERATE(js_generate_calculate);
+    COMPILER_BIND_GENERATE(js_generate_appliable);
+    COMPILER_BIND_GENERATE(js_generate_result);
+    COMPILER_BIND_GENERATE(js_generate_apply);
+    COMPILER_BIND_GENERATE(js_generate_then);
+    COMPILER_BIND_GENERATE(js_generate_end);
 }

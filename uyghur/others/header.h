@@ -42,6 +42,7 @@ typedef const char* UTFCHAR;
 typedef const char* CName;
 typedef char* CString;
 typedef void* CPointer;
+typedef void *(*CFunction)(void *);
 
 typedef struct {
     const char* key;
@@ -291,9 +292,6 @@ typedef struct _Compiler {
     int deepth;
     Queue *passQueue;
     Hashmap *generatorsMap;
-    bool isReturn;
-    bool isCatch;
-    char *errorMsg;
 } Compiler;
 
 typedef struct _Executer {
@@ -379,6 +377,10 @@ void *Bridge_return(Bridge *);
 void Bridge_call(Bridge *, char *);
 void Bridge_run(Bridge *, Value *);
 
+// push alias -> func to bridge
+#define BRIDGE_BIND_NATIVE(name) \
+    Bridge_bindNative(bridge, ALIAS_ ## name, native_ ## name);
+
 ////////////////////////////////////////////////////////////////////////////
 
 struct Debug
@@ -395,21 +397,19 @@ void Debug_assert(Uyghur *);
 
 ////////////////////////////////////////////////////////////////////////////
 
-typedef void *(*CFunction)(void *);
 typedef CString (*CGenerator)(Compiler *);
-
-////////////////////////////////////////////////////////////////////////////
-
-// push alias -> func to bridge
-#define BRIDGE_BIND_NATIVE(name) \
-    Bridge_bindNative(bridge, ALIAS_ ## name, native_ ## name);
 
 // push alias -> func to comopiler
 #define COMPILER_BIND_GENERATE(name) \
     Compiler_bindGenerate(compiler, #name, name);
 
-CString helper_translate_letter(char *);
-CString helper_translate_alias(char *);
+#define HELPER_LANGUAGE_ITERATE() int _size = UG_LANGUAGE_COUNT; \
+    size_t _i = 0; \
+    char *_lang = UG_LANGUAGE_ARRAY[_i]; \
+    for (; _i < _size; _lang = UG_LANGUAGE_ARRAY[++_i]) \
+
+CString helper_translate_letter(char *, char *);
+CString helper_translate_alias(char *, char *);
 CString helper_translate_something(char *);
 CString helper_value_to_string(CPointer, CString, CString);
 CString helper_value_as_string(CPointer, CString);

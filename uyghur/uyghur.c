@@ -118,10 +118,8 @@ void Uyghur_runRepl(Uyghur *this)
 	printf("%s %s\n", UG_PROJECT_NAME, UG_VERSION_NAME);
     //
     printf("> available languages:\n");
-    int size = UG_LANGUAGE_COUNT;
-    for (size_t i = 0; i < size; i++) {
-        char *tp = UG_LANGUAGE_ARRAY[i];
-        printf("> * %s\n", UG_LANGUAGE_ARRAY[i]);
+    HELPER_LANGUAGE_ITERATE() {
+        printf("> * %s\n", _lang);
     }
     //
     printf("> please select a language to run program:\n");
@@ -129,9 +127,8 @@ void Uyghur_runRepl(Uyghur *this)
     while (!lang) {
         printf("> ");
         char *text = system_scanf();
-        for (size_t i = 0; i < size; i++) {
-            char *tp = UG_LANGUAGE_ARRAY[i];
-            if (is_eq_string(text, tp)) lang = tp;
+        HELPER_LANGUAGE_ITERATE() {
+            if (is_eq_string(text, _lang)) lang = _lang;
         }
     }
     CString *code = "";
