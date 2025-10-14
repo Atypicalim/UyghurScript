@@ -15,12 +15,12 @@ miqdar x qimmiti 250 bolsun
 
 nawada @sehne.yepilmaqchi bolmisa
     #
-    eger @taxta.besilghan ("f") bolsa
-        buyruq "f!\n" yezilsun
+    eger @taxta.besilghan("d") bolsa
+        buyruq "s!\n" yezilsun
         x = x + 2
     tamamlansun
-    eger @taxta.besilghan ("s") bolsa
-        buyruq "s!\n" yezilsun
+    eger @taxta.besilghan("a") bolsa
+        buyruq "a!\n" yezilsun
         x = x - 2
     tamamlansun
     # 

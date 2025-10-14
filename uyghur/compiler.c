@@ -10,7 +10,6 @@ void Compiler_bindGenerate(Compiler *, CName, CGenerator);
 #include "generators/generate_js.c"
 #include "generators/generate_ug.c"
 
-void _compiler_prepareApply(Compiler *, Leaf *);
 void Compiler_consumeLeaf(Compiler *, Leaf *);
 void Compiler_consumeTree(Compiler *, Leaf *);
 
@@ -77,8 +76,7 @@ CString Compiler_callGenerateReadText(Compiler *this, CName _name) {
     return text;
 }
 
-void Compiler_callGenerateNewLine(Compiler *this, CName _name, bool withSemicolon) {
-    Draft_pushString(this->draft, "\n");
+void Compiler_callGenerateWriteLine(Compiler *this, CName _name, bool isComplete) {
     int deepth = this->deepth;
     while(deepth > 0) {
         Draft_pushString(this->draft, "  ");
@@ -86,26 +84,11 @@ void Compiler_callGenerateNewLine(Compiler *this, CName _name, bool withSemicolo
     }
     CString text = _compiler_callGenerate(this, _name);
     Draft_pushString(this->draft, text);
-    if (withSemicolon) {
-        Draft_pushString(this->draft, ";");
-    } else {
-        Draft_pushString(this->draft, "");
-    }
-}
-
-void Compiler_callGenerateSameLine(Compiler *this, CName _name, bool withSemicolon) {
-    CString text = _compiler_callGenerate(this, _name);
-    Draft_pushString(this->draft, text);
-    if (withSemicolon) {
-        Draft_pushString(this->draft, ";");
-    } else {
-        Draft_pushString(this->draft, "");
-    }
+    Draft_pushString(this->draft, "\n");
 }
 
 void Compiler_pushScope(Compiler *this, CString name)
 {
-    Compiler_callGenerateSameLine(this, "then", false);
     this->deepth++;
     if (this->deepth > 10) this->deepth = 10;
 }
@@ -114,8 +97,6 @@ void Compiler_popScope(Compiler *this)
 {
     this->deepth--;
     if (this->deepth < 0) this->deepth = 0;
-    Compiler_callGenerateNewLine(this, "end", false);
-    Draft_pushLine(this->draft, "");
 }
 
 void Compiler_buildPass(Compiler *this, int num, CPointer val, ...)
@@ -147,7 +128,22 @@ void Compiler_consumeVariable(Compiler *this, Leaf *leaf)
     Token *token = Stack_NEXT(leaf->tokens);
     Token *name = Stack_NEXT(leaf->tokens);
     Compiler_buildPass(this, 2, name, token);
-    Compiler_callGenerateNewLine(this, "variable", true);
+    Compiler_callGenerateWriteLine(this, "variable", true);
+}
+
+void _compiler_prepareApply(Compiler *this, Leaf *leaf, bool isExpanded)
+{
+    Stack_RESTE(leaf->tokens);
+    CString flag = isExpanded ? LETTER_TRUE : LETTER_FALSE;
+    Token *runnableName = Stack_NEXT(leaf->tokens);
+    Token *resultName = Stack_NEXT(leaf->tokens);
+    Compiler_buildPass(this, 3, flag, runnableName, resultName);
+    Token *arg = Stack_NEXT(leaf->tokens);
+    while(arg != NULL)
+    {
+        Compiler_pushPass(this, arg);
+        arg = Stack_NEXT(leaf->tokens);
+    }
 }
 
 void Compiler_consumeCommand(Compiler *this, Leaf *leaf)
@@ -163,7 +159,7 @@ void Compiler_consumeCommand(Compiler *this, Leaf *leaf)
         Compiler_pushPass(this, name);
         name = Queue_NEXT(args);
     }
-    Compiler_callGenerateNewLine(this, "command", true);
+    Compiler_callGenerateWriteLine(this, "command", true);
 }
 
 void Compiler_consumeConvert(Compiler *this, Leaf *leaf)
@@ -172,7 +168,7 @@ void Compiler_consumeConvert(Compiler *this, Leaf *leaf)
     Token *action = Stack_NEXT(leaf->tokens);
     Token *target = Stack_NEXT(leaf->tokens);
     char *act = action->value;
-    Compiler_callGenerateNewLine(this, "convert", true);
+    Compiler_callGenerateWriteLine(this, "convert", true);
     //
     if (is_eq_string(action->type, UG_TTYPE_WRD))
     {
@@ -206,11 +202,12 @@ void Compiler_consumeConvert(Compiler *this, Leaf *leaf)
         //
     }
 }
+
 Token *_compiler_calculateJudge(Compiler *this, Object *some, Token *judge) {
     if (some == NULL) {
         return NULL;
     } if (some->objType == PCT_OBJ_LEAF) {
-        _compiler_prepareApply(this, some);
+        _compiler_prepareApply(this, some, false);
         CString appiement = Compiler_callGenerateReadText(this, "apply");
         return Token_name(appiement);
     } else {
@@ -230,7 +227,13 @@ void Compiler_checkJudge(Compiler *this, Leaf *leaf)
     second = _compiler_calculateJudge(this, second, judge); 
     //
     tools_assert((clcltn != NULL) == (second != NULL), LANG_ERR_COMPILER_EXCEPTION);
-    Compiler_buildPass(this, 4, judge, first, clcltn, second);
+    Compiler_buildPass(this, 4, judge->value, first, clcltn, second);
+}
+
+void Compiler_consumeEnd(Compiler *this, Leaf *leaf)
+{
+    Compiler_callGenerateWriteLine(this, "end", false);
+    Draft_checkGap(this->draft);
 }
 
 void Compiler_consumeIf(Compiler *this, Leaf *leaf)
@@ -243,8 +246,8 @@ void Compiler_consumeIf(Compiler *this, Leaf *leaf)
     tools_assert(ifNode != NULL, LANG_ERR_GRAMMAR_INVALID_IF);
     tools_assert(ifNode->type == UG_ATYPE_IF_F, LANG_ERR_GRAMMAR_INVALID_IF);
     Compiler_checkJudge(this, ifNode);
-    Draft_pushLine(this->draft, "");
-    Compiler_callGenerateNewLine(this, "if", false);
+    Draft_checkGap(this->draft);
+    Compiler_callGenerateWriteLine(this, "if", false);
     //
     Compiler_pushScope(this, LETTER_IF);
     Compiler_consumeTree(this, ifNode);
@@ -253,14 +256,13 @@ void Compiler_consumeIf(Compiler *this, Leaf *leaf)
     ifNode = Queue_NEXT(leaf->leafs);
     if (ifNode && ifNode->type == UG_ATYPE_IF_M) {
         Compiler_checkJudge(this, ifNode);
-        Compiler_callGenerateNewLine(this, "elif", false);
+        Compiler_callGenerateWriteLine(this, "elif", false);
         //
         Compiler_pushScope(this, LETTER_ELIF);
         Compiler_consumeTree(this, ifNode);
         Compiler_popScope(this);
         //
         ifNode = Queue_NEXT(leaf->leafs);
-        tools_assert(ifNode != NULL, LANG_ERR_GRAMMAR_INVALID_IF);
     }
     // else
     if (ifNode && ifNode->type == UG_ATYPE_IF_L)
@@ -268,26 +270,23 @@ void Compiler_consumeIf(Compiler *this, Leaf *leaf)
         Stack_RESTE(ifNode->tokens);
         Token *token = Stack_NEXT(ifNode->tokens);
         tools_assert(is_eq_string(token->value, LETTER_ELSE), LANG_ERR_GRAMMAR_INVALID_IF);
-        Compiler_callGenerateNewLine(this, "else", false);
+        Compiler_callGenerateWriteLine(this, "else", false);
         //
         Compiler_pushScope(this, LETTER_ELSE);
         Compiler_consumeTree(this, ifNode);
         Compiler_popScope(this);
         //
         ifNode = Queue_NEXT(leaf->leafs);
-        tools_assert(ifNode != NULL, LANG_ERR_GRAMMAR_INVALID_IF);
     }
     // end
-    tools_assert(ifNode && ifNode->type == UG_ATYPE_END, LANG_ERR_GRAMMAR_INVALID_IF);
-    Leaf *nullValue = Queue_NEXT(leaf->leafs);
-    tools_assert(nullValue == NULL, LANG_ERR_GRAMMAR_INVALID_IF);
+    tools_assert(ifNode == NULL, LANG_ERR_GRAMMAR_INVALID_IF);
 }
 
 void Compiler_consumeWhile(Compiler *this, Leaf *leaf)
 {
     Compiler_checkJudge(this, leaf);
-    Draft_pushLine(this->draft, "");
-    Compiler_callGenerateNewLine(this, "while", false);
+    Draft_checkGap(this->draft);
+    Compiler_callGenerateWriteLine(this, "while", false);
     Compiler_pushScope(this, LETTER_WHILE);
     Compiler_consumeTree(this, leaf);
     Compiler_popScope(this);
@@ -301,9 +300,9 @@ void Compiler_consumeSpread(Compiler *this, Leaf *leaf)
     Token *iter1 = Stack_NEXT(leaf->tokens);
     Token *iter2 = Stack_NEXT(leaf->tokens);
     Compiler_buildPass(this, 3, target, iter1, iter2);
-    Draft_pushLine(this->draft, "");
-    Compiler_callGenerateNewLine(this, "spread", false);
-    Compiler_pushScope(this, LETTER_WHILE);
+    Draft_checkGap(this->draft);
+    Compiler_callGenerateWriteLine(this, "spread", false);
+    Compiler_pushScope(this, LETTER_SPREAD);
     Compiler_consumeTree(this, leaf);
     Compiler_popScope(this);
 }
@@ -317,11 +316,11 @@ void Compiler_consumeException(Compiler *this, Leaf *leaf)
     Compiler_pushScope(this, LETTER_EXCEPTION);
     Compiler_consumeTree(this, leaf);
     Compiler_popScope(this);
-    Compiler_callGenerateNewLine(this, "try-catch", false);
+    Draft_checkGap(this->draft);
+    Compiler_callGenerateWriteLine(this, "try-catch", false);
 }
 
 void _Compiler_parseAppliable(Compiler *this, Leaf *leaf, char type, Token **func, Leaf **code) {
-    log_warn("===============appliable");
     // func name
     Stack_RESTE(leaf->tokens);
     *func = Stack_NEXT(leaf->tokens);
@@ -339,9 +338,10 @@ void _Compiler_parseAppliable(Compiler *this, Leaf *leaf, char type, Token **fun
         arg = Stack_NEXT((*code)->tokens);
     }
     //
-    Compiler_callGenerateNewLine(this, "appliable", false);
+    Draft_checkGap(this->draft);
+    Compiler_callGenerateWriteLine(this, "appliable", false);
     // 
-    Compiler_pushScope(this, LETTER_WHILE);
+    Compiler_pushScope(this, LETTER_APPEAL);
     Compiler_consumeTree(this, *code);
     Compiler_popScope(this);
     //
@@ -382,31 +382,17 @@ void Compiler_consumeCode(Compiler *this, Leaf *leaf)
     Compiler_consumeTree(this, leaf);
 }
 
-void _compiler_prepareApply(Compiler *this, Leaf *leaf)
-{
-    Stack_RESTE(leaf->tokens);
-    Token *runnableName = Stack_NEXT(leaf->tokens);
-    Token *resultName = Stack_NEXT(leaf->tokens);
-    Compiler_buildPass(this, 2, runnableName, resultName);
-    Token *arg = Stack_NEXT(leaf->tokens);
-    while(arg != NULL)
-    {
-        Compiler_pushPass(this, arg);
-        arg = Stack_NEXT(leaf->tokens);
-    }
-}
-
 void Compiler_consumeApply(Compiler *this, Leaf *leaf)
 {
-    _compiler_prepareApply(this, leaf);
-    Compiler_callGenerateNewLine(this, "apply", true);
+    _compiler_prepareApply(this, leaf, true);
+    Compiler_callGenerateWriteLine(this, "apply", true);
 }
 
 void Compiler_consumeResult(Compiler *this, Leaf *leaf)
 {
     Stack_RESTE(leaf->tokens);
     Token *result = Stack_NEXT(leaf->tokens);
-    Compiler_callGenerateNewLine(this, "result", true);
+    Compiler_callGenerateWriteLine(this, "result", true);
 }
 
 void Compiler_consumeCalculator(Compiler *this, Leaf *leaf)
@@ -416,7 +402,7 @@ void Compiler_consumeCalculator(Compiler *this, Leaf *leaf)
     Token *target = Stack_NEXT(leaf->tokens);
     Foliage *root = (Foliage *)body->value;
     // 
-    Compiler_callGenerateNewLine(this, "calculate", true);
+    Compiler_callGenerateWriteLine(this, "calculate", true);
 }
 
 Draft *Compiler_generateContainer(Compiler *this, Object *, Token *);
@@ -474,13 +460,8 @@ void Compiler_consumeGenerator(Compiler *this, Leaf *leaf)
     Token *target = Stack_NEXT(leaf->tokens);
     Object *root = (Object *)body->value;
     //
-    Compiler_callGenerateNewLine(this, "generate", true);
+    Compiler_callGenerateWriteLine(this, "generate", true);
     // Compiler_assert(this, NULL, target, LANG_ERR_GRAMMAR_INVALID_GENERATION);
-}
-
-void Compiler_consumeEnd(Executer *this, Leaf *leaf)
-{
-    //
 }
 
 void Compiler_consumeLeaf(Compiler *this, Leaf *leaf)
@@ -600,7 +581,6 @@ void Compiler_consumeTree(Compiler *this, Leaf *tree)
 void *Compiler_compileCode(Compiler *this, Leaf *tree, CString dialect) {
     this->dialect = dialect;
     Compiler_consumeTree(this, tree);
-    Draft_pushLine(this->draft, "\n");
     Draft_print(this->draft);
 }
 

@@ -24,6 +24,12 @@ CString convert_number_2_ug(Token *token) {
     }
 }
 
+CString receive_string_2_ug(Compiler *compiler) {
+    CString value = Compiler_popPass(compiler);
+    tools_assert(value != NULL, "invalid pass for generate");
+    return  value;
+}
+
 CString receive_token_2_ug(Compiler *compiler) {
     Token *token = Compiler_popPass(compiler);
     if (!token) {
@@ -37,23 +43,23 @@ CString receive_token_2_ug(Compiler *compiler) {
     } else if (Token_isKey(token)) {
         Token *extra = token->extra;
         if (Token_isKeyOfName(token)) {
-            value = tools_format("%s[%s]", extra->value, token->value);
+            value = tools_format("@%s{%s}", extra->value, token->value);
         } else if (Token_isKeyOfString(token)) {
-            value = tools_format("%s.%s", extra->value, token->value);
+            value = tools_format("@%s.%s", extra->value, token->value);
         } else if (Token_isKeyOfNumber(token)) {
-            value = tools_format("%s[%s]", extra->value, convert_number_2_ug(token));
+            value = tools_format("@%s.%s", extra->value, convert_number_2_ug(token));
         }
     } else if (Token_isWord(token)) {
         if (is_eq_string(token->value, LETTER_BOL)) {
-            value = T(LETTER_FALSE);
+            value = T(LETTER_BOL);
         } else if (is_eq_string(token->value, LETTER_NUM)) {
-            value = "0";
+            value = T(LETTER_NUM);
         } else if (is_eq_string(token->value, LETTER_STR)) {
-            value = "\"\"";
+            value = T(LETTER_STR);
         } else if (is_eq_string(token->value, LETTER_LST)) {
-            value = "[]";
+            value = T(LETTER_LST);
         } else if (is_eq_string(token->value, LETTER_DCT)) {
-            value = "{}";
+            value = T(LETTER_DCT);
         } else {
             value = token->value;
         }
@@ -81,16 +87,10 @@ CString receive_args_2_ug(Compiler *compiler) {
 }
 
 CString receive_judge_2_ug(Compiler *compiler) {
-    Token *judge = Compiler_popPass(compiler);
     CString first = receive_token_2_ug(compiler);
     CString clcltn = receive_token_2_ug(compiler);
     CString second = receive_token_2_ug(compiler);
-    bool shouldOk = is_eq_string(judge->value, LETTER_THEN);
-    if (shouldOk) {
-        return tools_format(!second ? "%s" : "%s %s %s", first, clcltn, second);
-    } else {
-        return tools_format(!second ? "!%s" : "!(%s %s %s)", first, clcltn, second);
-    }
+    return tools_format(second == NULL ? "%s" : "%s %s %s", first, clcltn, second);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -112,8 +112,19 @@ CString ug_generate_command(Compiler *compiler) {
 }
 
 CString ug_generate_if(Compiler *compiler) {
+    CString _judge = receive_string_2_ug(compiler);
     CString judge = receive_judge_2_ug(compiler);
-    return tools_format("%s %s ", T(LETTER_IF), judge);
+    return tools_format("%s %s %s", T(LETTER_IF), judge, T(_judge));
+}
+
+CString ug_generate_elif(Compiler *compiler) {
+    CString _judge = receive_string_2_ug(compiler);
+    CString judge = receive_judge_2_ug(compiler);
+    return tools_format("%s %s %s", T(LETTER_ELIF), judge, T(_judge));
+}
+
+CString ug_generate_else(Compiler *compiler) {
+    return tools_format("%s ", T(LETTER_ELSE));
 }
 
 CString ug_generate_spread(Compiler *compiler) {
@@ -124,8 +135,9 @@ CString ug_generate_spread(Compiler *compiler) {
 }
 
 CString ug_generate_while(Compiler *compiler) {
+    CString _judge = receive_string_2_ug(compiler);
     CString judge = receive_judge_2_ug(compiler);
-    return tools_format("%s %s", T(LETTER_WHILE), judge);
+    return tools_format("%s %s %s", T(LETTER_WHILE), judge, T(_judge));
 }
 
 CString ug_generate_calculate(Compiler *compiler) {
@@ -136,9 +148,6 @@ CString ug_generate_appliable(Compiler *compiler) {
     CString _type = receive_token_2_ug(compiler);
     CString name = receive_token_2_ug(compiler);
     CString args = receive_args_2_ug(compiler);
-    log_warn("_type %s", _type);
-    log_warn("name %s", name);
-    log_warn("args %s", args);
     return tools_format("%s %s %s %s %s", T(_type), name, T(LETTER_VARIABLE), args, T(LETTER_CONTENT));
 }
 
@@ -147,23 +156,50 @@ CString ug_generate_result(Compiler *compiler) {
 }
 
 CString ug_generate_apply(Compiler *compiler) {
+    CString flag = receive_string_2_ug(compiler);
     CString name = receive_token_2_ug(compiler);
     CString result = receive_token_2_ug(compiler);
     CString args = receive_args_2_ug(compiler);
-    if (!result || is_eq_string(result, T(LETTER_NIL))) {
-        if (is_eq_string(args, "")) {
-            return tools_format("%s %s %s", T(LETTER_APPEAL), name, T(LETTER_APPLY));
+    bool isExpanded = is_eq_string(flag, LETTER_TRUE);
+    bool withResult = result != NULL && !is_eq_string(result, T(LETTER_NIL));
+    bool withArgs = args != NULL && !is_eq_string(args, "");
+    //
+    if (withResult && withArgs) {
+        if (isExpanded) {
+            return tools_format(
+                "%s %s %s %s %s %s %s %s",
+                T(LETTER_APPEAL), name, T(LETTER_WITH), args, T(LETTER_APPLY),
+                T(LETTER_FURTHER), result, T(LETTER_RECIEVED)
+            );
         } else {
-            return tools_format("%s %s %s %s %s", T(LETTER_APPEAL), name, T(LETTER_WITH), args, T(LETTER_APPLY));
+            return tools_format("%s = %s(%s)", result, name, args);
+        }
+    } else if (withResult) {
+        if (isExpanded) {
+            return tools_format(
+                "%s %s %s %s %s %s",
+                T(LETTER_APPEAL), name, T(LETTER_APPLY),
+                T(LETTER_FURTHER), result, T(LETTER_RECIEVED)
+            );
+        } else {
+            return tools_format("%s = %s()", result, name);
+        }
+    } else if (withArgs) {
+        if (isExpanded) {
+            return tools_format(
+                "%s %s %s %s %s",
+                T(LETTER_APPEAL), name, T(LETTER_WITH), args, T(LETTER_APPLY)
+            );
+        } else {
+            return tools_format("%s(%s)", name, args);
         }
     } else {
-        if (is_eq_string(args, "")) {
-            return tools_format("%s %s %s %s %s %s", T(LETTER_APPEAL), name, T(LETTER_APPLY), T(LETTER_FURTHER), result, T(LETTER_RECIEVED));
+        if (isExpanded) {
+            return tools_format("%s %s %s", T(LETTER_APPEAL), name, T(LETTER_APPLY));
         } else {
-            return tools_format("%s %s %s %s %s %s %s %s", T(LETTER_APPEAL), name, T(LETTER_WITH), args, T(LETTER_APPLY), T(LETTER_FURTHER), result, T(LETTER_RECIEVED));
+            return tools_format("%s()", name);
         }
     }
-    
 }
 
 CString ug_generate_then(Compiler *compiler) {
@@ -179,6 +215,8 @@ void generator_ug_register(Compiler *compiler)
     COMPILER_BIND_GENERATE(ug_generate_variable);
     COMPILER_BIND_GENERATE(ug_generate_command);
     COMPILER_BIND_GENERATE(ug_generate_if);
+    COMPILER_BIND_GENERATE(ug_generate_elif);
+    COMPILER_BIND_GENERATE(ug_generate_else);
     COMPILER_BIND_GENERATE(ug_generate_spread);
     COMPILER_BIND_GENERATE(ug_generate_while);
     COMPILER_BIND_GENERATE(ug_generate_calculate);

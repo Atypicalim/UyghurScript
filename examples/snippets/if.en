@@ -1,6 +1,6 @@
-if a$1 value empty then
+if a$1 then
     #
-elif a$1 value right then
+elif b$2 then
     #
 else
     #

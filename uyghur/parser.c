@@ -368,8 +368,8 @@ void Parser_consumeAstEnd(Parser *this)
     }
     // close ast code
     Parser_checkWord(this, 0, 1, LETTER_END);
-    Parser_buildLeaf(this, UG_ATYPE_END, 0, NULL);
     Parser_closeBranch(this);
+    Parser_buildLeaf(this, UG_ATYPE_END, 0, NULL);
 }
 
 void Parser_consumeAstWhile(Parser *this)

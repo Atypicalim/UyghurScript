@@ -750,7 +750,6 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
             isFinish = true;
         }
         ifNode = Queue_NEXT(leaf->leafs);
-        tools_assert(ifNode != NULL, LANG_ERR_GRAMMAR_INVALID_IF);
     }
     // else
     if (ifNode && ifNode->type == UG_ATYPE_IF_L)
@@ -766,12 +765,9 @@ void Executer_consumeIf(Executer *this, Leaf *leaf)
             isFinish = true;
         }
         ifNode = Queue_NEXT(leaf->leafs);
-        tools_assert(ifNode != NULL, LANG_ERR_GRAMMAR_INVALID_IF);
     }
     // end
-    tools_assert(ifNode && ifNode->type == UG_ATYPE_END, LANG_ERR_GRAMMAR_INVALID_IF);
-    Leaf *nullValue = Queue_NEXT(leaf->leafs);
-    tools_assert(nullValue == NULL, LANG_ERR_GRAMMAR_INVALID_IF);
+    tools_assert(ifNode == NULL, LANG_ERR_GRAMMAR_INVALID_IF);
 }
 
 void Executer_consumeWhile(Executer *this, Leaf *leaf)
@@ -1258,11 +1254,6 @@ void Executer_consumeGenerator(Executer *this, Leaf *leaf)
     Executer_setValueByToken(this, target, r, false);
 }
 
-void Executer_consumeEnd(Executer *this, Leaf *leaf)
-{
-    //
-}
-
 void Executer_consumeLeaf(Executer *this, Leaf *leaf)
 {
     char tp = leaf->type;
@@ -1361,7 +1352,6 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     // end
     if(tp == UG_ATYPE_END)
     {
-        Executer_consumeEnd(this, leaf);
         return;
     }
     //

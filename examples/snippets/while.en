@@ -1,3 +1,3 @@
-while $1 value right then
+while $1 then
     #
 finish

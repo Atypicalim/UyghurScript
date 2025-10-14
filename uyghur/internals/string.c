@@ -39,7 +39,7 @@ void native_string_replace_last(Bridge *bridge)
     CString toText = Bridge_receiveString(bridge);
     //
     String *tmp = String_set(TEMPORARY_String, strdup(origin));
-    int index = String_findLast(tmp, strlen(origin), fromText);
+    int index = String_findLast(tmp, -1, fromText);
     String_replace(tmp, fromText, toText, index, strlen(origin), 1);
     //
     CString result = String_get(tmp);
@@ -97,7 +97,7 @@ void native_string_find_last(Bridge *bridge)
     CString origin = Bridge_receiveString(bridge);
     CString find =Bridge_receiveString(bridge);
     String *tmp = String_set(TEMPORARY_String, origin);
-    int result = String_findLast(tmp, strlen(origin), find);
+    int result = String_findLast(tmp, -1, find);
     Bridge_returnNumber(bridge, result);
 }
 
