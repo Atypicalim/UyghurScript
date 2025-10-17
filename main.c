@@ -58,39 +58,39 @@ char *try_read_merged_script(CString name) {
 // 
 
 void run_help_cmd(CString name) {
-	args_print_usage(stdout, name, "[OPTIONS]");
+    printf("use of %s:\nOptions:\n", name);
+	cargs_print(stdout);
 }
 
 void run_version_cmd(CString name) {
 	printf("%s %s\n", name, UG_VERSION_NAME);
 }
 
-void run_interact_cmd(CString name) {
+void run_interact_cmd(CString name, char *lang) {
     Uyghur *uyghur = Uyghur_instance();
-    Uyghur_runRepl(uyghur);
+    Uyghur_runRepl(uyghur, lang);
     Uyghur_free(uyghur);
 }
 
-void run_package_cmd(CString name, args_t args, CString path) {
-    #if IS_WINDOWS
-        log_debug("packaging...");
-        try_merge_win_program(name, path);
-        log_debug("packaged!");
-    #elif
-        log_error("packaring not supported for: %s", PLATFORM_NAME);
-    #endif
-}
-
-void run_execute_cmd(CString name, args_t args, CString path) {
+void run_execute_cmd(CString name, CString path, cArgs *args) {
     Uyghur *uyghur = Uyghur_instance();
     Uyghur_runProgram(uyghur, path, args);
     Uyghur_free(uyghur);
 }
 
-void run_compile_cmd(CString name, args_t args, CString path) {
+void run_compile_cmd(CString name, CString path, CString lang) {
     Uyghur *uyghur = Uyghur_instance();
-    Uyghur_runCompile(uyghur, path, "en");
+    Uyghur_runCompile(uyghur, path, lang);
     Uyghur_free(uyghur);
+}
+void run_package_cmd(CString name, CString path) {
+    #if IS_WINDOWS
+        log_debug("packaging...");
+        try_merge_win_program(path, name);
+        log_debug("packaged!");
+    #elif
+        log_error("packaring not supported for: %s", PLATFORM_NAME);
+    #endif
 }
 
 // 
@@ -107,43 +107,63 @@ int main(int argc, char *argv[])
     system_execute("chcp 65001");
     setlocale(LC_ALL, "en_US.utf8");
     // args
-	args_t args = new_args(argc, argv);
-	char *name = args_shift(&args);
-	bool help    = false;
-    bool version = false;
-    bool interact = NULL;
-    char *package = NULL;
-    char *execute = NULL;
-    char *compile = NULL;
-	flag_bool("h", "help",     "show this help",        &help);
-	flag_bool("v", "version",  "print program version", &version);
-	flag_bool("i", "interact", "run interact mode", &interact);
-	flag_cstr("p", "package",  "package given script",  &package);
-	flag_cstr("e", "execute",  "execute given script",  &execute);
-	flag_cstr("c", "compile",  "compile given script",  &compile);
+	cArgs args = cargs_new(argc, argv);
+	char *name = args.path;
+    //
+    char *path = CARGS_REQUIRE_STRING;
+    char *lang = "";
+    //
+	bool *help     = cargs_command("h", "help",     "show this help");
+	bool *version  = cargs_command("v", "version",  "print program version");
+    //
+	bool *interact = cargs_command("i", "interact", "run interact mode");
+    cargs_string("l", "lang", &lang);
+	bool *execute = cargs_command("e", "execute",  "execute given script");
+    cargs_string(NULL, "path", &path);
+	bool *compile = cargs_command("c", "compile",  "compile given script");
+    cargs_string(NULL, "path", &path);
+    cargs_string("l", "lang", &lang);
+	bool *package = cargs_command("p", "package",  "package given script");
+    cargs_string(NULL, "path", &path);
     // 
-	int err = args_parse_flags(&args, NULL, NULL);
-	if (err != ARG_OK) {
-        log_error("args error: %d", err);
+	int err = cargs_run(&args);
+    if (err == CARGS_UNKNOWN_COMMAND) {
+        log_error("args unknown command name: %s", args.extra);
+        return EXIT_FAILURE;
+    } else if (err == CARGS_MISSING_PARAM) {
+        log_error("args missing param name: %s", args.extra);
+        return EXIT_FAILURE;
+    } else if (err == CARGS_UNKNOWN_PARAM) {
+        log_error("args unknown param name: %s", args.extra);
+        return EXIT_FAILURE;
+    } else if (err == CARGS_MISSING_VALUE) {
+        log_error("args missing value for: %s", args.extra);
+        return EXIT_FAILURE;
+    } else if (err == CARGS_INVALID_VALUE) {
+        log_error("args invalid value for: %s", args.extra);
+        return EXIT_FAILURE;
+    } else if (err != CARGS_OK && err != CARGS_MISSING_COMMAND) {
+        log_error("args exception error code: %d", err);
 		return EXIT_FAILURE;
 	}
-	if (help) {
+    //
+	if (*help) {
         run_help_cmd(name);
 		return EXIT_SUCCESS;
-	} else if (version) {
+	} else if (*version) {
         run_version_cmd(name);
 		return EXIT_SUCCESS;
-	} else if (interact) {
-        run_interact_cmd(name);
+	} else if (*interact) {
+        run_interact_cmd(name, lang);
 		return EXIT_SUCCESS;
-	} else if (package) {
-        run_package_cmd(name, args, package);
+	} else if (*execute) {
+        run_execute_cmd(name, path, &args);
 		return EXIT_SUCCESS;
-	} else if (execute) {
-        run_execute_cmd(name, args, execute);
+	} else if (*compile) {
+        run_compile_cmd(name, path, lang);
 		return EXIT_SUCCESS;
-	} else if (compile) {
-        run_compile_cmd(name, args, compile);
+	} else if (*package) {
+        run_package_cmd(name, path);
 		return EXIT_SUCCESS;
     }
     // script
@@ -153,11 +173,10 @@ int main(int argc, char *argv[])
     }
     // program
     Uyghur *uyghur = Uyghur_instance();
+    CString _path = (char *)argv[1];
     if (argc <= 1) Uyghur_runScript(uyghur, script);
-    if (argc >= 2) Uyghur_runProgram(uyghur, (char *)argv[1], args);
+    if (argc >= 2) Uyghur_runProgram(uyghur, _path, &args);
     Uyghur_free(uyghur);
-    //
-    //
     // 
     return 0;
 }

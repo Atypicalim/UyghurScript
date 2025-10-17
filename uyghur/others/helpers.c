@@ -399,6 +399,26 @@ char *helper_filter_multilang_by_key(char *key, int size, PAIR_CONFIGS *multilan
     return NULL;
 }
 
+void helper_print_languages(char *prefix) {
+    if (!prefix) prefix = "> *";
+    HELPER_LANGUAGE_ITERATE() {
+        printf("%s %s\n", prefix, _lang);
+    }
+}
+
+CString helper_select_language(char *prefix) {
+    if (!prefix) prefix = "> ";
+    CString lang = NULL;
+    while (!lang) {
+        printf(prefix);
+        char *text = system_scanf();
+        HELPER_LANGUAGE_ITERATE() {
+            if (is_eq_string(text, _lang)) lang = _lang;
+        }
+    }
+    return lang;
+}
+
 void helper_set_languages(Uyghur *uyghur, char *tp) {
     if (!!uyghur->language) {
         return;

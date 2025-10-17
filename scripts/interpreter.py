@@ -3,10 +3,10 @@ from scripts.base import *
 
 ################################################################
 
-SCRIPT_PATH = Run.scriptPath if Run.scriptPath != None else "./examples/help.ug"
-SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(SCRIPT_PATH)
-DST_ALIAS = DIR_BUILD + "uyghur"
+SCRIPT_DIR, SCRIPT_FILE, SCRIPT_EXT, SCRIPT_NAME = tools.tools.parse_path(Run.scriptPath)
+DST_ALIAS = DIR_BUILD + SCRIPT_FILE
 DST_SCRIPT = DST_ALIAS + "." + SCRIPT_EXT
+tools.files.delete(DST_SCRIPT)
 
 ################################################################
 
@@ -147,9 +147,6 @@ _Yaml2Template("CONFIGS", tplYamlDefine, tplYamlLineNormal)
 
 ############################################################################### script
 
-assert tools.files.is_file(SCRIPT_PATH), 'script file not found' + SCRIPT_PATH
-tools.files.delete(DST_SCRIPT)
-
 def _onMacro(code, command, argument = None):
     if command == "PROJECT_REPO":
         return code.format(PROJECT_REPO)
@@ -158,7 +155,7 @@ def _onMacro(code, command, argument = None):
     pass
 bldr = builder.code()
 bldr.setName("SCRIPT")
-bldr.setInput(SCRIPT_PATH)
+bldr.setInput(Run.scriptPath)
 bldr.setComment("#", False)
 bldr.setOutput(DST_SCRIPT)
 bldr.onMacro(_onMacro)

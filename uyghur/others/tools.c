@@ -34,6 +34,11 @@ char *tools_boolean_to_string(bool bol)
     return tools_format("%s", bol ? LETTER_TRUE : LETTER_FALSE);
 }
 
+bool is_string_valid(char *val)
+{
+    return val != NULL && val[0] != '\0';
+}
+
 bool is_eq_string(char *this, char* other)
 {
     return strcmp(this, other) == 0;

@@ -5,17 +5,15 @@ import subprocess
 
 ################################################################
 
-__arg1 = sys.argv[1] if len(sys.argv) > 1 else ""
-__arg2 = sys.argv[2] if len(sys.argv) > 2 else ""
-RunCmd = __arg1
-RunExt = __arg2
-__workingDir = os.path.dirname(os.path.abspath(__file__))
+RunCmd = sys.argv[1] if len(sys.argv) > 1 else None
+RunExts = sys.argv[2:]
+RunFolder = os.path.dirname(os.path.abspath(__file__))
 
 RunNeedUpdate = RunCmd == "--update" or RunCmd == "-u"
 RunNeedGenerate = RunCmd == "--generate" or RunCmd == "-g"
-RunNeedCompile = RunCmd == "--compile" or RunCmd == "-c"
-RunNeedExecute = RunCmd == "--execute" or RunCmd == "-e"
 RunNeedRelease = RunCmd == "--release" or RunCmd == "-r"
+RunIsConsumed = RunNeedUpdate or RunNeedGenerate or RunNeedRelease
+RunIsDeliver = RunCmd != None and not RunIsConsumed
 
 ################################################################
 
@@ -53,7 +51,7 @@ downloadGitTo("git@github.com:Atypicalim/replot.git", "../c-replot-library")
 
 ################################################################
 
-os.chdir(__workingDir)
+os.chdir(RunFolder)
 if RunNeedUpdate:
     print("\nupdateing self:")
     subprocess.run(['git', 'pull'], check=True)
@@ -65,11 +63,9 @@ if RunNeedUpdate:
 from scripts.base import *
 import scripts.bind
 
-Run.workingDir = __workingDir
+Run.workingDir = RunFolder
 Run.scriptPath = None
 Run.runTarget = None
-Run.arg1 = __arg1
-Run.arg2 = __arg2
 Run.isRelease = RunNeedRelease
 
 ################################################################
@@ -85,13 +81,14 @@ if RunNeedGenerate:
 
 ################################################################
 
-SCRIPT_PATH = "./examples/help.ug"
-# SCRIPT_PATH = "./examples/test.ug"
-# SCRIPT_PATH = "./examples/features/objective.en"
-# SCRIPT_PATH = "./examples/internals/number.ug"
-# SCRIPT_PATH = "./examples/externals/yuguresh.ug"
-Run.scriptPath = RunExt if RunExt != "" else SCRIPT_PATH
+scriptPath = "./examples/help.ug"
+scriptPath = "./examples/test.ug"
+# scriptPath = "./examples/features/objective.en"
+# scriptPath = "./examples/internals/number.ug"
+# scriptPath = "./examples/externals/yuguresh.ug"
 
+Run.scriptPath = scriptPath
+# assert tools.files.is_file("." + Run.scriptPath)
 import scripts.interpreter
 
 ################################################################
@@ -101,20 +98,8 @@ dir, name, runnable = task.getRunnable()
 if Run.isRelease:
     tools.files.copy(runnable, "release/" + name)
 
-runPath = RunExt if RunExt != "" else Run.scriptPath
-runCmd = None
-if RunNeedCompile:
-    runCmd = "-c"
-    pass
-elif RunNeedExecute:
-    runCmd = "-e"
-    pass
-
-if runCmd != None:
-    isOk, output = tools.tools_execute(f"{runnable} {runCmd} {runPath}")
-    print(output)
-else:
-    isOk, extra = tools.tools_spawn(runnable, [], cwd=dir)
-    print(f"RUNNED:{isOk}", "" if isOk else extra)
+runArgs = [RunCmd] + RunExts if RunIsDeliver else []
+isOk, extra = tools.tools_spawn(runnable, runArgs, cwd=dir)
+print(f"RUNNED:{isOk}", "" if isOk else extra)
 
 ################################################################

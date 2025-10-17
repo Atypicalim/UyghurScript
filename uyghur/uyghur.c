@@ -94,7 +94,7 @@ Value *Uyghur_runModule(Uyghur *this, char *path)
     return module;
 }
 
-Value *Uyghur_runProgram(Uyghur *this, char *path, args_t args)
+Value *Uyghur_runProgram(Uyghur *this, char *path, cArgs *args)
 {
     char *code = helper_read_code_file(path);
     Value *program = _Uyghur_runCode(this, path, code);
@@ -103,39 +103,40 @@ Value *Uyghur_runProgram(Uyghur *this, char *path, args_t args)
     return program;
 }
 
-void Uyghur_runCompile(Uyghur *this, char *path, CString dialect)
+void Uyghur_runCompile(Uyghur *this, char *path, CString lang)
 {
+    //
+    if (!is_string_valid(lang)) {
+        printf("> available languages are:\n");
+        helper_print_languages(NULL);
+        printf("> please select a language:\n");
+        lang = helper_select_language(NULL);
+    }
+    //
     log_debug("path:%s", path);
     _Uyghur_processLang(this, path);
     char *code = helper_read_code_file(path);
     Leaf *tree = _Uyghur_processCode(this, path, code);
-    Compiler_compileCode(this->compiler, tree, dialect);
+    Compiler_compileCode(this->compiler, tree, lang);
     pct_free(code);
 }
 
-void Uyghur_runRepl(Uyghur *this)
+void Uyghur_runRepl(Uyghur *this, CString lang)
 {
 	printf("%s %s\n", UG_PROJECT_NAME, UG_VERSION_NAME);
     //
-    printf("> available languages:\n");
-    HELPER_LANGUAGE_ITERATE() {
-        printf("> * %s\n", _lang);
+    if (!is_string_valid(lang)) {
+        printf("> available languages are:\n");
+        helper_print_languages(NULL);
+        printf("> please select a language:\n");
+        lang = helper_select_language(NULL);
     }
     //
-    printf("> please select a language to run program:\n");
-    CString lang = NULL;
-    while (!lang) {
-        printf("> ");
-        char *text = system_scanf();
-        HELPER_LANGUAGE_ITERATE() {
-            if (is_eq_string(text, _lang)) lang = _lang;
-        }
-    }
     CString *code = "";
     CString *path = tools_format("*.%s", lang);
     _Uyghur_processLang(this, path);
     //
-    printf("> please end with [;] in single line:\n", lang);
+    printf("> please end with [;] in single line:\n");
     String *text = String_new();
     int line = 0;
     while (true) {

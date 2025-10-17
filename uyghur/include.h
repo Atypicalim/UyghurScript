@@ -23,9 +23,6 @@
 #define MD5_IMPLEMENTATION
 #include "../../c-pure-tools/test.h"
 
-#define CARGS_IMPLEMENTATION
-#include "../../c-xtra-tools/cargs/cargs.h"
-
 #include "../../c-xtra-tools/utf8iter/utf8iter.h"
 #include "../../c-xtra-tools/utf8iter/utf8iter.c"
 #include "../../c-xtra-tools/utf8string/utf8string.h"

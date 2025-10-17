@@ -326,7 +326,7 @@ typedef struct _Uyghur {
 
 Uyghur *__uyghur = NULL;
 Value *Uyghur_runModule(Uyghur *, char *);
-Value *Uyghur_runProgram(Uyghur *, char *, args_t);
+Value *Uyghur_runProgram(Uyghur *, char *, cArgs *);
 void Uyghur_runCompile(Uyghur *, char *, CString);
 
 struct Machine {
