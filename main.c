@@ -117,12 +117,12 @@ int main(int argc, char *argv[])
 	bool *version  = cargs_command("v", "version",  "print program version");
     //
 	bool *interact = cargs_command("i", "interact", "run interact mode");
-    cargs_string("l", "lang", &lang);
+    cargs_string(NULL, "lang", &lang);
 	bool *execute = cargs_command("e", "execute",  "execute given script");
     cargs_string(NULL, "path", &path);
 	bool *compile = cargs_command("c", "compile",  "compile given script");
     cargs_string(NULL, "path", &path);
-    cargs_string("l", "lang", &lang);
+    cargs_string(NULL, "lang", &lang);
 	bool *package = cargs_command("p", "package",  "package given script");
     cargs_string(NULL, "path", &path);
     // 
