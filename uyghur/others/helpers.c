@@ -161,9 +161,9 @@ bool is_calculation_str(char *target)
 
 bool is_higher_priority_calculation(char *target, char *than)
 {
-    if (is_eq_strings(target, TVAUE_GROUP_CALCULATION_3) && is_eq_strings(than, TVAUE_GROUP_CALCULATION_2)) return true;
-    if (is_eq_strings(target, TVAUE_GROUP_CALCULATION_3) && is_eq_strings(than, TVAUE_GROUP_CALCULATION_1)) return true;
-    if (is_eq_strings(target, TVAUE_GROUP_CALCULATION_2) && is_eq_strings(than, TVAUE_GROUP_CALCULATION_1)) return true;
+    if (is_eq_strings(target, TVAUE_GROUP_CALCULATION_4) && !is_eq_strings(than, TVAUE_GROUP_CALCULATION_4)) return true;
+    if (is_eq_strings(target, TVAUE_GROUP_CALCULATION_3) && !is_eq_strings(than, TVAUE_GROUP_CALCULATION_3)) return true;
+    if (is_eq_strings(target, TVAUE_GROUP_CALCULATION_2) && !is_eq_strings(than, TVAUE_GROUP_CALCULATION_2)) return true;
     return false;
 }
 

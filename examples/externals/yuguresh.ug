@@ -1,24 +1,33 @@
 # running men
 
-miqdar r qimmiti quruq bolsun
-miqdar w qimmiti quruq bolsun
-
-miqdar x qimmiti quruq bolsun
-miqdar y qimmiti quruq bolsun
-miqdar t qimmiti quruq bolsun
-
-miqdar n qimmiti 1 bolsun
-miqdar m qimmiti 1 bolsun
-miqdar text qimmiti "Bir Ikki Bir, Bir Ikki Bir ..." bolsun
-
 iltimas @sehne.korsitish bilen -1 -1 "Yuguresh" -1 ishlitilsun
 
-iltimas @qelem.resimEkirish bilen "../resources/run.png" 0 0 200 260 ishlitilsun we img elinsun
+miqdar text qimmiti "Bir Ikki Bir, Bir Ikki Bir ..." bolsun
+miqdar waqitQimmit qimmiti 0 bolsun
+miqdar resimQimmiti qimmiti 0 bolsun
+
+miqdar resimler qimmiti tertip bolsun
+miqdar resimOrni qimmiti 0 bolsun
+yeyilghan 8 miqdar k bulup
+    resimOrni = k * 60
+    iltimas @qelem.resimEkirish bilen "../resources/walk.png" resimOrni 0 60 100 ishlitilsun we @resimler{k} elinsun
+tamamlansun
+
 iltimas @qelem.fontEkirish bilen "../resources/ukij.ttf" ishlitilsun we font elinsun
 
 nawada @sehne.yepilmaqchi bolmisa
+    # 
+    waqitQimmit = waqitQimmit + 0.1
+    eger waqitQimmit > 1 bolsa
+        waqitQimmit = 0
+        eger resimQimmiti < 7 bolsa
+            resimQimmiti = resimQimmiti + 1
+        bolmisa
+            resimQimmiti = 0
+        tamamlansun
+    tamamlansun
     #
-    iltimas @qelem.resimSizish bilen 100 300 img ishlitilsun
+    iltimas @qelem.resimSizish bilen 250 300 @resimler{resimQimmiti} 2 ishlitilsun
     iltimas @qelem.fontSizish bilen 250 50 font 36 text ishlitilsun
     #
     iltimas @sehne.yengilash ishlitilsun

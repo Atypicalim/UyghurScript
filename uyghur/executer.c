@@ -193,8 +193,9 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
             Executer_error(this, token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
         }
     } else {
+        Value *container = NULL;
         Value *value = NULL;
-        Executer_findValueByLocation(this, extra->value, &INVALID_CTN, &value);
+        Executer_findValueByLocation(this, extra->value, &container, &value);
         if (value != NULL) *rContainer = value;
     }
     // container
@@ -213,8 +214,9 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
         Token *_token = Token_getTemporary();
         _token->type = _extra->type;
         _token->value = token->value;
-        Value *value;
-        Executer_findValueByToken(this, _token, &INVALID_CTN, &value);
+        Value *container = NULL;
+        Value *value = NULL;
+        Executer_findValueByToken(this, _token, &container, &value);
         if (Value_isNumber(value)) {
             index = value->number;
         } else if (Value_isString(value)) {
@@ -397,7 +399,8 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
     Value *value = convert_token_to_value(token);
     if (value != NULL) return value;
     //
-    Executer_findValueByToken(this, token, &INVALID_CTN, &value);
+    Value *container = NULL;
+    Executer_findValueByToken(this, token, &container, &value);
     if (value != NULL) {
         Machine_retainObj(value);
     } else if (withEmpty) {
@@ -409,7 +412,8 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
 void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool withDeclare)
 {
     Value *container = NULL;
-    Executer_findValueByToken(this, token, &container, &INVALID_VAL);
+    Value *_value = NULL;
+    Executer_findValueByToken(this, token, &container, &_value);
     if (withDeclare && container == NULL) container = this->machine->currHoldable;
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_BOX);
     Executer_setValueToContainer(this, container, token, value);
@@ -422,12 +426,16 @@ double Executer_calculateNumbers(Executer *this, double left, char *sign, double
 {
     if (is_eq_string(sign, SIGN_ADD)) return left + right;
     if (is_eq_string(sign, SIGN_SUB)) return left - right;
-    if (is_eq_string(sign, SIGN_POW)) return pow(left, right);
     if (is_eq_string(sign, SIGN_PER)) return fmod(left, right);
     if (is_eq_string(sign, SIGN_MUL)) return left * right;
     if (is_eq_string(sign, SIGN_DIV)) {
         Executer_assert(this, right != 0, token, LANG_ERR_EXECUTER_INVALID_DEVIDE);
         return left / right;
+    }
+    if (is_eq_string(sign, SIGN_MUL_DBL)) return pow(left, right);
+    if (is_eq_string(sign, SIGN_DIV_DBL)) {
+        Executer_assert(this, right != 0, token, LANG_ERR_EXECUTER_INVALID_DEVIDE);
+        return floor(left / right); 
     }
     int lInt = (int)left;
     int rInt = (int)right;
@@ -920,7 +928,8 @@ void _Executer_parseAppliable(Executer *this, Leaf *leaf, char type, Token **fun
     if (!Token_isKey(*func)) return;
     // validate place
     Value *place = NULL;
-    Executer_findValueByToken(this, *func, &place, &INVALID_VAL);
+    Value *value = NULL;
+    Executer_findValueByToken(this, *func, &place, &value);
     Executer_assert(this, place != NULL, *func, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
     if (type == UG_TYPE_WKR && !Holdable_isProxy(place)) {
         return;

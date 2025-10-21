@@ -37,7 +37,13 @@ Value *Listable_getIndex(Listable *this, int index) {
 }
 
 bool Listable_setIndex(Listable *this, int index, Value *item) {
-    return Array_set(this->arr, index, item);
+    if (this->arr->length == 0 && index == 0) {
+        return Array_append(this->arr, item);
+    } else if (index == this->arr->length) {
+        return Array_append(this->arr, item);
+    } else {
+        return Array_set(this->arr, index, item);
+    }
 }
 
 int Listable_getCount(Listable *this) {

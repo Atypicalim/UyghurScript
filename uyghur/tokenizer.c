@@ -276,7 +276,7 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
     utf8iter_init(this->iterDynamic, code);
     utf8iter_next(this->iterStatic);
     utf8iter_next(this->iterDynamic);
-    while (this->iterStatic->next < this->iterStatic->length) {
+    while (this->iterStatic->next <= this->iterStatic->length) {
         // 
         tempChar = Tokenizer_getchar(this, 0);
         if (!currChar) free_uchar(currChar);
@@ -461,17 +461,32 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
         if (isCalculator && is_calculation_char(currChar))
         {
             UTFCHAR lastC = Tokenizer_getValidChar(this, -1);
-            UTFCHAR nextC = Tokenizer_getValidChar(this, 1);
             if (
                 !is_calculation_char(lastC)
-                && !is_calculation_char(nextC)
                 && !is_uchar_eq_uchar(lastC, SIGN_EQUAL)
                 && !is_uchar_eq_uchar(lastC, SIGN_OPEN_SMALL)
             ) {
-                Token *tkn = Token_new(UG_TTYPE_CLC, currChar);
-                Tokenizer_addToken(this, tkn);
-                Tokenizer_skipN(this, 1);
-                continue;
+                UTFCHAR _next1 = Tokenizer_getValidChar(this, 1);
+                UTFCHAR next1 = clone_uchar(_next1);
+                UTFCHAR _next2 = Tokenizer_getValidChar(this, 2);
+                UTFCHAR next2 = clone_uchar(_next2);
+                Token *str = NULL;
+                if (!is_calculation_char(next1)) {
+                    str = String_format("%s", currChar);
+                } else if (!is_calculation_char(next2)) {
+                    str = String_format("%s%s", currChar, next1);
+                }
+                free_uchar(next1);
+                free_uchar(next2);
+                if (str != NULL) {
+                    int count = String_length(str);
+                    char *sign = String_dump(str);
+                    String_free(str);
+                    Token *tkn = Token_new(UG_TTYPE_CLC, sign);
+                    Tokenizer_addToken(this, tkn);
+                    Tokenizer_skipN(this, count);
+                    continue;
+                }
             }
         }
         // open

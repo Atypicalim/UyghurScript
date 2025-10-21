@@ -2,6 +2,8 @@
 
 #include "others/header.h"
 
+Token *Parser_moveToken(Parser *, int);
+
 void Parser_reset(Parser *this)
 {
     this->tokens = NULL;
@@ -14,14 +16,17 @@ Parser *Parser_new(Uyghur *uyghur)
 {
     Parser *parser = malloc(sizeof(Parser));
     parser->uyghur = uyghur;
+    parser->path = "";
+    parser->line = 0;
+    parser->column = 0;
+    parser->text = "?";
     return parser;
 }
 
 void Parser_error(Parser *this, char *msg)
 {
-    Token *token = this->token;
     char *m = msg != NULL ? msg : LANG_ERR_PARSER_EXCEPTION;
-    char *s = tools_format(LANG_ERR_TOKEN_PLACE, token->file, token->line, token->column, token->value);
+    char *s = tools_format(LANG_ERR_TOKEN_PLACE, this->path, this->line, this->column, this->text);
     log_error("Parser: %s, %s", m, s);
     exit(1);
 }
@@ -35,20 +40,14 @@ void Parser_assert(Parser *this, bool value, char *msg)
 
 Token *Parser_moveToken(Parser *this, int indent)
 {
-    if (indent == 1)
-    {
+    if (!this->token) return NULL;
+    if (indent == 1) {
         this->token = this->token->next;
-    }
-    else if (indent == -1)
-    {
+    } else if (indent == -1) {
         this->token = this->token->last;
-    }
-    else if (indent == 0)
-    {
+    } else if (indent == 0) {
         //
-    }
-    else
-    {
+    } else {
         tools_error("invalid indent for parser");
     }
     return this->token;
@@ -657,6 +656,9 @@ void Parser_consumeToken(Parser *this, Token *token)
     //
     char *t = token->type;
     char *v = token->value;
+    this->line = token->line;
+    this->column = token->column;
+    this->text = token->value;
     log_debug("parser.next: %s | %s", t, v);
     // VARIABLE
     if (is_eq_string(t, UG_TTYPE_WRD) && is_eq_string(v, LETTER_VARIABLE))
@@ -773,9 +775,10 @@ void Parser_consumeToken(Parser *this, Token *token)
     Token_print(token);
 }
 
-Leaf *Parser_parseTokens(Parser *this, Token *tokens)
+Leaf *Parser_parseTokens(Parser *this, const char *path, Token *tokens)
 {
     Parser_reset(this);
+    this->path = path;
     this->tokens = tokens;
     this->tree = Leaf_new(UG_ATYPE_PRG);
     this->leaf = this->tree;

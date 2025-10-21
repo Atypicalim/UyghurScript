@@ -65,7 +65,7 @@ Leaf *_Uyghur_processCode(Uyghur *this, char *path, char *code)
     log_debug("uyghur.tokenize");
     Token *headToken = Tokenizer_parseCode(this->tokenizer, path, code);
     log_debug("uyghur.parse");
-    Leaf *headLeaf = Parser_parseTokens(this->parser, headToken);
+    Leaf *headLeaf = Parser_parseTokens(this->parser, path, headToken);
     return headLeaf;
 }
 

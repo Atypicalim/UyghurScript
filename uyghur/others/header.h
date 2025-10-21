@@ -157,8 +157,6 @@ Value *Value_FALSE = NULL;
 Value *Value_TEMPORARY = NULL;
 
 void *INVALID_PTR = NULL;
-Value *INVALID_CTN = NULL;
-Value *INVALID_VAL = NULL;
 
 #define VEmpty Value*
 #define VBolean Value*
@@ -279,8 +277,12 @@ typedef struct _Tokenizer {
 typedef struct _Parser
 {
     Uyghur *uyghur;
+    CString path;
     Token *tokens;
     Token *token;
+    int line;
+    int column;
+    CString text;
     Leaf *tree;
     Leaf *leaf;
 } Parser;
