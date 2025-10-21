@@ -121,49 +121,79 @@ void helper_print_btree(Foliage *root, char *_space)
     printf("%s[BTREE]\n", space);
 }
 
+bool is_group_member(const CString text, const char *group[]) {
+    int count = 0;
+    const char *member = group[count];
+    while (member != NULL) {
+        if (is_eq_string(text, member)) return true;
+        member = group[++count];
+    }
+    return false;
+}
+
 bool is_calculator_common(UTFCHAR c)
 {
-    return is_eq_strings(c, TVAUE_GROUP_CALCULATION_ALL);
+    return is_group_member(c, TVAUE_GROUP_CALCULATION_ALL);
 }
 
 bool is_calculation_number(UTFCHAR c)
 {
-    return is_eq_strings(c, TVAUE_GROUP_CALCULATION_NUM);
+    return is_group_member((CString)c, TVAUE_GROUP_CALCULATION_NUM);
 }
 
 bool is_calculation_bool(UTFCHAR c)
 {
-    return is_eq_strings(c, TVAUE_GROUP_CALCULATION_BOL);
+    return is_group_member(c, TVAUE_GROUP_CALCULATION_BOL);
 }
 
 bool is_calculation_string(UTFCHAR c)
 {
-    return is_eq_strings(c, TVAUE_GROUP_CALCULATION_STR);
+    return is_group_member(c, TVAUE_GROUP_CALCULATION_STR);
 }
 
 bool is_calculation_logicals(UTFCHAR c)
 {
-    return is_eq_strings(c, TVAUE_GROUP_CALCULATION_ALL) || is_eq_strings(c, TVAUE_GROUP_CALCULATION_BOL);
+    return is_group_member(c, TVAUE_GROUP_CALCULATION_ALL) || is_group_member(c, TVAUE_GROUP_CALCULATION_BOL);
 }
 
-bool is_calculation_char(UTFCHAR c)
+
+
+bool is_calculation_chars(UTFCHAR first, UTFCHAR second)
 {
-    return is_calculator_common(c) || is_calculation_number(c) || is_calculation_bool(c) || is_calculation_string(c);
+    if (second == NULL) {
+        return is_calculator_common(first)
+        || is_calculation_number(first)
+        || is_calculation_bool(first)
+        || is_calculation_string(first);
+    }
+    HELPER_GROUP_FOREACH(TVAUE_GROUP_CALCULATION_ALL, {
+        if (member[0] == first[0] && member[1] == first[1]) return true;
+    })
+    HELPER_GROUP_FOREACH(TVAUE_GROUP_CALCULATION_NUM, {
+        if (member[0] == first[0] && member[1] == first[1]) return true;
+    })
+    HELPER_GROUP_FOREACH(TVAUE_GROUP_CALCULATION_BOL, {
+        if (member[0] == first[0] && member[1] == first[1]) return true;
+    })
+    HELPER_GROUP_FOREACH(TVAUE_GROUP_CALCULATION_STR, {
+        if (member[0] == first[0] && member[1] == first[1]) return true;
+    })
+    return false;
 }
 
 bool is_calculation_str(char *target)
 {
-    return is_eq_strings(target, TVAUE_GROUP_CALCULATION_ALL)
-    || is_eq_strings(target, TVAUE_GROUP_CALCULATION_NUM)
-    || is_eq_strings(target, TVAUE_GROUP_CALCULATION_BOL)
-    || is_eq_strings(target, TVAUE_GROUP_CALCULATION_STR);
+    return is_group_member(target, TVAUE_GROUP_CALCULATION_ALL)
+    || is_group_member(target, TVAUE_GROUP_CALCULATION_NUM)
+    || is_group_member(target, TVAUE_GROUP_CALCULATION_BOL)
+    || is_group_member(target, TVAUE_GROUP_CALCULATION_STR);
 }
 
 bool is_higher_priority_calculation(char *target, char *than)
 {
-    if (is_eq_strings(target, TVAUE_GROUP_CALCULATION_4) && !is_eq_strings(than, TVAUE_GROUP_CALCULATION_4)) return true;
-    if (is_eq_strings(target, TVAUE_GROUP_CALCULATION_3) && !is_eq_strings(than, TVAUE_GROUP_CALCULATION_3)) return true;
-    if (is_eq_strings(target, TVAUE_GROUP_CALCULATION_2) && !is_eq_strings(than, TVAUE_GROUP_CALCULATION_2)) return true;
+    if (is_group_member(target, TVAUE_GROUP_CALCULATION_4) && !is_group_member(than, TVAUE_GROUP_CALCULATION_4)) return true;
+    if (is_group_member(target, TVAUE_GROUP_CALCULATION_3) && !is_group_member(than, TVAUE_GROUP_CALCULATION_3)) return true;
+    if (is_group_member(target, TVAUE_GROUP_CALCULATION_2) && !is_group_member(than, TVAUE_GROUP_CALCULATION_2)) return true;
     return false;
 }
 

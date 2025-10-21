@@ -476,15 +476,23 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
     char *sign = token->value;
     int compCode = Value_compareTo(left, right);
     int sameType = compCode != CODE_FAIL;
-    if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_ALL)) {
+    if (is_group_member(sign, TVAUE_GROUP_CALCULATION_ALL)) {
         if (is_eq_string(sign, SIGN_QUEST)) {
             bool r = sameType && compCode == CODE_NONE;
             result = Value_newBoolean(r, token);
         } else if (sameType && is_eq_string(sign, SIGN_MORE)) {
             bool r = compCode == CODE_TRUE;
             result = Value_newBoolean(r, token);
+        } else if (sameType && is_eq_string(sign, SIGN_MORE_EQL)) {
+            bool eq = compCode == CODE_NONE;
+            bool r = compCode == CODE_TRUE || eq;
+            result = Value_newBoolean(r, token);
         } else if (sameType && is_eq_string(sign, SIGN_LESS)) {
             bool r = compCode == CODE_FALSE;
+            result = Value_newBoolean(r, token);
+        } else if (sameType && is_eq_string(sign, SIGN_LESS_EQL)) {
+            bool eq = compCode == CODE_NONE;
+            bool r = compCode == CODE_FALSE || eq;
             result = Value_newBoolean(r, token);
         } else if (is_eq_string(sign, SIGN_CHK)) {
             if (is_type_objective(rType)) {
@@ -505,16 +513,16 @@ Value *Executer_calculateValues(Executer *this, Value *left, Token *token, Value
             }
         }
     } else if (sameType) {
-        if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_NUM) && lType == UG_TYPE_NUM) {
+        if (is_group_member(sign, TVAUE_GROUP_CALCULATION_NUM) && lType == UG_TYPE_NUM) {
             double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);
             result = Value_newNumber(r, token);
-        } else if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_BOL) && lType == UG_TYPE_NUM) {
+        } else if (is_group_member(sign, TVAUE_GROUP_CALCULATION_BOL) && lType == UG_TYPE_NUM) {
             double r = Executer_calculateNumbers(this, left->number, sign, right->number, token);
             result = Value_newNumber(r, token);
-        } else if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_BOL) && lType == UG_TYPE_BOL) {
+        } else if (is_group_member(sign, TVAUE_GROUP_CALCULATION_BOL) && lType == UG_TYPE_BOL) {
             bool r = Executer_calculateBooleans(this, left->boolean, sign, right->boolean, token);
             result = Value_newBoolean(r, token);
-        } else if (is_eq_strings(sign, TVAUE_GROUP_CALCULATION_STR) && lType == UG_TYPE_STR) {
+        } else if (is_group_member(sign, TVAUE_GROUP_CALCULATION_STR) && lType == UG_TYPE_STR) {
             CString r = Executer_calculateStrings(this, left->string, sign, right->string, token);
             result = Value_newString(r, token);
         }

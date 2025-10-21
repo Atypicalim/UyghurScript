@@ -410,6 +410,17 @@ typedef CString (*CGenerator)(Compiler *);
     char *_lang = UG_LANGUAGE_ARRAY[_i]; \
     for (; _i < _size; _lang = UG_LANGUAGE_ARRAY[++_i]) \
 
+    
+#define HELPER_GROUP_FOREACH(group, body) \
+    { \
+        int count = 0; \
+        const char *member = group[count]; \
+        while (member != NULL) { \
+            body \
+            member = group[++count]; \
+        } \
+    } \
+
 CString helper_translate_letter(char *, char *);
 CString helper_translate_alias(char *, char *);
 CString helper_translate_something(char *);

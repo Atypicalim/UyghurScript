@@ -98,7 +98,7 @@ void Tokenizer_assert(Tokenizer *this, bool value, char *msg)
 }
 
 void Tokenizer_addToken(Tokenizer *this, Token *token) {
-    log_debug("tokenizer.token: %s->%s", token->type, escape_cstring(token->value));
+    log_debug("tokenizer.token: %s->[%s]", token->type, escape_cstring(token->value));
     Token_bindInfo(token, this->path, this->line, this->column);
     //
     if (this->head == NULL)
@@ -458,35 +458,34 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             continue;
         }
         // calculation
-        if (isCalculator && is_calculation_char(currChar))
+        if (isCalculator && is_calculation_chars(currChar, NULL))
         {
-            UTFCHAR lastC = Tokenizer_getValidChar(this, -1);
+            UTFCHAR _lastC = Tokenizer_getValidChar(this, -1);
+            UTFCHAR lastC = clone_uchar(_lastC);
+            UTFCHAR _nextC = Tokenizer_getValidChar(this, 1);
+            UTFCHAR nextC = clone_uchar(_nextC);
+            Token *str = NULL;
             if (
-                !is_calculation_char(lastC)
+                !is_calculation_chars(lastC, NULL)
                 && !is_uchar_eq_uchar(lastC, SIGN_EQUAL)
                 && !is_uchar_eq_uchar(lastC, SIGN_OPEN_SMALL)
             ) {
-                UTFCHAR _next1 = Tokenizer_getValidChar(this, 1);
-                UTFCHAR next1 = clone_uchar(_next1);
-                UTFCHAR _next2 = Tokenizer_getValidChar(this, 2);
-                UTFCHAR next2 = clone_uchar(_next2);
-                Token *str = NULL;
-                if (!is_calculation_char(next1)) {
+                if (is_calculation_chars(currChar, nextC)) {
+                    str = String_format("%s%s", currChar, nextC);
+                } else {
                     str = String_format("%s", currChar);
-                } else if (!is_calculation_char(next2)) {
-                    str = String_format("%s%s", currChar, next1);
                 }
-                free_uchar(next1);
-                free_uchar(next2);
-                if (str != NULL) {
-                    int count = String_length(str);
-                    char *sign = String_dump(str);
-                    String_free(str);
-                    Token *tkn = Token_new(UG_TTYPE_CLC, sign);
-                    Tokenizer_addToken(this, tkn);
-                    Tokenizer_skipN(this, count);
-                    continue;
-                }
+            }
+            free_uchar(lastC);
+            free_uchar(nextC);
+            if (str != NULL) {
+                int count = String_length(str);
+                char *sign = String_dump(str);
+                String_free(str);
+                Token *tkn = Token_new(UG_TTYPE_CLC, sign);
+                Tokenizer_addToken(this, tkn);
+                Tokenizer_skipN(this, count);
+                continue;
             }
         }
         // open
