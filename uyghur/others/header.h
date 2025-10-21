@@ -280,9 +280,7 @@ typedef struct _Parser
     CString path;
     Token *tokens;
     Token *token;
-    int line;
-    int column;
-    CString text;
+    Token *last;
     Leaf *tree;
     Leaf *leaf;
 } Parser;

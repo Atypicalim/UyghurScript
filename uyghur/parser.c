@@ -16,17 +16,15 @@ Parser *Parser_new(Uyghur *uyghur)
 {
     Parser *parser = malloc(sizeof(Parser));
     parser->uyghur = uyghur;
-    parser->path = "";
-    parser->line = 0;
-    parser->column = 0;
-    parser->text = "?";
+    parser->last = NULL;
     return parser;
 }
 
 void Parser_error(Parser *this, char *msg)
 {
+    Token *t = this->token != NULL ? this->token : this->last;
     char *m = msg != NULL ? msg : LANG_ERR_PARSER_EXCEPTION;
-    char *s = tools_format(LANG_ERR_TOKEN_PLACE, this->path, this->line, this->column, this->text);
+    char *s = tools_format(LANG_ERR_TOKEN_PLACE, t->file, t->line, t->column, t->value);
     log_error("Parser: %s, %s", m, s);
     exit(1);
 }
@@ -656,9 +654,7 @@ void Parser_consumeToken(Parser *this, Token *token)
     //
     char *t = token->type;
     char *v = token->value;
-    this->line = token->line;
-    this->column = token->column;
-    this->text = token->value;
+    this->last = token;
     log_debug("parser.next: %s | %s", t, v);
     // VARIABLE
     if (is_eq_string(t, UG_TTYPE_WRD) && is_eq_string(v, LETTER_VARIABLE))
@@ -778,7 +774,6 @@ void Parser_consumeToken(Parser *this, Token *token)
 Leaf *Parser_parseTokens(Parser *this, const char *path, Token *tokens)
 {
     Parser_reset(this);
-    this->path = path;
     this->tokens = tokens;
     this->tree = Leaf_new(UG_ATYPE_PRG);
     this->leaf = this->tree;
