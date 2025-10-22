@@ -256,6 +256,7 @@ const char *TVAUE_GROUP_CALCULATION_4[] = {
 
 #define TEXT_VARIABLE "__var"
 #define TEXT_FUNCTION "__fun"
+#define TEXT_APPLY "__apply"
 
 #define CODE_FALSE -1
 #define CODE_TRUE 1

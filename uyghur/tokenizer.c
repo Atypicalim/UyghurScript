@@ -99,7 +99,9 @@ void Tokenizer_assert(Tokenizer *this, bool value, char *msg)
 
 void Tokenizer_addToken(Tokenizer *this, Token *token) {
     log_debug("tokenizer.token: %s->[%s]", token->type, escape_cstring(token->value));
-    Token_bindInfo(token, this->path, this->line, this->column);
+    token->file = this->path;
+    token->line = this->line;
+    token->column = this->column;
     //
     if (this->head == NULL)
     {

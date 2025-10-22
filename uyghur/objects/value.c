@@ -304,6 +304,8 @@ bool Value_isTrue(Value *this)
         return false;
     } else if (this->type == UG_TYPE_BOL) {
         return this->boolean;
+    } else if (this->type == UG_TYPE_NUM) {
+        return this->number != 0;
     } else {
         return true;
     }

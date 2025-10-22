@@ -22,13 +22,6 @@ Token *Token_new(char *type, void *value)
     return token;
 }
 
-void Token_bindInfo(Token *this, const char *file, int line, int column)
-{
-    this->file = file;
-    this->line = line;
-    this->column = column;
-}
-
 Token *Token_empty()
 {
     if (Token_EMPTY == NULL) {

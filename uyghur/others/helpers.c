@@ -167,16 +167,16 @@ bool is_calculation_chars(UTFCHAR first, UTFCHAR second)
         || is_calculation_string(first);
     }
     HELPER_GROUP_FOREACH(TVAUE_GROUP_CALCULATION_ALL, {
-        if (member[0] == first[0] && member[1] == first[1]) return true;
+        if (member[0] == first[0] && member[1] == second[0]) return true;
     })
     HELPER_GROUP_FOREACH(TVAUE_GROUP_CALCULATION_NUM, {
-        if (member[0] == first[0] && member[1] == first[1]) return true;
+        if (member[0] == first[0] && member[1] == second[0]) return true;
     })
     HELPER_GROUP_FOREACH(TVAUE_GROUP_CALCULATION_BOL, {
-        if (member[0] == first[0] && member[1] == first[1]) return true;
+        if (member[0] == first[0] && member[1] == second[0]) return true;
     })
     HELPER_GROUP_FOREACH(TVAUE_GROUP_CALCULATION_STR, {
-        if (member[0] == first[0] && member[1] == first[1]) return true;
+        if (member[0] == first[0] && member[1] == second[0]) return true;
     })
     return false;
 }

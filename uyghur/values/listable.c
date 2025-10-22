@@ -37,12 +37,24 @@ Value *Listable_getIndex(Listable *this, int index) {
 }
 
 bool Listable_setIndex(Listable *this, int index, Value *item) {
-    if (this->arr->length == 0 && index == 0) {
-        return Array_append(this->arr, item);
-    } else if (index == this->arr->length) {
-        return Array_append(this->arr, item);
+    int length = this->arr->length;
+    bool delete = item == NULL || Value_isEmpty(item);
+    if (index < 0) index = index + this->arr->length + 1;
+    if (index < 0) return false;
+    if (delete) {
+        if (index <= 0) {
+            Value *_value = Array_shift(this->arr);
+            return _value != NULL;
+        } else {
+            Value *_value = Array_del(this->arr, index);
+            return _value != NULL;
+        }
     } else {
-        return Array_set(this->arr, index, item);
+        if (index >= length) {
+            Array_append(this->arr, item);
+        } else {
+            return Array_set(this->arr, index, item);
+        }
     }
 }
 

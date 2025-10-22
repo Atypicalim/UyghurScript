@@ -347,6 +347,7 @@ void _machine_mark_listable(Listable *);
 void _machine_mark_dictable(Dictable *);
 void _machine_mark_holdable(Holdable *);
 void _machine_mark_objective(Objective *);
+void _machine_mark_runnable(Runnable *);
 void _machine_mark_loadable(Loadable *);
 void _machine_mark_waitable(Waitable *);
 void _machine_mark_hashkey(Hashkey *, void *);
@@ -368,7 +369,7 @@ void _machine_mark_value(Value *value) {
     } else if (is_type_objective(value->type)) {
         _machine_mark_objective(value);
     } else if (is_type_runnable(value->type)) {
-        _machine_mark_object(value);
+        _machine_mark_runnable(value);
     } else if (is_type_loadable(value->type)) {
         _machine_mark_loadable(value);
     } else if (is_type_waitable(value->type)) {
@@ -436,6 +437,14 @@ void _machine_mark_objective(Objective *objective) {
             }
         }
     }
+}
+
+void _machine_mark_runnable(Runnable *runnable) {
+    // closure environment
+    if (runnable->linka) {
+        _machine_mark_holdable(runnable->linka);
+    }
+    _machine_mark_object(runnable);
 }
 
 void _machine_mark_loadable(Loadable *loadable) {

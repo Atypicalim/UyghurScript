@@ -471,6 +471,30 @@ void Parser_consumeAstApply(Parser *this)
     Parser_pushLeaf(this, leaf);
 }
 
+Token *_parser_processCalculateApply(Parser *this) {
+    Token *name = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
+    Token *result = Token_empty();
+    Leaf *leaf = Leaf_new(UG_ATYPE_APPLY);
+    //
+    Parser_checkWord(this, 1, 1, SIGN_OPEN);
+    
+    Token *token = Token_new(name->type, TEXT_APPLY);
+    token->file = name->file;
+    token->line = name->line;
+    token->column = name->column;
+    token->extra = leaf;
+    while (!Parser_isWord(this, 1, SIGN_CLOSE)) {
+        Token *variable = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+        Stack_push(leaf->tokens, variable);
+    }
+    Parser_checkWord(this, 1, 1, SIGN_CLOSE);
+    Stack_reverse(leaf->tokens);
+    // result
+    Stack_push(leaf->tokens, result);
+    Stack_push(leaf->tokens, name);
+    return token;
+}
+
 void Parser_consumeAstCalculator(Parser *this)
 {
     Token *target = Parser_checkType(this, 0, TVAUES_GROUP_CHANGEABLE);
@@ -484,14 +508,31 @@ void Parser_consumeAstCalculator(Parser *this)
     while (true) {
         current = (Foliage*)currents->tail->data;
         if (Parser_isTypes(this, 1, TTYPES_GROUP_VALUES) || Parser_isValues(this, 1, TVAUES_GROUP_UTYPES)) {
+            // values or types
             if (lastType == NULL || is_eq_string(lastType, SIGN_OPEN)) {
-                tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+                // left side
+                if (Parser_isTypes(this, 1, TVAUES_GROUP_CHANGEABLE) && Parser_isValue(this, 2, "(")) {
+                    // apply
+                    tempT = _parser_processCalculateApply(this);
+                } else if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
+                    // types
+                    tempT = Parser_checkValue(this, 1, TVAUES_GROUP_UTYPES);
+                } else {
+                    // variables
+                    tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+                }
                 tempF = Foliage_new(tempT);
                 current->left = tempF;
             } else if (is_calculation_str(lastType)) {
-                if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
+                // right side
+                if (Parser_isTypes(this, 1, TVAUES_GROUP_CHANGEABLE) && Parser_isValue(this, 2, "(")) {
+                    // apply
+                    tempT = _parser_processCalculateApply(this);
+                } else if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
+                    // types
                     tempT = Parser_checkValue(this, 1, TVAUES_GROUP_UTYPES);
                 } else {
+                    // variables
                     tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
                 }
                 tempF = Foliage_new(tempT);

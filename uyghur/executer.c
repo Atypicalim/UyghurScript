@@ -121,16 +121,14 @@ void Executer_findValueByLocation(Executer *this, char *key, Value **rContainer,
     *rValue = NULL;
     //
     Holdable *holder = this->machine->currHoldable;
-    if (holder) {
-        while (holder != NULL) {
-            Value *value = Dictable_getLocation(holder, key);
-            if (value != NULL) {
-                *rContainer = holder;
-                *rValue = value;
-                return;
-            }
-            holder = holder->linka;
+    while (holder != NULL) {
+        Value *value = Dictable_getLocation(holder, key);
+        if (value != NULL) {
+            *rContainer = holder;
+            *rValue = value;
+            return;
         }
+        holder = holder->linka;
     }
     //
     Holdable *global = this->globalScope;
@@ -141,7 +139,6 @@ void Executer_findValueByLocation(Executer *this, char *key, Value **rContainer,
             *rValue = value;
             return;
         }
-        return;
     }
 }
 
@@ -380,7 +377,7 @@ void Executer_setValueToContainer(Executer *this, Value *container, Token *token
     if (Value_isListable(container)) {
         // list set
         int index = Executer_genIndexOfToken(this, token);
-        Executer_assert(this, index >= 0, token, "setting invalid index to list");
+        Executer_assert(this, index >= -1, token, "setting invalid index to list");
         Listable_setIndex(container, index, value);
         return;
     } else {
@@ -836,11 +833,13 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
     Value *current2;
     if (Value_isInt(value)) {
         int num = (int)value->number;
-        for (size_t i = 0; i < num; i++)
-        {
-            current1 = Value_newNumber(i, iter1);
-            current2 = Value_newNumber(i + 1, iter2);
+        int idx = 0;
+        int stp = num >= 0 ? 1 : -1;
+        while (idx != num) {
+            current1 = Value_newNumber(idx, iter1);
+            current2 = Value_EMPTY;
             _Executer_runSpread(this, leaf, iter1, iter2, current1, current2);
+            idx = idx + stp;
             if (this->errorMsg != NULL) break;
         }
     } else if (Value_isString(value)) {
@@ -1180,6 +1179,11 @@ Value *Executer_calculateBTree(Executer *this, Foliage *foliage)
         result = Executer_calculateBTree(this, foliage->left);
     } else if (foliage->right != NULL) {
         result = Executer_calculateBTree(this, foliage->right);
+    } else if (is_eq_string(token->value, TEXT_APPLY)) {
+        Leaf *_leaf = token->extra;
+        Executer_assert(this, _leaf != NULL, token, LANG_ERR_EXECUTER_EXCEPTION);
+        Executer_assert(this, _leaf->type == UG_ATYPE_APPLY, token, LANG_ERR_EXECUTER_EXCEPTION);
+        return Executer_consumeApply(this, _leaf);
     } else if (is_eq_string(token->type, UG_TTYPE_WRD)) {
         Executer_assert(this, is_eq_strings(token->value, TVAUES_GROUP_UTYPES), token, LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);
         result = Executer_getValueByToken(this, token, true);
