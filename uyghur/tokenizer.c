@@ -84,18 +84,17 @@ UTFCHAR Tokenizer_skipN(Tokenizer *this, int n)
     }
 }
 
-void Tokenizer_error(Tokenizer *this, char *msg) {
+void __Tokenizer_exit(char *source, Tokenizer *this, char *msg) {
+    if (msg == NULL) msg = LANG_ERR_TOKENIZER_EXCEPTION;
     UTFCHAR c = Tokenizer_getchar(this, 0);
-    char *m = msg != NULL ? msg : LANG_ERR_TOKENIZER_EXCEPTION;
-    char *s = tools_format(LANG_ERR_SIGN_PLACE, this->path, this->line, this->column, c);
-    log_error("Tokenizer: %s, %s", m, s);
+    char *place = tools_format(LANG_ERR_TOKEN_PLACE, this->path, this->line, this->column, c);    
+    log_error("Parser: %s", msg);
+    if (place != NULL) printf("%s\tin %s\n", source, place);
     exit(1);
 }
 
-void Tokenizer_assert(Tokenizer *this, bool value, char *msg)
-{
-    if (!value) Tokenizer_error(this, msg);
-}
+#define Tokenizer_error(this, msg) __Tokenizer_exit(helper_format_source(__FILE__, __LINE__, __func__), this, msg)
+#define Tokenizer_assert(this, check, msg) if (!(check)) Tokenizer_error(this, msg)
 
 void Tokenizer_addToken(Tokenizer *this, Token *token) {
     log_debug("tokenizer.token: %s->[%s]", token->type, escape_cstring(token->value));

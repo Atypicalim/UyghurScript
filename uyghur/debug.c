@@ -36,7 +36,7 @@ void Debug_writeTrace(Debug *this)
 {
     for (int i = this->trace->length - 1; i >= 0; i--) {
         Token *t = Array_get(this->trace, i);
-        char *s = format_some_place(t);
+        char *s = helper_format_place(t);
         printf("[%s] %s %s\n", UG_TAG_TRACE, s, t->value);
     }
 }

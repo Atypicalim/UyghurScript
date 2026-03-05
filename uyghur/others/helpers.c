@@ -205,14 +205,21 @@ bool is_command_action(char *value) {
     return value != NULL && (is_eq_string(value, LETTER_CMD_INPUT) || is_eq_string(value, LETTER_CMD_OUTPUT));
 }
 
-char *format_token_place(Token *token)
+char *helper_format_place(Token *token)
 {
-    tools_format(LANG_ERR_TOKEN_PLACE, token->file, token->line, token->column, token->value);
+    if (token == NULL) {
+        return tools_format(LANG_ERR_TOKEN_PLACE, "???", 0, 0, "???");
+    } if (token->value == NULL) {
+        return tools_format(LANG_ERR_TOKEN_PLACE, token->file, token->line, token->column, "???");
+    } else {
+        return tools_format(LANG_ERR_TOKEN_PLACE, token->file, token->line, token->column, token->value);
+    }
 }
 
-char *format_some_place(Token *token)
+char *helper_format_source(const char *file, int line, const char *func)
 {
-    tools_format(LANG_ERR_SOME_PLACE, token->file, token->line, token->column);
+    if (!UG_IS_DEVELOP) return "";
+    return tools_format("\tat %s:%d [%s]\n", file, line, func);
 }
 
 Value *convert_token_to_value(Token *token)

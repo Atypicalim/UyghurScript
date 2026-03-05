@@ -20,21 +20,18 @@ Parser *Parser_new(Uyghur *uyghur)
     return parser;
 }
 
-void Parser_error(Parser *this, char *msg)
+void __Parser_exit(char *source, Parser *this, char *msg)
 {
-    Token *t = this->token != NULL ? this->token : this->last;
-    char *m = msg != NULL ? msg : LANG_ERR_PARSER_EXCEPTION;
-    char *s = tools_format(LANG_ERR_TOKEN_PLACE, t->file, t->line, t->column, t->value);
-    log_error("Parser: %s, %s", m, s);
+    if (msg == NULL) msg = LANG_ERR_PARSER_EXCEPTION;
+    Token *token = this->token != NULL ? this->token : this->last;
+    char *place = helper_format_place(token);
+    log_error("Parser: %s", msg);
+    if (place != NULL) printf("%s\tin %s\n", source, place);
     exit(1);
 }
 
-void Parser_assert(Parser *this, bool value, char *msg)
-{
-    if (value == true)
-        return;
-    Parser_error(this, msg);
-}
+#define Parser_error(this, msg) __Parser_exit(helper_format_source(__FILE__, __LINE__, __func__), this, msg)
+#define Parser_assert(this, check, msg) if (!(check)) Parser_error(this, msg)
 
 Token *Parser_moveToken(Parser *this, int indent)
 {

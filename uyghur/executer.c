@@ -66,26 +66,23 @@ Executer *Executer_new(Uyghur *uyghur)
     return executer;
 }
 
-void Executer_error(Executer *this, Token *token, char *msg)
+void __executer_exit(char *source, Executer *this, Token *token, char *msg)
 {
-    char *m = msg != NULL ? msg : LANG_ERR_EXECUTER_EXCEPTION;
-    char *s = token == NULL ? UG_TAG_UNKNOWN : format_token_place(token);
-    char *err = tools_format("%s, %s", m, s);
+    char *place = helper_format_place(token);
+    if (msg == NULL) msg = LANG_ERR_EXECUTER_EXCEPTION;
     if (this->isCatch) {
-        this->errorMsg = err;
+        this->errorMsg = tools_format("%s %s", msg, place);
         longjmp(jump_buffer, 1);
     } else {
-        log_error("Executer: %s, %s", m, s);
+        log_error("Compiler: %s", msg);
+        if (place != NULL) printf("%s\tin %s\n", source, place);
         Debug_writeTrace(this->uyghur->debug);
         exit(1);
     }
 }
 
-void Executer_assert(Executer *this, bool value, Token *token, char *msg)
-{
-    if (value == true) return;
-    Executer_error(this, token, msg);
-}
+#define Executer_error(this, token, msg) __executer_exit(helper_format_source(__FILE__, __LINE__, __func__), this, token, msg)
+#define Executer_assert(this, check, token, msg) if (!(check)) Executer_error(this, token, msg)
 
 void Runtime_error(char *msg) {
     Executer_error(__uyghur->executer, NULL, msg);

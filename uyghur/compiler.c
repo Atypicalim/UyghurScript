@@ -38,20 +38,17 @@ Compiler *Compiler_new(Uyghur *uyghur)
     return compiler;
 }
 
-void Compiler_error(Compiler *this, Token *token, char *msg)
+void __compiler_exit(char *source, Compiler *this, Token *token, char *msg)
 {
-    char *m = msg != NULL ? msg : LANG_ERR_COMPILER_EXCEPTION;
-    char *s = token == NULL ? UG_TAG_UNKNOWN : format_token_place(token);
-    char *err = tools_format("%s, %s", m, s);
-    log_error("Compiler: %s, %s", m, s);
+    if (msg == NULL) msg = LANG_ERR_COMPILER_EXCEPTION;
+    char *place = helper_format_place(token);
+    log_error("Compiler: %s", msg);
+    if (place != NULL) printf("%s\tin %s\n", source, place);
     exit(1);
 }
 
-void Compiler_assert(Compiler *this, bool value, Token *token, char *msg)
-{
-    if (value == true) return;
-    Compiler_error(this, token, msg);
-}
+#define Compiler_error(this, token, msg) __compiler_exit(helper_format_source(__FILE__, __LINE__, __func__), this, token, msg)
+#define Compiler_assert(this, check, token, msg) if (!(check)) Compiler_error(this, token, msg)
 
 void Compiler_bindGenerate(Compiler *this, CName name, CGenerator func) {
     Hashmap_set(this->generatorsMap, name, func);
