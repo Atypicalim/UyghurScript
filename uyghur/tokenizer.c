@@ -490,17 +490,17 @@ Token *Tokenizer_parseCode(Tokenizer *this, const char *path, const char *code)
             }
         }
         // open
-        if (is_uchar_eq_uchar(currChar, SIGN_OPEN_SMALL))
+        if (is_eq_strings(currChar, TVALUES_SIGN_OPENERS))
         {
-            Token *tkn = Token_new(UG_TTYPE_WRD, SIGN_OPEN);
+            Token *tkn = Token_new(UG_TTYPE_WRD, currChar);
             Tokenizer_addToken(this, tkn);
             Tokenizer_skipN(this, 1);
             continue;
         }
         // close
-        if (is_uchar_eq_uchar(currChar, SIGN_CLOSE_SMALL))
+        if (is_eq_strings(currChar, TVALUES_SIGN_CLOSERS))
         {
-            Token *tkn = Token_new(UG_TTYPE_WRD, SIGN_CLOSE);
+            Token *tkn = Token_new(UG_TTYPE_WRD, currChar);
             Tokenizer_addToken(this, tkn);
             Tokenizer_skipN(this, 1);
             continue;

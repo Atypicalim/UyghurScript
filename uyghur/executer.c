@@ -921,13 +921,10 @@ void Executer_consumeException(Executer *this, Leaf *leaf)
     Executer_setValueByToken(this, name, error, true);
 }
 
-void _Executer_parseAppliable(Executer *this, Leaf *leaf, char type, Token **func, Leaf **code) {
+void _Executer_parseAppliable(Executer *this, Leaf *leaf, char type, Token **func) {
     // func name
     Stack_RESTE(leaf->tokens);
     *func = Stack_NEXT(leaf->tokens);
-    // func body
-    Queue_RESTE(leaf->leafs);
-    *code = Queue_NEXT(leaf->leafs);
     // with key
     if (!Token_isKey(*func)) return;
     // validate place
@@ -947,22 +944,22 @@ void _Executer_parseAppliable(Executer *this, Leaf *leaf, char type, Token **fun
 
 void Executer_consumeWorker(Executer *this, Leaf *leaf)
 {
-    Token *func; Leaf *code;
-    _Executer_parseAppliable(this, leaf, UG_TYPE_WKR, &func, &code);
+    Token *func;
+    _Executer_parseAppliable(this, leaf, UG_TYPE_WKR, &func);
     //
     Holdable *env = this->machine->currHoldable;
-    Runnable *wkr = Runnable_newWorker(code, func, env);
+    Runnable *wkr = Runnable_newWorker(leaf, func, env);
     Executer_setValueByToken(this, func, wkr, true);
 }
 
 void Executer_consumeCreator(Executer *this, Leaf *leaf)
 {
-    Token *func; Leaf *code;
-    _Executer_parseAppliable(this, leaf, UG_TYPE_CTR, &func, &code);
+    Token *func;
+    _Executer_parseAppliable(this, leaf, UG_TYPE_CTR, &func);
     //
     Objective *self = Objective_newCtr(func);
     Holdable *env = this->machine->currHoldable;
-    Value *funV = Runnable_newWorker(code, func, env);
+    Value *funV = Runnable_newWorker(leaf, func, env);
     Executer_setValueToContainer(this, self, Token_function(), funV);
     Machine_releaseObj(funV);
     //
@@ -971,22 +968,29 @@ void Executer_consumeCreator(Executer *this, Leaf *leaf)
 
 void Executer_consumeAssister(Executer *this, Leaf *leaf)
 {
-    Token *func; Leaf *code;
-    _Executer_parseAppliable(this, leaf, UG_TYPE_ATR, &func, &code);
+    Token *func;
+    _Executer_parseAppliable(this, leaf, UG_TYPE_ATR, &func);
     //
     Objective *self = Objective_newAtr(func);
     Holdable *env = this->machine->currHoldable;
-    Value *funV = Runnable_newWorker(code, func, env);
+    Value *funV = Runnable_newWorker(leaf, func, env);
     Executer_setValueToContainer(this, self, Token_function(), funV);
     Machine_releaseObj(funV);
     //
     Executer_setValueByToken(this, func, self, true);
 }
 
-void Executer_consumeCode(Executer *this, Leaf *leaf)
+Value *Executer_executeFunctions(Executer *this, Runnable *func, Value *self, CString name)
 {
+    Holdable *environment = func->linka;
+    tools_assert(environment != NULL, LANG_ERR_EXECUTER_INVALID_STATE);
+    Machine_pushHolder(this->machine, environment);
+    Executer_pushScope(this, name);
+    Dictable_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self); 
+    //
     Stack_reverse(this->callStack);
     Stack_RESTE(this->callStack);
+    Leaf *leaf = (Leaf*)func->obj;
     Stack_RESTE(leaf->tokens);
     Token *funcName = Stack_NEXT(leaf->tokens);
     Token *arg = Stack_NEXT(leaf->tokens);
@@ -996,19 +1000,9 @@ void Executer_consumeCode(Executer *this, Leaf *leaf)
         Executer_setValueToContainer(this, this->machine->currHoldable, arg, value);
         arg = Stack_NEXT(leaf->tokens);
     }
-    //
     Stack_clear(this->callStack);
     Executer_consumeTree(this, leaf);
-}
-
-Value *Executer_executeFunctions(Executer *this, Runnable *func, Value *self, CString name)
-{
-    Holdable *environment = func->linka;
-    tools_assert(environment != NULL, LANG_ERR_EXECUTER_INVALID_STATE);
-    Machine_pushHolder(this->machine, environment);
-    Executer_pushScope(this, name);
-    Dictable_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self);
-    Executer_consumeLeaf(this, func->obj);
+    // 
     Executer_popScope(this);
     Holdable *_environment = Machine_popHolder(this->machine);
     tools_assert(environment == _environment, LANG_ERR_EXECUTER_INVALID_STATE);
@@ -1341,12 +1335,6 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     if(tp == UG_ATYPE_APPLY)
     {
         Executer_consumeApply(this, leaf);
-        return;
-    }
-    // code
-    if(tp == UG_ATYPE_CODE)
-    {
-        Executer_consumeCode(this, leaf);
         return;
     }
     // result

@@ -317,56 +317,55 @@ void Compiler_consumeException(Compiler *this, Leaf *leaf)
     Compiler_callGenerateWriteLine(this, "try-catch", false);
 }
 
-void _Compiler_parseAppliable(Compiler *this, Leaf *leaf, char type, Token **func, Leaf **code) {
+void _Compiler_parseAppliable(Compiler *this, Leaf *leaf, char type, Token **func) {
     // func name
     Stack_RESTE(leaf->tokens);
     *func = Stack_NEXT(leaf->tokens);
-    // func body
-    Queue_RESTE(leaf->leafs);
-    *code = Queue_NEXT(leaf->leafs);
     // func args
-    Stack_RESTE((*code)->tokens);
-    Token *name = Stack_NEXT((*code)->tokens);
+    Token *name = Stack_NEXT(leaf->tokens);
     Compiler_pushPass(this, name);
-    Token *arg = Stack_NEXT((*code)->tokens);
+    Token *arg = Stack_NEXT(leaf->tokens);
     while(arg != NULL)
     {
         Compiler_pushPass(this, arg);
-        arg = Stack_NEXT((*code)->tokens);
+        arg = Stack_NEXT(leaf->tokens);
     }
     //
     Draft_checkGap(this->draft);
     Compiler_callGenerateWriteLine(this, "appliable", false);
     // 
     Compiler_pushScope(this, LETTER_APPEAL);
-    Compiler_consumeTree(this, *code);
+    Compiler_consumeTree(this, leaf);
     Compiler_popScope(this);
     //
 }
 
 void Compiler_consumeWorker(Compiler *this, Leaf *leaf)
 {
-    Token *func; Leaf *code;
+    Token *func;
     Compiler_buildPass(this, 1, Token_name(LETTER_WORKER));
-    _Compiler_parseAppliable(this, leaf, UG_TYPE_WKR, &func, &code);
+    _Compiler_parseAppliable(this, leaf, UG_TYPE_WKR, &func);
 }
 
 void Compiler_consumeCreator(Compiler *this, Leaf *leaf)
 {
-    Token *func; Leaf *code;
+    Token *func;
     Compiler_buildPass(this, 1, Token_name(LETTER_CREATOR));
-    _Compiler_parseAppliable(this, leaf, UG_TYPE_CTR, &func, &code);
+    _Compiler_parseAppliable(this, leaf, UG_TYPE_CTR, &func);
 }
 
 void Compiler_consumeAssister(Compiler *this, Leaf *leaf)
 {
-    Token *func; Leaf *code;
+    Token *func;
     Compiler_buildPass(this, 1, Token_name(LETTER_ASSISTER));
-    _Compiler_parseAppliable(this, leaf, UG_TYPE_ATR, &func, &code);
+    _Compiler_parseAppliable(this, leaf, UG_TYPE_ATR, &func);
 }
 
-void Compiler_consumeCode(Compiler *this, Leaf *leaf)
+void Compiler_consumeApply(Compiler *this, Leaf *leaf)
 {
+    _compiler_prepareApply(this, leaf, true);
+    Compiler_callGenerateWriteLine(this, "apply", true);
+    // 
     Stack_RESTE(leaf->tokens);
     Token *funcName = Stack_NEXT(leaf->tokens);
     Token *arg = Stack_NEXT(leaf->tokens);
@@ -377,12 +376,7 @@ void Compiler_consumeCode(Compiler *this, Leaf *leaf)
     }
     //
     Compiler_consumeTree(this, leaf);
-}
-
-void Compiler_consumeApply(Compiler *this, Leaf *leaf)
-{
-    _compiler_prepareApply(this, leaf, true);
-    Compiler_callGenerateWriteLine(this, "apply", true);
+    // 
 }
 
 void Compiler_consumeResult(Compiler *this, Leaf *leaf)
@@ -526,12 +520,6 @@ void Compiler_consumeLeaf(Compiler *this, Leaf *leaf)
     if(tp == UG_ATYPE_APPLY)
     {
         Compiler_consumeApply(this, leaf);
-        return;
-    }
-    // code
-    if(tp == UG_ATYPE_CODE)
-    {
-        Compiler_consumeCode(this, leaf);
         return;
     }
     // result
