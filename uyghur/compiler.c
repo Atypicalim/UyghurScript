@@ -340,6 +340,13 @@ void _Compiler_parseAppliable(Compiler *this, Leaf *leaf, char type, Token **fun
     //
 }
 
+void Compiler_consumeLambda(Compiler *this, Leaf *leaf)
+{
+    Token *func;
+    Compiler_buildPass(this, 1, Token_name(LETTER_WORKER));
+    _Compiler_parseAppliable(this, leaf, UG_TYPE_WKR, &func);
+}
+
 void Compiler_consumeWorker(Compiler *this, Leaf *leaf)
 {
     Token *func;
@@ -499,6 +506,11 @@ void Compiler_consumeLeaf(Compiler *this, Leaf *leaf)
     if(tp == UG_ATYPE_EXC)
     {
         Compiler_consumeException(this, leaf);
+        return;
+    }
+    // lambda
+    if(tp == UG_ATYPE_LMBD) {
+        Compiler_consumeLambda(this, leaf);
         return;
     }
     // worker

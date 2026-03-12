@@ -1,0 +1,13 @@
+
+# a func to execute lambda
+xizmatchi f o'zgaruvch x ff mazmuni
+    Iltimos ff bilan x 3 ishlatilsin va r olinsin
+    buyruq r yozilsin
+tamomlansin
+
+# func call that declare a lambda (args coount is $0, arg1 is $1, ...)
+Iltimos f bilan 10 {
+    o'zgaruvch t qiymati 0 bo'lsin
+    t = $1 * $2
+    natija t qaytarilsin
+} ishlatilsin va r olinsin

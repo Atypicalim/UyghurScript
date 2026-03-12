@@ -253,7 +253,7 @@ void Parser_consumeAstConvert(Parser *this)
 }
 
 
-Leaf *_parser_processParse(Parser *);
+Leaf *_parser_processParse(Parser *, bool);
 
 Leaf *_parser_consumeAstAppliable(Parser *this, char appliableType, Token *name) {
     Leaf *aply = Leaf_new(appliableType);
@@ -283,7 +283,7 @@ Leaf *_parser_consumeAstAppliable(Parser *this, char appliableType, Token *name)
     }
     Parser_moveToken(this, 1);
     //
-    Leaf *leaf = _parser_processParse(this);
+    Leaf *leaf = _parser_processParse(this, true);
     Parser_assert(this, leaf == aply, LANG_ERR_PARSER_EXCEPTION);
     //
     return leaf;
@@ -305,10 +305,12 @@ Leaf *_parser_consumeAstApply(Parser *this, Token *startToken, Token *endToken) 
                 Token *variable = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
                 Stack_push(leaf->tokens, variable);
             } else if (Parser_isWord(this, 1, SIGN_OPEN_MIDDLE)) {
-                Token *variable = Token_name("Lambda");
-                Leaf *code = _parser_consumeAstAppliable(this, UG_ATYPE_LMBD, variable);
+                Token *token = Parser_getToken(this, 1);
+                CString identity = tools_format("%s->%s:%d,%d", TEXT_LAMBDA, token->file, token->line, token->column);
+                Token *variable = Token_name(identity);
+                Leaf *appliable = _parser_consumeAstAppliable(this, UG_ATYPE_LMBD, variable);
+                variable->extra = appliable;
                 Parser_checkValue(this, 0, 1, SIGN_CLOSE_MIDDLE);
-                variable->extra = code;
                 Stack_push(leaf->tokens, variable);
             } else {
                 break;
@@ -832,14 +834,14 @@ void Parser_consumeToken(Parser *this, Token *token)
     Token_print(token);
 }
 
-Leaf *_parser_processParse(Parser *this) {
+Leaf *_parser_processParse(Parser *this, bool canBreak) {
     Leaf *context = this->leaf;
     while (this->token != NULL)
     {
         bool running = context == this->leaf;
         Parser_consumeToken(this, this->token);
         bool isReturn = running && context != this->leaf;
-        if (isReturn) {
+        if (isReturn && canBreak) {
             break;
         }
         this->token = this->token->next;
@@ -854,7 +856,7 @@ Leaf *Parser_parseTokens(Parser *this, const char *path, Token *tokens)
     this->tree = Leaf_new(UG_ATYPE_PRG);
     this->leaf = this->tree;
     this->token = this->tokens;
-    _parser_processParse(this);
+    _parser_processParse(this, false);
     return this->tree;
 }
 

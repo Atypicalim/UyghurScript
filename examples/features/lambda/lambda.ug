@@ -1,0 +1,13 @@
+
+# a func to execute lambda
+xizmetchi f miqdar x ff mezmuni
+    iltimas ff bilen x 3 ishlitilsun we r elinsun
+    buyruq r yezilsun
+tamamlansun
+
+# func call that declare a lambda (args coount is $0, arg1 is $1, ...)
+iltimas f bilen 10 {
+    miqdar t qimmiti 0 bolsun
+    t = $1 * $2
+    netije t qayturulsun
+} ishlitilsun we r elinsun

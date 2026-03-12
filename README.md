@@ -2,7 +2,7 @@
 
 ## 0. description
 
-> a toy script interpreter written in c, u can write & run your script written in uyghur language grammar with it ...
+> a toy script interpreter written in c, u can write & run your uyghur-grammar script with it ...
 
 > 
 
@@ -189,6 +189,23 @@ worker f with 10 20 applied and r received
 
 # print the val received
 command r write
+```
+
+* [lambda](examples/features/lambda)
+
+```powershell
+# a func to execute lambda
+worker f variable x ff content
+    appeal ff with x 3 applied and r received
+    command r write
+finish
+
+# func call that declare a lambda (args coount is $0, arg1 is $1, ...)
+appeal f with 10 {
+    variable t value 0 made
+    t = $1 * $2
+    result t returned
+} applied and r received
 ```
 
 * [closure](examples/features/closure)

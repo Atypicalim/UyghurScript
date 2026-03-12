@@ -1,0 +1,13 @@
+
+# a func to execute lambda
+hizmetçi f değişken x ff içeriği
+    iltimas ff ile x 3 kullanılsın ve r alısın
+    buyruk r yaz
+tamamlansin
+
+# func call that declare a lambda (args coount is $0, arg1 is $1, ...)
+iltimas f ile 10 {
+    değişken t kıymeti 0 olsun
+    t = $1 * $2
+    netice t geriverılsın
+} kullanılsın ve r alısın

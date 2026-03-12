@@ -457,11 +457,7 @@ CString helper_select_language(char *prefix) {
 }
 
 void helper_set_languages(Uyghur *uyghur, char *tp) {
-    if (!!uyghur->language) {
-        return;
-    }
-    uyghur->language = tp;
-    log_debug("helper.laguage:%s", tp);
+    log_debug("helper.setLang:%s", tp);
     int size = languages_get_size(tp);
     PAIR_LANGUAGES* pairs = languages_get_conf(tp);
     for (size_t i = 0; i < size; i++)
@@ -473,6 +469,7 @@ void helper_set_languages(Uyghur *uyghur, char *tp) {
 }
 
 void helper_add_languages(Uyghur *uyghur, char *tp) {
+    log_debug("helper.addLang:%s", tp);
     Hashmap *lettersMap = uyghur->lettersMap;
     Hashmap *aliasesMap = uyghur->aliasesMap;
     Hashmap *langsMap = uyghur->langsMap;

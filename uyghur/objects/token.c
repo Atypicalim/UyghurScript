@@ -53,6 +53,16 @@ Token *Token_function()
     return Token_FUNCTION;
 }
 
+Token *Token_argument(byte index) {
+    if (index >= DYNAMIC_ARGUMENTS_MAX_COUNT) {
+        return NULL;
+    }
+    if (Tokens_INDEXED[index] == NULL) {
+        Tokens_INDEXED[index] = Token_new(UG_TTYPE_NAM, tools_format("$%d", index));
+    }
+    return Tokens_INDEXED[index];
+}
+
 Token *Token_name(char *name)
 {
     return Token_new(UG_TTYPE_NAM, name);

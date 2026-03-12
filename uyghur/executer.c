@@ -74,7 +74,6 @@ void __executer_exit(char *source, Executer *this, Token *token, char *msg)
         this->errorMsg = tools_format("%s %s", msg, place);
         longjmp(jump_buffer, 1);
     } else {
-        log_error("Compiler: %s", msg);
         if (place != NULL) printf("%s\tin %s\n", source, place);
         Debug_writeTrace(this->uyghur->debug);
         exit(1);
@@ -942,6 +941,16 @@ void _Executer_parseAppliable(Executer *this, Leaf *leaf, char type, Token **fun
     Executer_assert(this, Token_isName(*func), *func, LANG_ERR_GRAMMAR_INVALID_NAME);
 }
 
+void Executer_consumeLambda(Executer *this, Leaf *leaf)
+{
+    Token *func;
+    _Executer_parseAppliable(this, leaf, UG_TYPE_WKR, &func);
+    //
+    Holdable *env = this->machine->currHoldable;
+    Runnable *wkr = Runnable_newWorker(leaf, func, env);
+    Executer_setValueByToken(this, func, wkr, true);
+}
+
 void Executer_consumeWorker(Executer *this, Leaf *leaf)
 {
     Token *func;
@@ -982,27 +991,43 @@ void Executer_consumeAssister(Executer *this, Leaf *leaf)
 
 Value *Executer_executeFunctions(Executer *this, Runnable *func, Value *self, CString name)
 {
+    // create scope
     Holdable *environment = func->linka;
     tools_assert(environment != NULL, LANG_ERR_EXECUTER_INVALID_STATE);
     Machine_pushHolder(this->machine, environment);
     Executer_pushScope(this, name);
     Dictable_setLocation(this->machine->currHoldable, SCOPE_ALIAS_SLF, self); 
-    //
+    // prepare executing
     Stack_reverse(this->callStack);
     Stack_RESTE(this->callStack);
     Leaf *leaf = (Leaf*)func->obj;
     Stack_RESTE(leaf->tokens);
     Token *funcName = Stack_NEXT(leaf->tokens);
-    Token *arg = Stack_NEXT(leaf->tokens);
-    while(arg != NULL)
-    {
-        Value *value = Stack_NEXT(this->callStack);
-        Executer_setValueToContainer(this, this->machine->currHoldable, arg, value);
-        arg = Stack_NEXT(leaf->tokens);
+    // argument list
+    int index = 0;
+    Token *key1 = NULL; // namked key
+    Token *key2 = NULL; // anonymous key
+    Value *value = NULL;
+    for (size_t i = 0; i < DYNAMIC_ARGUMENTS_MAX_COUNT; i++) {
+        value = Stack_NEXT(this->callStack);
+        if (value == NULL) break;
+        key1 = Stack_NEXT(leaf->tokens);
+        key2 = Token_argument(++index);
+        if (key1 != NULL) {
+            Executer_setValueToContainer(this, this->machine->currHoldable, key1, value);
+        }
+        if (key2 != NULL) {
+            Executer_setValueToContainer(this, this->machine->currHoldable, key2, value);
+        }
     }
+    // arguments count
+    Token *key = Token_argument(0);
+    Token *count = Value_newNumber(index, funcName);
+    Executer_setValueToContainer(this, this->machine->currHoldable, key, count);
+    // execute function
     Stack_clear(this->callStack);
     Executer_consumeTree(this, leaf);
-    // 
+    // return result
     Executer_popScope(this);
     Holdable *_environment = Machine_popHolder(this->machine);
     tools_assert(environment == _environment, LANG_ERR_EXECUTER_INVALID_STATE);
@@ -1314,6 +1339,11 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     if(tp == UG_ATYPE_EXC)
     {
         Executer_consumeException(this, leaf);
+        return;
+    }
+    // lambda
+    if(tp == UG_ATYPE_LMBD) {
+        Executer_consumeLambda(this, leaf);
         return;
     }
     // worker

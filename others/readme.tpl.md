@@ -2,7 +2,7 @@
 
 ## 0. description
 
-> a toy script interpreter written in c, u can write & run your script written in uyghur language grammar with it ...
+> a toy script interpreter written in c, u can write & run your uyghur-grammar script with it ...
 
 > 
 

@@ -106,6 +106,8 @@ Token *Token_VARIABLE = NULL;
 Token *Token_FUNCTION = NULL;
 Token *Token_TEMPORARY = NULL;
 
+Token *Tokens_INDEXED[DYNAMIC_ARGUMENTS_MAX_COUNT + 1] = {NULL};
+
 // leaf
 
 typedef struct _Leaf {

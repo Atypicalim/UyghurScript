@@ -252,6 +252,7 @@ const char *TVAUE_GROUP_CALCULATION_4[] = {
 };
 
 #define CACHE_STRING_MAX_LENGTH 128
+#define DYNAMIC_ARGUMENTS_MAX_COUNT 64
 
 #define SCOPE_ALIAS_GLB "*"
 #define SCOPE_ALIAS_MDL "+"
@@ -259,6 +260,7 @@ const char *TVAUE_GROUP_CALCULATION_4[] = {
 
 #define TEXT_VARIABLE "__var"
 #define TEXT_FUNCTION "__fun"
+#define TEXT_LAMBDA "__lmbda"
 #define TEXT_APPLY "__apply"
 
 #define CODE_FALSE -1

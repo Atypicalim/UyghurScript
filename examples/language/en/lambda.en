@@ -5,10 +5,9 @@ worker f variable x ff content
     command r write
 finish
 
-# call func declaring a lambda
+# func call that declare a lambda (args coount is $0, arg1 is $1, ...)
 appeal f with 10 {
     variable t value 0 made
-    buyruq "count:" $0 ",arg1:" $1 yezilsun
-    t = $1 + $2
+    t = $1 * $2
     result t returned
 } applied and r received

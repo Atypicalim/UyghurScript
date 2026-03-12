@@ -53,11 +53,12 @@ Leaf *_Uyghur_processLang(Uyghur *this, char *path)
 {
     CString lang = helper_parse_language(path);
     tools_assert(lang != NULL, "invalid lang for path:[%s]", path);
-    log_debug("uyghur.lang: %s", lang);
-    helper_add_languages(this, lang);
-    if (!UG_IS_DEVELOP) {
-        helper_set_languages(this, lang);
+    if (!this->language) {
+        log_debug("uyghur.lang: %s", lang);
+        this->language = lang;
     }
+    helper_add_languages(this, lang);
+    helper_set_languages(this, lang);
 }
 
 Leaf *_Uyghur_processCode(Uyghur *this, char *path, char *code)
