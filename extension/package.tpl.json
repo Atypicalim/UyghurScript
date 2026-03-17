@@ -2,7 +2,7 @@
 	"name": "uighurscript",
 	"displayName": "UighurScript",
 	"publisher": "Atypicalim",
-	"description": "uyghur script language extension ...",
+	"description": "UyghurScript({}) language extension ...", // [M[ LANG_VERSION ]M]
 	"icon": "others/icon.png",
 	"version": "{}", // [M[ EXT_VERSION ]M]
 	"engines": {
@@ -35,8 +35,26 @@
 		],
 		"snippets": [
 			"" // [M[ EXT_SNIPPETS ]M]
+		],
+		"commands": [
+			{
+				"command": "extension.sayHello",
+				"title": "hello UyghurScript"
+			},
+			{
+				"command": "extension.tryJump",
+				"title": "jump UyghurScript"
+			},
+			{
+				"command": "extension.tryRun",
+				"title": "run UyghurScript"
+			}
 		]
 	},
+    "main": "./src/extension.js",
+    "activationEvents": [
+        "*"
+    ],
 	"__metadata": {
 		"id": "8ab59741-be9e-4fa6-8bd5-68019f3112ca",
 		"publisherDisplayName": "Atypicalim",

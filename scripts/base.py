@@ -17,8 +17,8 @@ tools = builder.tools
 
 PROJECT_NAME ="UyghurScript"
 PROJECT_REPO ="https://github.com/Atypicalim/UyghurScript"
-VERSION_CODE = 0.13
-EXTENSION_VERSION = "1.0.13"
+LANGUAGE_VERSION = 0.14
+EXTENSION_VERSION = "1.0.14"
 EXAMPLE_LANG = 'en'
 SUPPORT_LANG = []
 
@@ -39,6 +39,10 @@ NAME_INTERNALS = "internals"
 NAME_EXTERNALS = "externals"
 DIR_INTERNALS = tools.tools.append_path(DIR_SOURCE, NAME_INTERNALS)
 DIR_EXTERNALS = tools.tools.append_path(DIR_SOURCE, NAME_EXTERNALS)
+
+moduleFunctionsMap = {}
+moduleSourcePathMap = {}
+moduleDocumentPathMap = {}
 
 # example
 DIR_SNIPPETS = tools.tools.append_path(DIR_EXAMPLE, "snippets")
@@ -159,6 +163,7 @@ def _tryWalkLibraryHeader(libPath):
 
 INTERNAL_MODULES = _tryWalkLibraryHeader(DIR_INTERNALS)
 EXTERNAL_MODULES = _tryWalkLibraryHeader(DIR_EXTERNALS)
+TOTAL_MODULES = INTERNAL_MODULES + EXTERNAL_MODULES
 
 ###############################################################################
 
@@ -234,6 +239,39 @@ def _tryConvertBindFunction(module, text):
     text = text.strip()
     func = text.replace(module + "_", "").strip()
     return func
+
+###############################################################################
+
+# translate
+
+shortNameMap = {
+    "boolean": "bol",
+    "number": "num",
+    "string": "str",
+    "list": "lst",
+    "dict": "dct",
+}
+
+def tryFindModuleName(module):
+    _module = module
+    if module in shortNameMap:
+        _module = shortNameMap[module]
+    _desc = f"LETTER_{_module.upper()}"
+    if _desc in mapName2LangLetters:
+        return mapName2LangLetters[_desc]
+    _desc = f"ALIAS_{module}"
+    if _desc in mapName2LangAliases:
+        return mapName2LangAliases[_desc]
+    return None
+
+def tryFindMethodName(module, func):
+    _desc = f"ALIAS_{module}_{func}"
+    if _desc in mapName2LangAliases:
+        return mapName2LangAliases[_desc]
+    _desc = f"ALIAS_{func}"
+    if _desc in mapName2LangAliases:
+        return mapName2LangAliases[_desc]
+    return None
 
 ###############################################################################
 

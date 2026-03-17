@@ -2,4 +2,6 @@ node_modules
 *.vsix
 package.json
 *.tmLanguage.json
+src/*.language.js
+src/extension.js
 snippets/

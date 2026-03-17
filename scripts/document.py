@@ -65,22 +65,25 @@ def _tryGenerateDocument(module, source, functions):
 ################################################################ walk
 
 def _tryWalkDocumentModule(module, fromPath):
+    functionInfos = []
     functionDocs = []
     def _onLine(index, lines):
         autoFunc = tryDetectBindAutoFunction(fromPath, module, index, lines)
         if autoFunc:
             # print("-->", autoFunc)
+            functionInfos.append(autoFunc)
             _funcDoc = _tryGenerateFunctionDoc(module, autoFunc, len(functionDocs) + 1)
             functionDocs.append(_funcDoc)
             return
         manuFunc = tryDetectBindManuFunction(fromPath, module, index, lines)
         if manuFunc:
             # print("-->", manuFunc)
+            functionInfos.append(manuFunc)
             _funcDoc = _tryGenerateFunctionDoc(module, manuFunc, len(functionDocs) + 1)
             functionDocs.append(_funcDoc)
             return
     tryForEachLine(module, fromPath, _onLine)
-    return functionDocs
+    return functionInfos, functionDocs
 
 def _tryWalkDocumentLibrary(libName, modNames, libPath):
     # 
@@ -95,10 +98,13 @@ def _tryWalkDocumentLibrary(libName, modNames, libPath):
         source = tools.tools.append_path(codeDir, module) + ".c"
         target = tools.tools.append_path(outPath, module) + ".md"
         print("documenting:", module, source)
-        functions = _tryWalkDocumentModule(module, source)
+        functionInfos, functionDocs = _tryWalkDocumentModule(module, source)
+        moduleFunctionsMap[module] = functionInfos
+        moduleSourcePathMap[module] = source
+        moduleDocumentPathMap[module] = target
         # 
         _source = "../../" + source.replace("\\", "/")
-        _document = _tryGenerateDocument(module, _source, functions)
+        _document = _tryGenerateDocument(module, _source, functionDocs)
         # 
         tools.files.write(target, _document, 'utf-8')
     pass

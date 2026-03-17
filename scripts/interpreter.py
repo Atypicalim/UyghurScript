@@ -87,9 +87,9 @@ def _configsMacro(code, command, argument = None):
     if command == "PROJECT_NAME":
         return code.format(PROJECT_NAME)
     elif command == "VERSION_CODE":
-        return code.format(VERSION_CODE)
+        return code.format(LANGUAGE_VERSION)
     elif command == "VERSION_NAME":
-        return code.format(VERSION_CODE)
+        return code.format(LANGUAGE_VERSION)
     elif command == "SCRIPT_PATH":
         return code.format(DST_SCRIPT)
     elif command == "SCRIPT_NAME":

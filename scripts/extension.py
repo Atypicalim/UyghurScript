@@ -1,15 +1,101 @@
 
 from scripts.base import *
 
-############################################################################### syntax
+
+
+############################################################################### base
 
 langNames = mapName2LangConfigs['LANG_LANGUAGE_FULLNAME']
 langTrans = mapName2LangConfigs['LANG_LANGUAGE_TRANSLATION']
 
-langArray = []
-gramArray = []
-keywordsArray = []
-snippetsArray = []
+############################################################################### script
+
+def _modulesForLang(lang):
+    resultList = []
+    for moduleName in TOTAL_MODULES:
+        langMap = tryFindModuleName(moduleName)
+        langText = langMap[lang]
+        resultList.append(langText)
+    return resultList
+
+def _methodsForLang(module, lang):
+    resultList = []
+    functionsInfos = moduleFunctionsMap[module]
+    for info in functionsInfos:
+        langMap = tryFindMethodName(module, info.func)
+        langText = langMap[lang]
+        resultList.append(langText)
+    return resultList
+
+def _onScriptMacro(code, command, argument = None):
+    if command == "PROJECT_REPO":
+        return code.format(PROJECT_REPO)
+    elif command == "PROJECT_NAME":
+        return code.format(PROJECT_NAME)
+    elif command == "LANG_VERSION":
+        return code.format(LANGUAGE_VERSION)
+    elif command == "EXT_VERSION":
+        return code.format(EXTENSION_VERSION)
+    elif command == "RUN_ACTIVATE":
+        code = ""
+        for lang in langsArrConfigs:
+            code = code + "\n" + f"{lang}Module.run_activate(context);"
+            pass
+        return code
+    elif command == "IMPORT_LANG":
+        code = ""
+        for lang in langsArrConfigs:
+            code = code + "\n" + f"var {lang}Module = require('./{lang}.language');"
+            pass
+        return code
+    else:
+        return code
+
+for lang in langsArrConfigs:
+    def _onLandMacro(code, command, argument = None):
+        if command == "TARGET_LANG":
+            return code.format(lang)
+        elif command == "COMPLETE_BOXES":
+            modules = _modulesForLang(lang)
+            _modules = list(map(lambda x: f'    "{x}"', modules))
+            completes = ",\n".join(_modules)
+            return f"    return [\n{completes}\n    ];"
+        elif command == "MODULE_METHODS":
+            cases = []
+            for module in TOTAL_MODULES:
+                _module = tryFindModuleName(module)[lang]
+                internal = module in INTERNAL_MODULES
+                methods = _methodsForLang(module, lang)
+                _methods = list(map(lambda x: f'        "{x}"', methods))
+                completes = ",\n".join(_methods)
+                folder =  f"{NAME_INTERNALS}" if internal else f"{NAME_EXTERNALS}"
+                cases.append(f'    "{_module}": ["{folder}", "{module}", [\n{completes}\n    ]],')
+            body = "\n".join(cases)
+            return body
+        else:
+            return _onScriptMacro(code, command, argument)
+    name = langNames[lang]
+    tran = langTrans[lang]
+    bldr = builder.code()
+    bldr.setName(f"EXT·SCRIPT.{lang}")
+    bldr.setInput("./extension/src/language.tpl.js")
+    bldr.setComment("//", False)
+    bldr.setOutput(f"./extension/src/{lang}.language.js")
+    bldr.onMacro(_onLandMacro)
+    bldr.onLine(lambda line: line)
+    bldr.start()
+
+bldr = builder.code()
+bldr.setName("EXT·SCRIPT.MAIN")
+bldr.setInput("./extension/src/extension.tpl.js")
+bldr.setComment("//", False)
+bldr.setOutput(f"./extension/src/extension.js")
+bldr.onMacro(_onScriptMacro)
+bldr.onLine(lambda line: line)
+bldr.start()
+
+############################################################################### syntax
+
 def translateNames(lang, names):
     translates = []
     for name in names:
@@ -110,6 +196,11 @@ tplExtSnippet = '''             {{
 			}}
 '''
 
+langArray = []
+gramArray = []
+keywordsArray = []
+snippetsArray = []
+
 for lang in langsArrConfigs:
     name = langNames[lang]
     tran = langTrans[lang]
@@ -129,7 +220,9 @@ snippetsText = ",\n".join(snippetsArray)
 
 def _onMacro():
     def onMacro(code, command, argument = None):
-        if command == "EXT_VERSION":
+        if command == "LANG_VERSION":
+            return code.format(LANGUAGE_VERSION)
+        elif command == "EXT_VERSION":
             return code.format(EXTENSION_VERSION)
         elif command == "EXT_KEYWORDS":
             return keywordsText

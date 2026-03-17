@@ -447,12 +447,8 @@ ALIAS_fill:
   kz: толтыру
 
 ############################# list
-ALIAS_list_count:
-  en: count
 
 ############################# dict
-ALIAS_dict_count:
-  en: count
 
 ############################# stuf
 
@@ -756,7 +752,7 @@ ALIAS_get_size:
   uz: kattalikni_olish
   tr: boyutu_almak
   kz: өлшемін_алу
-ALIAS__set_clipboard:
+ALIAS_set_clipboard:
   en: set_clipboard
   uy: چاپلاش_تاختىسىنى_يېزىش
   ug: chaplashTaxtisiniYezish
@@ -902,15 +898,15 @@ ALIAS_pencil:
   kz: қалам
 ALIAS_facelize:
   en: facelize
-  uy: yuzleshturush
-  ug: يۈزلەشتۈرۈش
+  uy: يۈزلەشتۈرۈش
+  ug: yuzleshturush
   uz: yuzloshtirish
   tr: yüzleştirmek
   kz: жүзлештру
 ALIAS_customize:
   en: adjust
-  uy: xaslashturush
-  ug: خاسلاشتۇرۇش
+  uy: خاسلاشتۇرۇش
+  ug: xaslashturush
   uz: moslashtirish
   tr: özelleştirmek
   kz: өзгелештру

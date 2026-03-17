@@ -73,9 +73,9 @@ Run.isRelease = RunNeedRelease
 if RunNeedGenerate:
     import scripts.converter
     import scripts.converting
-    import scripts.extension
-    import scripts.readme
     import scripts.document
+    import scripts.readme
+    import scripts.extension
     print("generated!\n")
     sys.exit(0)
 
