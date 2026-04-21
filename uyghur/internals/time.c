@@ -39,7 +39,7 @@ double bind_time_get_clock()
 
 void native_time_sleep_seconds(Bridge *bridge)
 {
-    sleep(Bridge_receiveNumber(bridge));
+    system_sleep(Bridge_receiveNumber(bridge) * 1000);
     Bridge_returnEmpty(bridge);
 }
 

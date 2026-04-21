@@ -53,7 +53,7 @@ Token *Token_function()
     return Token_FUNCTION;
 }
 
-Token *Token_argument(byte index) {
+Token *Token_argument(int index) {
     if (index >= DYNAMIC_ARGUMENTS_MAX_COUNT) {
         return NULL;
     }

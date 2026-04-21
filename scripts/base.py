@@ -17,8 +17,8 @@ tools = builder.tools
 
 PROJECT_NAME ="UyghurScript"
 PROJECT_REPO ="https://github.com/Atypicalim/UyghurScript"
-LANGUAGE_VERSION = 0.14
-EXTENSION_VERSION = "1.0.14"
+LANGUAGE_VERSION = 0.15
+EXTENSION_VERSION = "1.0.15"
 EXAMPLE_LANG = 'en'
 SUPPORT_LANG = []
 

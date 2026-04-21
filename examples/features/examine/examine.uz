@@ -1,12 +1,12 @@
 
 o'zgaruvch x qiymati bo'sh bo'lsin
 
-# try block
-xatolik e bo'lib
+# tekshirish block
+tekshirish
     x = 3 / 0
-tamomlansin
+tamomlansin va e olinsin
 
-# catch block
+# judging block
 agar e bo'lsa
     buyruq "exception:\n" yozilsin
     buyruq e yozilsin

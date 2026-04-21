@@ -246,17 +246,17 @@ worker f with 11 applied and r received
 command r write
 ```
 
-* [exception](examples/features/exception)
+* [examine](examples/features/examine)
 
 ```powershell
 variable x value empty made
 
-# try block
-exception e become
+# examine block
+examine
     x = 3 / 0
-finish
+finish and e received
 
-# catch block
+# judging block
 if e then
     command "exception:\n" write
     command e write

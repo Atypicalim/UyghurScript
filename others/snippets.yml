@@ -65,15 +65,15 @@ value:
     tr: "kıymet cümlesi yapmak"
     kz: "қиммет сөйлемі жасау"
 
-exception:
-  prefix: LETTER_EXCEPTION
+examine:
+  prefix: LETTER_EXAMINE
   message:
-    en: "make exception sentence"
-    uy: "خاتالىق جۈملىسى ياساش"
-    ug: "xataliq jumlisi yasash"
-    uz: xatolik bayonoti tuzish
-    tr: "hatalık cümlesi yapmak"
-    kz: "қателік сөйлемі жасау"
+    en: "make examine sentence"
+    uy: "تەكشۈرۈش جۈملىسى ياساش"
+    ug: "tekshurush jumlisi yasash"
+    uz: tekshirish bayonoti tuzish
+    tr: "inceleme cümlesi yapmak"
+    kz: "тексеру сөйлемі жасау"
 
 worker:
   prefix: LETTER_WORKER

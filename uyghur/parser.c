@@ -252,6 +252,19 @@ void Parser_consumeAstConvert(Parser *this)
     Parser_error(this, NULL);
 }
 
+Token* Parser_consumeAstReceive(Parser *this)
+{
+    Token *result = NULL;
+    if (Parser_isValue(this, 1, LETTER_FURTHER))
+    {
+        Parser_checkValue(this, 1, 1, LETTER_FURTHER);
+        result = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
+        Parser_checkWord(this, 1, 1, LETTER_RECIEVED);
+    } else {
+        result = Token_empty();
+    }
+    return result;
+}
 
 Leaf *_parser_processParse(Parser *, bool);
 
@@ -320,13 +333,7 @@ Leaf *_parser_consumeAstApply(Parser *this, Token *startToken, Token *endToken) 
     Stack_reverse(leaf->tokens);
     Parser_checkWord(this, 1, 1, endToken);
     // result
-    Token *result = Token_empty();
-    if (Parser_isValue(this, 1, LETTER_FURTHER))
-    {
-        Parser_checkValue(this, 1, 1, LETTER_FURTHER);
-        result = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
-        Parser_checkWord(this, 1, 1, LETTER_RECIEVED);
-    }
+    Token *result = Parser_consumeAstReceive(this);
     Stack_push(leaf->tokens, result);
     // name
     Stack_push(leaf->tokens, name);
@@ -442,13 +449,15 @@ void Parser_consumeAstSpread(Parser *this)
     Parser_openBranch(this);
 }
 
-void Parser_consumeAstException(Parser *this)
+void Parser_consumeAstExamine(Parser *this)
 {
-    Parser_checkWord(this, 0, 1, LETTER_EXCEPTION);
-    Token *name = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
-    Parser_checkWord(this, 1, 1, LETTER_BECOME);
-    Parser_buildLeaf(this, UG_ATYPE_EXC, 1, name);
+    Parser_checkWord(this, 0, 1, LETTER_EXAMINE);
+    Parser_moveToken(this, 1);
+    Parser_buildLeaf(this, UG_ATYPE_EXM, 0, NULL);
     Parser_openBranch(this);
+    Leaf *leaf = _parser_processParse(this, true);
+    Token *name = Parser_consumeAstReceive(this);
+    Stack_push(leaf->tokens, name); 
 }
 
 void Parser_consumeAstResult(Parser *this)
@@ -795,10 +804,10 @@ void Parser_consumeToken(Parser *this, Token *token)
         Parser_consumeAstSpread(this);
         return;
     }
-    // exception
-    if (is_eq_string(v, LETTER_EXCEPTION))
+    // examine
+    if (is_eq_string(v, LETTER_EXAMINE))
     {
-        Parser_consumeAstException(this);
+        Parser_consumeAstExamine(this);
         return;
     }
     // command

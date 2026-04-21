@@ -49,7 +49,7 @@
 #define UG_ATYPE_IF_L ';'
 #define UG_ATYPE_WHL 'w'
 #define UG_ATYPE_SPR 's'
-#define UG_ATYPE_EXC 'X'
+#define UG_ATYPE_EXM 'X'
 #define UG_ATYPE_CVT 'c'
 #define UG_ATYPE_CMD '%'
 #define UG_ATYPE_CLC '='
@@ -142,7 +142,7 @@ const UG_PAIRS UG_WORDS_MAP[] = {
     {LETTER_THEN, 0},
     {LETTER_ELSE, 0},
     //
-    {LETTER_EXCEPTION, 0},
+    {LETTER_EXAMINE, 0},
     // 
     {LETTER_APPEAL, 0},
     {LETTER_WORKER, 0},

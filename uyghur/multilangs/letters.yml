@@ -189,27 +189,13 @@ LETTER_MADE:
   kz: болсын
 
 # 
-LETTER_EXCEPTION:
-  en: exception
-  uy: خاتالىق
-  ug: xataliq
-  uz: xatolik
-  tr: hatalık
-  kz: қателік
-LETTER_TESTING:
-  en: testing
-  uy: سىناق
-  ug: sinaq
-  uz: sinov
-  tr: sınav
-  kz: сынақ
-LETTER_TESTED:
-  en: tested
-  uy: سىنالسۇن
-  ug: sinalsun
-  uz: sinolsin
-  tr: sınalsın
-  kz: сыналсын
+LETTER_EXAMINE:
+  en: examine
+  uy: تەكشۈرۈش
+  ug: tekshurush
+  uz: tekshirish
+  tr: inceleme
+  kz: тексеру
 
 # 
 LETTER_NATIVE:

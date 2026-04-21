@@ -304,13 +304,12 @@ void Compiler_consumeSpread(Compiler *this, Leaf *leaf)
     Compiler_popScope(this);
 }
 
-void Compiler_consumeException(Compiler *this, Leaf *leaf)
+void Compiler_consumeExamine(Compiler *this, Leaf *leaf)
 {
-    
     Stack_RESTE(leaf->tokens);
     Token *name = Stack_NEXT(leaf->tokens);
     // 
-    Compiler_pushScope(this, LETTER_EXCEPTION);
+    Compiler_pushScope(this, LETTER_EXAMINE);
     Compiler_consumeTree(this, leaf);
     Compiler_popScope(this);
     Draft_checkGap(this->draft);
@@ -466,97 +465,74 @@ void Compiler_consumeLeaf(Compiler *this, Leaf *leaf)
 {
     char tp = leaf->type;
     // log_debug("compiler.next: %c", tp);
-    // variable
-    if (tp == UG_ATYPE_VAR)
+    switch (tp)
     {
+    // variable
+    case UG_ATYPE_VAR:
         Compiler_consumeVariable(this, leaf);
         return;
-    }
     // command
-    if (tp == UG_ATYPE_CMD)
-    {
+    case UG_ATYPE_CMD:
         Compiler_consumeCommand(this, leaf);
         return;
-    }
     // expression
-    if (tp == UG_ATYPE_CVT)
-    {
+    case UG_ATYPE_CVT:
         Compiler_consumeConvert(this, leaf);
         return;
-    }
     // if
-    if (tp == UG_ATYPE_IF)
-    {
+    case UG_ATYPE_IF:
         Compiler_consumeIf(this, leaf);
         return;
-    }
     // while
-    if(tp == UG_ATYPE_WHL)
-    {
+    case UG_ATYPE_WHL:
         Compiler_consumeWhile(this, leaf);
         return;
-    }
     // spread
-    if(tp == UG_ATYPE_SPR)
-    {
+    case UG_ATYPE_SPR:
         Compiler_consumeSpread(this, leaf);
         return;
-    }
-    // exception
-    if(tp == UG_ATYPE_EXC)
-    {
-        Compiler_consumeException(this, leaf);
+    // examine
+    case UG_ATYPE_EXM:
+        Compiler_consumeExamine(this, leaf);
         return;
-    }
     // lambda
-    if(tp == UG_ATYPE_LMBD) {
+    case UG_ATYPE_LMBD:
         Compiler_consumeLambda(this, leaf);
         return;
-    }
     // worker
-    if(tp == UG_ATYPE_WRKR) {
+    case UG_ATYPE_WRKR:
         Compiler_consumeWorker(this, leaf);
         return;
-    }
     // creator
-    if(tp == UG_ATYPE_CRTR) {
+    case UG_ATYPE_CRTR:
         Compiler_consumeCreator(this, leaf);
         return;
-    }
     // assister
-    if(tp == UG_ATYPE_ASTR) {
+    case UG_ATYPE_ASTR:
         Compiler_consumeAssister(this, leaf);
         return;
-    }
     // apply
-    if(tp == UG_ATYPE_APPLY)
-    {
+    case UG_ATYPE_APPLY:
         Compiler_consumeApply(this, leaf);
         return;
-    }
     // result
-    if(tp == UG_ATYPE_RSLT)
-    {
+    case UG_ATYPE_RSLT:
         Compiler_consumeResult(this, leaf);
         return;
-    }
     // calculator
-    if (tp == UG_ATYPE_CLC)
-    {
+    case UG_ATYPE_CLC:
         Compiler_consumeCalculator(this, leaf);
         return;
-    }
     // generator
-    if (tp == UG_ATYPE_GNR)
-    {
+    case UG_ATYPE_GNR:
         Compiler_consumeGenerator(this, leaf);
         return;
-    }
     // end
-    if(tp == UG_ATYPE_END)
-    {
+    case UG_ATYPE_END:
         Compiler_consumeEnd(this, leaf);
         return;
+    default:
+        break;
     }
     //
     log_error("compiler.error: %c", tp);

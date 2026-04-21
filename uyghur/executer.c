@@ -74,7 +74,7 @@ void __executer_exit(char *source, Executer *this, Token *token, char *msg)
         this->errorMsg = tools_format("%s %s", msg, place);
         longjmp(jump_buffer, 1);
     } else {
-        if (place != NULL) printf("%s\tin %s\n", source, place);
+        if (place != NULL) printf("%s\t%s\n\tin %s\n", source, msg, place);
         Debug_writeTrace(this->uyghur->debug);
         exit(1);
     }
@@ -898,26 +898,28 @@ void Executer_consumeSpread(Executer *this, Leaf *leaf)
     if (value != NULL) Machine_releaseObj(value);
 }
 
-void Executer_consumeException(Executer *this, Leaf *leaf)
+void Executer_consumeExamine(Executer *this, Leaf *leaf)
 {
-    
     Stack_RESTE(leaf->tokens);
-    Token *name = Stack_NEXT(leaf->tokens);
-    this->isCatch = true;
+    Token *errorName = Stack_NEXT(leaf->tokens);
     // 
-    Executer_pushScope(this, LETTER_EXCEPTION);
+    this->isCatch = true;
+    Executer_pushScope(this, LETTER_EXAMINE);
     Executer_consumeTree(this, leaf);
     Executer_popScope(this);
-    // 
     this->isCatch = false;
-    Value *error = NULL;
-    if (this->errorMsg != NULL) {
-        error = Value_newString(this->errorMsg, NULL);
-    } else {
-        error = Value_newEmpty(NULL);
+    // 
+    if (!Token_isEmpty(errorName)) {
+        if (this->errorMsg != NULL) {
+            Value *errorValue = Value_newString(this->errorMsg, NULL);
+            Executer_setValueByToken(this, errorName, errorValue, true);
+        } else {
+            Value *errorValue = Value_newEmpty(NULL);
+            Executer_setValueByToken(this, errorName, errorValue, true);
+        }
     }
     this->errorMsg = NULL;
-    Executer_setValueByToken(this, name, error, true);
+    // 
 }
 
 void _Executer_parseAppliable(Executer *this, Leaf *leaf, char type, Token **func) {
@@ -1296,99 +1298,76 @@ void Executer_consumeLeaf(Executer *this, Leaf *leaf)
     char tp = leaf->type;
     // log_debug("executer.next: %c", tp);
     // throwing
-    if (setjmp(jump_buffer) != 0 || (this->errorMsg != NULL && tp != UG_ATYPE_EXC)) {
+    if (setjmp(jump_buffer) != 0 || (this->errorMsg != NULL && tp != UG_ATYPE_EXM)) {
         return;
     }
-    // variable
-    if (tp == UG_ATYPE_VAR)
+    switch (tp)
     {
+    // variable
+    case UG_ATYPE_VAR:
         Executer_consumeVariable(this, leaf);
         return;
-    }
     // command
-    if (tp == UG_ATYPE_CMD)
-    {
+    case UG_ATYPE_CMD:
         Executer_consumeCommand(this, leaf);
         return;
-    }
     // expression
-    if (tp == UG_ATYPE_CVT)
-    {
+    case UG_ATYPE_CVT:
         Executer_consumeConvert(this, leaf);
         return;
-    }
     // if
-    if (tp == UG_ATYPE_IF)
-    {
+    case UG_ATYPE_IF:
         Executer_consumeIf(this, leaf);
         return;
-    }
     // while
-    if(tp == UG_ATYPE_WHL)
-    {
+    case UG_ATYPE_WHL:
         Executer_consumeWhile(this, leaf);
         return;
-    }
     // spread
-    if(tp == UG_ATYPE_SPR)
-    {
+    case UG_ATYPE_SPR:
         Executer_consumeSpread(this, leaf);
         return;
-    }
-    // exception
-    if(tp == UG_ATYPE_EXC)
-    {
-        Executer_consumeException(this, leaf);
+    // examine
+    case UG_ATYPE_EXM:
+        Executer_consumeExamine(this, leaf);
         return;
-    }
     // lambda
-    if(tp == UG_ATYPE_LMBD) {
+    case UG_ATYPE_LMBD:
         Executer_consumeLambda(this, leaf);
         return;
-    }
     // worker
-    if(tp == UG_ATYPE_WRKR) {
+    case UG_ATYPE_WRKR:
         Executer_consumeWorker(this, leaf);
         return;
-    }
     // creator
-    if(tp == UG_ATYPE_CRTR) {
+    case UG_ATYPE_CRTR:
         Executer_consumeCreator(this, leaf);
         return;
-    }
     // assister
-    if(tp == UG_ATYPE_ASTR) {
+    case UG_ATYPE_ASTR:
         Executer_consumeAssister(this, leaf);
         return;
-    }
     // apply
-    if(tp == UG_ATYPE_APPLY)
-    {
+    case UG_ATYPE_APPLY:
         Executer_consumeApply(this, leaf);
         return;
-    }
     // result
-    if(tp == UG_ATYPE_RSLT)
-    {
+    case UG_ATYPE_RSLT:
         Executer_consumeResult(this, leaf);
         return;
-    }
     // calculator
-    if (tp == UG_ATYPE_CLC)
-    {
+    case UG_ATYPE_CLC:
         Executer_consumeCalculator(this, leaf);
         return;
-    }
     // generator
-    if (tp == UG_ATYPE_GNR)
-    {
+    case UG_ATYPE_GNR:
         Executer_consumeGenerator(this, leaf);
         return;
-    }
     // end
-    if(tp == UG_ATYPE_END)
-    {
+    case UG_ATYPE_END:
         return;
+    default:
+        break;
     }
     //
     log_error("executer.error: %c", tp);

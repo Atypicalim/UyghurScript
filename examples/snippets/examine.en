@@ -1,6 +1,6 @@
-exception e become
+examine
     $1
-finish
+finish and e received
 if e then
     command e write
 else

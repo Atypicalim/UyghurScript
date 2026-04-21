@@ -1,12 +1,12 @@
 
 değişken x kıymeti boş olsun
 
-# try block
-hatalık e olup
+# inceleme block
+inceleme
     x = 3 / 0
-tamamlansin
+tamamlansin ve e alısın
 
-# catch block
+# judging block
 eğer e olsa
     buyruk "exception:\n" yaz
     buyruk e yaz
