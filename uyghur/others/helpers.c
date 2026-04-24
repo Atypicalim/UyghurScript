@@ -381,7 +381,7 @@ CString _helper_translate_letter(char *letter, char *lang, char *def) {
     const PAIR_LETTERS* pairs = letters_get_conf_by_name(letter);
     for (size_t i = 0; i < size; i++) {
         PAIR_LETTERS pair = pairs[i];
-        if (pair.key == lang) return pair.val;
+        if (strcmp(pair.key, lang) == 0) return pair.val;
     }
     return def;
 }
@@ -395,13 +395,47 @@ CString _helper_translate_alias(char *alias, char *lang, char *def) {
     const PAIR_ALIASES* pairs = aliases_get_conf_by_name(alias);
     for (size_t i = 0; i < size; i++) {
         PAIR_ALIASES pair = pairs[i];
-        if (pair.key == lang) return pair.val;
+        if (strcmp(pair.key, lang) == 0) return pair.val;
     }
     return def;
 }
 
 CString helper_translate_alias(char *alias, char *lang) {
     return _helper_translate_alias(alias, lang, NULL);
+}
+
+CString helper_searchlate_letter(char *text, char *lang) {
+    int sizeLangs = UG_LANGUAGE_COUNT;
+    for (size_t i = 0; i < sizeLangs; i++) {
+        char *typeLang = UG_LANGUAGE_ARRAY[i];
+        int sizeLetters = letters_get_size(typeLang);
+        PAIR_LETTERS* pairLetters = letters_get_conf(typeLang);
+        for (size_t i = 0; i < sizeLetters; i++) {
+            PAIR_LETTERS pair = pairLetters[i];
+            if (is_eq_string(pair.val, text)) {
+                return _helper_translate_letter(pair.key, lang, text);
+            }
+        }
+    }
+    return text;
+}
+
+CString helper_searchlate_alias(char *text, char *lang) {
+    int sizeLangs = UG_LANGUAGE_COUNT;
+    for (size_t i = 0; i < sizeLangs; i++) {
+        char *typeLang = UG_LANGUAGE_ARRAY[i];
+        int sizeLetters = letters_get_size(typeLang);
+        PAIR_LETTERS* pairLetters = letters_get_conf(typeLang);
+        int sizeAliases = aliases_get_size_by_lang(typeLang);
+        PAIR_ALIASES* pairAliases = aliases_get_conf_by_lang(typeLang);
+        for (size_t i = 0; i < sizeAliases; i++) {
+            PAIR_ALIASES pair = pairAliases[i];
+            if (is_eq_string(pair.val, text)) {
+                return _helper_translate_alias(pair.key, lang, text);
+            }
+        }
+    }
+    return text;
 }
 
 CString helper_translate_something(char *something) {
@@ -620,23 +654,19 @@ char* helper_value_to_string(CPointer target, CString failure, CString extra) {
     char *name = helper_get_value_name(value->type, failure);
     if (token != NULL && token->line > 0) {
         if (extra) {
+            extra = helper_translate_something(extra);
             return tools_format("<%s:%p %s %s:%d %s>", name, value, desc, token->file, token->line, extra);
         } else {
             return tools_format("<%s:%p %s %s:%d>", name, value, desc, token->file, token->line);
         }
     } else {
         if (extra) {
+            extra = helper_translate_something(extra);
             return tools_format("<%s:%p %s %s>", name, value, desc, extra);
         } else {
             return tools_format("<%s:%p %s>", name, value, desc);
         }
     }
-}
-
-char*helper_value_as_string(void *target, CString failure) {
-    Value *value = target;
-    char *content = value == NULL ? tools_format("<null>") : Value_toString(value);
-    return content != NULL ? content : helper_value_to_string(value, failure, NULL);
 }
 
 #endif

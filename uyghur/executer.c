@@ -18,6 +18,8 @@ typedef struct {
 
 UG_LOCATION ug_location;
 
+Token *_ugLastToken = NULL;
+
 Value *Executer_getValueByToken(Executer *, Token *, bool);
 Value *Executer_consumeApply(Executer *, Leaf *);
 void Executer_consumeLeaf(Executer *, Leaf *);
@@ -84,10 +86,12 @@ void __executer_exit(char *source, Executer *this, Token *token, char *msg)
 #define Executer_assert(this, check, token, msg) if (!(check)) Executer_error(this, token, msg)
 
 void Runtime_error(char *msg) {
-    Executer_error(__uyghur->executer, NULL, msg);
+    Executer_error(__uyghur->executer, _ugLastToken, msg);
+    _ugLastToken = NULL;
 }
 void Runtime_assert(bool value, char *msg) {
-    Executer_assert(__uyghur->executer, value, NULL, msg);
+    Executer_assert(__uyghur->executer, value, _ugLastToken, msg);
+    _ugLastToken = NULL;
 }
 
 void Executer_pushScope(Executer *this, CString name)
@@ -359,6 +363,7 @@ char *Executer_genLocationOfToken(Executer *this, Token *token) {
 // need release
 Value *Executer_getValueFromContainer(Executer *this, Holdable *holdable, Token *token)
 {
+    _ugLastToken = token;
     Executer_assert(this, holdable != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     char *location = Executer_genLocationOfToken(this, token);
     Executer_assert(this, location != NULL, token, "getting invalid location from dict");
@@ -369,6 +374,7 @@ Value *Executer_getValueFromContainer(Executer *this, Holdable *holdable, Token 
 
 void Executer_setValueToContainer(Executer *this, Value *container, Token *token, Value *value)
 {
+    _ugLastToken = token;
     Executer_assert(this, container != NULL, token, LANG_ERR_EXECUTER_INVALID_VARIABLE);
     if (Value_isListable(container)) {
         // list set
@@ -389,6 +395,7 @@ void Executer_setValueToContainer(Executer *this, Value *container, Token *token
 // need release
 Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
 {
+    _ugLastToken = token;
     Value *value = convert_token_to_value(token);
     if (value != NULL) return value;
     //
@@ -404,6 +411,7 @@ Value *Executer_getValueByToken(Executer *this, Token *token, bool withEmpty)
 
 void *Executer_setValueByToken(Executer *this, Token *token, Value *value, bool withDeclare)
 {
+    _ugLastToken = token;
     Value *container = NULL;
     Value *_value = NULL;
     Executer_findValueByToken(this, token, &container, &_value);
@@ -595,7 +603,7 @@ void Executer_consumeCommand(Executer *this, Leaf *leaf)
         while (name) {
             Value *value = Executer_getValueByToken(this, name, true);
             Executer_assert(this, value != NULL, name, LANG_ERR_EXECUTER_VARIABLE_NOT_FOUND);
-            char *content = helper_value_as_string(value, "unknown");
+            char *content = Value_toString(value);
             if (content != NULL) {
                 printf("%s", content);
                 pct_free(content);

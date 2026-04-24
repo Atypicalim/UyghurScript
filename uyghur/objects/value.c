@@ -22,14 +22,33 @@ char *_get_cache_tag(char type, bool boolean, double number, char *string)
     return NULL;
 }
 
+void Value_reset(Value *this)
+{
+    this->type = UG_TYPE_NON;
+    this->obj = NULL;
+    this->fixed = false;
+    this->token = NULL;
+    this->proxy = NULL;
+    this->linka = NULL;
+    this->extra = NULL;
+}
+
+Value *Value_new() {
+    Machine* machine = __uyghur->machine;
+    size_t size = machine->valueSize;
+    // 
+    Object *object = (Object *)pct_mallloc(size);
+    memset(object, 0, size);
+    Object_init(object, PCT_OBJ_VALUE);
+    // 
+    Value *value = (Value *)object;
+    Value_reset(value);
+    return value;
+}
+
 Value *_value_newValue(bool freeze, char typ) {
-    Machine *machine = __uyghur->machine;
-    if (freeze || machine->freezing) {
-        return Machine_newNormalValue(freeze, typ);
-    } else {
-        Value *value = Machine_newCacheableValue(typ, true);
-        return value;
-    }
+    Value *value = Machine_newCacheableValue(typ, freeze);
+    return value;
 }
 
 Value *Value_newEmpty(void *extra)
@@ -38,13 +57,6 @@ Value *Value_newEmpty(void *extra)
         Value_EMPTY = _value_newValue(true, UG_TYPE_NIL);
     }
     return Value_EMPTY;
-}
-
-Value *Value_getTemporary() {
-    if (Value_TEMPORARY == NULL) {
-        Value_TEMPORARY = _value_newValue(true, UG_TYPE_NIL);
-    }
-    return Value_TEMPORARY;
 }
 
 Value *Value_newBoolean(bool boolean, void *extra)
@@ -213,9 +225,9 @@ void Value_print(Value *this)
 char *Value_toString(Value *this)
 {
     if (this == NULL || this->type == UG_TYPE_NIL) {
-        return tools_format("%s", LETTER_NIL);
+        return tools_format("%s", helper_translate_something(LETTER_NIL));
     } if (this->type == UG_TYPE_BOL) {
-        return tools_boolean_to_string(this->boolean);
+        return tools_format("%s", helper_translate_something(this->boolean ? LETTER_TRUE : LETTER_FALSE));
     } if (this->type == UG_TYPE_NUM) {
         return tools_number_to_string(this->number);
     } if (this->type == UG_TYPE_STR) {

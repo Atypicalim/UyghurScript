@@ -114,7 +114,7 @@ void Uyghur_runCompile(Uyghur *this, char *path, CString lang)
         lang = helper_select_language(NULL);
     }
     //
-    log_debug("path:%s", path);
+    log_debug("uyghur.compile: %s", path);
     _Uyghur_processLang(this, path);
     char *code = helper_read_code_file(path);
     Leaf *tree = _Uyghur_processCode(this, path, code);

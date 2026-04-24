@@ -7,10 +7,14 @@
 
 #define Machine_STACK_SIZE 256
 
+Object* __mapCreateFunc() { return Hashmap_new(IS_RETAIN_VALUES); }
+Object* __arrCreateFunc() { return Array_new(IS_RETAIN_VALUES); }
+Object* __valCreateFunc() { return Value_new(); }
+void _machine_free_object(Object*);
+
 Machine *Machine_new(Uyghur *uyghur) {
     Machine *vm = malloc(sizeof(Machine));
     vm->uyghur = uyghur;
-    vm->first = NULL;
     vm->sweeping = false;
     vm->freezing = true;
     vm->globals = NULL;
@@ -18,18 +22,17 @@ Machine *Machine_new(Uyghur *uyghur) {
     vm->holders = NULL;
     vm->rootModule = NULL;
     vm->currHoldable = NULL;
-    vm->numObjects = 0;
-    vm->maxObjects = 50;
-    //
-    vm->cacheMap = NULL;
-    vm->cacheArr = NULL;
-    vm->cacheVal = NULL;
     //
     int valueSize = sizeof(Value);
     valueSize = MAX(valueSize, sizeof(Runnable));
     valueSize = MAX(valueSize, sizeof(Listable));
     valueSize = MAX(valueSize, sizeof(Dictable));
     vm->valueSize = valueSize * 8;
+    // 
+    vm->gallector = Gallector_new(MACHINE_OBJECTS_EXTRA_COUNT, _machine_free_object);
+    vm->cacheMap = Gallector_cache(vm->gallector, MACHINE_CACHE_SIZE_MAP, __mapCreateFunc);
+    vm->cacheArr = Gallector_cache(vm->gallector, MACHINE_CACHE_SIZE_ARR, __arrCreateFunc);
+    vm->cacheVal = Gallector_cache(vm->gallector, MACHINE_CACHE_SIZE_VAL, __valCreateFunc);
     //
     return vm;
 }
@@ -93,123 +96,29 @@ Holdable *Machine_readProxy(Machine *this, char *name) {
     return NULL;
 }
 
-///////////////////////////////////////////////////////////////////////////
-
-Object *_machine_readFromCache(Object **cache, size_t size) {
-    Object *object = *cache;
-    if (object) {
-        *cache = object->gcNext;
-        object->gcCount = 0;
-        object->gcNext = NULL;
-    }
-    return object;
-}
-
-bool _machine_writeToCache(Object **cache, size_t size, Object *object) {
-    if (!IS_GC_CACHEABLE) {
-        return false;
-    }
-    if (*cache) {
-        int count = (*cache)->gcCount;
-        if (count >= size) {
-            return false;
-        }
-        object->gcCount = count + 1;
-        object->gcNext = *cache;
-    }
-    *cache = object;
-    return true;
-}
-
-Array *Machine_newCacheableArray(char c) {
-    Machine* this = __uyghur->machine;
-    Array *arr = _machine_readFromCache(&this->cacheArr, MACHINE_CACHE_SIZE_ARR);
-    if (!arr) {
-        arr = Array_new(IS_RETAIN_VALUES);
-    }
-    #if IS_GC_LINK_LISTABLE_ARR
-    Machine_tryLinkForGC(arr);
-    #endif
-    return arr;
-}
-
-Hashmap *Machine_newCacheableHashmap(char c) {
-    Machine* this = __uyghur->machine;
-    Hashmap *map = _machine_readFromCache(&this->cacheMap, MACHINE_CACHE_SIZE_MAP);
-    if (!map) {
-        map = Hashmap_new(IS_RETAIN_VALUES);
-    }
-    #if IS_GC_LINK_DICTABLE_MAP
-    Machine_tryLinkForGC(map);
-    #endif
-    return map;
-}
-
-Value *Machine_newNormalValue(bool freeze, char typ) {
-    Machine* this = __uyghur->machine;
-    size_t size = this->valueSize;
-    Value *value = NULL;
-    if (freeze) {
-        value = Machine_createObjAndFreeze(PCT_OBJ_VALUE, size);
-    } else {
-        value = Machine_createObjByCurrentFreezeFlag(PCT_OBJ_VALUE, size);
-    }
-    value->type = typ;
-    value->obj = NULL;
-    value->fixed = false;
-    value->token = NULL;
-    value->proxy = NULL;
-    value->linka = NULL;
-    value->extra = NULL;
-    // log_debug("new=%s: %p", helper_get_value_name(typ, "value"), value);
-    return value;
-}
-
-int valueCount = 0;
-
-Value *Machine_newCacheableValue(char tp, bool isDebug) {
+Value *Machine_newCacheableValue(char tp, bool freeze) {
     // 
     Machine* this = __uyghur->machine;
-    Value *value = _machine_readFromCache(&this->cacheVal, MACHINE_CACHE_SIZE_VAL);
-    bool cached = value != NULL;
-    if (value) {
-        Machine_tryLinkForGC(value);
-    } else {
-        value = Machine_newNormalValue(false, tp);
-        value->obj = NULL;
-    }
-    //
-    if (is_type_listable(tp)) {
-        Listable *listable = value;
-        listable->arr = Machine_newCacheableArray(tp);
-    }
-    //
-    if (is_type_dictable(tp) || is_type_holdable(tp) || is_type_objective(tp)) {
-        Dictable *dictable = value;
-        dictable->map = Machine_newCacheableHashmap(tp);
-    }
+    Value *value = Gache_get(this->cacheVal, freeze || this->freezing);
+    Value_reset(value);
     //
     value->type = tp;
-    value->fixed = false;
-    value->token = NULL;
     value->proxy = Machine_getProxyOrKindByType(this, tp);
-    value->linka = NULL;
-    value->extra = NULL;
+    //
+    if (is_type_listable(tp)) {
+        value->arr = Gache_get(this->cacheArr, this->freezing);
+    }
+    if (is_type_dictable(tp) || is_type_holdable(tp) || is_type_objective(tp)) {
+        value->map = Gache_get(this->cacheMap, this->freezing);
+    }
     return value;
 }
 
 void Machine_freeCacheableValue(Value *value) {
     Machine* this = __uyghur->machine;
-    value->obj = NULL;
-    value->fixed = NULL;
-    value->token = NULL;
-    value->proxy = NULL;
-    value->linka = NULL;
-    value->extra = NULL;
-    //
-    bool cached = _machine_writeToCache(&this->cacheVal, MACHINE_CACHE_SIZE_VAL, value);
+    bool cached = Gache_return(this->cacheVal, value);
     if (cached) {
-        value->type = UG_TYPE_NIL;
+        Value_reset(value);
     } else {
         free(value);
     }
@@ -217,7 +126,7 @@ void Machine_freeCacheableValue(Value *value) {
 
 void Machine_freeCacheableArray(Array *arr) {
     Machine* this = __uyghur->machine;
-    bool cached = _machine_writeToCache(&this->cacheArr, MACHINE_CACHE_SIZE_ARR, arr);
+    bool cached = Gache_return(this->cacheArr, arr);
     if (cached) {
         Array_clear(arr);
     } else {
@@ -227,7 +136,7 @@ void Machine_freeCacheableArray(Array *arr) {
 
 void Machine_freeCacheableHashmap(Hashmap *map) {
     Machine* this = __uyghur->machine;
-    bool cached = _machine_writeToCache(&this->cacheMap, MACHINE_CACHE_SIZE_MAP, map);
+    bool cached = Gache_return(this->cacheMap, map);
     if (cached) {
         Hashmap_clear(map);
     } else {
@@ -243,10 +152,7 @@ void _machine_mark_object(Object *object) {
     object->gcMark = 1;
 }
 
-void _machine_free_object(Machine *this, Object* object) {
-    if (object->gcFreeze) return;
-    object->gcNext = NULL;
-    object->gcCount = 0;
+void _machine_free_object(Object* object) {
     // add hashmap and hashkey to vm
     if (object->objType == PCT_OBJ_VALUE) {
         Value *value = object;
@@ -479,55 +385,23 @@ void Machine_mark(Machine *this)
     timer_each(&_machine_mark_timer);
 }
 
-
-int sweepFate = 0;
-int SWEEP_DEPTH = 5;
-
-void Machine_sweep(Machine *this)
-{
-    Object* previous = NULL;
-    Object* object = this->first;
-    while (object) {
-        // log_info("--->seeep:%i %c %p", object->gcMark, object->objType, object);
-        // Object_print(object);
-        if (object->gcMark) {
-            object->gcMark = 0;
-            previous = object;
-            object = object->gcNext;
-            continue;
-        }
-        Object* unreached = object;
-        object = unreached->gcNext;
-        if (previous != NULL) {
-            previous->gcNext = object;
-        } else {
-            this->first = object;
-        }
-        _machine_free_object(this, unreached);
-        this->numObjects--;
-    }
-}
-
 void Machine_runGC(Machine *this) {
     if(!this->sweeping) return;
+
     // log_debug("========gc_bgn:");
     double bgnTime = time_clock();
-    int bgnCount = this->numObjects;
     Machine_mark(this);
     double midTime = time_clock();
     double mrkTime = midTime - bgnTime;
     // log_debug("========gc_mid: %f %d", mrkTime, bgnCount);
-    Machine_sweep(this);
+    int delCount = Gallector_sweep(this->gallector);
     double endTime = time_clock();
     double swpTime = endTime - bgnTime;
-    int endCount = this->numObjects;
-    int delCount = bgnCount - endCount;
-    this->maxObjects = endCount * 2 + MACHINE_OBJECTS_EXTRA_COUNT;
     // log_debug("========gc_end! %f %d - %d = %d", swpTime, bgnCount, delCount, endCount);
 }
 
 void Machine_tryGC(Machine *this) {
-    if (this->sweeping && this->numObjects >= this->maxObjects) {
+    if (this->gallector->numObjects >= this->gallector->maxObjects) {
         Machine_runGC(this);
     }
 }
@@ -538,41 +412,6 @@ void Machine_dump(Machine *this) {
 void Machine_free(Machine *this) { 
     Machine_runGC(this);
     Object_free(this);
-}
-
-void Machine_tryLinkForGC(Object *object) {
-    Machine *this = __uyghur->machine;
-    if (!this->sweeping) return;
-    object->gcFreeze = this->freezing;
-    if (object->gcFreeze) return;
-    object->gcNext = this->first;
-    this->first = object;
-    this->numObjects++;
-}
-
-Object* Machine_createObjByCurrentFreezeFlag(char type, size_t size) {
-    Object *object = pct_mallloc(size);
-    memset(object, 0, size);
-    Object_init(object, type);
-    Machine_tryLinkForGC(object);
-    return object;
-}
-
-Object* Machine_createObjByCustomFreezeFlag(char type, size_t size, bool freeze) {
-    Machine *this = __uyghur->machine;
-    bool freezing = this->freezing;
-    this->freezing = freeze;
-    Object* object = Machine_createObjByCurrentFreezeFlag(type, size);
-    this->freezing = freezing;
-    return object;
-}
-
-Object* Machine_createObjNotFreeze(char type, size_t size) {
-    return Machine_createObjByCustomFreezeFlag(type, size, false);
-}
-
-Object* Machine_createObjAndFreeze(char type, size_t size) {
-    return Machine_createObjByCustomFreezeFlag(type, size, true);
 }
 
 void Machine_retainObj(Object* object) {

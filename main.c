@@ -89,7 +89,7 @@ void run_package_cmd(CString name, CString path) {
         try_merge_win_program(path, name);
         log_debug("packaged!");
     #elif
-        log_error("packaring not supported for: %s", PLATFORM_NAME);
+        log_error("packaging not supported for: %s", PLATFORM_NAME);
     #endif
 }
 

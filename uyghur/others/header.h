@@ -71,11 +71,6 @@ UTF8String *TEMPORARY_UTF8String = NULL;
 
 // object
 
-void Machine_tryLinkForGC(Object*);
-Object* Machine_createObjByCurrentFreezeFlag(char, size_t);
-Object* Machine_createObjByCustomFreezeFlag(char, size_t, bool);
-Object* Machine_createObjNotFreeze(char, size_t);
-Object* Machine_createObjAndFreeze(char, size_t);
 void Machine_retainObj(Object*);
 void Machine_releaseObj(Object*);
 void Machine_freeObj(Object*);
@@ -146,6 +141,9 @@ typedef struct _Value {
     };
 } Value;
 
+void Value_reset(Value *);
+Value *Value_new();
+
 bool Value_isBoolean(Value*);
 bool Value_isNumber(Value*);
 bool Value_isInt(Value*);
@@ -156,7 +154,6 @@ char *Value_toString(Value*);
 Value *Value_EMPTY = NULL;
 Value *Value_TRUE = NULL;
 Value *Value_FALSE = NULL;
-Value *Value_TEMPORARY = NULL;
 
 void *INVALID_PTR = NULL;
 
@@ -258,7 +255,6 @@ void Runtime_assert(bool, char *);
 typedef void (*WORKER)(Leaf *);
 typedef void (*NATIVE)(Bridge *);
 
-Value *Machine_newNormalValue(bool, char);
 Value *Machine_newCacheableValue(char, bool);
 
 ////////////////////////////////////////////////////////////////////////////
@@ -333,7 +329,6 @@ void Uyghur_runCompile(Uyghur *, char *, CString);
 
 struct Machine {
     Uyghur *uyghur;
-    Object* first;
     bool sweeping;
     bool freezing;
     Stack* holders;
@@ -348,12 +343,11 @@ struct Machine {
     Holdable *kindDict;
     Holdable *proxStuf;
     Holdable *proxTask;
-    int numObjects;
-    int maxObjects;
-    Object *cacheMap;
-    Object *cacheArr;
-    Object *cacheVal;
     int valueSize;
+    Gallector *gallector;
+    Gache *cacheMap;
+    Gache *cacheArr;
+    Gache *cacheVal;
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -425,7 +419,6 @@ CString helper_translate_letter(char *, char *);
 CString helper_translate_alias(char *, char *);
 CString helper_translate_something(char *);
 CString helper_value_to_string(CPointer, CString, CString);
-CString helper_value_as_string(CPointer, CString);
 
 ////////////////////////////////////////////////////////////////////////////
 

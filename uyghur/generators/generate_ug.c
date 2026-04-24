@@ -9,8 +9,13 @@ CString _ug_generate_translate(CString name) {
     CString translation = helper_translate_letter(name, __uyghur->compiler->dialect);
     return translation == NULL ? name : translation;
 }
+CString _ug_generate_searchlate(CString text) {
+    CString searchlation = helper_searchlate_alias(text, __uyghur->compiler->dialect);
+    return searchlation == NULL ? text : searchlation;
+}
 
 #define T _ug_generate_translate
+#define S _ug_generate_searchlate
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -43,11 +48,11 @@ CString receive_token_2_ug(Compiler *compiler) {
     } else if (Token_isKey(token)) {
         Token *extra = token->extra;
         if (Token_isKeyOfName(token)) {
-            value = tools_format("@%s{%s}", extra->value, token->value);
+            value = tools_format("@%s{%s}", S(extra->value), token->value);
         } else if (Token_isKeyOfString(token)) {
-            value = tools_format("@%s.%s", extra->value, token->value);
+            value = tools_format("@%s.%s", S(extra->value), S(token->value));
         } else if (Token_isKeyOfNumber(token)) {
-            value = tools_format("@%s.%s", extra->value, convert_number_2_ug(token));
+            value = tools_format("@%s.%s", S(extra->value), convert_number_2_ug(token));
         }
     } else if (Token_isWord(token)) {
         if (is_eq_string(token->value, LETTER_BOL)) {
@@ -227,4 +232,5 @@ void generator_ug_register(Compiler *compiler)
     COMPILER_BIND_GENERATE(ug_generate_end);
 }
 
-#undef TRANSLATE
+#undef T
+#undef S
