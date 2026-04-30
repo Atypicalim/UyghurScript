@@ -6,40 +6,40 @@
 
 # iltimas @sehne.korsitish bilen -1 -1 "keyboard" -1 ishlitilsun
 
-miqdar x qimmiti 0 bolsun
-miqdar y qimmiti 0 bolsun
-miqdar s qimmiti 1.0 bolsun
+# miqdar x qimmiti 0 bolsun
+# miqdar y qimmiti 0 bolsun
+# miqdar s qimmiti 1.0 bolsun
 
-miqdar cx qimmiti 250 bolsun
-miqdar cy qimmiti 250 bolsun
-miqdar cameraD qimmiti 500 bolsun
-miqdar unit qimmiti 10 bolsun
-miqdar size qimmiti quruq bolsun
-size = unit * 2 * 10
+# miqdar cx qimmiti 250 bolsun
+# miqdar cy qimmiti 250 bolsun
+# miqdar cameraD qimmiti 500 bolsun
+# miqdar unit qimmiti 10 bolsun
+# miqdar size qimmiti quruq bolsun
+# size = unit * 2 * 10
 
 
-miqdar lx qimmiti 0 bolsun
-miqdar ly qimmiti 0 bolsun
+# miqdar lx qimmiti 0 bolsun
+# miqdar ly qimmiti 0 bolsun
 
-miqdar points qimmiti tertip bolsun
-miqdar POINTS qimmiti tertip bolsun
-miqdar pnt qimmiti tertip bolsun
-miqdar key qimmiti 0 bolsun
+# miqdar points qimmiti tertip bolsun
+# miqdar POINTS qimmiti tertip bolsun
+# miqdar pnt qimmiti tertip bolsun
+# miqdar key qimmiti 0 bolsun
 
-miqdar temp qimmiti 0 bolsun
-miqdar b1 qimmiti 0 bolsun
-miqdar b2 qimmiti 0 bolsun
-miqdar b3 qimmiti 0 bolsun
-miqdar b0 qimmiti 0 bolsun
+# miqdar temp qimmiti 0 bolsun
+# miqdar b1 qimmiti 0 bolsun
+# miqdar b2 qimmiti 0 bolsun
+# miqdar b3 qimmiti 0 bolsun
+# miqdar b0 qimmiti 0 bolsun
 
-@POINTS.0 = [-10, -10, -10]
-@POINTS.1 = [10, -10, -10]
-@POINTS.2 = [10, 10, -10]
-@POINTS.3 = [-10, 10, -10]
-@POINTS.4 = [-10, -10, 10]
-@POINTS.5 = [10, -10, 10]
-@POINTS.6 = [10, 10, 10]
-@POINTS.7 = [-10, 10, 10]
+# @POINTS.0 = [-10, -10, -10]
+# @POINTS.1 = [10, -10, -10]
+# @POINTS.2 = [10, 10, -10]
+# @POINTS.3 = [-10, 10, -10]
+# @POINTS.4 = [-10, -10, 10]
+# @POINTS.5 = [10, -10, 10]
+# @POINTS.6 = [10, 10, 10]
+# @POINTS.7 = [-10, 10, 10]
 
 # miqdar indentX qimmiti 0 bolsun
 # miqdar indentY qimmiti 0 bolsun
