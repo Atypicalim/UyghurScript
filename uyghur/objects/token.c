@@ -135,7 +135,7 @@ bool Token_isStatic(Token *this)
     return Token_isString(this) || Token_isNumber(this) || Token_isBool(this) || Token_isEmpty(this);
 }
 
-char *_Token_toString(char *val, char *tp)
+char *_Token_getString(char *val, char *tp)
 {
     if (is_eq_string(tp, UG_TTYPE_NUM)) {
         return tools_number_to_string(tools_string_to_number(val));
@@ -144,24 +144,33 @@ char *_Token_toString(char *val, char *tp)
     }
 }
 
-char *Token_toString(Token *this)
+char *Token_getString(Token *this)
 {
-    if (Token_isKey(this)) {
+    if (this == NULL) {
+        return tools_format("%s", "NULL");
+    } else if (Token_isKey(this)) {
         Token *extra = (Token *)this->extra;
-        return _Token_toString(this->value, extra->type);
+        return _Token_getString(this->value, extra->type);
     } else {
-        return _Token_toString(this->value, this->type);
+        return _Token_getString(this->value, this->type);
+    }
+}
+
+CString Token_toString(Token *this) {
+    if (this == NULL) {
+        return tools_format("[%s]", "NULL");
+    } else if (this->file[0] == '\0') {
+        return tools_format("[(TOKEN) => type:%s, value:(%s) in (%d, %d)]", this->type, this->value, this->line, this->column);
+    } else {
+        return tools_format("[(TOKEN) => type:%s, value:(%s) in (%d, %d %s)]", this->type, this->value, this->line, this->column, this->file);
     }
 }
 
 void Token_print(Token *this)
 {
-    if (this == NULL) {
-        printf("[NULL]\n");
-    } else {
-        char *fmt = "[(TOKEN) => type:%s, value:(%s) in (%d, %d %s)]\n";
-        printf(fmt, this->type, this->value, this->line, this->column, this->file);
-    }
+    CString str = Token_toString(this);
+    printf("%s\n", str);
+    pct_free(str);
 }
 
 void Token_free(Token *this)

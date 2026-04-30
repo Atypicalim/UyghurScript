@@ -526,6 +526,17 @@ Token *_parser_processCalculateApply(Parser *this) {
     return token;
 }
 
+bool _parser_mergeCalcuator(Queue *outputQueue, Token *operator) {
+    Foliage *foliage = Foliage_new(operator);
+    Object *right = Chain_pop_from_tail(outputQueue);
+    Object *left = Chain_pop_from_tail(outputQueue);
+    if (right == NULL || left == NULL) return false;
+    foliage->right = right;
+    foliage->left = left;
+    Queue_push(outputQueue, foliage);
+    return true;
+}
+
 void Parser_consumeAstCalculator(Parser *this)
 {
     Token *target = Parser_checkType(this, 0, TVAUES_GROUP_CHANGEABLE);
@@ -536,86 +547,170 @@ void Parser_consumeAstCalculator(Parser *this)
     Stack *currents = Stack_new(true);
     Stack_push(currents, Foliage_new(NULL));
     char *lastType = NULL;
-    while (true) {
-        current = (Foliage*)currents->tail->data;
-        if (Parser_isTypes(this, 1, TTYPES_GROUP_VALUES) || Parser_isValues(this, 1, TVAUES_GROUP_UTYPES)) {
-            // values or types
-            if (lastType == NULL || is_eq_string(lastType, SIGN_OPEN)) {
-                // left side
-                if (Parser_isTypes(this, 1, TVAUES_GROUP_CHANGEABLE) && Parser_isValue(this, 2, "(")) {
-                    // apply
-                    tempT = _parser_processCalculateApply(this);
-                } else if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
-                    // types
-                    tempT = Parser_checkValue(this, 1, TVAUES_GROUP_UTYPES);
-                } else {
-                    // variables
-                    tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+    Token *token = this->token;
+    log_warn("------------------consume %s", token->value);
+    // 
+    CString ERR_CALCULATOR = LANG_ERR_PARSER_INVALID_CALCULATOR;
+    Token *currToken = NULL;
+    CString currType = "";
+    CString currValue = "";
+    Queue *outputQueue = Queue_new(true);
+    Stack *operatorStack = Stack_new(true);
+    Stack_push(outputQueue, Token_new(UG_TTYPE_NUM, "0.0"));
+    Stack_push(operatorStack, Token_new(UG_TTYPE_CLC, "+"));
+    for (size_t i = 0; i < 1024; i++) {
+        //
+        Parser_moveToken(this, 1);
+        currToken = Parser_getToken(this, 0);
+        currType = currToken != NULL ? currToken->type : "";
+        currValue = currToken != NULL ? currToken->value : "";
+        log_debug("tkn %s %s", currType, currValue);
+        //
+        bool isValues = helper_token_is_types(currToken, TTYPES_GROUP_VALUES);
+        bool isTypes = helper_token_is_values(currToken, TVAUES_GROUP_UTYPES);
+        bool isCalculator = is_calculation_str(currValue);
+        // 
+        if (isValues || isTypes) {
+            Queue_push(outputQueue, currToken);
+        } else if (is_eq_string(currValue, SIGN_OPEN)) {
+            Stack_push(operatorStack, currToken);
+        } else if (is_eq_string(currValue, SIGN_CLOSE)) {
+            Token *operator = Stack_pop(operatorStack);
+            bool closeOk = false;
+            while (operator != NULL) {
+                if (is_eq_string(operator->value, SIGN_OPEN)) {
+                    closeOk = true;
+                    break;
                 }
-                tempF = Foliage_new(tempT);
-                current->left = tempF;
-            } else if (is_calculation_str(lastType)) {
-                // right side
-                if (Parser_isTypes(this, 1, TVAUES_GROUP_CHANGEABLE) && Parser_isValue(this, 2, "(")) {
-                    // apply
-                    tempT = _parser_processCalculateApply(this);
-                } else if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
-                    // types
-                    tempT = Parser_checkValue(this, 1, TVAUES_GROUP_UTYPES);
-                } else {
-                    // variables
-                    tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+                bool isOk = _parser_mergeCalcuator(outputQueue, operator);
+                Parser_assert(this, isOk, ERR_CALCULATOR);
+                operator = Stack_pop(operatorStack);
+            }
+            Parser_assert(this, closeOk, ERR_CALCULATOR);
+        } else if (isCalculator) {
+            // 
+            Token *operator = Stack_pop(operatorStack);
+            while (operator != NULL) {
+                int currPeriority = get_calculation_priority(currToken->value);
+                int periority = get_calculation_priority(operator->value);
+                bool currHigher = currPeriority > periority;
+                if (is_eq_string(operator->value, SIGN_OPEN) || currHigher) {
+                    Stack_push(operatorStack, operator);
+                    break;
                 }
-                tempF = Foliage_new(tempT);
-                current->right = tempF;
-            } else {
-                break;
+                bool isOk = _parser_mergeCalcuator(outputQueue, operator);
+                Parser_assert(this, isOk, ERR_CALCULATOR);
+                operator = Stack_pop(operatorStack);
             }
-            lastType = tempT->type;
-            continue;
-        } else if (lastType != NULL && Parser_isType(this, 1, UG_TTYPE_CLC)) {
-            Parser_assert(this, is_eq_string(lastType, SIGN_CLOSE) || is_eq_strings(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
-            tempT = Parser_checkType(this, 1, 1, UG_TTYPE_CLC);
-            if (current->data != NULL) {
-                tempF = Foliage_new(tempT);
-                if (is_higher_priority_calculation(tempT->value, ((Token *)current->data)->value)) {
-                    tempF->left = current->right;
-                    current->right = tempF;
-                } else {
-                    tempF->left = current;
-                    Stack_pop(currents);
-                }
-                current = tempF;
-                Stack_push(currents, tempF);
-            }
-            current->data = tempT;
-            lastType = tempT->value;
-            continue;
-        } else if (Parser_isWord(this, 1, SIGN_OPEN)) {
-            if (lastType == NULL || is_eq_string(lastType, SIGN_OPEN)) {
-                Parser_checkWord(this, 1, 1, SIGN_OPEN);
-                tempF = Foliage_new(NULL);
-                current->left = tempF;
-            } else if (is_calculation_str(lastType)) {
-                Parser_checkWord(this, 1, 1, SIGN_OPEN);
-                tempF = Foliage_new(NULL);
-                current->right = tempF;
-            } else {
-                break;
-            }
-            Stack_push(currents, tempF);
-            lastType = SIGN_OPEN;
-            continue;
-        } else if (Parser_isWord(this, 1, SIGN_CLOSE)) {
-            Parser_assert(this, is_eq_string(lastType, SIGN_CLOSE) || is_eq_strings(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
-            Parser_checkWord(this, 1, 1, SIGN_CLOSE);
-            Stack_pop(currents);
-            lastType = SIGN_CLOSE;
-            continue;
+            Stack_push(operatorStack, currToken);
+        } else {
+            break;
         }
-        break;
+        // 
     }
-    current = (Foliage*)currents->head->data;
+    // 
+    Token *operator = Stack_pop(operatorStack);
+    while (operator != NULL) {
+        bool isOk = _parser_mergeCalcuator(outputQueue, operator);
+        Parser_assert(this, isOk, ERR_CALCULATOR);
+        operator = Stack_pop(operatorStack);
+    }
+    Object *leftNode = Stack_pop(outputQueue);
+    bool isFoliage = leftNode != NULL && leftNode->objType == PCT_OBJ_FOLIAGE;
+    Parser_assert(this, isFoliage, ERR_CALCULATOR);
+    current = leftNode;
+    leftNode = Stack_pop(outputQueue);
+    Parser_assert(this, leftNode == NULL, ERR_CALCULATOR);
+    // 
+    
+    // 
+    // while (true) {
+    //     log_info("current: %s", Parser_getToken(this, 1)->value);
+    //     current = (Foliage*)currents->tail->data;
+    //     if (Parser_isTypes(this, 1, TTYPES_GROUP_VALUES) || Parser_isValues(this, 1, TVAUES_GROUP_UTYPES)) {
+    //         // values or types
+    //         if (lastType == NULL || is_eq_string(lastType, SIGN_OPEN)) {
+    //             // left side
+    //             if (Parser_isTypes(this, 1, TVAUES_GROUP_CHANGEABLE) && Parser_isValue(this, 2, "(")) {
+    //                 // apply
+    //                 tempT = _parser_processCalculateApply(this);
+    //             } else if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
+    //                 // types
+    //                 tempT = Parser_checkValue(this, 1, TVAUES_GROUP_UTYPES);
+    //             } else {
+    //                 // variables
+    //                 tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+    //             }
+    //             log_info("111: %s", tempT->value);
+    //             tempF = Foliage_new(tempT);
+    //             current->left = tempF;
+    //         } else if (is_calculation_str(lastType)) {
+    //             // right side
+    //             if (Parser_isTypes(this, 1, TVAUES_GROUP_CHANGEABLE) && Parser_isValue(this, 2, "(")) {
+    //                 // apply
+    //                 tempT = _parser_processCalculateApply(this);
+    //             } else if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
+    //                 // types
+    //                 tempT = Parser_checkValue(this, 1, TVAUES_GROUP_UTYPES);
+    //             } else {
+    //                 // variables
+    //                 tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
+    //             }
+    //             log_info("222: %s", tempT->value);
+    //             tempF = Foliage_new(tempT);
+    //             current->right = tempF;
+    //         } else {
+    //             log_info("break");
+    //             break;
+    //         }
+    //         lastType = tempT->type;
+    //         continue;
+    //     } else if (lastType != NULL && Parser_isType(this, 1, UG_TTYPE_CLC)) {
+    //         Parser_assert(this, is_eq_string(lastType, SIGN_CLOSE) || is_eq_strings(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
+    //         tempT = Parser_checkType(this, 1, 1, UG_TTYPE_CLC);
+    //         if (current->data != NULL) {
+    //             tempF = Foliage_new(tempT);
+    //             if (is_higher_priority_calculation(tempT->value, ((Token *)current->data)->value)) {
+    //                 tempF->left = current->right;
+    //                 current->right = tempF;
+    //             } else {
+    //                 tempF->left = current;
+    //                 Stack_pop(currents);
+    //             }
+    //             current = tempF;
+    //             Stack_push(currents, tempF);
+    //         }
+    //         current->data = tempT;
+    //         lastType = tempT->value;
+    //         continue;
+    //     } else if (Parser_isWord(this, 1, SIGN_OPEN)) {
+    //         if (lastType == NULL || is_eq_string(lastType, SIGN_OPEN)) {
+    //             Parser_checkWord(this, 1, 1, SIGN_OPEN);
+    //             tempF = Foliage_new(NULL);
+    //             current->left = tempF;
+    //         } else if (is_calculation_str(lastType)) {
+    //             Parser_checkWord(this, 1, 1, SIGN_OPEN);
+    //             tempF = Foliage_new(NULL);
+    //             current->right = tempF;
+    //         } else {
+    //             break;
+    //         }
+    //         Stack_push(currents, tempF);
+    //         lastType = SIGN_OPEN;
+    //         continue;
+    //     } else if (Parser_isWord(this, 1, SIGN_CLOSE)) {
+    //         Parser_assert(this, is_eq_string(lastType, SIGN_CLOSE) || is_eq_strings(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
+    //         Parser_checkWord(this, 1, 1, SIGN_CLOSE);
+    //         Stack_pop(currents);
+    //         lastType = SIGN_CLOSE;
+    //         continue;
+    //     }
+    //     break;
+    // }
+    // current = (Foliage*)currents->head->data;
+    // 
+    log_warn("==============CALCULATOR:");
+    helper_print_object(current, " ");
     Token *body = Token_new(SIGN_EQUAL, current);
     Parser_buildLeaf(this, UG_ATYPE_CLC, 2, target, body);
 }

@@ -83,40 +83,36 @@ void helper_print_tokens(Token *head)
     printf("[TOKENS]\n", head);
 }
 
-void helper_print_btree(Foliage *, char *);
-void helper_print_btree(Foliage *root, char *_space)
+void helper_print_object(Object *, char *);
+void helper_print_object(Object *root, char *space)
 {
-    String *str = String_format("%s | ", _space);
-    char *space =  String_dump(str);
+    // 
+    if (root == NULL) {
+        printf("%s[NULL]\n", space);
+        return;
+    } else if (root->objType == PCT_OBJ_TOKEN) {
+        CString text = Token_toString((Token *)root);
+        printf("%s%s\n", space, text);
+        pct_free(text);
+        return;
+    }
+    //
+    String *str = String_format("%s | ", space);
+    char *_space =  String_dump(str);
     Object_release(str);
-    bool isRoot = true;
+    // foliage
+    tools_assert(root->objType == PCT_OBJ_FOLIAGE, "invalid print type");
     Foliage *foliage = root;
-    Token *token = NULL;
-    while(foliage != NULL)
-    {
-        printf("%s", space);
-        token = foliage->data;
-        if (token != NULL)
-        {
-            Token_print(token);
-        }
-        else
-        {
-            if (isRoot)
-            {
-                printf("[BTREE => addr:%d]\n", root);
-                isRoot = false;
-            }
-            else
-            {
-                printf("[HOLDER]\n");
-            }
-        }
-        if (foliage->right != NULL)
-        { 
-            helper_print_btree(foliage->right, space);
-        }
-        foliage = foliage->left;
+    Token *token = foliage->data;
+    CString _token = Token_getString(token);
+    printf("%s[BTREE => addr:%p data:%s]\n", space, root, _token);
+    if (foliage->left != NULL)
+    { 
+        helper_print_object(foliage->left, _space);
+    }
+    if (foliage->right != NULL)
+    { 
+        helper_print_object(foliage->right, _space);
     }
     printf("%s[BTREE]\n", space);
 }
@@ -189,12 +185,11 @@ bool is_calculation_str(char *target)
     || is_group_member(target, TVAUE_GROUP_CALCULATION_STR);
 }
 
-bool is_higher_priority_calculation(char *target, char *than)
-{
-    if (is_group_member(target, TVAUE_GROUP_CALCULATION_4) && !is_group_member(than, TVAUE_GROUP_CALCULATION_4)) return true;
-    if (is_group_member(target, TVAUE_GROUP_CALCULATION_3) && !is_group_member(than, TVAUE_GROUP_CALCULATION_3)) return true;
-    if (is_group_member(target, TVAUE_GROUP_CALCULATION_2) && !is_group_member(than, TVAUE_GROUP_CALCULATION_2)) return true;
-    return false;
+int get_calculation_priority(char *target) {
+    if (is_group_member(target, TVAUE_GROUP_CALCULATION_4)) return 4;
+    if (is_group_member(target, TVAUE_GROUP_CALCULATION_3)) return 3;
+    if (is_group_member(target, TVAUE_GROUP_CALCULATION_2)) return 2;
+    return 0;
 }
 
 bool is_apply_action(char *v) {

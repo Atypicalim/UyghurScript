@@ -1,2 +1,111 @@
+# nawada rast bolsa
+#     buyruq "...\n" yezilsun
+#     iltimas @waqit.programminiUxlitish bilen 1 ishlitilsun
+# tamamlansun
 
 
+# iltimas @sehne.korsitish bilen -1 -1 "keyboard" -1 ishlitilsun
+
+miqdar x qimmiti 0 bolsun
+miqdar y qimmiti 0 bolsun
+miqdar s qimmiti 1.0 bolsun
+
+miqdar cx qimmiti 250 bolsun
+miqdar cy qimmiti 250 bolsun
+miqdar cameraD qimmiti 500 bolsun
+miqdar unit qimmiti 10 bolsun
+miqdar size qimmiti quruq bolsun
+size = unit * 2 * 10
+
+
+miqdar lx qimmiti 0 bolsun
+miqdar ly qimmiti 0 bolsun
+
+miqdar points qimmiti tertip bolsun
+miqdar POINTS qimmiti tertip bolsun
+miqdar pnt qimmiti tertip bolsun
+miqdar key qimmiti 0 bolsun
+
+miqdar temp qimmiti 0 bolsun
+miqdar b1 qimmiti 0 bolsun
+miqdar b2 qimmiti 0 bolsun
+miqdar b3 qimmiti 0 bolsun
+miqdar b0 qimmiti 0 bolsun
+
+@POINTS.0 = [-10, -10, -10]
+@POINTS.1 = [10, -10, -10]
+@POINTS.2 = [10, 10, -10]
+@POINTS.3 = [-10, 10, -10]
+@POINTS.4 = [-10, -10, 10]
+@POINTS.5 = [10, -10, 10]
+@POINTS.6 = [10, 10, 10]
+@POINTS.7 = [-10, 10, 10]
+
+# miqdar indentX qimmiti 0 bolsun
+# miqdar indentY qimmiti 0 bolsun
+
+
+# nawada @sehne.yepilmaqchi bolmisa
+#     #
+#     eger @taxta.besilghan ("d") bolsa
+#         indentX = indentX + 2
+#     tamamlansun
+#     eger @taxta.besilghan ("a") bolsa
+#         indentX = indentX - 2
+#     tamamlansun
+#     eger @taxta.besilghan ("w") bolsa
+#         indentY = indentY - 2
+#     tamamlansun
+#     eger @taxta.besilghan ("s") bolsa
+#         indentY = indentY + 2
+#     tamamlansun
+#     #
+#     iltimas @qelem.xaslashturush bilen "333333" 0 ishlitilsun
+#     iltimas @qelem.totTereplikSizish bilen cx cy size size ishlitilsun
+#     iltimas @qelem.xaslashturush bilen "00ff00" 0 ishlitilsun
+
+#     yeyilghan POINTS miqdar k v bulup
+#         temp = cameraD - @v.2 * unit
+#         s = temp / cameraD
+#         x = s * unit * @v.0 + cx + indentX
+#         y = s * unit * @v.1 + cy + indentY
+#         # 
+#         # 
+#         @points{k} = [x, y, s]
+#         buyruq k ":" x "," y "," s "\n" yezilsun
+#         # 
+#         eger k ? 0 bolsa
+#             # skip
+#         egerde k ? 4 bolsa
+#             # skip
+#         bolmisa
+#             iltimas @qelem.siziqSizish bilen lx ly x y ishlitilsun
+#         tamamlansun
+#         #
+#         eger k ? 3 bolsa
+#             pnt = @points.0
+#             iltimas @qelem.siziqSizish bilen @pnt.0 @pnt.1 x y ishlitilsun
+#         egerde k ? 7 bolsa
+#             pnt = @points.4
+#             iltimas @qelem.siziqSizish bilen @pnt.0 @pnt.1 x y ishlitilsun
+#         tamamlansun
+#         #
+#         eger k > 3 bolsa
+#             iltimas @qelem.xaslashturush bilen "009900" 0 ishlitilsun
+#             key = k - 4
+#             pnt = @points{key}
+#             iltimas @qelem.siziqSizish bilen @pnt.0 @pnt.1 x y ishlitilsun
+#         tamamlansun
+#         # 
+#         lx = x
+#         ly = y
+#     tamamlansun
+
+#     # 
+#     #
+#     iltimas @sehne.yengilash ishlitilsun
+# tamamlansun
+
+s = (500 - 10 * 15) / 500
+
+buyruq s "\n" yezilsun
