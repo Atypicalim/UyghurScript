@@ -1189,33 +1189,43 @@ void Executer_consumeResult(Executer *this, Leaf *leaf)
     this->isReturn = true;
 }
 
-Value *Executer_calculateBTree(Executer *this, Foliage *);
-Value *Executer_calculateBTree(Executer *this, Foliage *foliage)
+Value *Executer_calculateBTree(Executer *this, Object *);
+Value *Executer_calculateBTree(Executer *this, Object *target)
 {
+    tools_assert(target != NULL, "calculte not supported for null");
     Value *result = NULL;
-    Token *sign = NULL;
-    Token *token = foliage->data;
-    if (foliage->left != NULL && foliage->right != NULL) {
-        Value *leftR = Executer_calculateBTree(this, foliage->left);
-        Value *rightR = Executer_calculateBTree(this, foliage->right);
-        result = Executer_calculateValues(this, leftR, token, rightR);
-        Machine_releaseObj(leftR);
-        Machine_releaseObj(rightR);
-    } else if (foliage->left != NULL) {
-        result = Executer_calculateBTree(this, foliage->left);
-    } else if (foliage->right != NULL) {
-        result = Executer_calculateBTree(this, foliage->right);
-    } else if (is_eq_string(token->value, TEXT_APPLY)) {
-        Leaf *_leaf = token->extra;
-        Executer_assert(this, _leaf != NULL, token, LANG_ERR_EXECUTER_EXCEPTION);
-        Executer_assert(this, _leaf->type == UG_ATYPE_APPLY, token, LANG_ERR_EXECUTER_EXCEPTION);
-        return Executer_consumeApply(this, _leaf);
-    } else if (is_eq_string(token->type, UG_TTYPE_WRD)) {
-        Executer_assert(this, is_eq_strings(token->value, TVAUES_GROUP_UTYPES), token, LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);
-        result = Executer_getValueByToken(this, token, true);
+    if (target->objType == PCT_OBJ_FOLIAGE) {
+        Foliage *foliage = (Foliage *)target;
+        Token *token = foliage->data;
+        if (foliage->left != NULL && foliage->right != NULL) {
+            Value *leftR = Executer_calculateBTree(this, foliage->left);
+            Value *rightR = Executer_calculateBTree(this, foliage->right);
+            result = Executer_calculateValues(this, leftR, token, rightR);
+            Machine_releaseObj(leftR);
+            Machine_releaseObj(rightR);
+        } else if (foliage->left != NULL) {
+            result = Executer_calculateBTree(this, foliage->left);
+        } else if (foliage->right != NULL) {
+            result = Executer_calculateBTree(this, foliage->right);
+        } else {
+            Executer_error(this, token, LANG_ERR_EXECUTER_EXCEPTION);
+        }
+    } else if (target->objType == PCT_OBJ_LEAF) {
+        Leaf *leaf = (Leaf *)target;
+        Token *token = ((Chain*)leaf->tokens)->tail;
+        Executer_assert(this, leaf->type == UG_ATYPE_APPLY, token, LANG_ERR_EXECUTER_EXCEPTION);
+        return Executer_consumeApply(this, leaf);
+    } else if (target->objType == PCT_OBJ_TOKEN) {
+        Token *token = (Token *)target;
+        if (is_eq_string(token->type, UG_TTYPE_WRD)) {
+            Executer_assert(this, is_eq_strings(token->value, TVAUES_GROUP_UTYPES), token, LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);
+            result = Executer_getValueByToken(this, token, true);
+        } else {
+            Executer_assert(this, is_eq_strings(token->type, TTYPES_GROUP_VALUES), token, LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);
+            result = Executer_getValueByToken(this, token, true);
+        }
     } else {
-        Executer_assert(this, is_eq_strings(token->type, TTYPES_GROUP_VALUES), token, LANG_ERR_EXECUTER_CALCULATION_INVALID_ARGS);
-        result = Executer_getValueByToken(this, token, true);
+        tools_error("calculte not supported for %c", target->objType);
     }
     return result;
 }
@@ -1225,7 +1235,7 @@ void Executer_consumeCalculator(Executer *this, Leaf *leaf)
     Stack_RESTE(leaf->tokens);
     Token *body = Stack_NEXT(leaf->tokens);
     Token *target = Stack_NEXT(leaf->tokens);
-    Foliage *root = (Foliage *)body->value;
+    Object *root = (Object *)body->value;
     //
     // TODO:free r object
     Value *r = Executer_calculateBTree(this, root);

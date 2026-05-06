@@ -397,7 +397,7 @@ void Compiler_consumeCalculator(Compiler *this, Leaf *leaf)
     Stack_RESTE(leaf->tokens);
     Token *body = Stack_NEXT(leaf->tokens);
     Token *target = Stack_NEXT(leaf->tokens);
-    Foliage *root = (Foliage *)body->value;
+    Object *root = (Object *)body->value;
     // 
     Compiler_callGenerateWriteLine(this, "calculate", true);
 }

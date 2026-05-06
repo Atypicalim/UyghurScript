@@ -502,28 +502,20 @@ void Parser_consumeAstApply(Parser *this)
     Parser_pushLeaf(this, leaf);
 }
 
-Token *_parser_processCalculateApply(Parser *this) {
-    Token *name = Parser_checkType(this, 1, TVAUES_GROUP_CHANGEABLE);
-    Token *result = Token_empty();
-    Leaf *leaf = Leaf_new(UG_ATYPE_APPLY);
-    //
+Leaf *_parser_processCalculateApply(Parser *this) {
+    Token *name = Parser_moveToken(this, 1);
     Parser_checkWord(this, 1, 1, SIGN_OPEN);
-    
-    Token *token = Token_new(name->type, TEXT_APPLY);
-    token->file = name->file;
-    token->line = name->line;
-    token->column = name->column;
-    token->extra = leaf;
+    Leaf *leaf = Leaf_new(UG_ATYPE_APPLY);
     while (!Parser_isWord(this, 1, SIGN_CLOSE)) {
         Token *variable = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
         Stack_push(leaf->tokens, variable);
     }
     Parser_checkWord(this, 1, 1, SIGN_CLOSE);
     Stack_reverse(leaf->tokens);
-    // result
+    Token *result = Token_empty();
     Stack_push(leaf->tokens, result);
     Stack_push(leaf->tokens, name);
-    return token;
+    return leaf;
 }
 
 bool _parser_mergeCalcuator(Queue *outputQueue, Token *operator) {
@@ -541,40 +533,47 @@ void Parser_consumeAstCalculator(Parser *this)
 {
     Token *target = Parser_checkType(this, 0, TVAUES_GROUP_CHANGEABLE);
     Parser_checkWord(this, 1, 1, SIGN_EQUAL);
-    Token *tempT = NULL;
-    Foliage *tempF = NULL;
-    Foliage *current = NULL;
-    Stack *currents = Stack_new(true);
-    Stack_push(currents, Foliage_new(NULL));
-    char *lastType = NULL;
-    Token *token = this->token;
-    log_warn("------------------consume %s", token->value);
-    // 
     CString ERR_CALCULATOR = LANG_ERR_PARSER_INVALID_CALCULATOR;
     Token *currToken = NULL;
     CString currType = "";
     CString currValue = "";
     Queue *outputQueue = Queue_new(true);
     Stack *operatorStack = Stack_new(true);
-    Stack_push(outputQueue, Token_new(UG_TTYPE_NUM, "0.0"));
-    Stack_push(operatorStack, Token_new(UG_TTYPE_CLC, "+"));
+    bool canContinue = true;
+    //
     for (size_t i = 0; i < 1024; i++) {
-        //
-        Parser_moveToken(this, 1);
-        currToken = Parser_getToken(this, 0);
+        // 
+        currToken = Parser_getToken(this, 1);
         currType = currToken != NULL ? currToken->type : "";
         currValue = currToken != NULL ? currToken->value : "";
         log_debug("tkn %s %s", currType, currValue);
         //
+        bool isChangeable = helper_token_is_types(currToken, TVAUES_GROUP_CHANGEABLE);
+        bool isApplies = isChangeable && Parser_isValue(this, 2, "(");
         bool isValues = helper_token_is_types(currToken, TTYPES_GROUP_VALUES);
         bool isTypes = helper_token_is_values(currToken, TVAUES_GROUP_UTYPES);
+        bool isTarget = isApplies || isValues || isTypes;
+        bool isOpen = is_eq_string(currValue, SIGN_OPEN);
+        bool isClose = is_eq_string(currValue, SIGN_CLOSE);
         bool isCalculator = is_calculation_str(currValue);
         // 
-        if (isValues || isTypes) {
+        if (!canContinue && isTarget) {
+            log_debug("calculate break");
+            break;
+        }
+        canContinue = false;
+        // 
+        if (isApplies) {
+            Leaf *applyLeaf = _parser_processCalculateApply(this);
+            Queue_push(outputQueue, applyLeaf);
+        } else if (isValues || isTypes) {
+            Parser_moveToken(this, 1);
             Queue_push(outputQueue, currToken);
-        } else if (is_eq_string(currValue, SIGN_OPEN)) {
+        } else if (isOpen) {
+            Parser_moveToken(this, 1);
             Stack_push(operatorStack, currToken);
-        } else if (is_eq_string(currValue, SIGN_CLOSE)) {
+            canContinue = true;
+        } else if (isClose) {
             Token *operator = Stack_pop(operatorStack);
             bool closeOk = false;
             while (operator != NULL) {
@@ -587,6 +586,7 @@ void Parser_consumeAstCalculator(Parser *this)
                 operator = Stack_pop(operatorStack);
             }
             Parser_assert(this, closeOk, ERR_CALCULATOR);
+            Parser_moveToken(this, 1);
         } else if (isCalculator) {
             // 
             Token *operator = Stack_pop(operatorStack);
@@ -602,11 +602,12 @@ void Parser_consumeAstCalculator(Parser *this)
                 Parser_assert(this, isOk, ERR_CALCULATOR);
                 operator = Stack_pop(operatorStack);
             }
+            Parser_moveToken(this, 1);
             Stack_push(operatorStack, currToken);
+            canContinue = true;
         } else {
             break;
         }
-        // 
     }
     // 
     Token *operator = Stack_pop(operatorStack);
@@ -615,104 +616,20 @@ void Parser_consumeAstCalculator(Parser *this)
         Parser_assert(this, isOk, ERR_CALCULATOR);
         operator = Stack_pop(operatorStack);
     }
-    Object *leftNode = Stack_pop(outputQueue);
-    bool isFoliage = leftNode != NULL && leftNode->objType == PCT_OBJ_FOLIAGE;
-    Parser_assert(this, isFoliage, ERR_CALCULATOR);
-    current = leftNode;
-    leftNode = Stack_pop(outputQueue);
-    Parser_assert(this, leftNode == NULL, ERR_CALCULATOR);
+    Object *body = Stack_pop(outputQueue);
+    Parser_assert(this, body != NULL, ERR_CALCULATOR);
+    if (body->objType != PCT_OBJ_FOLIAGE) {
+        Foliage *foliage = Foliage_new(target);
+        foliage->left = body;
+        body = foliage;
+    }
+    Object *empty = Stack_pop(outputQueue);
+    Parser_assert(this, empty == NULL, ERR_CALCULATOR);
     // 
-    
-    // 
-    // while (true) {
-    //     log_info("current: %s", Parser_getToken(this, 1)->value);
-    //     current = (Foliage*)currents->tail->data;
-    //     if (Parser_isTypes(this, 1, TTYPES_GROUP_VALUES) || Parser_isValues(this, 1, TVAUES_GROUP_UTYPES)) {
-    //         // values or types
-    //         if (lastType == NULL || is_eq_string(lastType, SIGN_OPEN)) {
-    //             // left side
-    //             if (Parser_isTypes(this, 1, TVAUES_GROUP_CHANGEABLE) && Parser_isValue(this, 2, "(")) {
-    //                 // apply
-    //                 tempT = _parser_processCalculateApply(this);
-    //             } else if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
-    //                 // types
-    //                 tempT = Parser_checkValue(this, 1, TVAUES_GROUP_UTYPES);
-    //             } else {
-    //                 // variables
-    //                 tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
-    //             }
-    //             log_info("111: %s", tempT->value);
-    //             tempF = Foliage_new(tempT);
-    //             current->left = tempF;
-    //         } else if (is_calculation_str(lastType)) {
-    //             // right side
-    //             if (Parser_isTypes(this, 1, TVAUES_GROUP_CHANGEABLE) && Parser_isValue(this, 2, "(")) {
-    //                 // apply
-    //                 tempT = _parser_processCalculateApply(this);
-    //             } else if (Parser_isType(this, 1, UG_TTYPE_WRD)) {
-    //                 // types
-    //                 tempT = Parser_checkValue(this, 1, TVAUES_GROUP_UTYPES);
-    //             } else {
-    //                 // variables
-    //                 tempT = Parser_checkType(this, 1, TTYPES_GROUP_VALUES);
-    //             }
-    //             log_info("222: %s", tempT->value);
-    //             tempF = Foliage_new(tempT);
-    //             current->right = tempF;
-    //         } else {
-    //             log_info("break");
-    //             break;
-    //         }
-    //         lastType = tempT->type;
-    //         continue;
-    //     } else if (lastType != NULL && Parser_isType(this, 1, UG_TTYPE_CLC)) {
-    //         Parser_assert(this, is_eq_string(lastType, SIGN_CLOSE) || is_eq_strings(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
-    //         tempT = Parser_checkType(this, 1, 1, UG_TTYPE_CLC);
-    //         if (current->data != NULL) {
-    //             tempF = Foliage_new(tempT);
-    //             if (is_higher_priority_calculation(tempT->value, ((Token *)current->data)->value)) {
-    //                 tempF->left = current->right;
-    //                 current->right = tempF;
-    //             } else {
-    //                 tempF->left = current;
-    //                 Stack_pop(currents);
-    //             }
-    //             current = tempF;
-    //             Stack_push(currents, tempF);
-    //         }
-    //         current->data = tempT;
-    //         lastType = tempT->value;
-    //         continue;
-    //     } else if (Parser_isWord(this, 1, SIGN_OPEN)) {
-    //         if (lastType == NULL || is_eq_string(lastType, SIGN_OPEN)) {
-    //             Parser_checkWord(this, 1, 1, SIGN_OPEN);
-    //             tempF = Foliage_new(NULL);
-    //             current->left = tempF;
-    //         } else if (is_calculation_str(lastType)) {
-    //             Parser_checkWord(this, 1, 1, SIGN_OPEN);
-    //             tempF = Foliage_new(NULL);
-    //             current->right = tempF;
-    //         } else {
-    //             break;
-    //         }
-    //         Stack_push(currents, tempF);
-    //         lastType = SIGN_OPEN;
-    //         continue;
-    //     } else if (Parser_isWord(this, 1, SIGN_CLOSE)) {
-    //         Parser_assert(this, is_eq_string(lastType, SIGN_CLOSE) || is_eq_strings(lastType, TTYPES_GROUP_VALUES), LANG_ERR_PARSER_INVALID_CALCULATOR);
-    //         Parser_checkWord(this, 1, 1, SIGN_CLOSE);
-    //         Stack_pop(currents);
-    //         lastType = SIGN_CLOSE;
-    //         continue;
-    //     }
-    //     break;
-    // }
-    // current = (Foliage*)currents->head->data;
-    // 
-    log_warn("==============CALCULATOR:");
-    helper_print_object(current, " ");
-    Token *body = Token_new(SIGN_EQUAL, current);
-    Parser_buildLeaf(this, UG_ATYPE_CLC, 2, target, body);
+    // log_warn("==============CALCULATOR:");
+    // helper_print_object(body, " ");
+    Token *token = Token_new(SIGN_EQUAL, body);
+    Parser_buildLeaf(this, UG_ATYPE_CLC, 2, target, token);
 }
 
 void Parser_consumeAstGenerator(Parser *this)

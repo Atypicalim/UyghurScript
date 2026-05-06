@@ -38,83 +38,85 @@ char **S2A(int num, char *s, ...)
     return arr;
 }
 
+//////////////////////////////////////////////////////
+
+void helper_print_object(Object *, char *);
+CString _make_tree_spaces(char *space) {
+    String *str = String_format("%s | ", space);
+    CString _space =  String_dump(str);
+    Object_release(str); 
+    return _space;  
+}
+
+//////////////////////////////////////////////////////
+
 // print ast leaf
 void helper_print_leaf(Leaf *, char *);
-void helper_print_leaf(Leaf *this, char *_space)
+void helper_print_leaf(Leaf *this, char *space)
 {
-    String *str = String_format("%s | ", _space);
-    char *space =  String_dump(str);
-    Object_release(str);
-    // TODO
-    printf("%s[LEAF => type:%c %d]\n", space, this->type);
+    tools_assert(((Object*)this)->objType == PCT_OBJ_LEAF, "invalid print type");
+    char *_space =  _make_tree_spaces(space);
+    Stack *tokens = this->tokens;
+    Queue *leafs = this->leafs;
+    Block *currentT = tokens->head;
+    Block *currentL = leafs->head;
+    printf("%s[LEAF => type:%c %p]\n", space, this->type, this);
     //
-    printf("%s [STACK]\n", space);
-    Block *currentT = this->tokens->head;
+    printf("%s-stack %p \n", _space, tokens);
     while (currentT != NULL)
     {
         Token *token =currentT->data;
         printf("%s | [(TOKEN) => type:%s, value:(%s)]\n", space, token->type, token->value);
         currentT = currentT != this->tokens->tail ? currentT->next : NULL;
     }
-    printf("%s [STACK]\n", space);
     // 
-    printf("%s [QUEUE]\n", space);
-    Block *currentL = this->leafs->head;
-    while (currentL != NULL)
-    {
-        Leaf *l = currentL->data;
-        helper_print_leaf(l, space);
+    printf("%s-queue %p \n", _space, leafs);
+    while (currentL != NULL) {
+        helper_print_leaf(currentL->data, space);
         currentL = currentL != this->leafs->tail ? currentL->next : NULL;
     }
-    printf("%s [QUEUE]\n", space);
     //
     printf("%s[LEAF]\n", space);
 }
 
-void helper_print_tokens(Token *head)
+void helper_print_foliage(Foliage *, char *);
+void helper_print_foliage(Foliage *this, char *space)
 {
-    printf("[TOKENS => addr:%d]\n", head);
-    Token *token = head;
-    while(token != NULL)
-    {
-        Token_print(token);
-        token = token->next;
+    tools_assert(((Object*)this)->objType == PCT_OBJ_FOLIAGE, "invalid print type");
+    char *_space =  _make_tree_spaces(space);
+    Token *token = this->data;
+    CString _token = Token_getString(token);
+    printf("%s[FOLIAGE => addr:%p data:%s]\n", space, this, _token);
+    if (this->left != NULL)
+    { 
+        helper_print_object(this->left, _space);
     }
-    printf("[TOKENS]\n", head);
+    if (this->right != NULL)
+    { 
+        helper_print_object(this->right, _space);
+    }
+    printf("%s[FOLIAGE]\n", space);
 }
 
-void helper_print_object(Object *, char *);
-void helper_print_object(Object *root, char *space)
+void helper_print_object(Object *this, char *space)
 {
     // 
-    if (root == NULL) {
+    if (this == NULL) {
         printf("%s[NULL]\n", space);
-        return;
-    } else if (root->objType == PCT_OBJ_TOKEN) {
-        CString text = Token_toString((Token *)root);
+    } else if (this->objType == PCT_OBJ_TOKEN) {
+        CString text = Token_toString((Token *)this);
         printf("%s%s\n", space, text);
         pct_free(text);
-        return;
+    } else if (this->objType == PCT_OBJ_VALUE) {
+        printf("%s", space);
+        Value_print((Value*)this);
+    } else if (this->objType == PCT_OBJ_LEAF) {
+        helper_print_leaf((Leaf *)this, space);
+    } else if (this->objType == PCT_OBJ_FOLIAGE) {
+        helper_print_foliage((Foliage *)this, space);
+    } else {
+        printf("%s[Object %c %p]\n", space, this->objType, this);
     }
-    //
-    String *str = String_format("%s | ", space);
-    char *_space =  String_dump(str);
-    Object_release(str);
-    // foliage
-    tools_assert(root->objType == PCT_OBJ_FOLIAGE, "invalid print type");
-    Foliage *foliage = root;
-    Token *token = foliage->data;
-    CString _token = Token_getString(token);
-    printf("%s[BTREE => addr:%p data:%s]\n", space, root, _token);
-    if (foliage->left != NULL)
-    { 
-        helper_print_object(foliage->left, _space);
-    }
-    if (foliage->right != NULL)
-    { 
-        helper_print_object(foliage->right, _space);
-    }
-    printf("%s[BTREE]\n", space);
 }
 
 bool is_group_member(const CString text, const char *group[]) {
