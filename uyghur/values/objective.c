@@ -63,6 +63,20 @@ bool Objective_isInstanceOf(Objective *this, Value *other) {
     return false;
 }
 
+Value *Objective_readKey(Objective *this, CString key) {
+    Value *value = Dictable_getLocation(this, key);
+    if (value == NULL && Objective_isObj(this)) {
+        Queue *parents = this->extra;
+        Queue_RESTE(parents);
+        Objective *parent = Queue_NEXT(parents);
+        while (value == NULL && parent != NULL) {
+            value = Dictable_getLocation(parent, key);
+            parent = Queue_NEXT(parents);
+        }
+    }
+    return value != NULL ? value : Value_readKey(this, key);
+}
+
 // 
 
 char *Objective_toString(Objective *this)

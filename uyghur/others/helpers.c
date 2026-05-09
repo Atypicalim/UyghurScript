@@ -373,7 +373,19 @@ CString helper_read_code_file(CString path)
     return code;
 }
 
-CString _helper_translate_letter(char *letter, char *lang, char *def) {
+CString helper_find_name_of_letter(char *text, char *lang, char *def) {
+    int size = letters_get_size_by_lang(lang);
+    const PAIR_LETTERS* pairs = letters_get_conf_by_lang(lang);
+    for (size_t i = 0; i < size; i++) {
+        PAIR_LETTERS pair = pairs[i];
+        if (strcmp(pair.val, text) == 0) {
+            return pair.key;
+        }
+    }
+    return def;
+}
+
+CString _helper_translate_letter_name_to_lang(char *letter, char *lang, char *def) {
     int size = letters_get_size_by_name(letter);
     const PAIR_LETTERS* pairs = letters_get_conf_by_name(letter);
     for (size_t i = 0; i < size; i++) {
@@ -383,11 +395,23 @@ CString _helper_translate_letter(char *letter, char *lang, char *def) {
     return def;
 }
 
-CString helper_translate_letter(char *letter, char *lang) {
-    return _helper_translate_letter(letter, lang, NULL);
+CString helper_translate_letter_name_to_lang(char *letter, char *lang) {
+    return _helper_translate_letter_name_to_lang(letter, lang, NULL);
 }
 
-CString _helper_translate_alias(char *alias, char *lang, char *def) {
+CString helper_find_name_of_alias(char *text, char *lang, char *def) {
+    int size = aliases_get_size_by_lang(lang);
+    const PAIR_ALIASES* pairs = aliases_get_conf_by_lang(lang);
+    for (size_t i = 0; i < size; i++) {
+        PAIR_ALIASES pair = pairs[i];
+        if (strcmp(pair.val, text) == 0) {
+            return pair.key;
+        }
+    }
+    return def;
+}
+
+CString _helper_translate_alias_name_to_lang(char *alias, char *lang, char *def) {
     int size = aliases_get_size_by_name(alias);
     const PAIR_ALIASES* pairs = aliases_get_conf_by_name(alias);
     for (size_t i = 0; i < size; i++) {
@@ -397,49 +421,56 @@ CString _helper_translate_alias(char *alias, char *lang, char *def) {
     return def;
 }
 
-CString helper_translate_alias(char *alias, char *lang) {
-    return _helper_translate_alias(alias, lang, NULL);
+CString helper_translate_alias_name_to_lang(char *alias, char *lang) {
+    return _helper_translate_alias_name_to_lang(alias, lang, NULL);
 }
 
-CString helper_searchlate_letter(char *text, char *lang) {
+CString helper_searchlate_letter_value_to_lang(char *text, char *lang) {
     int sizeLangs = UG_LANGUAGE_COUNT;
     for (size_t i = 0; i < sizeLangs; i++) {
         char *typeLang = UG_LANGUAGE_ARRAY[i];
-        int sizeLetters = letters_get_size(typeLang);
-        PAIR_LETTERS* pairLetters = letters_get_conf(typeLang);
+        int sizeLetters = letters_get_size_by_lang(typeLang);
+        PAIR_LETTERS* pairLetters = letters_get_conf_by_lang(typeLang);
         for (size_t i = 0; i < sizeLetters; i++) {
             PAIR_LETTERS pair = pairLetters[i];
             if (is_eq_string(pair.val, text)) {
-                return _helper_translate_letter(pair.key, lang, text);
+                return _helper_translate_letter_name_to_lang(pair.key, lang, text);
             }
         }
     }
     return text;
 }
 
-CString helper_searchlate_alias(char *text, char *lang) {
+CString helper_searchlate_alias_value_to_lang(char *text, char *lang) {
     int sizeLangs = UG_LANGUAGE_COUNT;
     for (size_t i = 0; i < sizeLangs; i++) {
         char *typeLang = UG_LANGUAGE_ARRAY[i];
-        int sizeLetters = letters_get_size(typeLang);
-        PAIR_LETTERS* pairLetters = letters_get_conf(typeLang);
         int sizeAliases = aliases_get_size_by_lang(typeLang);
         PAIR_ALIASES* pairAliases = aliases_get_conf_by_lang(typeLang);
         for (size_t i = 0; i < sizeAliases; i++) {
             PAIR_ALIASES pair = pairAliases[i];
             if (is_eq_string(pair.val, text)) {
-                return _helper_translate_alias(pair.key, lang, text);
+                return _helper_translate_alias_name_to_lang(pair.key, lang, text);
             }
         }
     }
     return text;
 }
 
-CString helper_translate_something(char *something) {
+CString helper_find_name_of_something(CString something) {
+    CString name = NULL;
+    char *lang = __uyghur->language;
+    if (name == NULL) name = helper_find_name_of_letter(something, lang, NULL);
+    if (name == NULL) name = helper_find_name_of_alias(something, lang, NULL);
+    if (name == NULL) name = something;
+    return name;
+}
+
+CString helper_translate_something_to_current(char *something) {
     char *_something = NULL;
     char *lang = __uyghur->language;
-    if (_something == NULL) _something = _helper_translate_letter(something, lang, NULL);
-    if (_something == NULL) _something = _helper_translate_alias(something, lang, NULL);
+    if (_something == NULL) _something = _helper_translate_letter_name_to_lang(something, lang, NULL);
+    if (_something == NULL) _something = _helper_translate_alias_name_to_lang(something, lang, NULL);
     if (_something == NULL) _something = something;
     return _something;
 }
@@ -514,8 +545,8 @@ void helper_add_languages(Uyghur *uyghur, char *tp) {
         Hashmap_set(wordsMap, key, String_format(val));
     }
     // letters
-    int sizeLetters = letters_get_size(tp);
-    PAIR_LETTERS* pairLetters = letters_get_conf(tp);
+    int sizeLetters = letters_get_size_by_lang(tp);
+    PAIR_LETTERS* pairLetters = letters_get_conf_by_lang(tp);
     log_debug("helper.letters:%i", sizeLetters);
     for (size_t i = 0; i < sizeLetters; i++) {
         PAIR_LETTERS pair = pairLetters[i];
@@ -533,8 +564,8 @@ void helper_add_languages(Uyghur *uyghur, char *tp) {
     int sizeLangs = UG_LANGUAGE_COUNT;
     for (size_t i = 0; i < sizeLangs; i++) {
         char *typeLang = UG_LANGUAGE_ARRAY[i];
-        int sizeLetters = letters_get_size(typeLang);
-        PAIR_LETTERS* pairLetters = letters_get_conf(typeLang);
+        int sizeLetters = letters_get_size_by_lang(typeLang);
+        PAIR_LETTERS* pairLetters = letters_get_conf_by_lang(typeLang);
         for (size_t i = 0; i < sizeLetters; i++) {
             PAIR_LETTERS pair = pairLetters[i];
             Hashmap_set(langsMap, pair.val, typeLang);
@@ -613,31 +644,8 @@ Value *helper_get_proxy_value(char *proxyName, char *key) {
 }
 
 char* helper_get_value_name(char tp, char* def) {
-    char *name = NULL;
-    switch (tp) {
-        case UG_TYPE_NUM: name = LETTER_NUM; break;
-        case UG_TYPE_STR: name = LETTER_STR; break;
-        case UG_TYPE_LST: name = LETTER_LST; break;
-        case UG_TYPE_DCT: name = LETTER_DCT; break;
-        //
-        case UG_TYPE_KND: name = LETTER_KIND;  break;
-        case UG_TYPE_PXY: name = LETTER_PROXY;  break;
-        case UG_TYPE_SCP: name = LETTER_SCOPE;  break;
-        case UG_TYPE_MDL: name = LETTER_MODULE;  break;
-        //
-        case UG_TYPE_CTR: name = LETTER_CREATOR;  break;
-        case UG_TYPE_ATR: name = LETTER_ASSISTER;  break;
-        case UG_TYPE_OBJ: name = LETTER_OBJECT;  break;
-        //
-        case UG_TYPE_NTV: name = LETTER_NATIVE;  break;
-        case UG_TYPE_WKR: name = LETTER_WORKER;  break;
-        //
-        case UG_TYPE_STF: name = LETTER_STUF;  break;
-        case UG_TYPE_TSK: name = LETTER_TASK;  break;
-        //
-        default: name = def;
-    }
-    char *_name = helper_translate_something(name);
+    char *name = _ugValueNames[tp];
+    char *_name = helper_translate_something_to_current(name != NULL ? name : def);
     return _name;
 }
 
@@ -651,14 +659,14 @@ char* helper_value_to_string(CPointer target, CString failure, CString extra) {
     char *name = helper_get_value_name(value->type, failure);
     if (token != NULL && token->line > 0) {
         if (extra) {
-            extra = helper_translate_something(extra);
+            extra = helper_translate_something_to_current(extra);
             return tools_format("<%s:%p %s %s:%d %s>", name, value, desc, token->file, token->line, extra);
         } else {
             return tools_format("<%s:%p %s %s:%d>", name, value, desc, token->file, token->line);
         }
     } else {
         if (extra) {
-            extra = helper_translate_something(extra);
+            extra = helper_translate_something_to_current(extra);
             return tools_format("<%s:%p %s %s>", name, value, desc, extra);
         } else {
             return tools_format("<%s:%p %s>", name, value, desc);

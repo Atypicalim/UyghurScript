@@ -5,28 +5,30 @@
 
 // fps
 
-#define __E_FPS_CHECK_SIZE 30
+#define __E_FPS_CHECK_SIZE 10
 #define __E_FPS_PRINT_RATE 10
-double _eCheckClock = 0.0f;
 double _eCountClock = 0.0f;
 double _eCountDelay = 0.5f;
+double _eCheckClock = 0.0f;
+double _eFrameClock = 0.0f;
+double _eFrameTime = 0;
 int _eFpsNum = 0;
-double _etargetDelay = 1.0f / 15.0f;
 double _eFpsDelays[__E_FPS_CHECK_SIZE] = {0.0f};
 
 int externals_check_fps() {
     double current = time_clock();
-    double delay = !_eCheckClock ? 0 : current - _eCheckClock;
+    double checkDelay = !_eCheckClock ? 0 : current - _eCheckClock;
+    double frameDelay = !_eFrameClock ? 0 : current - _eFrameClock;
     _eCheckClock = current;
     //
-    double total = 0;
+    double total = 0.0f;
     for (int i = 0; i < __E_FPS_CHECK_SIZE -1; i++) {
         double t = _eFpsDelays[i+1];
         _eFpsDelays[i] = t;
         total = total + t;
     }
-    _eFpsDelays[__E_FPS_CHECK_SIZE - 1] = delay;
-    total = total + delay;
+    _eFpsDelays[__E_FPS_CHECK_SIZE - 1] = checkDelay;
+    total = total + checkDelay;
     // 
     if (total != 0 && current - _eCountClock >= _eCountDelay) {
         double average = 1.0f * total / __E_FPS_CHECK_SIZE;
@@ -34,9 +36,12 @@ int externals_check_fps() {
         _eFpsNum = replot_math_round(1 / average);
     }
     // 
-    // float extra = (float)MAX(0, MIN(1, _etargetDelay - delay));
-    // system_sleep(extra * 1000);
+    if (_eFrameTime > 0) {
+        float extraLeft = (float)MAX(0, MIN(1, _eFrameTime - frameDelay));
+        system_sleep(extraLeft * 1000);
+    }
     //
+    _eFrameClock = time_clock();
     return _eFpsNum;
 }
 
@@ -45,8 +50,8 @@ int externals_get_fps() {
 }
 
 void externals_set_fps(int fps) {
-    fps = MAX(1, MIN(60, fps));
-    _etargetDelay = 1.0f / fps;
+    fps = MAX(1, MIN(9999, fps));
+    _eFrameTime = 1.0f / fps;
 }
 
 // callback
@@ -72,7 +77,7 @@ void stage_on_drop() {
 void native_stage_set_fps(Bridge *bridge)
 {
     int fps = Bridge_receiveNumber(bridge);
-    externals_get_fps(fps);
+    externals_set_fps(fps);
     Bridge_returnEmpty(bridge);
 }
 

@@ -74,7 +74,7 @@ void run_interact_cmd(CString name, char *lang) {
 
 void run_execute_cmd(CString name, CString path, cArgs *args) {
     Uyghur *uyghur = Uyghur_instance();
-    Uyghur_runProgram(uyghur, path, args);
+    Uyghur_runExecute(uyghur, path, args);
     Uyghur_free(uyghur);
 }
 
@@ -174,8 +174,8 @@ int main(int argc, char *argv[])
     // program
     Uyghur *uyghur = Uyghur_instance();
     CString _path = (char *)argv[1];
-    if (argc <= 1) Uyghur_runScript(uyghur, script);
-    if (argc >= 2) Uyghur_runProgram(uyghur, _path, &args);
+    if (argc <= 1) Uyghur_runCode(uyghur, script);
+    if (argc >= 2) Uyghur_runExecute(uyghur, _path, &args);
     Uyghur_free(uyghur);
     // 
     return 0;

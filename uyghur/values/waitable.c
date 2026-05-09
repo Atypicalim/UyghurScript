@@ -18,7 +18,7 @@ Waitable *Waitable_new(char tp, Token *token)
 
 Waitable *Waitable_newTask(Value *func, CString name, CString path, CPointer releaser)
 {
-    char *_name = helper_translate_something(name);
+    char *_name = helper_translate_something_to_current(name);
     Token *token = Token_new(UG_TTYPE_NAM, _name);
     Waitable *waitable = Waitable_new(UG_TYPE_TSK, token);
     waitable->obj = func;
@@ -30,6 +30,19 @@ Waitable *Waitable_newTask(Value *func, CString name, CString path, CPointer rel
 bool Waitable_isTask(Waitable *this)
 {
     return this != NULL && this->type == UG_TYPE_TSK;
+}
+
+Value *Waitable_readKey(Waitable *this, CString key)
+{
+    CString name = helper_find_name_of_something(key);
+    if (is_eq_string(name, ALIAS_name)) {
+        return Value_newString(this->token->value, NULL);
+    } else if (is_eq_string(name, ALIAS_place)) {
+        return Value_newString(this->extra, NULL);
+    } else if (is_eq_string(name, ALIAS_state)) {
+        return Value_newNumber(0, NULL);
+    }
+    return Value_readKey(this, key);
 }
 
 char *Waitable_toString(Waitable *this)

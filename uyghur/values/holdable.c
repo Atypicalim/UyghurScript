@@ -71,6 +71,11 @@ bool Holdable_isKindOf(Holdable *this, Value *other) {
     return false;
 }
 
+Value *Holdable_readKey(Holdable *this, CString key) {
+    Value *value = Dictable_getLocation(this, key);
+    return value != NULL ? value : Value_readKey(this, key);
+}
+
 // 
 
 char *Holdable_toString(Holdable *this)

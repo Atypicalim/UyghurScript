@@ -43,6 +43,21 @@ bool Runnable_isNative(Runnable *this)
     return this != NULL && this->type == UG_TYPE_NTV;
 }
 
+Value *Runnable_readKey(Holdable *this, CString key) {
+    Value *value = NULL;
+    CString name = helper_find_name_of_something(key);
+    if (is_eq_string(name, ALIAS_name)) {
+        value = Value_newString(this->token->value, NULL);
+    } else if (is_eq_string(name, ALIAS_place)) {
+        char* _place = helper_format_place(this->token);
+        value = Value_newString(_place, NULL);
+        pct_free(_place);
+    }
+    return value != NULL ? value : Value_readKey(this, key);
+}
+
+//
+
 char *Runnable_toString(Runnable *this)
 {
     return helper_value_to_string(this, "runnable", (char *)this->extra);

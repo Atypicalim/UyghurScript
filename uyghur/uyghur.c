@@ -80,28 +80,22 @@ Value *_Uyghur_runCode(Uyghur *this, char *path, char *code) {
     return script;
 }
 
-Value *Uyghur_runScript(Uyghur *this, char *code) {
+Value *Uyghur_runCode(Uyghur *this, char *code) {
     Value *script = _Uyghur_runCode(this, NULL, code);
     Executer_endExecute(this->executer);
     return script;
 }
 
-Value *Uyghur_runModule(Uyghur *this, char *path)
+Value *Uyghur_runExecute(Uyghur *this, char *path, cArgs *args)
 {
     char *code = helper_read_code_file(path);
     Value *module = _Uyghur_runCode(this, path, code);
-    Executer_returnModule(this->executer);
+    bool finish = Executer_endExecute(this->executer);
+    if (args == NULL) {
+        tools_assert(!finish, LANG_ERR_EXECUTER_INVALID_STATE); // import not finish program
+    }
     pct_free(code);
     return module;
-}
-
-Value *Uyghur_runProgram(Uyghur *this, char *path, cArgs *args)
-{
-    char *code = helper_read_code_file(path);
-    Value *program = _Uyghur_runCode(this, path, code);
-    Executer_endExecute(this->executer);
-    pct_free(code);
-    return program;
 }
 
 void Uyghur_runCompile(Uyghur *this, char *path, CString lang)

@@ -130,7 +130,7 @@ void Bridge_bindNative(Bridge *this, CName name, NATIVE fun)
 {
     Bridge_pushKey(this, name);
     Token *token = Token_new(UG_TTYPE_NAM, name);
-    token->file = "";
+    token->file = "*.c";
     token->line = 0;
     token->column = 0;
     Bridge_pushValue(this, Runnable_newNative(fun, name));

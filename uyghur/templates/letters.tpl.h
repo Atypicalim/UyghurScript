@@ -21,12 +21,12 @@ typedef struct {
 
 ////////////////////////////////////////////////////////////////
 
-int letters_get_size(char *tp) {
+int letters_get_size_by_lang(char *tp) {
     if (!tp) tp = "";
     // [M[ FILTER_SIZE_BY_LANG ]M]
     return 0;
 }
-const PAIR_LETTERS* letters_get_conf(char *tp) {
+const PAIR_LETTERS* letters_get_conf_by_lang(char *tp) {
     if (!tp) tp = "";
     // [M[ FILTER_CONF_BY_LANG ]M]
     return 0;

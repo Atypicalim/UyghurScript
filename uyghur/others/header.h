@@ -157,6 +157,10 @@ Value *Value_FALSE = NULL;
 
 void *INVALID_PTR = NULL;
 
+typedef Value*(*VALUE_READER)(Value *, CString);
+VALUE_READER _ugValueReaders[256] = {0};
+CString _ugValueNames[256] = {0};
+
 #define VEmpty Value*
 #define VBolean Value*
 #define VNumber Value*
@@ -323,8 +327,7 @@ typedef struct _Uyghur {
 } Uyghur;
 
 Uyghur *__uyghur = NULL;
-Value *Uyghur_runModule(Uyghur *, char *);
-Value *Uyghur_runProgram(Uyghur *, char *, cArgs *);
+Value *Uyghur_runExecute(Uyghur *, char *, cArgs *);
 void Uyghur_runCompile(Uyghur *, char *, CString);
 
 struct Machine {
@@ -415,9 +418,11 @@ typedef CString (*CGenerator)(Compiler *);
         } \
     } \
 
-CString helper_translate_letter(char *, char *);
-CString helper_translate_alias(char *, char *);
-CString helper_translate_something(char *);
+char *helper_format_place(Token *);
+CString helper_translate_letter_name_to_lang(char *, char *);
+CString helper_translate_alias_name_to_lang(char *, char *);
+CString helper_translate_something_to_current(char *);
+CString helper_find_name_of_something(char *);
 CString helper_value_to_string(CPointer, CString, CString);
 
 ////////////////////////////////////////////////////////////////////////////

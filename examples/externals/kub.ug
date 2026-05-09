@@ -1,0 +1,109 @@
+
+iltimas @sehne.korsitish bilen -1 -1 "keyboard" -1 ishlitilsun
+
+miqdar x qimmiti 0 bolsun
+miqdar y qimmiti 0 bolsun
+miqdar z qimmiti 0 bolsun
+miqdar s qimmiti 1.0 bolsun
+
+miqdar cx qimmiti 250 bolsun
+miqdar cy qimmiti 250 bolsun
+miqdar cameraD qimmiti 500 bolsun
+miqdar unit qimmiti 10 bolsun
+miqdar size qimmiti quruq bolsun
+size = unit * 2 * 10
+
+miqdar points qimmiti tertip bolsun
+miqdar point qimmiti tertip bolsun
+miqdar pnt1 qimmiti tertip bolsun
+miqdar pnt2 qimmiti tertip bolsun
+miqdar index qimmiti 0 bolsun
+
+miqdar POINTS qimmiti tertip bolsun
+@POINTS.0 = [-10, -10, -10]
+@POINTS.1 = [10, -10, -10]
+@POINTS.2 = [10, 10, -10]
+@POINTS.3 = [-10, 10, -10]
+@POINTS.4 = [-10, -10, 10]
+@POINTS.5 = [10, -10, 10]
+@POINTS.6 = [10, 10, 10]
+@POINTS.7 = [-10, 10, 10]
+
+miqdar indentX qimmiti 0 bolsun
+miqdar indentY qimmiti 0 bolsun
+
+miqdar ANGLE qimmiti 30 bolsun
+miqdar RADIAN qimmiti 0 bolsun
+miqdar SIN qimmiti 0 bolsun
+miqdar COS qimmiti 0 bolsun
+
+miqdar angle qimmiti 0 bolsun
+miqdar radian qimmiti 0 bolsun
+miqdar sin qimmiti 0 bolsun
+miqdar cos qimmiti 0 bolsun
+
+xizmetchi siziqSizish miqdar p1 p2 color mezmuni
+    pnt1 = @points{p1}
+    pnt2 = @points{p2}
+    iltimas @qelem.xaslashturush bilen color 0 1 5 ishlitilsun
+    iltimas @qelem.siziqSizish bilen @pnt1.0 @pnt1.1 @pnt2.0 @pnt2.1 ishlitilsun
+tamamlansun
+
+xizmetchi @sehne.fpsBikitish bilen 60 ishlitilsun
+nawada @sehne.yepilmaqchi bolmisa
+    #
+    eger @taxta.besilghan ("d") bolsa
+        indentX = indentX + 2
+    tamamlansun
+    eger @taxta.besilghan ("a") bolsa
+        indentX = indentX - 2
+    tamamlansun
+    eger @taxta.besilghan ("w") bolsa
+        ANGLE = ANGLE - 1
+    tamamlansun
+    eger @taxta.besilghan ("s") bolsa
+        ANGLE = ANGLE + 1
+    tamamlansun
+    #
+    iltimas @qelem.xaslashturush bilen "333333" 0 ishlitilsun
+    iltimas @qelem.totTereplikSizish bilen cx cy size size ishlitilsun
+    #
+    RADIAN = ANGLE * (3.14159 / 180)
+    SIN = @san.sinosHisablash(RADIAN)
+    COS = @san.kosinosHisablash(RADIAN)
+    #
+    angle = angle + 0.5
+    radian = angle * (3.14159 / 180)
+    sin = @san.sinosHisablash(radian)
+    cos = @san.kosinosHisablash(radian)
+    #
+    yeyilghan POINTS miqdar k v bulup
+        # rotatex
+        x = @v.0
+        y = @v.1 * COS - @v.2 * SIN
+        z = @v.2 * COS + @v.1 * SIN
+        # rotatey
+        @point.0 = x * cos + z * sin
+        @point.1 = y
+        @point.2 = z * cos - x * sin
+        #
+        s = (cameraD - @point.2 * unit) / cameraD
+        x = s * unit * @point.0 + cx + indentX
+        y = s * unit * @point.1 + cy + indentY
+        @points{k} = [x, y, s]
+        # 
+    tamamlansun
+    #
+    yeyilghan 4 miqdar k bulup
+        index = k + 4
+        xizmetchi siziqSizish bilen k index "009999" ishlitilsun # sides
+        index = (k + 1) % 4
+        xizmetchi siziqSizish bilen k index "77ff00" ishlitilsun # front
+        k = k + 4
+        index = index + 4
+        xizmetchi siziqSizish bilen k index "8800ff" ishlitilsun # back
+    tamamlansun
+    #
+    iltimas @qelem.xaslashturush bilen "ffffff" 0 ishlitilsun
+    iltimas @sehne.yengilash ishlitilsun
+tamamlansun

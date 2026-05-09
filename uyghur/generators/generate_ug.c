@@ -6,11 +6,11 @@
 //////////////////////////////////////////////////////////////////////////////
 
 CString _ug_generate_translate(CString name) {
-    CString translation = helper_translate_letter(name, __uyghur->compiler->dialect);
+    CString translation = helper_translate_letter_name_to_lang(name, __uyghur->compiler->dialect);
     return translation == NULL ? name : translation;
 }
 CString _ug_generate_searchlate(CString text) {
-    CString searchlation = helper_searchlate_alias(text, __uyghur->compiler->dialect);
+    CString searchlation = helper_searchlate_alias_value_to_lang(text, __uyghur->compiler->dialect);
     return searchlation == NULL ? text : searchlation;
 }
 

@@ -410,7 +410,7 @@ void native_pencil_load_font(Bridge *bridge)
     CString path = Bridge_receiveString(bridge);
     UGFont *font = UG_NEW_FONT(path);
     delegate_load_font(font);
-    Loadable *loadable = Loadable_newStuf(font, ALIAS_texture, path, _pencil_release_font);
+    Loadable *loadable = Loadable_newStuf(font, ALIAS_font, path, _pencil_release_font);
     Bridge_returnValue(bridge, loadable);
 }
 

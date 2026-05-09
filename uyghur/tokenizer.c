@@ -97,7 +97,7 @@ void __Tokenizer_exit(char *source, Tokenizer *this, char *msg) {
 #define Tokenizer_assert(this, check, msg) if (!(check)) Tokenizer_error(this, msg)
 
 void Tokenizer_addToken(Tokenizer *this, Token *token) {
-    log_debug("tokenizer.token: %s->[%s]", token->type, escape_cstring(token->value));
+    // log_debug("tokenizer.token: %s->[%s]", token->type, escape_cstring(token->value));
     token->file = this->path;
     token->line = this->line;
     token->column = this->column;

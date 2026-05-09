@@ -50,6 +50,12 @@ Holdable *Machine_getProxyOrKindByType(Machine *this, char tp) {
     return NULL;
 }
 
+void _machine_bindType(Machine *this, char tp, char *name, VALUE_READER reade) {
+    _ugValueNames[tp] = name != NULL ? name : "???";
+    _ugValueReaders[tp] = reade; // reade != NULL ? reade : Value_readKey;
+    log_debug("type: %c %s", tp, name);
+}
+
 Holdable *_Machine_writeKind(Machine *this, char *name) {
     Holdable *holdable = Holdable_newKind(name);
     Machine_retainObj(holdable);
@@ -64,6 +70,31 @@ Holdable *_Machine_writeProxy(Machine *this, char *name) {
     helper_set_lettered_key(this->globals, name, holdable);
     log_debug("proxy: %s %p", name, holdable);
     return holdable;
+}
+
+void Machine_bindTypes(Machine *this) {
+    //
+    _machine_bindType(this, UG_TYPE_BOL, LETTER_BOL, NULL);
+    _machine_bindType(this, UG_TYPE_NUM, LETTER_NUM, NULL);
+    _machine_bindType(this, UG_TYPE_STR, LETTER_STR, NULL);
+    _machine_bindType(this, UG_TYPE_LST, LETTER_LST, NULL);
+    _machine_bindType(this, UG_TYPE_DCT, LETTER_DCT, NULL);
+    //
+    _machine_bindType(this, UG_TYPE_MDL, LETTER_MODULE, Holdable_readKey);
+    _machine_bindType(this, UG_TYPE_SCP, LETTER_SCOPE, Holdable_readKey);
+    _machine_bindType(this, UG_TYPE_KND, LETTER_KIND, Holdable_readKey);
+    _machine_bindType(this, UG_TYPE_PXY, LETTER_PROXY, Holdable_readKey);
+    //
+    _machine_bindType(this, UG_TYPE_CTR, LETTER_CREATOR, Objective_readKey);
+    _machine_bindType(this, UG_TYPE_ATR, LETTER_ASSISTER, Objective_readKey);
+    _machine_bindType(this, UG_TYPE_OBJ, LETTER_OBJECT, Objective_readKey);
+    // 
+    _machine_bindType(this, UG_TYPE_NTV, LETTER_NATIVE, Runnable_readKey);
+    _machine_bindType(this, UG_TYPE_WKR, LETTER_WORKER, Runnable_readKey);
+    //
+    _machine_bindType(this, UG_TYPE_STF, LETTER_STUF, Loadable_readKey);
+    _machine_bindType(this, UG_TYPE_TSK, LETTER_TASK, Waitable_readKey);
+    //
 }
 
 void Machine_initKinds(Machine *this) {
@@ -256,7 +287,6 @@ void _machine_mark_objective(Objective *);
 void _machine_mark_runnable(Runnable *);
 void _machine_mark_loadable(Loadable *);
 void _machine_mark_waitable(Waitable *);
-void _machine_mark_hashkey(Hashkey *, void *);
 void _machine_mark_value(Value *);
 
 void _machine_mark_value(Value *value) {
@@ -286,10 +316,6 @@ void _machine_mark_value(Value *value) {
     }
 }
 
-void _machine_mark_arrkey(int key, void *val, void *other) {
-    _machine_mark_value((Value *)val);
-}
-
 void _machine_mark_listable(Listable *listable) {
     if (listable->gcMark) return;
     // Machine *this = __uyghur->machine;
@@ -298,14 +324,9 @@ void _machine_mark_listable(Listable *listable) {
     #if IS_GC_LINK_LISTABLE_ARR
     _machine_mark_object(listable->arr);
     #endif
-    Array_foreachItem(listable->arr, _machine_mark_arrkey, NULL);
-}
-
-void _machine_mark_hashkey(Hashkey *hashkey, void *other) {
-    String *key = hashkey->key;
-    Value *val = hashkey->value;
-    // _machine_mark_object(key);
-    _machine_mark_value(val);
+    Array_foreachItem(listable->arr, LAMBDA(void, (int key, void *val, void *other) {
+        _machine_mark_value((Value *)val);
+    }), NULL);
 }
 
 void _machine_mark_dictable(Dictable *dictable) {
@@ -316,7 +337,12 @@ void _machine_mark_dictable(Dictable *dictable) {
     #if IS_GC_LINK_DICTABLE_MAP
     _machine_mark_object(dictable->map);
     #endif
-    Hashmap_foreachItem(dictable->map, _machine_mark_hashkey, NULL);
+    Hashmap_foreachItem(dictable->map, LAMBDA(void, (Hashkey *hashkey, void *other) {
+        String *key = hashkey->key;
+        Value *val = hashkey->value;
+        // _machine_mark_object(key);
+        _machine_mark_value(val);
+    }), NULL);
 }
 
 void _machine_mark_holdable(Holdable *holdable) {
@@ -362,17 +388,6 @@ void _machine_mark_waitable(Waitable *waitable) {
     _machine_mark_value(waitable->obj);
 }
 
-void _machine_mark_hstack(void *ptr, void *other) {
-    
-    // Machine *this = __uyghur->machine;
-    // Holdable *ctnr = ptr;
-    _machine_mark_holdable(ptr);
-}
-
-void _machine_mark_vstack(void *ptr, void *other) {
-    _machine_mark_value(ptr);
-}
-
 void _machine_mark_timer(void *value) {
     _machine_mark_value((Value *)value);
 }
@@ -380,8 +395,12 @@ void _machine_mark_timer(void *value) {
 void Machine_mark(Machine *this)
 {
     _machine_mark_dictable(this->globals);
-    Stack_foreachItem(this->holders, _machine_mark_hstack, NULL);
-    Stack_foreachItem(this->calls, _machine_mark_vstack, NULL);
+    Stack_foreachItem(this->holders, LAMBDA(void, (void *ptr, void *other) {
+        _machine_mark_holdable(ptr);
+    }), NULL);
+    Stack_foreachItem(this->calls, LAMBDA(void, (void *ptr, void *other) {
+        _machine_mark_value(ptr);
+    }), NULL);
     timer_each(&_machine_mark_timer);
 }
 

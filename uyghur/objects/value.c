@@ -225,9 +225,9 @@ void Value_print(Value *this)
 char *Value_toString(Value *this)
 {
     if (this == NULL || this->type == UG_TYPE_NIL) {
-        return tools_format("%s", helper_translate_something(LETTER_NIL));
+        return tools_format("%s", helper_translate_something_to_current(LETTER_NIL));
     } if (this->type == UG_TYPE_BOL) {
-        return tools_format("%s", helper_translate_something(this->boolean ? LETTER_TRUE : LETTER_FALSE));
+        return tools_format("%s", helper_translate_something_to_current(this->boolean ? LETTER_TRUE : LETTER_FALSE));
     } if (this->type == UG_TYPE_NUM) {
         return tools_number_to_string(this->number);
     } if (this->type == UG_TYPE_STR) {
@@ -322,6 +322,19 @@ bool Value_isTrue(Value *this)
         return true;
     }
 }
+
+Value *Value_readKey(Value *this, CString key)
+{
+    Value *value = NULL;
+    CString name = helper_find_name_of_something(key);
+    if (is_eq_string(name, ALIAS_type)) {
+        CString _type = _ugValueNames[this->type];
+        _type = helper_translate_something_to_current(_type);
+        value = Value_newString(_type, NULL);
+    }
+    return value;
+}
+
 
 void Value_free(Value *this)
 {

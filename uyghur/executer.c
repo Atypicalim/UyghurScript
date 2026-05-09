@@ -54,6 +54,7 @@ Executer *Executer_new(Uyghur *uyghur)
     machine->calls = Stack_new(IS_RETAIN_VALUES);
     machine->globals = Holdable_newScope("global", NULL);
     //
+    Machine_bindTypes(machine);
     Machine_initKinds(machine);
     Machine_initProxies(machine);
     executer->callStack = machine->calls;
@@ -260,36 +261,23 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
         return;
     }
     // dict
+    Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
     if (Value_isDictable(*rContainer)) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
         *rValue = Dictable_getLocation(*rContainer, key);
         further = *rValue == NULL;
     }
     if (further || *rContainer == (Value *)this->machine->kindDict) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
         *rValue = Dictable_getLocation(this->machine->kindDict, key);
         return;
     }
-    // holdable
-    if (Value_isHoldable(*rContainer)) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
-        *rValue = Dictable_getLocation(*rContainer, key);
+    // others
+    char containerType = (*rContainer)->type;
+    VALUE_READER valueReader = _ugValueReaders[containerType];
+    if (valueReader != NULL) {
+        *rValue = valueReader(*rContainer, key);
         return;
     }
-    // objective
-    if (Value_isObjective(*rContainer)) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
-        *rValue = Dictable_getLocation(*rContainer, key);
-        if (*rValue == NULL && Objective_isObj(*rContainer)) {
-            Queue *parents = (*rContainer)->extra;
-            Queue_RESTE(parents);
-            Objective *parent = Queue_NEXT(parents);
-            while (*rValue == NULL && parent != NULL) {
-                *rValue = Dictable_getLocation(parent, key);
-                parent = Queue_NEXT(parents);
-            }
-        }
-    }
+    //
 }
 
 Value *Executer_searchValueOfNameKey(Executer *this, Token *token, bool checkValue, bool checkHolder) {
@@ -1418,17 +1406,11 @@ Value *Executer_executeScript(Executer *this, char *path, Leaf *tree)
     Dictable_setLocation(this->globalScope, path, holdable);
 }
 
-Value *Executer_returnModule(Executer *this) {
+bool Executer_endExecute(Executer *this) {
     Holdable *holdable = Machine_popHolder(this->machine);
     tools_assert(holdable != NULL && holdable->type == UG_TYPE_MDL, LANG_ERR_EXECUTER_INVALID_STATE);
-    tools_assert(this->machine->currHoldable != NULL, LANG_ERR_EXECUTER_INVALID_STATE);
-    return holdable;
-}
-
-void Executer_endExecute(Executer *this) {
-    Holdable *holdable = Machine_popHolder(this->machine);
-    tools_assert(holdable != NULL && holdable->type == UG_TYPE_MDL, LANG_ERR_EXECUTER_INVALID_STATE);
-    tools_assert(this->machine->currHoldable == NULL, LANG_ERR_EXECUTER_INVALID_STATE);
+    bool finishProgram = this->machine->currHoldable == NULL;
+    return finishProgram;
 }
 
 void Executer_free(Executer *this)

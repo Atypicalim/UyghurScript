@@ -124,7 +124,36 @@ ALIAS_remove:
   uz: o'chirish
   tr: silmek
   kz: жою
-
+# 
+ALIAS_name:
+  en: name
+  uy: ئىسمى
+  ug: ismi
+  uz: nomi
+  tr: adı
+  kz: аты
+ALIAS_type:
+  en: type
+  uy: تۈرى
+  ug: turi
+  uz: turi
+  tr: türü
+  kz: түрі
+ALIAS_place:
+  en: place
+  uy: ئورنى
+  ug: orni
+  uz: joyi
+  tr: yeri
+  kz: орны
+ALIAS_state:
+  en: state
+  uy: ھالىتى
+  ug: haliti
+  uz: holati
+  tr: durumu
+  kz: күйін
+# 
 ALIAS_get_language:
   en: get_language
   uy: تىل_ئېلىش
@@ -146,13 +175,6 @@ ALIAS_get_type:
   uz: turini_olish
   tr: türünü_almak
   kz: түрін_алу
-ALIAS_get_place:
-  en: get_place
-  uy: ئورنىنى_ئېلىش
-  ug: orniniElish
-  uz: joyini_olish
-  tr: yerini_almak
-  kz: орнын_алу
 ALIAS_set_position:
   en: set_position
   uy: ئورنىنى_بېكىتىش
@@ -1148,6 +1170,13 @@ ALIAS_texture:
   uz: neqish
   tr: nakış
   kz: неқиш
+ALIAS_font:
+  en: font
+  uy: فونت
+  ug: font
+  uz: shrift
+  tr: font
+  kz: шрифт
 ALIAS_control:
   en: control
   uy: زاپچاس

@@ -50,7 +50,7 @@ Token *Parser_moveToken(Parser *this, int indent)
 
 void Parser_pushLeaf(Parser *this, Leaf *leaf)
 {
-    log_debug("parser.ast: %c", leaf->type);
+    // log_debug("parser.ast: %c", leaf->type);
     Leaf_pushLeaf(this->leaf, leaf);
 }
 
@@ -546,7 +546,6 @@ void Parser_consumeAstCalculator(Parser *this)
         currToken = Parser_getToken(this, 1);
         currType = currToken != NULL ? currToken->type : "";
         currValue = currToken != NULL ? currToken->value : "";
-        log_debug("tkn %s %s", currType, currValue);
         //
         bool isChangeable = helper_token_is_types(currToken, TVAUES_GROUP_CHANGEABLE);
         bool isApplies = isChangeable && Parser_isValue(this, 2, "(");
@@ -558,7 +557,6 @@ void Parser_consumeAstCalculator(Parser *this)
         bool isCalculator = is_calculation_str(currValue);
         // 
         if (!canContinue && isTarget) {
-            log_debug("calculate break");
             break;
         }
         canContinue = false;
@@ -739,7 +737,7 @@ void Parser_consumeToken(Parser *this, Token *token)
     char *t = token->type;
     char *v = token->value;
     this->last = token;
-    log_debug("parser.next: %s | %s", t, v);
+    // log_debug("parser.next: %s | %s", t, v);
     // VARIABLE
     if (is_eq_string(t, UG_TTYPE_WRD) && is_eq_string(v, LETTER_VARIABLE))
     {

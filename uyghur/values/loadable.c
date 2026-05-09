@@ -18,7 +18,7 @@ Loadable *Loadable_new(char tp, Token *token)
 
 Loadable *Loadable_newStuf(void *data, CString name, CString path, CPointer releaser)
 {
-    char *_name = helper_translate_something(name);
+    char *_name = helper_translate_something_to_current(name);
     Token *token = Token_new(UG_TTYPE_NAM, _name);
     Loadable *loadable = Loadable_new(UG_TYPE_STF, token);
     loadable->obj = data;
@@ -30,6 +30,19 @@ Loadable *Loadable_newStuf(void *data, CString name, CString path, CPointer rele
 bool Loadable_isStuf(Loadable *this)
 {
     return this != NULL && this->type == UG_TYPE_STF;
+}
+
+Value *Loadable_readKey(Loadable *this, CString key)
+{
+    CString name = helper_find_name_of_something(key);
+    if (is_eq_string(name, ALIAS_name)) {
+        return Value_newString(this->token->value, NULL);
+    } else if (is_eq_string(name, ALIAS_place)) {
+        return Value_newString(this->extra, NULL);
+    } else if (is_eq_string(name, ALIAS_state)) {
+        return Value_newNumber(1, NULL);
+    }
+    return Value_readKey(this, key);
 }
 
 char *Loadable_toString(Loadable *this)
