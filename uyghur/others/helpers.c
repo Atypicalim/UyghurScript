@@ -50,6 +50,16 @@ CString _make_tree_spaces(char *space) {
 
 //////////////////////////////////////////////////////
 
+void helper_print_hashmap(Hashmap *this, char *space) {
+    printf("%s[HASHMAP => %p]\n", space, this);
+        Hashmap_foreachItem((Hashmap *)this, LAMBDA(void, (Hashkey *hashkey, void *other) {
+        String *key = hashkey->key;
+        Value *val = hashkey->value;
+        printf("%s | %s -> %p \n", space, key->data, val);
+    }), NULL);
+    printf("%s[HASHMAP]\n", space);
+}
+
 // print ast leaf
 void helper_print_leaf(Leaf *, char *);
 void helper_print_leaf(Leaf *this, char *space)

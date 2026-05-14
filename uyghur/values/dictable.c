@@ -77,6 +77,11 @@ int Dictable_getCount(Dictable *this) {
     return count;
 }
 
+Value *Dictable_readKey(Dictable *this, CString key) {
+    Value *value = Hashmap_get(this->map, key);
+    return value != NULL ? value : Value_readKey(this, key);
+}
+
 // 
 
 char *Dictable_toString(Dictable *this)

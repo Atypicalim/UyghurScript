@@ -84,6 +84,14 @@ void Compiler_callGenerateWriteLine(Compiler *this, CName _name, bool isComplete
     Draft_pushString(this->draft, "\n");
 }
 
+void Compiler_pushIndent(Compiler *this) {
+    int deepth = this->deepth;
+    while(deepth > 0) {
+        Draft_pushString(this->draft, "  ");
+        deepth--;
+    }
+}
+
 void Compiler_pushScope(Compiler *this, CString name)
 {
     this->deepth++;
@@ -321,8 +329,7 @@ void _Compiler_parseAppliable(Compiler *this, Leaf *leaf, char type, Token **fun
     Stack_RESTE(leaf->tokens);
     *func = Stack_NEXT(leaf->tokens);
     // func args
-    Token *name = Stack_NEXT(leaf->tokens);
-    Compiler_pushPass(this, name);
+    Compiler_pushPass(this, *func);
     Token *arg = Stack_NEXT(leaf->tokens);
     while(arg != NULL)
     {
@@ -392,18 +399,62 @@ void Compiler_consumeResult(Compiler *this, Leaf *leaf)
     Compiler_callGenerateWriteLine(this, "result", true);
 }
 
+String *_Compiler_processBTree(Compiler *this, Object *);
+String *_Compiler_processBTree(Compiler *this, Object *target)
+{
+    tools_assert(target != NULL, "calculte not supported for null");
+    String *result = NULL;
+    if (target->objType == PCT_OBJ_FOLIAGE) {
+        Foliage *foliage = (Foliage *)target;
+        Token *token = foliage->data;
+        if (foliage->left != NULL && foliage->right != NULL) {
+            String *leftR = _Compiler_processBTree(this, foliage->left);
+            String *rightR = _Compiler_processBTree(this, foliage->right);
+            result = String_format("(%s %s %s)", leftR->data, token->value, rightR->data);
+        } else if (foliage->left != NULL) {
+            result = _Compiler_processBTree(this, foliage->left);
+        } else if (foliage->right != NULL) {
+            result = _Compiler_processBTree(this, foliage->right);
+        } else {
+            Compiler_error(this, token, LANG_ERR_COMPILER_EXCEPTION);
+        }
+    } else if (target->objType == PCT_OBJ_LEAF) {
+        Leaf *leaf = (Leaf *)target;
+        Token *token = ((Chain*)leaf->tokens)->tail;
+        Compiler_assert(this, leaf->type == UG_ATYPE_APPLY, token, LANG_ERR_COMPILER_EXCEPTION);
+        _compiler_prepareApply(this, leaf, false);
+        CString appiement = Compiler_callGenerateReadText(this, "apply");
+        return String_format("%s", appiement);
+    } else if (target->objType == PCT_OBJ_TOKEN) {
+        Token *token = (Token *)target;
+        Compiler_pushPass(this, token);
+        CString _token = Compiler_callGenerateReadText(this, "token");
+        result = String_format("%s", _token);
+    } else {
+        tools_error("calculte not supported for %c", target->objType);
+    }
+    return result;
+}
+
 void Compiler_consumeCalculator(Compiler *this, Leaf *leaf)
 {
     Stack_RESTE(leaf->tokens);
     Token *body = Stack_NEXT(leaf->tokens);
     Token *target = Stack_NEXT(leaf->tokens);
     Object *root = (Object *)body->value;
+    //
+    String *r = _Compiler_processBTree(this, root);
     // 
-    Compiler_callGenerateWriteLine(this, "calculate", true);
+    Compiler_pushPass(this, target);
+    CString _token = Compiler_callGenerateReadText(this, "token");
+    CString text = String_format("%s = %s", _token, r->data)->data;
+    Compiler_pushIndent(this);
+    Draft_pushString(this->draft, text);
+    Draft_pushString(this->draft, "\n");
 }
 
-Draft *Compiler_generateContainer(Compiler *this, Object *, Token *);
-Draft *Compiler_generateContainer(Compiler *this, Object *object, Token *token)
+String *Compiler_generateContainer(Compiler *this, Object *, Token *);
+String *Compiler_generateContainer(Compiler *this, Object *object, Token *token)
 {
     bool isArr = object->objType == PCT_OBJ_QUEUE;
     bool isMap = object->objType == PCT_OBJ_STACK;
@@ -417,26 +468,37 @@ Draft *Compiler_generateContainer(Compiler *this, Object *object, Token *token)
         block = Stack_NEXT(object);
     }
     //
-    Draft *result = Draft_new(UG_TYPE_NON);
+    String *result = String_format(isArr ? "[" : "{");
+    bool first = true;
     while(block != NULL)
     {
         Token *key = block->next;
         Object *val = block->data;
         bool noKey = key == NULL;
         Compiler_assert(this, isArr == noKey, NULL, LANG_ERR_GRAMMAR_INVALID_KEY);
+        // 
+        if (!first) String_append(result, ", ");
+        first = false;
         //
+        String *value = NULL;
         if (val->objType == PCT_OBJ_QUEUE) {
-            
+            value = Compiler_generateContainer(this, val, NULL);
         } else if (val->objType == PCT_OBJ_STACK) {
-            
+            value = Compiler_generateContainer(this, val, NULL);
         } else {
-            
+            Compiler_pushPass(this, val);
+            CString _token = Compiler_callGenerateReadText(this, "token");
+            value = String_format("%s", _token);
         }
         //
+        if (value == NULL) continue;
+        //
         if (isArr) {
-            // 
+            String_append(result, value->data);
         } else if (isMap) {
-            // 
+            String_append(result, key->value);
+            String_append(result, ": ");
+            String_append(result, value->data);
         } else {
             // Compiler_error(this, NULL, LANG_ERR_GRAMMAR_INVALID_GENERATION);
         }
@@ -447,6 +509,7 @@ Draft *Compiler_generateContainer(Compiler *this, Object *object, Token *token)
             block = Stack_NEXT(object);
         }
     }
+    String_append(result, isArr ? "]" : "}");
     return result;
 }
 
@@ -457,8 +520,14 @@ void Compiler_consumeGenerator(Compiler *this, Leaf *leaf)
     Token *target = Stack_NEXT(leaf->tokens);
     Object *root = (Object *)body->value;
     //
-    Compiler_callGenerateWriteLine(this, "generate", true);
-    // Compiler_assert(this, NULL, target, LANG_ERR_GRAMMAR_INVALID_GENERATION);
+    String *r = Compiler_generateContainer(this, root, target);
+    // 
+    Compiler_pushPass(this, target);
+    CString _token = Compiler_callGenerateReadText(this, "token");
+    CString text = String_format("%s = %s", _token, r->data)->data;
+    Compiler_pushIndent(this);
+    Draft_pushString(this->draft, text);
+    Draft_pushString(this->draft, "\n");
 }
 
 void Compiler_consumeLeaf(Compiler *this, Leaf *leaf)

@@ -54,9 +54,9 @@ Executer *Executer_new(Uyghur *uyghur)
     machine->calls = Stack_new(IS_RETAIN_VALUES);
     machine->globals = Holdable_newScope("global", NULL);
     //
-    Machine_bindTypes(machine);
     Machine_initKinds(machine);
     Machine_initProxies(machine);
+    Machine_bindTypes(machine);
     executer->callStack = machine->calls;
     executer->globalScope = machine->globals;
     // 
@@ -116,31 +116,58 @@ Holdable *Executer_getCurrentScope(Executer *this, Token *token)
     return holdable;
 }
 
-void Executer_findValueByLocation(Executer *this, char *key, Value **rContainer, Value **rValue)
+Value *Executer_findValueByLocation(Executer *this, char *key, Value **rContainer)
 {
     *rContainer = NULL;
-    *rValue = NULL;
-    //
     Holdable *holder = this->machine->currHoldable;
     while (holder != NULL) {
         Value *value = Dictable_getLocation(holder, key);
         if (value != NULL) {
             *rContainer = holder;
-            *rValue = value;
-            return;
+            return value;
         }
         holder = holder->linka;
     }
-    //
     Holdable *global = this->globalScope;
     if (global) {
         Value *value = Dictable_getLocation(global, key);
         if (value != NULL) {
             *rContainer = global;
-            *rValue = value;
-            return;
+            return value;
         }
     }
+    return NULL;
+}
+
+ Value *Executer_findHolderOfWord(Executer *this, Token *token) {
+    Value *value = NULL;
+    if (is_eq_string(token->value, SCOPE_ALIAS_GLB) || is_eq_string(token->value, LETTER_GLOBAL)) {
+        value = this->globalScope;
+        Executer_assert(this, Holdable_isScope(value), token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
+    } else if (is_eq_string(token->value, SCOPE_ALIAS_MDL) || is_eq_string(token->value, LETTER_MODULE)) {
+        value = Machine_getCurrentModule(this->machine);
+        Executer_assert(this, Holdable_isModule(value), token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
+    } else if (is_eq_string(token->value, SCOPE_ALIAS_SLF) || is_eq_string(token->value, LETTER_THIS)) {
+        value = Machine_getCurrentSelf(this->machine);
+        Executer_assert(this, Value_isObjective(value), token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
+    } else {
+        if (!value) value = Machine_readKind(this->machine, token->value);
+        if (!value) value = Machine_readProxy(this->machine, token->value);
+    }
+    return value;
+}
+
+Value *Executer_findValueOfNameKey(Executer *this, Token *token) {
+    Executer_assert(this, token != NULL, token, "invalid token for search value");
+    Token *_extra = (Token *)token->extra;
+    Token *_token = Token_getTemporary();
+    _token->type = _extra->type;
+    _token->value = token->value;
+    Holdable *holdable = NULL;
+    Value *value = Executer_findValueByLocation(this, token->value, &holdable);
+    Executer_assert(this, value!= NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
+    Executer_assert(this, holdable!= NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
+    return value;
 }
 
 void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer, Value **rValue)
@@ -151,55 +178,26 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
     if (token == NULL || Token_isEmpty(token)) {
         return;
     }
-    // name
-    if (Token_isName(token)) {
-        Executer_findValueByLocation(this, token->value, rContainer, rValue);
-        return;
-    }
     // word
     if (Token_isWord(token)) {
-        if (is_eq_string(token->value, LETTER_THIS)) {
-            *rValue = Machine_getCurrentSelf(this->machine);
-            return;
-        } else if (is_eq_string(token->value, LETTER_MODULE)) {
-            *rValue = Machine_getCurrentModule(this->machine);
-            return;
-        } else if (is_eq_string(token->value, LETTER_GLOBAL)) {
-            *rValue = this->globalScope;
-            return;
-        } else if (helper_token_is_values(token, TVAUES_GROUP_UTYPES)) {
-            if (!*rValue) *rValue = Machine_readKind(this->machine, token->value);
-            if (!*rValue) *rValue = Machine_readProxy(this->machine, token->value);
-            return;
-        }
+        *rValue = Executer_findHolderOfWord(this, token);
+        return;
     }
-    // keys
+    // name
+    if (Token_isName(token)) {
+        *rValue = Executer_findValueByLocation(this, token->value, rContainer);
+        return;
+    }
+    // find container of key
     Executer_assert(this, Token_isKey(token), token, LANG_ERR_GRAMMAR_INVALID_KEY);
     Token *extra = (Token *)token->extra;
-    if (is_eq_string(extra->value, SCOPE_ALIAS_GLB) || is_eq_string(extra->value, LETTER_GLOBAL)) {
-        *rContainer = this->globalScope;
-        Executer_assert(this, *rContainer != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-        Executer_assert(this, Holdable_isScope(*rContainer), token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
-    } else if (is_eq_string(extra->value, SCOPE_ALIAS_MDL) || is_eq_string(extra->value, LETTER_MODULE)) {
-        *rContainer = Machine_getCurrentModule(this->machine);
-        Executer_assert(this, *rContainer != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-        Executer_assert(this, Holdable_isModule(*rContainer), token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
-    } else if (is_eq_string(extra->value, SCOPE_ALIAS_SLF) || is_eq_string(extra->value, LETTER_THIS)) {
-        *rContainer = Machine_getCurrentSelf(this->machine);
-        Executer_assert(this, *rContainer != NULL, token, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
-        if (!Objective_isCtr(*rContainer) && !Objective_isObj(*rContainer)) {
-            Executer_error(this, token, LANG_ERR_EXECUTER_CONTAINER_NOT_VALID);
-        }
-    } else {
-        Value *container = NULL;
-        Value *value = NULL;
-        Executer_findValueByLocation(this, extra->value, &container, &value);
-        if (value != NULL) *rContainer = value;
+    *rContainer = Executer_findHolderOfWord(this, extra);
+    if (!*rContainer) {
+        *rContainer = Executer_findValueByLocation(this, extra->value, &INVALID_PTR);
     }
-    // container
-    Executer_assert(this, *rContainer != NULL, extra, LANG_ERR_EXECUTER_INVALID_BOX);
-    // if (*rContainer == NULL) return;
-    // parse keys
+    //
+    Executer_assert(this, *rContainer != NULL, extra, LANG_ERR_EXECUTER_CONTAINER_NOT_FOUND);
+    // parse index & key
     bool further = false;
     int index = -1;
     char *key = NULL;
@@ -208,13 +206,7 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
     } else if (Token_isKeyOfString(token)) {
         key = token->value;
     } else if (Token_isKeyOfName(token)) {
-        Token *_extra = (Token *)token->extra;
-        Token *_token = Token_getTemporary();
-        _token->type = _extra->type;
-        _token->value = token->value;
-        Value *container = NULL;
-        Value *value = NULL;
-        Executer_findValueByToken(this, _token, &container, &value);
+        Value *value = Executer_findValueOfNameKey(this, token);
         if (Value_isNumber(value)) {
             index = value->number;
         } else if (Value_isString(value)) {
@@ -223,78 +215,36 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
             Executer_error(this, token, LANG_ERR_GRAMMAR_INVALID_KEY);
         }
     }
-    // num
-    if (Value_isNumber(*rContainer) || *rContainer == (Value *)this->machine->kindNum) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
-        *rValue = Dictable_getLocation(this->machine->kindNum, key);
-        return;
-    }
-    // str
-    if (Value_isString(*rContainer) || *rContainer == (Value *)this->machine->kindStr) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
-        *rValue = Dictable_getLocation(this->machine->kindStr, key);
-        return;
-    }
-    // prox
-    if (*rContainer != NULL && (*rContainer)->proxy != NULL) {
-        // only string keys available for proxies
-        if (key != NULL) {
-            *rValue = Dictable_getLocation((*rContainer)->proxy, key);
-            // return value when found the key in proxy
-            if (*rValue != NULL) {
-                return;
-            }
-        }
-    }
-    // list
-    if (Value_isListable(*rContainer)) {
-        if (index >= 0) {
-            *rValue = Listable_getIndex(*rContainer, index);
+    // 
+    if (index >= 0) {
+        // handle index
+        char containerType = (*rContainer)->type;
+        Executer_assert(this, is_type_indexable(containerType), token, LANG_ERR_GRAMMAR_INVALID_KEY);
+        INDEX_READER valueReader = _ugIndexReaders[containerType];
+        if (valueReader != NULL) {
+            *rValue = valueReader(*rContainer, index);
             return;
-        } else {
-            further = true;
         }
+    } else if (key != NULL) {
+        // hanlde key
+        char containerType = (*rContainer)->type;
+        // prototype
+        Value *proto = (*rContainer)->proto || _ugValueProtos[containerType];
+        if (proto != NULL) {
+            *rValue = Dictable_getLocation(proto, key);
+            if (*rValue != NULL) return;
+        }
+        // others
+        KEY_READER valueReader = _ugKeyReaders[containerType];
+        if (valueReader != NULL) {
+            *rValue = valueReader(*rContainer, key);
+            return;
+        }
+        //
+    } else {
+        // invalid operation
+        Executer_error(this, token, LANG_ERR_GRAMMAR_INVALID_KEY);
     }
-    if (further ||  *rContainer == (Value *)this->machine->kindList) {
-        Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
-        *rValue = Dictable_getLocation(this->machine->kindList, key);
-        return;
-    }
-    // dict
-    Executer_assert(this, key != NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
-    if (Value_isDictable(*rContainer)) {
-        *rValue = Dictable_getLocation(*rContainer, key);
-        further = *rValue == NULL;
-    }
-    if (further || *rContainer == (Value *)this->machine->kindDict) {
-        *rValue = Dictable_getLocation(this->machine->kindDict, key);
-        return;
-    }
-    // others
-    char containerType = (*rContainer)->type;
-    VALUE_READER valueReader = _ugValueReaders[containerType];
-    if (valueReader != NULL) {
-        *rValue = valueReader(*rContainer, key);
-        return;
-    }
-    //
-}
-
-Value *Executer_searchValueOfNameKey(Executer *this, Token *token, bool checkValue, bool checkHolder) {
-    tools_assert(token != NULL, "invalid token for search value");
-    Token *_extra = (Token *)token->extra;
-    Token *_token = Token_getTemporary();
-    _token->type = _extra->type;
-    _token->value = token->value;
-    //
-    Holdable *holdable = NULL;
-    Value *value = NULL;
-    Executer_findValueByLocation(this, token->value, &holdable, &value);
-    // Executer_findValueByToken(this, _token, &holdable, &value);
-    //
-    if (checkValue) Executer_assert(this, value!= NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
-    if (checkHolder) Executer_assert(this, holdable!= NULL, token, LANG_ERR_GRAMMAR_INVALID_KEY);
-    return value;
 }
 
 void Executer_delIndexOfToken(Executer *this, int index) {
@@ -311,7 +261,7 @@ int Executer_genIndexOfToken(Executer *this, Token *token) {
         ug_index.value = atof(token->value);
         ug_index.freeable = false;
     } else if (Token_isKeyOfName(token)) {
-        Value *value = Executer_searchValueOfNameKey(this, token, true, true);
+        Value *value = Executer_findValueOfNameKey(this, token);
         if (Value_isNumber(value)) {
             ug_index.value = value->number;
             ug_index.freeable = true;
@@ -337,7 +287,7 @@ char *Executer_genLocationOfToken(Executer *this, Token *token) {
         ug_location.value = token->value;
         ug_location.freeable = false;
     } else if (Token_isKeyOfName(token)) {
-        Value *value = Executer_searchValueOfNameKey(this, token, true, true);
+        Value *value = Executer_findValueOfNameKey(this, token);
         if (Value_isString(value)) {
             ug_location.value = Value_toString(value);
             ug_location.freeable = true;
@@ -552,13 +502,13 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
         new = Value_newEmpty(token);
         new->fixed = false;
     } else if (Token_isWord(token) && is_eq_string(token->value, LETTER_BOL)) {
-        new = Value_newBoolean(false, token);
+        new = Value_newBoolean(false, name);
         new->fixed = true;
     } else if (Token_isWord(token) && is_eq_string(token->value, LETTER_NUM)) {
-        new = Value_newNumber(0, token);
+        new = Value_newNumber(0, name);
         new->fixed = true;
     } else if (Token_isWord(token) && is_eq_string(token->value, LETTER_STR)) {
-        new = Value_newString("", token);
+        new = Value_newString("", name);
         new->fixed = true;
     } else if (Token_isWord(token) && is_eq_string(token->value, LETTER_LST)) {
         new = Listable_newLst(name);
@@ -568,6 +518,7 @@ void Executer_consumeVariable(Executer *this, Leaf *leaf)
         new->fixed = true;
     } else {
         new = Executer_getValueByToken(this, token, true); // todo
+        new->token = name;
     }
     // 
     Value *old = Executer_getValueFromContainer(this, this->machine->currHoldable, name);
@@ -1082,7 +1033,7 @@ Value *Executer_applyNative(Executer *this, Token *token, Value *nativeValue, Ho
     Bridge *bridge = this->uyghur->bridge;
     Bridge_startArgument(bridge);
     //
-    if (container != NULL && container->proxy != NULL) {
+    if (container != NULL && container->proto != NULL) {
         Bridge_pushValue(bridge, container);
     }
     // 

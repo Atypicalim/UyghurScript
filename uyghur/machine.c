@@ -39,20 +39,12 @@ Machine *Machine_new(Uyghur *uyghur) {
 
 ///////////////////////////////////////////////////////////////////////////
 
-Holdable *Machine_getProxyOrKindByType(Machine *this, char tp) {
-    if (tp == UG_TYPE_BOL) return this->kindLgc;
-    if (tp == UG_TYPE_NUM) return this->kindNum;
-    if (tp == UG_TYPE_STR) return this->kindStr;
-    if (tp == UG_TYPE_LST) return this->kindList;
-    if (tp == UG_TYPE_DCT) return this->kindDict;
-    if (tp == UG_TYPE_STF) return this->proxStuf;
-    if (tp == UG_TYPE_TSK) return this->proxTask;
-    return NULL;
-}
-
-void _machine_bindType(Machine *this, char tp, char *name, VALUE_READER reade) {
+void _machine_bindType(Machine *this, char tp, char *name, KEY_READER kReade, INDEX_READER iReader, Value *proto) {
     _ugValueNames[tp] = name != NULL ? name : "???";
-    _ugValueReaders[tp] = reade; // reade != NULL ? reade : Value_readKey;
+    _ugIndexReaders[tp] = iReader; // iReader != NULL ? iReader : Value_readIndex;
+    _ugKeyReaders[tp] = kReade; // kReade != NULL ? kReade : Value_readKey;
+    tools_assert(_ugValueProtos[tp] == NULL, "multiple prototype for type: %c", tp);
+    _ugValueProtos[tp] = proto;
     log_debug("type: %c %s", tp, name);
 }
 
@@ -70,31 +62,6 @@ Holdable *_Machine_writeProxy(Machine *this, char *name) {
     helper_set_lettered_key(this->globals, name, holdable);
     log_debug("proxy: %s %p", name, holdable);
     return holdable;
-}
-
-void Machine_bindTypes(Machine *this) {
-    //
-    _machine_bindType(this, UG_TYPE_BOL, LETTER_BOL, NULL);
-    _machine_bindType(this, UG_TYPE_NUM, LETTER_NUM, NULL);
-    _machine_bindType(this, UG_TYPE_STR, LETTER_STR, NULL);
-    _machine_bindType(this, UG_TYPE_LST, LETTER_LST, NULL);
-    _machine_bindType(this, UG_TYPE_DCT, LETTER_DCT, NULL);
-    //
-    _machine_bindType(this, UG_TYPE_MDL, LETTER_MODULE, Holdable_readKey);
-    _machine_bindType(this, UG_TYPE_SCP, LETTER_SCOPE, Holdable_readKey);
-    _machine_bindType(this, UG_TYPE_KND, LETTER_KIND, Holdable_readKey);
-    _machine_bindType(this, UG_TYPE_PXY, LETTER_PROXY, Holdable_readKey);
-    //
-    _machine_bindType(this, UG_TYPE_CTR, LETTER_CREATOR, Objective_readKey);
-    _machine_bindType(this, UG_TYPE_ATR, LETTER_ASSISTER, Objective_readKey);
-    _machine_bindType(this, UG_TYPE_OBJ, LETTER_OBJECT, Objective_readKey);
-    // 
-    _machine_bindType(this, UG_TYPE_NTV, LETTER_NATIVE, Runnable_readKey);
-    _machine_bindType(this, UG_TYPE_WKR, LETTER_WORKER, Runnable_readKey);
-    //
-    _machine_bindType(this, UG_TYPE_STF, LETTER_STUF, Loadable_readKey);
-    _machine_bindType(this, UG_TYPE_TSK, LETTER_TASK, Waitable_readKey);
-    //
 }
 
 void Machine_initKinds(Machine *this) {
@@ -127,6 +94,31 @@ Holdable *Machine_readProxy(Machine *this, char *name) {
     return NULL;
 }
 
+void Machine_bindTypes(Machine *this) {
+    //
+    _machine_bindType(this, UG_TYPE_BOL, LETTER_BOL, Value_readKey, NULL, this->kindLgc);
+    _machine_bindType(this, UG_TYPE_NUM, LETTER_NUM, Value_readKey, NULL, this->kindNum);
+    _machine_bindType(this, UG_TYPE_STR, LETTER_STR, Value_readKey, Value_readIndex, this->kindStr);
+    _machine_bindType(this, UG_TYPE_LST, LETTER_LST, Value_readKey, Listable_readIndex, this->kindList);
+    _machine_bindType(this, UG_TYPE_DCT, LETTER_DCT, Dictable_readKey, Value_readIndex, this->kindDict);
+    //
+    _machine_bindType(this, UG_TYPE_MDL, LETTER_MODULE, Holdable_readKey, NULL, NULL);
+    _machine_bindType(this, UG_TYPE_SCP, LETTER_SCOPE, Holdable_readKey, NULL, NULL);
+    _machine_bindType(this, UG_TYPE_KND, LETTER_KIND, Holdable_readKey, NULL, NULL);
+    _machine_bindType(this, UG_TYPE_PXY, LETTER_PROXY, Holdable_readKey, NULL, NULL);
+    //
+    _machine_bindType(this, UG_TYPE_CTR, LETTER_CREATOR, Objective_readKey, NULL, NULL);
+    _machine_bindType(this, UG_TYPE_ATR, LETTER_ASSISTER, Objective_readKey, NULL, NULL);
+    _machine_bindType(this, UG_TYPE_OBJ, LETTER_OBJECT, Objective_readKey, NULL, NULL);
+    // 
+    _machine_bindType(this, UG_TYPE_NTV, LETTER_NATIVE, Runnable_readKey, NULL, NULL);
+    _machine_bindType(this, UG_TYPE_WKR, LETTER_WORKER, Runnable_readKey, NULL, NULL);
+    //
+    _machine_bindType(this, UG_TYPE_STF, LETTER_STUF, Loadable_readKey, NULL, this->proxStuf);
+    _machine_bindType(this, UG_TYPE_TSK, LETTER_TASK, Waitable_readKey, NULL, this->proxTask);
+    //
+}
+
 Value *Machine_newCacheableValue(char tp, bool freeze) {
     // 
     Machine* this = __uyghur->machine;
@@ -134,7 +126,7 @@ Value *Machine_newCacheableValue(char tp, bool freeze) {
     Value_reset(value);
     //
     value->type = tp;
-    value->proxy = Machine_getProxyOrKindByType(this, tp);
+    value->proto = _ugValueProtos[tp];
     //
     if (is_type_listable(tp)) {
         value->arr = Gache_get(this->cacheArr, this->freezing);

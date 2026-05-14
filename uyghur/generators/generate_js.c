@@ -84,6 +84,11 @@ CString receive_judge_2_js(Compiler *compiler) {
 
 //////////////////////////////////////////////////////////////////////////////
 
+CString js_generate_token(Compiler *compiler) {
+    CString name = receive_token_2_js(compiler);
+    return name;
+}
+
 CString js_generate_variable(Compiler *compiler) {
     CString name = receive_token_2_js(compiler);
     CString token = receive_token_2_js(compiler);
@@ -117,10 +122,6 @@ CString js_generate_while(Compiler *compiler) {
     return tools_format("while(%s)", judge);
 }
 
-CString js_generate_calculate(Compiler *compiler) {
-    return "xyz = 1 * a";
-}
-
 CString js_generate_appliable(Compiler *compiler) {
     return "fun xyz() {}";
 }
@@ -151,12 +152,12 @@ CString js_generate_end(Compiler *compiler) {
 
 void generator_js_register(Compiler *compiler) 
 {
+    COMPILER_BIND_GENERATE(js_generate_token);
     COMPILER_BIND_GENERATE(js_generate_variable);
     COMPILER_BIND_GENERATE(js_generate_command);
     COMPILER_BIND_GENERATE(js_generate_if);
     COMPILER_BIND_GENERATE(js_generate_spread);
     COMPILER_BIND_GENERATE(js_generate_while);
-    COMPILER_BIND_GENERATE(js_generate_calculate);
     COMPILER_BIND_GENERATE(js_generate_appliable);
     COMPILER_BIND_GENERATE(js_generate_result);
     COMPILER_BIND_GENERATE(js_generate_apply);

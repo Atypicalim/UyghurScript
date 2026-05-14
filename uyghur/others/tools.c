@@ -308,6 +308,10 @@ bool is_type_waitable(char tp) {
     return tp == UG_TYPE_TSK;
 }
 
+bool is_type_indexable(char tp) {
+    return tp == UG_TYPE_STR || is_type_listable(tp);
+}
+
 // 
 
 char *b2s(bool value)

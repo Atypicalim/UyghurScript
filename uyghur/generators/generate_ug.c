@@ -100,6 +100,11 @@ CString receive_judge_2_ug(Compiler *compiler) {
 
 //////////////////////////////////////////////////////////////////////////////
 
+CString ug_generate_token(Compiler *compiler) {
+    CString name = receive_token_2_ug(compiler);
+    return name;
+}
+
 CString ug_generate_variable(Compiler *compiler) {
     CString name = receive_token_2_ug(compiler);
     CString token = receive_token_2_ug(compiler);
@@ -143,10 +148,6 @@ CString ug_generate_while(Compiler *compiler) {
     CString _judge = receive_string_2_ug(compiler);
     CString judge = receive_judge_2_ug(compiler);
     return tools_format("%s %s %s", T(LETTER_WHILE), judge, T(_judge));
-}
-
-CString ug_generate_calculate(Compiler *compiler) {
-    return "xyz = 1 * a";
 }
 
 CString ug_generate_appliable(Compiler *compiler) {
@@ -217,6 +218,7 @@ CString ug_generate_end(Compiler *compiler) {
 
 void generator_ug_register(Compiler *compiler) 
 {
+    COMPILER_BIND_GENERATE(ug_generate_token);
     COMPILER_BIND_GENERATE(ug_generate_variable);
     COMPILER_BIND_GENERATE(ug_generate_command);
     COMPILER_BIND_GENERATE(ug_generate_if);
@@ -224,7 +226,6 @@ void generator_ug_register(Compiler *compiler)
     COMPILER_BIND_GENERATE(ug_generate_else);
     COMPILER_BIND_GENERATE(ug_generate_spread);
     COMPILER_BIND_GENERATE(ug_generate_while);
-    COMPILER_BIND_GENERATE(ug_generate_calculate);
     COMPILER_BIND_GENERATE(ug_generate_appliable);
     COMPILER_BIND_GENERATE(ug_generate_result);
     COMPILER_BIND_GENERATE(ug_generate_apply);

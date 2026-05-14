@@ -53,6 +53,7 @@ def _tryGenerateFunctionDoc(module, function: BindInfo, index):
     if not desc:
         desc = tplDocDescriptionless.format(module=module, func=func)
     # 
+    assert rtrn != None, "invalid return type for:" + module + "->" + func
     _return = rtrn.vType if rtrn.vType != None else rtrn.cType
     _function = tplDocFunction.format(index=index, func=func, desc=desc, rtrn=_return, args=_args)
     return _function

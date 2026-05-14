@@ -127,7 +127,7 @@ typedef struct _Value {
     struct _Object;
     char type;
     Token *token;
-    void *proxy;
+    void *proto;
     void *linka;
     void *extra;
     bool fixed;
@@ -157,9 +157,12 @@ Value *Value_FALSE = NULL;
 
 void *INVALID_PTR = NULL;
 
-typedef Value*(*VALUE_READER)(Value *, CString);
-VALUE_READER _ugValueReaders[256] = {0};
+typedef Value*(*KEY_READER)(Value *, CString);
+typedef Value*(*INDEX_READER)(Value *, int);
 CString _ugValueNames[256] = {0};
+KEY_READER _ugKeyReaders[256] = {0};
+INDEX_READER _ugIndexReaders[256] = {0};
+Value* _ugValueProtos[256] = {0};
 
 #define VEmpty Value*
 #define VBolean Value*

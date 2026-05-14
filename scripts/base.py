@@ -353,7 +353,7 @@ def tryDetectBindManuFunction(path, module, index, lines):
     func = _tryConvertBindFunction(module, match.group(2))
     args = []
     rtrn = None
-    for num in range(1,50):
+    for num in range(1,min(50, len(lines) - index)):
         _index = index + num
         _line = lines[_index]
         if _line.strip().startswith("//"):

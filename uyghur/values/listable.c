@@ -62,6 +62,11 @@ int Listable_getCount(Listable *this) {
     return this->arr->length;
 }
 
+Value *Listable_readIndex(Listable *this, int index) {
+    Value *value = Array_get(this->arr, index);
+    return value != NULL ? value : Value_readIndex(this, index);
+}
+
 // 
 
 char *Listable_toString(Listable *this)

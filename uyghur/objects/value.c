@@ -28,7 +28,7 @@ void Value_reset(Value *this)
     this->obj = NULL;
     this->fixed = false;
     this->token = NULL;
-    this->proxy = NULL;
+    this->proto = NULL;
     this->linka = NULL;
     this->extra = NULL;
 }
@@ -51,7 +51,7 @@ Value *_value_newValue(bool freeze, char typ) {
     return value;
 }
 
-Value *Value_newEmpty(void *extra)
+Value *Value_newEmpty(void *_)
 {
     if (Value_EMPTY == NULL) {
         Value_EMPTY = _value_newValue(true, UG_TYPE_NIL);
@@ -59,7 +59,7 @@ Value *Value_newEmpty(void *extra)
     return Value_EMPTY;
 }
 
-Value *Value_newBoolean(bool boolean, void *extra)
+Value *Value_newBoolean(bool boolean, void *_)
 {
     if (Value_TRUE == NULL) {
         Value_TRUE = _value_newValue(true, UG_TYPE_BOL);
@@ -72,19 +72,19 @@ Value *Value_newBoolean(bool boolean, void *extra)
     return boolean ? Value_TRUE : Value_FALSE;
 }
 
-Value *Value_newNumber(double number, void *extra)
+Value *Value_newNumber(double number, void *token)
 {
     Value *value = _value_newValue(false, UG_TYPE_NUM);
     value->number = number;
-    value->extra = extra;
+    value->token = token;
     return value;
 }
 
-Value *Value_newString(CString string, void *extra)
+Value *Value_newString(CString string, void *token)
 {
     Value *value = _value_newValue(false, UG_TYPE_STR);
     value->string = strdup(string);
-    value->extra = extra;
+    value->token = token;
     return value;
 }
 
@@ -325,16 +325,33 @@ bool Value_isTrue(Value *this)
 
 Value *Value_readKey(Value *this, CString key)
 {
-    Value *value = NULL;
     CString name = helper_find_name_of_something(key);
+    Value *value = NULL;
     if (is_eq_string(name, ALIAS_type)) {
         CString _type = _ugValueNames[this->type];
         _type = helper_translate_something_to_current(_type);
         value = Value_newString(_type, NULL);
+    } else if (is_eq_string(name, ALIAS_name)) {
+        value = Value_newString(this->token != NULL ? this->token->value : "unknown", NULL);
+    } else if (is_eq_string(name, ALIAS_place)) {
+        char* _place = helper_format_place(this->token);
+        value = Value_newString(_place, NULL);
+        pct_free(_place);
     }
     return value;
 }
 
+Value *Value_readIndex(Value *this, int index)
+{
+    Value *value = NULL;
+    if (Value_isString(this)) {
+        String *tmp = String_set(TEMPORARY_String, this->string);
+        String *_tmp = String_subString(tmp, index, index);
+        value = Value_newString(String_get(_tmp), NULL);
+        Object_release(_tmp);
+    }
+    return value;
+}
 
 void Value_free(Value *this)
 {
