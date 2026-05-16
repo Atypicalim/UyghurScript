@@ -6,8 +6,8 @@
 //     struct _Stack;
 // };
 
-#define BRIDGE_ITEM_TP_KEY "BRIDGE_ITEM_TP_KEY"
-#define BRIDGE_ITEM_TP_VAL "BRIDGE_ITEM_TP_VAL"
+#define BRIDGE_ITEM_TP_KEY 'k'
+#define BRIDGE_ITEM_TP_VAL 'v'
 
 void Bridge_reset(Bridge *this)
 {
@@ -20,7 +20,7 @@ void Bridge_reset(Bridge *this)
     }
     Stack_RESTE(this->stack);
     this->type = 0;
-    this->last = NULL;
+    this->last = ' ';
 }
 
 Bridge *Bridge_new(Uyghur *uyghur)
@@ -29,7 +29,7 @@ Bridge *Bridge_new(Uyghur *uyghur)
     bridge->uyghur = uyghur;
     bridge->stack = Stack_new(IS_RETAIN_VALUES);
     bridge->type = 0;
-    bridge->last = NULL;
+    bridge->last = ' ';
     return bridge;
 }
 
@@ -299,14 +299,14 @@ void Bridge_returnString(Bridge *this, char *val)
 
 // return results to script from c
 
-void Bridge_returnBooleans(Bridge *this, int num, bool val, ...)
+void Bridge_returnBooleans(Bridge *this, int num, int val, ...)
 {
     Bridge_startResult(this);
     va_list args;
     va_start(args, val);
     int i;
     for (i = 0; i < num; i++) {
-        Bridge_pushBoolean(this, val);
+        Bridge_pushBoolean(this, val == 1);
        val = va_arg(args, int);
     }
     va_end(args);
@@ -387,6 +387,6 @@ void Bridge_call(Bridge *this, char *funcName)
 
 void Bridge_run(Bridge *this, Value *value) {
     void *func = value->obj;
-    void (*function)() = func;
+    void (*function)(Bridge*) = func;
     function(this);
 }

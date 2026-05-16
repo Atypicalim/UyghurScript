@@ -174,9 +174,7 @@ Value* _ugValueProtos[256] = {0};
 
 // listable
 
-typedef struct _Listable {
-    struct _Value;
-} Listable;
+typedef struct _Value Listable;
 
 Listable *Listable_new(char, Token*);
 char *Listable_toString(Listable *);
@@ -184,9 +182,7 @@ void Listable_print(Listable *);
 
 // dictable
 
-typedef struct _Dictable {
-    struct _Value;
-} Dictable;
+typedef struct _Value Dictable;
 
 Dictable *Dictable_new(char, Token*);
 char *Dictable_toString(Dictable *);
@@ -194,9 +190,7 @@ void Dictable_print(Dictable *);
 
 // runnable
 
-typedef struct _Runnable {
-    struct _Value;
-} Runnable;
+typedef struct _Value Runnable;
 
 Runnable *Runnable_new(char, Token*);
 char *Runnable_toString(Runnable *);
@@ -204,9 +198,7 @@ void Runnable_print(Runnable *);
 
 // objective
 
-typedef struct _Objective {
-    struct _Value;
-} Objective;
+typedef struct _Value Objective;
 
 Objective *Objective_new(char, Token*, void*);
 char *Objective_toString(Objective *);
@@ -214,9 +206,7 @@ void Objective_print(Objective *);
 
 // holdable
 
-typedef struct _Holdable {
-    struct _Value;
-} Holdable;
+typedef struct _Value Holdable;
 
 Holdable *Holdable_new(char, void*);
 char *Holdable_toString(Holdable *);
@@ -224,9 +214,7 @@ void Holdable_print(Holdable *);
 
 // loadable
 
-typedef struct _Loadable {
-    struct _Value;
-} Loadable;
+typedef struct _Value Loadable;
 
 Loadable *Loadable_new(char, Token*);
 char *Loadable_toString(Loadable *);
@@ -236,9 +224,7 @@ typedef void (*LOADABLE_RELEASE_FUNC)(void *);
 
 // waitable
 
-typedef struct _Waitable {
-    struct _Value;
-} Waitable;
+typedef struct _Value Waitable;
 
 Waitable *Waitable_new(char, Token*);
 char *Waitable_toString(Waitable *);
@@ -367,7 +353,7 @@ typedef struct _Bridge {
     Uyghur *uyghur;
     Stack *stack;
     int type;
-    char *last;
+    char last;
 } Bridge;
 
 void Bridge_pushValue(Bridge *, Value *);

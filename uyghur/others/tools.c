@@ -121,7 +121,7 @@ UTFCHAR clone_uchar(UTFCHAR ch) {
     return _ch;
 }
 
-bool free_uchar(UTFCHAR _ch) {
+void free_uchar(UTFCHAR _ch) {
     free(_ch);
 }
 

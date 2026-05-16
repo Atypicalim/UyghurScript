@@ -228,17 +228,17 @@ void Executer_findValueByToken(Executer *this, Token *token, Value **rContainer,
     } else if (key != NULL) {
         // hanlde key
         char containerType = (*rContainer)->type;
-        // prototype
-        Value *proto = (*rContainer)->proto || _ugValueProtos[containerType];
-        if (proto != NULL) {
-            *rValue = Dictable_getLocation(proto, key);
+        // protos
+        Value *valueProto = _ugValueProtos[containerType];
+        if (valueProto != NULL) {
+            *rValue = Dictable_getLocation(valueProto, key);
             if (*rValue != NULL) return;
         }
         // others
         KEY_READER valueReader = _ugKeyReaders[containerType];
         if (valueReader != NULL) {
             *rValue = valueReader(*rContainer, key);
-            return;
+            if (*rValue != NULL) return;
         }
         //
     } else {

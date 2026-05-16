@@ -1,5 +1,6 @@
 // implementation
 
+#define INCBIN_SILENCE_BITCODE_WARNING
 #include "../my-build-tools/build/c_libs/incbin/incbin.h"
 #include "uyghur/include.h"
 #include "uyghur/uyghur.c"
@@ -88,7 +89,7 @@ void run_package_cmd(CString name, CString path) {
         log_debug("packaging...");
         try_merge_win_program(path, name);
         log_debug("packaged!");
-    #elif
+    #else
         log_error("packaging not supported for: %s", PLATFORM_NAME);
     #endif
 }

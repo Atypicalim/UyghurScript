@@ -225,7 +225,7 @@ void UG_POINT_SWAP(UGPoint *p1, UGPoint *p2) {
 }
 
 void UG_POINT_PRINT(UGPoint *p) {
-    printf("<point:%p %f,%f>", *p, (*p).x, (*p).y);
+    printf("<point:%p %f,%f>", p, (*p).x, (*p).y);
 }
 
 UGRect UG_RECT_GENERATE(UGPoint *p, UGSize *s) {

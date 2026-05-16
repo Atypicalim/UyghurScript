@@ -283,7 +283,7 @@ void _machine_mark_value(Value *);
 
 void _machine_mark_value(Value *value) {
     if (value == NULL) return;
-    if (value->gcMark) return;
+    if (((Object*)value)->gcMark) return;
     if (value->type == UG_TYPE_NIL || value->type == UG_TYPE_BOL || value->type == UG_TYPE_NUM) {
         _machine_mark_object(value);
     } else if (value->type == UG_TYPE_STR) {
@@ -309,7 +309,7 @@ void _machine_mark_value(Value *value) {
 }
 
 void _machine_mark_listable(Listable *listable) {
-    if (listable->gcMark) return;
+    if (((Object*)listable)->gcMark) return;
     // Machine *this = __uyghur->machine;
     // log_info("mark_listable %p %c %i %i", listable, listable->type, listable == this->globals, listable == this->rootModule);
     _machine_mark_object(listable);
@@ -322,7 +322,7 @@ void _machine_mark_listable(Listable *listable) {
 }
 
 void _machine_mark_dictable(Dictable *dictable) {
-    if (dictable->gcMark) return;
+    if (((Object*)dictable)->gcMark) return;
     // Machine *this = __uyghur->machine;
     // log_info("mark_dictable %p %c %i %i", dictable, dictable->type, dictable == this->globals, dictable == this->rootModule);
     _machine_mark_object(dictable);
@@ -338,7 +338,7 @@ void _machine_mark_dictable(Dictable *dictable) {
 }
 
 void _machine_mark_holdable(Holdable *holdable) {
-    if (holdable->gcMark) return;
+    if (((Object*)holdable)->gcMark) return;
     _machine_mark_dictable(holdable);
     if (holdable->linka) {
         _machine_mark_holdable(holdable->linka);
@@ -346,7 +346,7 @@ void _machine_mark_holdable(Holdable *holdable) {
 }
 
 void _machine_mark_objective(Objective *objective) {
-    if (objective->gcMark) return;
+    if (((Object*)objective)->gcMark) return;
     // Machine *this = __uyghur->machine;
     // log_info("mark_objective %p %c %i %i", objective, objective->type, objective == this->globals, objective == this->rootModule);
     _machine_mark_dictable(objective);

@@ -11,8 +11,8 @@ Runnable *Runnable_new(char tp, Token *token)
 {
     tools_assert(is_type_runnable(tp), "invalid runnable type for new");
     Runnable *runnable = Machine_newCacheableValue(tp, false);
-    runnable->token = token;
-    runnable->extra = NULL;
+    ((Value*)runnable)->token = token;
+    ((Value*)runnable)->extra = NULL;
     return runnable;
 }
 

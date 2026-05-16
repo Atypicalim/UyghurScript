@@ -18,9 +18,9 @@ Draft *Draft_new(char type)
 
 void Draft_print(Draft *this)
 {
-    printf("[(DRAFT_START) => address:%d type:%c]\n", this, this->type);
+    printf("[(DRAFT_START) => address:%p type:%c]\n", this, this->type);
     printf("%s\n", String_get(this->text));
-    printf("[(DRAFT_END) => address:%d]\n", this);
+    printf("[(DRAFT_END) => address:%p]\n", this);
 }
 
 CString Draft_getString(Draft *this)

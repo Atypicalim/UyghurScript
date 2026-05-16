@@ -51,7 +51,7 @@ bool Listable_setIndex(Listable *this, int index, Value *item) {
         }
     } else {
         if (index >= length) {
-            Array_append(this->arr, item);
+            return Array_append(this->arr, item);
         } else {
             return Array_set(this->arr, index, item);
         }

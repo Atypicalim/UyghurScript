@@ -22,10 +22,10 @@ Leaf *Leaf_new(char type)
 
 void Leaf_print(Leaf *this)
 {
-    printf("[(LEAF_START) => address:%d type:%c]\n", this, this->type);
+    printf("[(LEAF_START) => address:%p type:%c]\n", this, this->type);
     Stack_print(this->tokens);
     Queue_print(this->leafs);
-    printf("[(LEAF_END) => address:%d]\n", this);
+    printf("[(LEAF_END) => address:%p]\n", this);
 }
 
 void Leaf_pushToken(Leaf *this, Token *token)

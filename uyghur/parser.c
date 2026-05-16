@@ -197,7 +197,7 @@ void Parser_consumeAstCommand(Parser *this)
     Parser_assert(this, token != NULL && is_command_action(token->value), LANG_ERR_PARSER_EXCEPTION);
     Token *action = token;
     //
-    if (action->value == LETTER_CMD_INPUT) {
+    if (is_eq_string(action->value, LETTER_CMD_INPUT)) {
         Parser_assert(this, args->size >= 1, LANG_ERR_PARSER_EXCEPTION);
         Queue_RESTE(args);
         Token *arg = Queue_NEXT(args);
@@ -213,7 +213,7 @@ void Parser_consumeAstCommand(Parser *this)
         }
     }
     //
-    if (action->value == LETTER_CMD_INPUT) {
+    if (is_eq_string(action->value, LETTER_CMD_INPUT)) {
         Parser_assert(this, args->size >= 1, LANG_ERR_PARSER_EXCEPTION);
         Queue_RESTE(args);
         Token *arg = Queue_NEXT(args);

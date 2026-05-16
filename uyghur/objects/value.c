@@ -170,7 +170,7 @@ void Value_print(Value *this)
     }
     else if (this->type == UG_TYPE_NIL)
     {
-        printf("<V:Empty p:%p>\n", LETTER_NIL, this);
+        printf("<V:Empty p:%p>\n", this);
     }
     else if (this->type == UG_TYPE_BOL)
     {

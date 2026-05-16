@@ -207,9 +207,9 @@ task.setIcon('./resources/icon.ico')
 # })
 task.addWarnings(False, [
     "unused-result",
-    "discarded-qualifiers",
     "attributes",
-    "incompatible-pointer-types"
+    "incompatible-pointer-types",
+    "unknown-warning-option"
 ])
 #
 

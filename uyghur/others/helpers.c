@@ -519,7 +519,7 @@ CString helper_select_language(char *prefix) {
     if (!prefix) prefix = "> ";
     CString lang = NULL;
     while (!lang) {
-        printf(prefix);
+        printf("%s", prefix);
         char *text = system_scanf();
         HELPER_LANGUAGE_ITERATE() {
             if (is_eq_string(text, _lang)) lang = _lang;
